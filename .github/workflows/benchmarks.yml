@@ -1,0 +1,28 @@
+name: Benchmarks
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  internal:
+    name: Benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.24.x'
+      - name: Install dependencies
+        run: go get .
+      - name: Run benchmarks
+        run: |
+          go test -benchmem -run=^$ -bench ^.*$ ./...
+      - name: Run benchmarks w/o bound checks
+        run: |
+          go test -benchmem -run=^$ -bench ^.*$ -gcflags="-B" ./...
