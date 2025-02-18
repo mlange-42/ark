@@ -1,7 +1,6 @@
 package ecs
 
 import (
-	"reflect"
 	"sort"
 )
 
@@ -14,10 +13,10 @@ func id(id uint32) ID {
 	return ID{id}
 }
 
-type componentInfo struct {
-	id  ID
-	typ reflect.Type
-}
+//type componentInfo struct {
+//	id  ID
+//	typ reflect.Type
+//}
 
 // ids is a sorted list of component [ID]s.
 type ids []ID
@@ -34,12 +33,6 @@ func newIDsSorted(id ...ID) ids {
 	ids := ids(append([]ID(nil), id...))
 	sort.Sort(ids)
 	return ids
-}
-
-// newIDsView creates a new list of component [ID]s that is a view of the given list.
-// It does not copy the list.
-func newIDsView(id ...ID) ids {
-	return id
 }
 
 func (ids ids) Len() int           { return len(ids) }
