@@ -41,8 +41,10 @@ func (ids ids) Swap(i, j int)      { ids[i], ids[j] = ids[j], ids[i] }
 
 // Contains checks if the list of component [ID]s contains all the given IDs.
 func (ids ids) Contains(other ...ID) bool {
+	start := 0
+	found := false
 	for _, id := range other {
-		if _, found := ids.Search(id); !found {
+		if start, found = ids[start:].Search(id); !found {
 			return false
 		}
 	}

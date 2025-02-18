@@ -73,15 +73,12 @@ func benchmarkIDsContains(b *testing.B, k, n int) {
 	}
 	archIDs := newIDs(allIDs...)
 
-	queries := make([][]ID, numQueries)
+	queries := make([]ids, numQueries)
 	for i := range numQueries {
 		rand.Shuffle(n, func(i, j int) {
 			allIDs[i], allIDs[j] = allIDs[j], allIDs[i]
 		})
-		queries[i] = make([]ID, k)
-		for j := range k {
-			queries[i][j] = allIDs[j]
-		}
+		queries[i] = newIDsSorted(allIDs[:k]...)
 	}
 
 	for b.Loop() {
