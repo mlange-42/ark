@@ -8,6 +8,6 @@ import (
 
 func TestEntity(t *testing.T) {
 	e := newEntity(100)
-	assert.Equal(t, 100, e.id)
-	assert.Equal(t, 0, e.gen)
+	assert.EqualValues(t, 100, e.id)
+	assert.EqualValues(t, 0, e.gen)
 }
