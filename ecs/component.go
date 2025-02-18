@@ -19,21 +19,35 @@ type componentInfo struct {
 	typ reflect.Type
 }
 
+// ids is a sorted list of component [ID]s.
 type ids []ID
 
+// newIDs creates a new list of component [ID]s.
+//
+// Safety: the caller must ensure that the IDs are sorted.
 func newIDs(id ...ID) ids {
 	return append([]ID(nil), id...)
 }
 
-func newSortedIDs(id ...ID) ids {
+// newIDsSorted creates a new list of component [ID]s and sorts them.
+func newIDsSorted(id ...ID) ids {
 	ids := ids(append([]ID(nil), id...))
 	sort.Sort(ids)
 	return ids
 }
+
+// newIDsView creates a new list of component [ID]s that is a view of the given list.
+// It does not copy the list.
+func newIDsView(id ...ID) ids {
+	return id
+}
+
 func (ids ids) Len() int           { return len(ids) }
 func (ids ids) Less(i, j int) bool { return ids[i].id < ids[j].id }
 func (ids ids) Swap(i, j int)      { ids[i], ids[j] = ids[j], ids[i] }
 
+// Search performs binary search for a component [ID].
+// It returns ths index of the ID, and whether it was present in the list.
 func (ids ids) Search(id ID) (int, bool) {
 	// Define f(-1) == false and f(n) == true.
 	// Invariant: f(i-1) == false, f(j) == true.

@@ -7,7 +7,7 @@ import (
 )
 
 func TestIDsSort(t *testing.T) {
-	idsSorted := newSortedIDs(id(2), id(6), id(2), id(0))
+	idsSorted := newIDsSorted(id(2), id(6), id(2), id(0))
 	assert.Equal(t, ids([]ID{id(0), id(2), id(2), id(6)}), idsSorted)
 }
 

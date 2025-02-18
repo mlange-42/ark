@@ -5,6 +5,7 @@ import (
 	"unsafe"
 )
 
+// column storage for components in an archetype.
 type column struct {
 	data     reflect.Value
 	pointer  unsafe.Pointer
