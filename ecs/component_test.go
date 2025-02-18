@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"math/rand/v2"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -40,13 +41,53 @@ func TestIDsSearch(t *testing.T) {
 func benchmarkIDsSearch(b *testing.B, n int) {
 	arr := make([]ID, n)
 	for i := range n {
-		arr[i] = id(uint32(i + 5))
+		arr[i] = id(uint32(i))
 	}
 	idsSorted := newIDs(arr...)
 	searchFor := id(uint32(float32(n) * 0.6))
 
 	for b.Loop() {
 		_, _ = idsSorted.Search(searchFor)
+	}
+}
+
+func benchmarkIDsSearchLinear(b *testing.B, n int) {
+	arr := make([]ID, n)
+	for i := range n {
+		arr[i] = id(uint32(i))
+	}
+	idsSorted := newIDs(arr...)
+	searchFor := id(uint32(float32(n) * 0.5))
+
+	for b.Loop() {
+		_, _ = idsSorted.SearchLinear(searchFor)
+	}
+}
+
+func benchmarkIDsContains(b *testing.B, k, n int) {
+	numQueries := 1000
+
+	allIDs := make([]ID, n)
+	for i := range n {
+		allIDs[i] = id(uint32(i))
+	}
+	archIDs := newIDs(allIDs...)
+
+	queries := make([][]ID, numQueries)
+	for i := range numQueries {
+		rand.Shuffle(n, func(i, j int) {
+			allIDs[i], allIDs[j] = allIDs[j], allIDs[i]
+		})
+		queries[i] = make([]ID, k)
+		for j := range k {
+			queries[i][j] = allIDs[j]
+		}
+	}
+
+	for b.Loop() {
+		for i := range numQueries {
+			_ = archIDs.Contains(queries[i]...)
+		}
 	}
 }
 
@@ -68,4 +109,56 @@ func BenchmarkIDsSearch_256(b *testing.B) {
 
 func BenchmarkIDsSearch_1024(b *testing.B) {
 	benchmarkIDsSearch(b, 1024)
+}
+
+func BenchmarkIDsSearchLinear_2(b *testing.B) {
+	benchmarkIDsSearchLinear(b, 2)
+}
+
+func BenchmarkIDsSearchLinear_8(b *testing.B) {
+	benchmarkIDsSearchLinear(b, 8)
+}
+
+func BenchmarkIDsSearchLinear_64(b *testing.B) {
+	benchmarkIDsSearchLinear(b, 64)
+}
+
+func BenchmarkIDsSearchLinear_256(b *testing.B) {
+	benchmarkIDsSearchLinear(b, 256)
+}
+
+func BenchmarkIDsSearchLinear_1024(b *testing.B) {
+	benchmarkIDsSearchLinear(b, 1024)
+}
+
+func BenchmarkIDsContains_1in8_1000(b *testing.B) {
+	benchmarkIDsContains(b, 1, 8)
+}
+
+func BenchmarkIDsContains_2in8_1000(b *testing.B) {
+	benchmarkIDsContains(b, 2, 8)
+}
+
+func BenchmarkIDsContains_4in8_1000(b *testing.B) {
+	benchmarkIDsContains(b, 4, 8)
+}
+
+func BenchmarkIDsContains_8in8_1000(b *testing.B) {
+	benchmarkIDsContains(b, 8, 8)
+}
+
+func BenchmarkIDsContains_1in32_1000(b *testing.B) {
+	benchmarkIDsContains(b, 1, 32)
+}
+
+func BenchmarkIDsContains_2in32_1000(b *testing.B) {
+	benchmarkIDsContains(b, 2, 32)
+}
+
+func BenchmarkIDsContains_4in32_1000(b *testing.B) {
+	benchmarkIDsContains(b, 4, 32)
+}
+
+func BenchmarkIDsContains_8in32_1000(b *testing.B) {
+	benchmarkIDsContains(b, 8, 32)
 }
