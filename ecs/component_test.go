@@ -36,3 +36,36 @@ func TestIDsSearch(t *testing.T) {
 		assert.Equal(t, test.index, idx)
 	}
 }
+
+func benchmarkIDsSearch(b *testing.B, n int) {
+	arr := make([]ID, n)
+	for i := range n {
+		arr[i] = id(uint32(i + 5))
+	}
+	idsSorted := newIDs(arr...)
+	searchFor := id(uint32(float32(n) * 0.6))
+
+	for b.Loop() {
+		_, _ = idsSorted.Search(searchFor)
+	}
+}
+
+func BenchmarkIDsSearch_2(b *testing.B) {
+	benchmarkIDsSearch(b, 2)
+}
+
+func BenchmarkIDsSearch_8(b *testing.B) {
+	benchmarkIDsSearch(b, 8)
+}
+
+func BenchmarkIDsSearch_64(b *testing.B) {
+	benchmarkIDsSearch(b, 64)
+}
+
+func BenchmarkIDsSearch_256(b *testing.B) {
+	benchmarkIDsSearch(b, 256)
+}
+
+func BenchmarkIDsSearch_1024(b *testing.B) {
+	benchmarkIDsSearch(b, 1024)
+}
