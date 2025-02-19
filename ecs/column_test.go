@@ -43,3 +43,32 @@ func TestColumnAddRemove(t *testing.T) {
 	assert.False(t, swapped)
 	assert.Equal(t, 1, column.Len())
 }
+
+func TestColumnAddRemoveLabel(t *testing.T) {
+	posType := reflect.TypeOf(Label{})
+	column := newColumn(posType, 8)
+
+	assert.Equal(t, 8, column.Cap())
+	assert.Equal(t, 0, column.Len())
+
+	column.Add(unsafe.Pointer(&Label{}))
+	column.Add(unsafe.Pointer(&Label{}))
+	column.Add(unsafe.Pointer(&Label{}))
+
+	assert.Equal(t, 8, column.Cap())
+	assert.Equal(t, 3, column.Len())
+
+	pos := (*Label)(column.Get(2))
+	assert.Equal(t, Label{}, *pos)
+
+	swapped := column.Remove(0)
+	assert.True(t, swapped)
+	assert.Equal(t, 2, column.Len())
+
+	pos = (*Label)(column.Get(0))
+	assert.Equal(t, Label{}, *pos)
+
+	swapped = column.Remove(1)
+	assert.False(t, swapped)
+	assert.Equal(t, 1, column.Len())
+}

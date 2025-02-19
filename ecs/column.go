@@ -60,7 +60,7 @@ func (c *column) Remove(index uint32) bool {
 	lastIndex := uint32(c.len - 1)
 	swapped := index != lastIndex
 
-	if swapped {
+	if swapped && c.itemSize != 0 {
 		src := unsafe.Add(c.pointer, lastIndex*uint32(c.itemSize))
 		dst := unsafe.Add(c.pointer, index*uint32(c.itemSize))
 		copyPtr(src, dst, c.itemSize)
