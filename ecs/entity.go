@@ -11,3 +11,8 @@ type Entity struct {
 func newEntity(id entityID) Entity {
 	return Entity{id, 0}
 }
+
+type entityIndex struct {
+	table int
+	row   int
+}
