@@ -16,12 +16,12 @@ func TestIDsSearch(t *testing.T) {
 	n := 100
 	arr := make([]ID, n)
 	for i := range n {
-		arr[i] = id(uint32(i + 5))
+		arr[i] = id(i + 5)
 	}
 	idsSorted := newIDs(arr...)
 
 	tests := []struct {
-		search uint32
+		search int
 		index  int
 		found  bool
 	}{
@@ -41,10 +41,10 @@ func TestIDsSearch(t *testing.T) {
 func benchmarkIDsSearch(b *testing.B, n int) {
 	arr := make([]ID, n)
 	for i := range n {
-		arr[i] = id(uint32(i))
+		arr[i] = id(i)
 	}
 	idsSorted := newIDs(arr...)
-	searchFor := id(uint32(float32(n) * 0.6))
+	searchFor := id(int(float32(n) * 0.6))
 
 	for b.Loop() {
 		_, _ = idsSorted.Search(searchFor)
@@ -54,10 +54,10 @@ func benchmarkIDsSearch(b *testing.B, n int) {
 func benchmarkIDsSearchLinear(b *testing.B, n int) {
 	arr := make([]ID, n)
 	for i := range n {
-		arr[i] = id(uint32(i))
+		arr[i] = id(i)
 	}
 	idsSorted := newIDs(arr...)
-	searchFor := id(uint32(float32(n) * 0.5))
+	searchFor := id(int(float32(n) * 0.5))
 
 	for b.Loop() {
 		_, _ = idsSorted.SearchLinear(searchFor)
@@ -69,7 +69,7 @@ func benchmarkIDsContains(b *testing.B, k, n int) {
 
 	allIDs := make([]ID, n)
 	for i := range n {
-		allIDs[i] = id(uint32(i))
+		allIDs[i] = id(i)
 	}
 	archIDs := newIDs(allIDs...)
 

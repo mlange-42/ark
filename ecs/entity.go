@@ -2,6 +2,8 @@ package ecs
 
 type entityID uint32
 
+var entityType = typeOf[Entity]()
+
 // Entity identifier.
 type Entity struct {
 	id  entityID // Entity ID

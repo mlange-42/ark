@@ -1,5 +1,6 @@
 package ecs
 
 type storage struct {
-	tables []table
+	archetypes []archetype
+	tables     []table
 }
