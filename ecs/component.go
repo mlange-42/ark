@@ -44,6 +44,7 @@ func (ids ids) Contains(other ...ID) bool {
 	start := 0
 	found := false
 	for _, id := range other {
+		// TODO: move binary search here for some more optimizations.
 		if start, found = ids[start:].Search(id); !found {
 			return false
 		}
