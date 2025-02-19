@@ -24,7 +24,8 @@ func TestColumnAddRemove(t *testing.T) {
 
 	column.Add(unsafe.Pointer(&Position{1, 2}))
 	column.Add(unsafe.Pointer(&Position{3, 4}))
-	column.Add(unsafe.Pointer(&Position{5, 6}))
+	column.Add(unsafe.Pointer(&Position{0, 0}))
+	column.Set(2, unsafe.Pointer(&Position{5, 6}))
 
 	assert.Equal(t, 8, column.Cap())
 	assert.Equal(t, 3, column.Len())
@@ -54,6 +55,7 @@ func TestColumnAddRemoveLabel(t *testing.T) {
 	column.Add(unsafe.Pointer(&Label{}))
 	column.Add(unsafe.Pointer(&Label{}))
 	column.Add(unsafe.Pointer(&Label{}))
+	column.Set(2, unsafe.Pointer(&Label{}))
 
 	assert.Equal(t, 8, column.Cap())
 	assert.Equal(t, 3, column.Len())
