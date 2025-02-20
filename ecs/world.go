@@ -1,6 +1,8 @@
 package ecs
 
-import "unsafe"
+import (
+	"unsafe"
+)
 
 // World is the central type holding entity and component data, as well as resources.
 type World struct {

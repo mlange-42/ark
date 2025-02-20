@@ -7,7 +7,7 @@ import (
 )
 
 func TestQuery2(t *testing.T) {
-	w := NewWorld(1024)
+	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
 	velMap := NewMap[Velocity](&w)
@@ -21,17 +21,22 @@ func TestQuery2(t *testing.T) {
 		posMap.Add(e2)
 		velMap.Add(e2)
 
+		posMap.Get(e2).X = 100
+
 		e3 := w.NewEntity()
 		posMap.Add(e3)
 		velMap.Add(e3)
 		headMap.Add(e3)
+
+		posMap.Get(e3).X = 100
 	}
 
 	query := NewQuery2[Position, Velocity](&w)
 
 	cnt := 0
 	for query.Next() {
-		_, vel := query.Get()
+		pos, vel := query.Get()
+		assert.Equal(t, 100.0, pos.X)
 		vel.X = float64(cnt)
 		cnt++
 	}
@@ -49,7 +54,7 @@ func TestQuery2(t *testing.T) {
 	for query.Next() {
 		pos, vel := query.Get()
 		assert.Equal(t, float64(cnt), vel.X)
-		assert.Equal(t, float64(cnt)*2, pos.X)
+		assert.Equal(t, float64(cnt)*2+100, pos.X)
 		cnt++
 	}
 }
@@ -65,6 +70,7 @@ func BenchmarkQuery2(b *testing.B) {
 		e := world.NewEntity()
 		posMap.Add(e)
 		velMap.Add(e)
+		velMap.Get(e).X = 1
 	}
 
 	query := NewQuery2[Position, Velocity](&world)

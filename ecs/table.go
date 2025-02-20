@@ -1,6 +1,8 @@
 package ecs
 
-import "unsafe"
+import (
+	"unsafe"
+)
 
 type tableID uint32
 
@@ -54,6 +56,7 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *registry,
 
 func (t *table) Add(entity Entity) uint32 {
 	_, idx := t.entities.Add(unsafe.Pointer(&entity))
+
 	for i := range t.columns {
 		t.columns[i].Alloc(1)
 	}

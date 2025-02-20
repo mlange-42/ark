@@ -63,6 +63,7 @@ func (s *storage) createTable(archetype *archetype) *table {
 	index := len(s.tables)
 	s.tables = append(s.tables, newTable(tableID(index), archetype.id, s.initialCapacity, &s.registry, archetype.components...))
 	table := &s.tables[index]
+	archetype.tables = append(archetype.tables, table)
 	for i := range s.components {
 		id := ID{id: uint8(i)}
 		comps := &s.components[i]
@@ -72,7 +73,7 @@ func (s *storage) createTable(archetype *archetype) *table {
 			comps.columns = append(comps.columns, nil)
 		}
 	}
-	return &s.tables[index]
+	return table
 }
 
 func (s *storage) getExchangeMask(mask *Mask, add []ID, rem []ID) {
