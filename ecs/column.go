@@ -38,8 +38,8 @@ func (c *column) Cap() int {
 }
 
 // Get returns a pointer to the component at the given index.
-func (c *column) Get(index uint32) unsafe.Pointer {
-	return unsafe.Add(c.pointer, uintptr(index)*c.itemSize)
+func (c *column) Get(index uintptr) unsafe.Pointer {
+	return unsafe.Add(c.pointer, index*c.itemSize)
 }
 
 // Add adds a component to the column.
@@ -57,25 +57,25 @@ func (c *column) Alloc(n uint32) {
 
 // Set overwrites the component at the given index.
 func (c *column) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
-	dst := c.Get(index)
+	dst := c.Get(uintptr(index))
 	if c.itemSize == 0 {
 		return dst
 	}
 
-	copyPtr(comp, dst, c.itemSize)
+	copyPtr(comp, dst, uintptr(c.itemSize))
 	return dst
 }
 
 // Remove swap-removes the component at the given index.
 // Returns whether a swap was necessary.
 func (c *column) Remove(index uint32, zero unsafe.Pointer) bool {
-	lastIndex := uint32(c.len - 1)
-	swapped := index != lastIndex
+	lastIndex := uintptr(c.len - 1)
+	swapped := index != uint32(lastIndex)
 
 	if swapped && c.itemSize != 0 {
-		src := unsafe.Add(c.pointer, lastIndex*uint32(c.itemSize))
-		dst := unsafe.Add(c.pointer, index*uint32(c.itemSize))
-		copyPtr(src, dst, c.itemSize)
+		src := unsafe.Add(c.pointer, lastIndex*c.itemSize)
+		dst := unsafe.Add(c.pointer, uintptr(index)*c.itemSize)
+		copyPtr(src, dst, uintptr(c.itemSize))
 	}
 	c.len--
 	c.Zero(lastIndex, zero)
@@ -101,10 +101,10 @@ func (c *column) Extend(by uint32) {
 }
 
 // Zero resets the memory at the given index.
-func (c *column) Zero(index uint32, zero unsafe.Pointer) {
+func (c *column) Zero(index uintptr, zero unsafe.Pointer) {
 	if c.itemSize == 0 {
 		return
 	}
-	dst := unsafe.Add(c.pointer, uintptr(index)*c.itemSize)
-	copyPtr(zero, dst, c.itemSize)
+	dst := unsafe.Add(c.pointer, index*c.itemSize)
+	copyPtr(zero, dst, uintptr(c.itemSize))
 }

@@ -22,7 +22,7 @@ func (m *Map[T]) Get(entity Entity) *T {
 		panic("can't get a component of a dead entity")
 	}
 	index := m.world.entities[entity.id]
-	return (*T)(m.storage.columns[index.table].Get(index.row))
+	return (*T)(m.storage.columns[index.table].Get(uintptr(index.row)))
 }
 
 func (m *Map[T]) Has(entity Entity) bool {

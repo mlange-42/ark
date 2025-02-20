@@ -35,7 +35,7 @@ func (w *World) get(entity Entity, component ID) unsafe.Pointer {
 		panic("can't get component of a dead entity")
 	}
 	index := w.entities[entity.id]
-	return w.storage.tables[index.table].Get(component, index.row)
+	return w.storage.tables[index.table].Get(component, uintptr(index.row))
 }
 
 func (w *World) has(entity Entity, component ID) bool {
@@ -89,7 +89,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID) {
 
 	for _, id := range oldIDs {
 		if mask.Get(id) {
-			comp := oldTable.Get(id, index.row)
+			comp := oldTable.Get(id, uintptr(index.row))
 			newTable.Set(id, newIndex, comp)
 		}
 	}
@@ -97,7 +97,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID) {
 	swapped := oldTable.Remove(index.row)
 
 	if swapped {
-		swapEntity := oldTable.GetEntity(index.row)
+		swapEntity := oldTable.GetEntity(uintptr(index.row))
 		w.entities[swapEntity.id].row = index.row
 	}
 	w.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}

@@ -10,8 +10,8 @@ type Query2[A any, B any] struct {
 	columnB    *column
 
 	table    int
-	index    uint32
-	maxIndex int
+	index    uintptr
+	maxIndex int64
 }
 
 // NewQuery2 creates a new [Query2].
@@ -32,7 +32,7 @@ func NewQuery2[A any, B any](world *World) Query2[A, B] {
 }
 
 func (q *Query2[A, B]) Next() bool {
-	if int(q.index) < q.maxIndex {
+	if int64(q.index) < q.maxIndex {
 		q.index++
 		return true
 	}
@@ -52,7 +52,7 @@ func (q *Query2[A, B]) nextTable() bool {
 		q.columnA = q.componentA.columns[q.table]
 		q.columnB = q.componentB.columns[q.table]
 		q.index = 0
-		q.maxIndex = table.entities.Len() - 1
+		q.maxIndex = int64(table.entities.Len() - 1)
 		return true
 	}
 	q.table = -1
@@ -62,6 +62,6 @@ func (q *Query2[A, B]) nextTable() bool {
 }
 
 func (q *Query2[A, B]) Get() (*A, *B) {
-	return (*A)(q.columnA.Get(uint32(q.index))),
-		(*B)(q.columnB.Get(uint32(q.index)))
+	return (*A)(q.columnA.Get(q.index)),
+		(*B)(q.columnB.Get(q.index))
 }
