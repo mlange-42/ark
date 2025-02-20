@@ -120,7 +120,6 @@ func TestMaskToTypes(t *testing.T) {
 }
 
 func BenchmarkBitmask256Get(b *testing.B) {
-	b.StopTimer()
 	mask := All()
 	for i := 0; i < MaskTotalBits; i++ {
 		if rand.Float64() < 0.5 {
@@ -128,20 +127,15 @@ func BenchmarkBitmask256Get(b *testing.B) {
 		}
 	}
 	idx := id(rand.Intn(MaskTotalBits))
-	b.StartTimer()
 
 	var v bool
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		v = mask.Get(idx)
 	}
-
-	b.StopTimer()
-	v = !v
 	_ = v
 }
 
 func BenchmarkBitmaskContains(b *testing.B) {
-	b.StopTimer()
 	mask := All()
 	for i := 0; i < MaskTotalBits; i++ {
 		if rand.Float64() < 0.5 {
@@ -149,20 +143,15 @@ func BenchmarkBitmaskContains(b *testing.B) {
 		}
 	}
 	filter := All(id(rand.Intn(MaskTotalBits)))
-	b.StartTimer()
 
 	var v bool
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		v = mask.Contains(&filter)
 	}
-
-	b.StopTimer()
-	v = !v
 	_ = v
 }
 
 func BenchmarkBitmaskContainsAny(b *testing.B) {
-	b.StopTimer()
 	mask := All()
 	for i := 0; i < MaskTotalBits; i++ {
 		if rand.Float64() < 0.5 {
@@ -170,40 +159,29 @@ func BenchmarkBitmaskContainsAny(b *testing.B) {
 		}
 	}
 	filter := All(id(rand.Intn(MaskTotalBits)))
-	b.StartTimer()
 
 	var v bool
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		v = mask.ContainsAny(&filter)
 	}
-
-	b.StopTimer()
-	v = !v
 	_ = v
 }
 
 func BenchmarkMaskMatch(b *testing.B) {
-	b.StopTimer()
 	mask := All(id(0), id(1), id(2))
 	bits := All(id(0), id(1), id(2))
-	b.StartTimer()
 	var v bool
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		v = mask.Matches(&bits)
 	}
-	b.StopTimer()
-	v = !v
 	_ = v
 }
 
 func BenchmarkMaskCopy(b *testing.B) {
-	b.StopTimer()
 	mask := All(id(0), id(1), id(2))
 	var tempMask Mask
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		tempMask = mask
 	}
-	b.StopTimer()
 	_ = tempMask
 }
