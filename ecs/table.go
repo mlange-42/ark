@@ -3,13 +3,14 @@ package ecs
 import "unsafe"
 
 type table struct {
-	components [MaskTotalBits]int16
+	components []int16
 	entities   column
 	columns    []column
+	relations  []Entity
 }
 
 func newTable(capacity int, reg *registry, ids ...ID) table {
-	components := [MaskTotalBits]int16{}
+	components := make([]int16, MaskTotalBits)
 	entities := newColumn(entityType, capacity)
 	columns := make([]column, len(ids))
 
@@ -25,6 +26,7 @@ func newTable(capacity int, reg *registry, ids ...ID) table {
 		components: components,
 		entities:   entities,
 		columns:    columns,
+		relations:  make([]Entity, len(ids)),
 	}
 }
 
@@ -34,6 +36,10 @@ func (t *table) Get(component ID, index uint32) unsafe.Pointer {
 
 func (t *table) GetEntity(index uint32) Entity {
 	return *(*Entity)(t.entities.Get(index))
+}
+
+func (t *table) GetRelation(component ID) Entity {
+	return t.relations[t.components[component.id]]
 }
 
 func (t *table) GetColumn(component ID) *column {
