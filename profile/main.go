@@ -44,7 +44,7 @@ func run(rounds, iters, entities int) {
 			velMap.Add(e)
 		}
 
-		query := ecs.NewQuery2[position, velocity](&world)
+		query := ecs.NewQuery2[position, velocity](&world).Build()
 		for j := 0; j < iters; j++ {
 			for query.Next() {
 				pos, vel := query.Get()

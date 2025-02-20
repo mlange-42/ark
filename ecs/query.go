@@ -17,23 +17,7 @@ type Query0 struct {
 	components []*componentStorage
 }
 
-// NewQuery0 creates a new [Query0].
-func NewQuery0(world *World) Query0 {
-	ids := [0]ID{}
-	components := make([]*componentStorage, 0)
-
-	return Query0{
-		world:      world,
-		mask:       All(ids[:]...),
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
-}
-
+// Next advances the query's cursor to the next entity.
 func (q *Query0) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -63,10 +47,12 @@ func (q *Query0) nextTable() bool {
 	return false
 }
 
+// Entity returns the current entity.
 func (q *Query0) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Get returns the queries components of the current entity.
 func (q *Query0) Get() {
 	return
 }
@@ -81,27 +67,7 @@ type Query1[A any] struct {
 	columnA    *column
 }
 
-// NewQuery1 creates a new [Query1].
-func NewQuery1[A any](world *World) Query1[A] {
-	ids := [1]ID{}
-	ids[0] = ComponentID[A](world)
-	components := make([]*componentStorage, 1)
-	for i := range 1 {
-		components[i] = &world.storage.components[ids[i].id]
-	}
-
-	return Query1[A]{
-		world:      world,
-		mask:       All(ids[:]...),
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
-}
-
+// Next advances the query's cursor to the next entity.
 func (q *Query1[A]) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -132,10 +98,12 @@ func (q *Query1[A]) nextTable() bool {
 	return false
 }
 
+// Entity returns the current entity.
 func (q *Query1[A]) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Get returns the queries components of the current entity.
 func (q *Query1[A]) Get() *A {
 	return (*A)(q.columnA.Get(q.cursor.index))
 }
@@ -151,28 +119,7 @@ type Query2[A any, B any] struct {
 	columnB    *column
 }
 
-// NewQuery2 creates a new [Query2].
-func NewQuery2[A any, B any](world *World) Query2[A, B] {
-	ids := [2]ID{}
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	components := make([]*componentStorage, 2)
-	for i := range 2 {
-		components[i] = &world.storage.components[ids[i].id]
-	}
-
-	return Query2[A, B]{
-		world:      world,
-		mask:       All(ids[:]...),
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
-}
-
+// Next advances the query's cursor to the next entity.
 func (q *Query2[A, B]) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -204,10 +151,12 @@ func (q *Query2[A, B]) nextTable() bool {
 	return false
 }
 
+// Entity returns the current entity.
 func (q *Query2[A, B]) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Get returns the queries components of the current entity.
 func (q *Query2[A, B]) Get() (*A, *B) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index))
@@ -225,29 +174,7 @@ type Query3[A any, B any, C any] struct {
 	columnC    *column
 }
 
-// NewQuery3 creates a new [Query3].
-func NewQuery3[A any, B any, C any](world *World) Query3[A, B, C] {
-	ids := [3]ID{}
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	components := make([]*componentStorage, 3)
-	for i := range 3 {
-		components[i] = &world.storage.components[ids[i].id]
-	}
-
-	return Query3[A, B, C]{
-		world:      world,
-		mask:       All(ids[:]...),
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
-}
-
+// Next advances the query's cursor to the next entity.
 func (q *Query3[A, B, C]) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -280,10 +207,12 @@ func (q *Query3[A, B, C]) nextTable() bool {
 	return false
 }
 
+// Entity returns the current entity.
 func (q *Query3[A, B, C]) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Get returns the queries components of the current entity.
 func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
@@ -303,30 +232,7 @@ type Query4[A any, B any, C any, D any] struct {
 	columnD    *column
 }
 
-// NewQuery4 creates a new [Query4].
-func NewQuery4[A any, B any, C any, D any](world *World) Query4[A, B, C, D] {
-	ids := [4]ID{}
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	ids[3] = ComponentID[D](world)
-	components := make([]*componentStorage, 4)
-	for i := range 4 {
-		components[i] = &world.storage.components[ids[i].id]
-	}
-
-	return Query4[A, B, C, D]{
-		world:      world,
-		mask:       All(ids[:]...),
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
-}
-
+// Next advances the query's cursor to the next entity.
 func (q *Query4[A, B, C, D]) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -360,10 +266,12 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 	return false
 }
 
+// Entity returns the current entity.
 func (q *Query4[A, B, C, D]) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Get returns the queries components of the current entity.
 func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
@@ -385,31 +293,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnE    *column
 }
 
-// NewQuery5 creates a new [Query5].
-func NewQuery5[A any, B any, C any, D any, E any](world *World) Query5[A, B, C, D, E] {
-	ids := [5]ID{}
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	ids[3] = ComponentID[D](world)
-	ids[4] = ComponentID[E](world)
-	components := make([]*componentStorage, 5)
-	for i := range 5 {
-		components[i] = &world.storage.components[ids[i].id]
-	}
-
-	return Query5[A, B, C, D, E]{
-		world:      world,
-		mask:       All(ids[:]...),
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
-}
-
+// Next advances the query's cursor to the next entity.
 func (q *Query5[A, B, C, D, E]) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -444,10 +328,12 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 	return false
 }
 
+// Entity returns the current entity.
 func (q *Query5[A, B, C, D, E]) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Get returns the queries components of the current entity.
 func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
@@ -471,32 +357,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnF    *column
 }
 
-// NewQuery6 creates a new [Query6].
-func NewQuery6[A any, B any, C any, D any, E any, F any](world *World) Query6[A, B, C, D, E, F] {
-	ids := [6]ID{}
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	ids[3] = ComponentID[D](world)
-	ids[4] = ComponentID[E](world)
-	ids[5] = ComponentID[F](world)
-	components := make([]*componentStorage, 6)
-	for i := range 6 {
-		components[i] = &world.storage.components[ids[i].id]
-	}
-
-	return Query6[A, B, C, D, E, F]{
-		world:      world,
-		mask:       All(ids[:]...),
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
-}
-
+// Next advances the query's cursor to the next entity.
 func (q *Query6[A, B, C, D, E, F]) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -532,10 +393,12 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 	return false
 }
 
+// Entity returns the current entity.
 func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Get returns the queries components of the current entity.
 func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
@@ -561,33 +424,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnG    *column
 }
 
-// NewQuery7 creates a new [Query7].
-func NewQuery7[A any, B any, C any, D any, E any, F any, G any](world *World) Query7[A, B, C, D, E, F, G] {
-	ids := [7]ID{}
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	ids[3] = ComponentID[D](world)
-	ids[4] = ComponentID[E](world)
-	ids[5] = ComponentID[F](world)
-	ids[6] = ComponentID[G](world)
-	components := make([]*componentStorage, 7)
-	for i := range 7 {
-		components[i] = &world.storage.components[ids[i].id]
-	}
-
-	return Query7[A, B, C, D, E, F, G]{
-		world:      world,
-		mask:       All(ids[:]...),
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
-}
-
+// Next advances the query's cursor to the next entity.
 func (q *Query7[A, B, C, D, E, F, G]) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -624,10 +461,12 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 	return false
 }
 
+// Entity returns the current entity.
 func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Get returns the queries components of the current entity.
 func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
@@ -655,34 +494,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnH    *column
 }
 
-// NewQuery8 creates a new [Query8].
-func NewQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) Query8[A, B, C, D, E, F, G, H] {
-	ids := [8]ID{}
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	ids[3] = ComponentID[D](world)
-	ids[4] = ComponentID[E](world)
-	ids[5] = ComponentID[F](world)
-	ids[6] = ComponentID[G](world)
-	ids[7] = ComponentID[H](world)
-	components := make([]*componentStorage, 8)
-	for i := range 8 {
-		components[i] = &world.storage.components[ids[i].id]
-	}
-
-	return Query8[A, B, C, D, E, F, G, H]{
-		world:      world,
-		mask:       All(ids[:]...),
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
-}
-
+// Next advances the query's cursor to the next entity.
 func (q *Query8[A, B, C, D, E, F, G, H]) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -720,10 +532,12 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
 	return false
 }
 
+// Entity returns the current entity.
 func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Get returns the queries components of the current entity.
 func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),

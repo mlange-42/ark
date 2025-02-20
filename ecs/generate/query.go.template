@@ -35,29 +35,7 @@ type Query{{.}}{{$generics}} struct {
 	{{- end}}
 }
 
-// NewQuery{{.}} creates a new [Query{{.}}].
-func NewQuery{{.}}{{$generics}}(world *World) Query{{.}}{{$genericsShort}} {
-	ids := [{{.}}]ID{}
-	{{- range $i, $v := $upper}}
-	ids[{{$i}}] = ComponentID[{{$v}}](world)
-	{{- end}}
-	components := make([]*componentStorage, {{.}})
-	{{if .}}for i := range {{.}} {
-		components[i] = &world.storage.components[ids[i].id]
-	}{{end}}
-
-	return Query{{.}}{{$genericsShort}}{
-		world:      world,
-		mask:       All(ids[:]...),
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
-}
-
+// Next advances the query's cursor to the next entity.
 func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -90,10 +68,12 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 	return false
 }
 
+// Entity returns the current entity.
 func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Get returns the queries components of the current entity.
 func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 	return {{range $i, $v := $upper}}{{if $i}},
 		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}

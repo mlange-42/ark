@@ -15,6 +15,7 @@ type genFile struct {
 
 var files = []genFile{
 	{"./query.go.template", "../query.go"},
+	{"./query_builder.go.template", "../query_builder.go"},
 }
 
 func main() {
