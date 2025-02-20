@@ -39,7 +39,7 @@ func (c *column) Cap() int {
 
 // Get returns a pointer to the component at the given index.
 func (c *column) Get(index uint32) unsafe.Pointer {
-	return unsafe.Pointer(uintptr(c.pointer) + uintptr(index)*c.itemSize)
+	return unsafe.Add(c.pointer, uintptr(index)*c.itemSize)
 }
 
 // Add adds a component to the column.
