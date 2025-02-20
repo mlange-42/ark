@@ -2,6 +2,8 @@ package ecs
 
 type entityID uint32
 
+var entityType = typeOf[Entity]()
+
 // Entity identifier.
 type Entity struct {
 	id  entityID // Entity ID
@@ -10,4 +12,9 @@ type Entity struct {
 
 func newEntity(id entityID) Entity {
 	return Entity{id, 0}
+}
+
+type entityIndex struct {
+	table int
+	row   int
 }

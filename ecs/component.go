@@ -6,11 +6,11 @@ import (
 
 // ID is the component identifier.
 type ID struct {
-	id uint32
+	id uint8
 }
 
-func id(id uint32) ID {
-	return ID{id}
+func id(id int) ID {
+	return ID{uint8(id)}
 }
 
 //type componentInfo struct {
