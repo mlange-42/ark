@@ -8,7 +8,7 @@ import (
 	"text/template"
 )
 
-const queryTemplate = "./query.go.tpl"
+const queryTemplate = "./query.gtpl"
 const queryOutput = "./query.go"
 
 func main() {
