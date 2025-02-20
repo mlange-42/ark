@@ -23,10 +23,11 @@ type QueryBuilder{{.}}{{$generics}} struct {
 //
 // Use [QueryBuilder{{.}}.Build] to obtain a [Query{{.}}].
 func NewQuery{{.}}{{$generics}}(world *World) *QueryBuilder{{.}}{{$genericsShort}} {
-	ids := make([]ID, {{.}})
-	{{- range $i, $v := $upper}}
-	ids[{{$i}}] = ComponentID[{{$v}}](world)
-	{{- end}}
+	ids := []ID{
+		{{- range $i, $v := $upper}}
+		ComponentID[{{$v}}](world),
+		{{- end}}
+	}
 
 	return &QueryBuilder{{.}}{{$genericsShort}}{
 		world: world,

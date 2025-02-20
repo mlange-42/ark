@@ -13,7 +13,7 @@ type QueryBuilder0 struct {
 //
 // Use [QueryBuilder0.Build] to obtain a [Query0].
 func NewQuery0(world *World) *QueryBuilder0 {
-	ids := make([]ID, 0)
+	ids := []ID{}
 
 	return &QueryBuilder0{
 		world: world,
@@ -49,8 +49,9 @@ type QueryBuilder1[A any] struct {
 //
 // Use [QueryBuilder1.Build] to obtain a [Query1].
 func NewQuery1[A any](world *World) *QueryBuilder1[A] {
-	ids := make([]ID, 1)
-	ids[0] = ComponentID[A](world)
+	ids := []ID{
+		ComponentID[A](world),
+	}
 
 	return &QueryBuilder1[A]{
 		world: world,
@@ -89,9 +90,10 @@ type QueryBuilder2[A any, B any] struct {
 //
 // Use [QueryBuilder2.Build] to obtain a [Query2].
 func NewQuery2[A any, B any](world *World) *QueryBuilder2[A, B] {
-	ids := make([]ID, 2)
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+	}
 
 	return &QueryBuilder2[A, B]{
 		world: world,
@@ -130,10 +132,11 @@ type QueryBuilder3[A any, B any, C any] struct {
 //
 // Use [QueryBuilder3.Build] to obtain a [Query3].
 func NewQuery3[A any, B any, C any](world *World) *QueryBuilder3[A, B, C] {
-	ids := make([]ID, 3)
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+	}
 
 	return &QueryBuilder3[A, B, C]{
 		world: world,
@@ -172,11 +175,12 @@ type QueryBuilder4[A any, B any, C any, D any] struct {
 //
 // Use [QueryBuilder4.Build] to obtain a [Query4].
 func NewQuery4[A any, B any, C any, D any](world *World) *QueryBuilder4[A, B, C, D] {
-	ids := make([]ID, 4)
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	ids[3] = ComponentID[D](world)
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+	}
 
 	return &QueryBuilder4[A, B, C, D]{
 		world: world,
@@ -215,12 +219,13 @@ type QueryBuilder5[A any, B any, C any, D any, E any] struct {
 //
 // Use [QueryBuilder5.Build] to obtain a [Query5].
 func NewQuery5[A any, B any, C any, D any, E any](world *World) *QueryBuilder5[A, B, C, D, E] {
-	ids := make([]ID, 5)
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	ids[3] = ComponentID[D](world)
-	ids[4] = ComponentID[E](world)
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+	}
 
 	return &QueryBuilder5[A, B, C, D, E]{
 		world: world,
@@ -259,13 +264,14 @@ type QueryBuilder6[A any, B any, C any, D any, E any, F any] struct {
 //
 // Use [QueryBuilder6.Build] to obtain a [Query6].
 func NewQuery6[A any, B any, C any, D any, E any, F any](world *World) *QueryBuilder6[A, B, C, D, E, F] {
-	ids := make([]ID, 6)
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	ids[3] = ComponentID[D](world)
-	ids[4] = ComponentID[E](world)
-	ids[5] = ComponentID[F](world)
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+		ComponentID[F](world),
+	}
 
 	return &QueryBuilder6[A, B, C, D, E, F]{
 		world: world,
@@ -304,14 +310,15 @@ type QueryBuilder7[A any, B any, C any, D any, E any, F any, G any] struct {
 //
 // Use [QueryBuilder7.Build] to obtain a [Query7].
 func NewQuery7[A any, B any, C any, D any, E any, F any, G any](world *World) *QueryBuilder7[A, B, C, D, E, F, G] {
-	ids := make([]ID, 7)
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	ids[3] = ComponentID[D](world)
-	ids[4] = ComponentID[E](world)
-	ids[5] = ComponentID[F](world)
-	ids[6] = ComponentID[G](world)
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+		ComponentID[F](world),
+		ComponentID[G](world),
+	}
 
 	return &QueryBuilder7[A, B, C, D, E, F, G]{
 		world: world,
@@ -350,15 +357,16 @@ type QueryBuilder8[A any, B any, C any, D any, E any, F any, G any, H any] struc
 //
 // Use [QueryBuilder8.Build] to obtain a [Query8].
 func NewQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) *QueryBuilder8[A, B, C, D, E, F, G, H] {
-	ids := make([]ID, 8)
-	ids[0] = ComponentID[A](world)
-	ids[1] = ComponentID[B](world)
-	ids[2] = ComponentID[C](world)
-	ids[3] = ComponentID[D](world)
-	ids[4] = ComponentID[E](world)
-	ids[5] = ComponentID[F](world)
-	ids[6] = ComponentID[G](world)
-	ids[7] = ComponentID[H](world)
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+		ComponentID[F](world),
+		ComponentID[G](world),
+		ComponentID[H](world),
+	}
 
 	return &QueryBuilder8[A, B, C, D, E, F, G, H]{
 		world: world,
