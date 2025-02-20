@@ -4,3 +4,4 @@ package main
 
 //go:generate go run .
 //go:generate go fmt ../query.go
+//go:generate go fmt ../query_builder.go

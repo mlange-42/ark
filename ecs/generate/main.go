@@ -8,8 +8,15 @@ import (
 	"text/template"
 )
 
-const queryTemplate = "./query.go.template"
-const queryOutput = "../query.go"
+type genFile struct {
+	Source string
+	Target string
+}
+
+var files = []genFile{
+	{"./query.go.template", "../query.go"},
+	{"./query_builder.go.template", "../query_builder.go"},
+}
 
 func main() {
 	funcMap := template.FuncMap{
@@ -20,17 +27,19 @@ func main() {
 		"join":         join,
 	}
 
-	t, err := template.New("query").Funcs(funcMap).ParseFiles(queryTemplate)
-	if err != nil {
-		panic(err)
-	}
+	for _, file := range files {
+		t, err := template.New("template").Funcs(funcMap).ParseFiles(file.Source)
+		if err != nil {
+			panic(err)
+		}
 
-	var result bytes.Buffer
-	err = t.ExecuteTemplate(&result, "query", nil)
-	if err != nil {
-		panic(err)
+		var result bytes.Buffer
+		err = t.ExecuteTemplate(&result, "template", nil)
+		if err != nil {
+			panic(err)
+		}
+		os.WriteFile(file.Target, result.Bytes(), 0644)
 	}
-	os.WriteFile(queryOutput, result.Bytes(), 0644)
 }
 
 func makeRange(min, max int) []int {

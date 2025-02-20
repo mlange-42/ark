@@ -31,7 +31,7 @@ func TestQuery2(t *testing.T) {
 		posMap.Get(e3).X = 100
 	}
 
-	query := NewQuery2[Position, Velocity](&w)
+	query := NewQuery2[Position, Velocity](&w).Build()
 
 	cnt := 0
 	for query.Next() {
@@ -73,7 +73,7 @@ func BenchmarkQuery2(b *testing.B) {
 		velMap.Get(e).X = 1
 	}
 
-	query := NewQuery2[Position, Velocity](&world)
+	query := NewQuery2[Position, Velocity](&world).Build()
 	for b.Loop() {
 		for query.Next() {
 			pos, vel := query.Get()
