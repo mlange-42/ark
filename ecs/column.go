@@ -68,7 +68,7 @@ func (c *column) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
 
 // Remove swap-removes the component at the given index.
 // Returns whether a swap was necessary.
-func (c *column) Remove(index uint32) bool {
+func (c *column) Remove(index uint32, zero unsafe.Pointer) bool {
 	lastIndex := uint32(c.len - 1)
 	swapped := index != lastIndex
 
@@ -78,7 +78,7 @@ func (c *column) Remove(index uint32) bool {
 		copyPtr(src, dst, c.itemSize)
 	}
 	c.len--
-	// TODO: zero the last element?
+	c.Zero(lastIndex, zero)
 	return swapped
 }
 
@@ -98,4 +98,13 @@ func (c *column) Extend(by uint32) {
 	c.data = reflect.New(reflect.ArrayOf(cap, old.Type().Elem())).Elem()
 	c.pointer = c.data.Addr().UnsafePointer()
 	reflect.Copy(c.data, old)
+}
+
+// Zero resets the memory at the given index.
+func (c *column) Zero(index uint32, zero unsafe.Pointer) {
+	if c.itemSize == 0 {
+		return
+	}
+	dst := unsafe.Add(c.pointer, uintptr(index)*c.itemSize)
+	copyPtr(zero, dst, c.itemSize)
 }

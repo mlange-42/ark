@@ -9,6 +9,9 @@ type table struct {
 	entities   column
 	columns    []column
 	relations  []Entity
+
+	zeroValue   []byte
+	zeroPointer unsafe.Pointer
 }
 
 func newTable(capacity uint32, reg *registry, ids ...ID) table {
@@ -20,15 +23,28 @@ func newTable(capacity uint32, reg *registry, ids ...ID) table {
 		components[i] = -1
 	}
 
+	var maxSize uintptr = 0
 	for i, id := range ids {
 		components[id.id] = int16(i)
 		columns[i] = newColumn(reg.Types[id.id], capacity)
+		if columns[i].itemSize > maxSize {
+			maxSize = columns[i].itemSize
+		}
 	}
+	var zeroValue []byte
+	var zeroPointer unsafe.Pointer
+	if maxSize > 0 {
+		zeroValue = make([]byte, maxSize)
+		zeroPointer = unsafe.Pointer(&zeroValue[0])
+	}
+
 	return table{
-		components: components,
-		entities:   entities,
-		columns:    columns,
-		relations:  make([]Entity, len(ids)),
+		components:  components,
+		entities:    entities,
+		columns:     columns,
+		relations:   make([]Entity, len(ids)),
+		zeroValue:   zeroValue,
+		zeroPointer: zeroPointer,
 	}
 }
 
