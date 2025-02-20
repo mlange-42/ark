@@ -11,3 +11,9 @@ func TestEntity(t *testing.T) {
 	assert.EqualValues(t, 100, e.id)
 	assert.EqualValues(t, 0, e.gen)
 }
+
+func TestEntityIndex(t *testing.T) {
+	index := entityIndex{}
+	assert.Equal(t, 0, index.table)
+	assert.Equal(t, 0, index.row)
+}
