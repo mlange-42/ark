@@ -13,11 +13,6 @@ func id(id int) ID {
 	return ID{uint8(id)}
 }
 
-//type componentInfo struct {
-//	id  ID
-//	typ reflect.Type
-//}
-
 // ids is a sorted list of component [ID]s.
 type ids []ID
 
@@ -39,19 +34,6 @@ func (ids ids) Len() int           { return len(ids) }
 func (ids ids) Less(i, j int) bool { return ids[i].id < ids[j].id }
 func (ids ids) Swap(i, j int)      { ids[i], ids[j] = ids[j], ids[i] }
 
-// Contains checks if the list of component [ID]s contains all the given IDs.
-func (ids ids) Contains(other ...ID) bool {
-	start := 0
-	found := false
-	for _, id := range other {
-		// TODO: move binary search here for some more optimizations.
-		if start, found = ids[start:].Search(id); !found {
-			return false
-		}
-	}
-	return true
-}
-
 // Search performs binary search for a component [ID].
 // It returns ths index of the ID, and whether it was present in the list.
 func (ids ids) Search(id ID) (int, bool) {
@@ -70,18 +52,4 @@ func (ids ids) Search(id ID) (int, bool) {
 	}
 	// i == j, f(i-1) == false, and f(j) (= f(i)) == true  =>  answer is i.
 	return i, i < n && ids[i].id == id.id
-}
-
-func (ids ids) SearchLinear(id ID) (int, bool) {
-	n := len(ids)
-	for i := range n {
-		curr := ids[i].id
-		if curr == id.id {
-			return i, true
-		}
-		if curr > id.id {
-			return -1, false
-		}
-	}
-	return -1, false
 }

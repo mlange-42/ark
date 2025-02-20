@@ -119,7 +119,7 @@ func TestMaskToTypes(t *testing.T) {
 	assert.Equal(t, []ID{id1, id2}, comps)
 }
 
-func BenchmarkBitmask256Get(b *testing.B) {
+func BenchmarkBitmaskGet(b *testing.B) {
 	mask := All()
 	for i := 0; i < MaskTotalBits; i++ {
 		if rand.Float64() < 0.5 {
