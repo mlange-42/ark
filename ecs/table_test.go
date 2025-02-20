@@ -7,12 +7,12 @@ import (
 )
 
 func TestNewTable(t *testing.T) {
-	w := NewWorld()
+	w := NewWorld(1024)
 	_ = ComponentID[Label](&w)
 	posID := ComponentID[Position](&w)
 	velID := ComponentID[Velocity](&w)
 
-	table := newTable(8, &w.registry, posID, velID)
+	table := newTable(0, 0, 8, &w.storage.registry, posID, velID)
 
 	assert.Equal(t, 2, len(table.columns))
 	assert.Equal(t, 2, len(table.relations))

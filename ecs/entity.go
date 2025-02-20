@@ -3,6 +3,7 @@ package ecs
 type entityID uint32
 
 var entityType = typeOf[Entity]()
+var entitySize = sizeOf(entityType)
 
 // Entity identifier.
 type Entity struct {
@@ -15,6 +16,8 @@ func newEntity(id entityID) Entity {
 }
 
 type entityIndex struct {
-	table int
-	row   int
+	table tableID
+	row   uint32
 }
+
+type entities []entityIndex

@@ -14,18 +14,15 @@ type column struct {
 }
 
 // newColumn creates a new column for a given type and capacity.
-func newColumn(tp reflect.Type, capacity int) column {
-	size, align := tp.Size(), uintptr(tp.Align())
-	size = (size + (align - 1)) / align * align
-
+func newColumn(tp reflect.Type, capacity uint32) column {
 	// TODO: should be use a slice instead of an array here?
-	data := reflect.New(reflect.ArrayOf(capacity, tp)).Elem()
+	data := reflect.New(reflect.ArrayOf(int(capacity), tp)).Elem()
 	pointer := data.Addr().UnsafePointer()
 
 	return column{
 		data:     data,
 		pointer:  pointer,
-		itemSize: size,
+		itemSize: sizeOf(tp),
 		len:      0,
 	}
 }
@@ -46,10 +43,16 @@ func (c *column) Get(index uint32) unsafe.Pointer {
 }
 
 // Add adds a component to the column.
-func (c *column) Add(comp unsafe.Pointer) unsafe.Pointer {
+func (c *column) Add(comp unsafe.Pointer) (unsafe.Pointer, uint32) {
 	c.Extend(1)
 	c.len++
-	return c.Set(c.len-1, comp)
+	return c.Set(c.len-1, comp), c.len - 1
+}
+
+// Alloc allocates memory for the given number of components.
+func (c *column) Alloc(n uint32) {
+	c.Extend(n)
+	c.len += n
 }
 
 // Set overwrites the component at the given index.
@@ -65,7 +68,7 @@ func (c *column) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
 
 // Remove swap-removes the component at the given index.
 // Returns whether a swap was necessary.
-func (c *column) Remove(index uint32) bool {
+func (c *column) Remove(index uint32, zero unsafe.Pointer) bool {
 	lastIndex := uint32(c.len - 1)
 	swapped := index != lastIndex
 
@@ -75,15 +78,15 @@ func (c *column) Remove(index uint32) bool {
 		copyPtr(src, dst, c.itemSize)
 	}
 	c.len--
-	// TODO: zero the last element?
+	c.Zero(lastIndex, zero)
 	return swapped
 }
 
 // Extend the column to be able to store the given number of additional components.
 // Has no effect of the column's capacity is already sufficient.
 // If the capacity needs to be increased, it will be doubled until it is sufficient.
-func (c *column) Extend(by int) {
-	required := c.Len() + by
+func (c *column) Extend(by uint32) {
+	required := c.Len() + int(by)
 	cap := c.Cap()
 	if cap >= required {
 		return
@@ -95,4 +98,13 @@ func (c *column) Extend(by int) {
 	c.data = reflect.New(reflect.ArrayOf(cap, old.Type().Elem())).Elem()
 	c.pointer = c.data.Addr().UnsafePointer()
 	reflect.Copy(c.data, old)
+}
+
+// Zero resets the memory at the given index.
+func (c *column) Zero(index uint32, zero unsafe.Pointer) {
+	if c.itemSize == 0 {
+		return
+	}
+	dst := unsafe.Add(c.pointer, uintptr(index)*c.itemSize)
+	copyPtr(zero, dst, c.itemSize)
 }
