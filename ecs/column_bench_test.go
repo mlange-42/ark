@@ -59,7 +59,7 @@ func BenchmarkColumnGet(b *testing.B) {
 
 func BenchmarkSliceColumnGet(b *testing.B) {
 	n := 1000
-	var column columnInterface = &sliceColumn[Position]{}
+	var column columnInterface = newSliceColumn[Position]()
 
 	indices := make([]uint32, n)
 	for i := 0; i < n; i++ {
