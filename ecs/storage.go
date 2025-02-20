@@ -7,6 +7,11 @@ type storage struct {
 	archetypes      []archetype
 	tables          []table
 	initialCapacity uint32
+	components      []componentStorage
+}
+
+type componentStorage struct {
+	columns []*column
 }
 
 func newStorage(capacity uint32) storage {
@@ -15,11 +20,16 @@ func newStorage(capacity uint32) storage {
 	tables = append(tables, newTable(0, 0, capacity, &reg))
 	archetypes := make([]archetype, 0, 128)
 	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []*table{&tables[0]}))
+	components := make([]componentStorage, MaskTotalBits)
+	for i := range components {
+		components[i].columns = append(components[i].columns, nil)
+	}
 	return storage{
 		registry:        reg,
 		archetypes:      archetypes,
 		tables:          tables,
 		initialCapacity: capacity,
+		components:      components,
 	}
 }
 
@@ -52,7 +62,18 @@ func (s *storage) createArchetype(mask *Mask) *archetype {
 func (s *storage) createTable(archetype *archetype) *table {
 	index := len(s.tables)
 	s.tables = append(s.tables, newTable(tableID(index), archetype.id, s.initialCapacity, &s.registry, archetype.components...))
-	return &s.tables[index]
+	table := &s.tables[index]
+	archetype.tables = append(archetype.tables, table)
+	for i := range s.components {
+		id := ID{id: uint8(i)}
+		comps := &s.components[i]
+		if archetype.mask.Get(id) {
+			comps.columns = append(comps.columns, table.GetColumn(id))
+		} else {
+			comps.columns = append(comps.columns, nil)
+		}
+	}
+	return table
 }
 
 func (s *storage) getExchangeMask(mask *Mask, add []ID, rem []ID) {

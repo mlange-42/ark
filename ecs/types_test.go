@@ -14,6 +14,10 @@ type Velocity struct {
 	X, Y float64
 }
 
+type Heading struct {
+	H float64
+}
+
 type Label struct{}
 
 func TestTypeSizes(t *testing.T) {

@@ -1,6 +1,8 @@
 package ecs
 
-import "unsafe"
+import (
+	"unsafe"
+)
 
 type tableID uint32
 
@@ -54,13 +56,14 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *registry,
 
 func (t *table) Add(entity Entity) uint32 {
 	_, idx := t.entities.Add(unsafe.Pointer(&entity))
+
 	for i := range t.columns {
 		t.columns[i].Alloc(1)
 	}
 	return idx
 }
 
-func (t *table) Get(component ID, index uint32) unsafe.Pointer {
+func (t *table) Get(component ID, index uintptr) unsafe.Pointer {
 	return t.columns[t.components[component.id]].Get(index)
 }
 
@@ -68,7 +71,7 @@ func (t *table) Has(component ID) bool {
 	return t.components[component.id] >= 0
 }
 
-func (t *table) GetEntity(index uint32) Entity {
+func (t *table) GetEntity(index uintptr) Entity {
 	return *(*Entity)(t.entities.Get(index))
 }
 
