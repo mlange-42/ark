@@ -9,7 +9,7 @@ import (
 )
 
 const queryTemplate = "./query.go.template"
-const queryOutput = "./query.go"
+const queryOutput = "../query.go"
 
 func main() {
 	funcMap := template.FuncMap{
