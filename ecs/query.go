@@ -8,22 +8,20 @@ type cursor struct {
 	maxIndex int64
 }
 
-
-
 // Query0 is a filter for two components.
 type Query0 struct {
-	world      *World
-	mask       Mask
-	cursor     cursor
-	table      *table
+	world  *World
+	mask   Mask
+	cursor cursor
+	table  *table
 }
 
 // NewQuery0 creates a new [Query0].
 func NewQuery0(world *World) Query0 {
 
 	return Query0{
-		world:      world,
-		mask:       All(),
+		world: world,
+		mask:  All(),
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -65,10 +63,9 @@ func (q *Query0) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
-func (q *Query0) Get()  {
-	return 
+func (q *Query0) Get() {
+	return
 }
-
 
 // Query1 is a filter for two components.
 type Query1[A any] struct {
@@ -130,10 +127,9 @@ func (q *Query1[A]) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
-func (q *Query1[A]) Get() (*A) {
+func (q *Query1[A]) Get() *A {
 	return (*A)(q.columnA.Get(q.cursor.index))
 }
-
 
 // Query2 is a filter for two components.
 type Query2[A any, B any] struct {
@@ -202,9 +198,8 @@ func (q *Query2[A, B]) Entity() Entity {
 
 func (q *Query2[A, B]) Get() (*A, *B) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
-	    (*B)(q.columnB.Get(q.cursor.index))
+		(*B)(q.columnB.Get(q.cursor.index))
 }
-
 
 // Query3 is a filter for two components.
 type Query3[A any, B any, C any] struct {
@@ -278,10 +273,9 @@ func (q *Query3[A, B, C]) Entity() Entity {
 
 func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
-	    (*B)(q.columnB.Get(q.cursor.index)),
-	    (*C)(q.columnC.Get(q.cursor.index))
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index))
 }
-
 
 // Query4 is a filter for two components.
 type Query4[A any, B any, C any, D any] struct {
@@ -360,11 +354,10 @@ func (q *Query4[A, B, C, D]) Entity() Entity {
 
 func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
-	    (*B)(q.columnB.Get(q.cursor.index)),
-	    (*C)(q.columnC.Get(q.cursor.index)),
-	    (*D)(q.columnD.Get(q.cursor.index))
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index)),
+		(*D)(q.columnD.Get(q.cursor.index))
 }
-
 
 // Query5 is a filter for two components.
 type Query5[A any, B any, C any, D any, E any] struct {
@@ -448,12 +441,11 @@ func (q *Query5[A, B, C, D, E]) Entity() Entity {
 
 func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
-	    (*B)(q.columnB.Get(q.cursor.index)),
-	    (*C)(q.columnC.Get(q.cursor.index)),
-	    (*D)(q.columnD.Get(q.cursor.index)),
-	    (*E)(q.columnE.Get(q.cursor.index))
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index)),
+		(*D)(q.columnD.Get(q.cursor.index)),
+		(*E)(q.columnE.Get(q.cursor.index))
 }
-
 
 // Query6 is a filter for two components.
 type Query6[A any, B any, C any, D any, E any, F any] struct {
@@ -542,13 +534,12 @@ func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
 
 func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
-	    (*B)(q.columnB.Get(q.cursor.index)),
-	    (*C)(q.columnC.Get(q.cursor.index)),
-	    (*D)(q.columnD.Get(q.cursor.index)),
-	    (*E)(q.columnE.Get(q.cursor.index)),
-	    (*F)(q.columnF.Get(q.cursor.index))
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index)),
+		(*D)(q.columnD.Get(q.cursor.index)),
+		(*E)(q.columnE.Get(q.cursor.index)),
+		(*F)(q.columnF.Get(q.cursor.index))
 }
-
 
 // Query7 is a filter for two components.
 type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
@@ -642,14 +633,13 @@ func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
 
 func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
-	    (*B)(q.columnB.Get(q.cursor.index)),
-	    (*C)(q.columnC.Get(q.cursor.index)),
-	    (*D)(q.columnD.Get(q.cursor.index)),
-	    (*E)(q.columnE.Get(q.cursor.index)),
-	    (*F)(q.columnF.Get(q.cursor.index)),
-	    (*G)(q.columnG.Get(q.cursor.index))
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index)),
+		(*D)(q.columnD.Get(q.cursor.index)),
+		(*E)(q.columnE.Get(q.cursor.index)),
+		(*F)(q.columnF.Get(q.cursor.index)),
+		(*G)(q.columnG.Get(q.cursor.index))
 }
-
 
 // Query8 is a filter for two components.
 type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
@@ -748,11 +738,11 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
 
 func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
-	    (*B)(q.columnB.Get(q.cursor.index)),
-	    (*C)(q.columnC.Get(q.cursor.index)),
-	    (*D)(q.columnD.Get(q.cursor.index)),
-	    (*E)(q.columnE.Get(q.cursor.index)),
-	    (*F)(q.columnF.Get(q.cursor.index)),
-	    (*G)(q.columnG.Get(q.cursor.index)),
-	    (*H)(q.columnH.Get(q.cursor.index))
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index)),
+		(*D)(q.columnD.Get(q.cursor.index)),
+		(*E)(q.columnE.Get(q.cursor.index)),
+		(*F)(q.columnF.Get(q.cursor.index)),
+		(*G)(q.columnG.Get(q.cursor.index)),
+		(*H)(q.columnH.Get(q.cursor.index))
 }

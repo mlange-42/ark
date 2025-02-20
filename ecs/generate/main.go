@@ -8,8 +8,8 @@ import (
 	"text/template"
 )
 
-const queryTemplate = "./ecs/query.go.tpl"
-const queryOutput = "./ecs/query.go"
+const queryTemplate = "./query.go.tpl"
+const queryOutput = "./query.go"
 
 func main() {
 	funcMap := template.FuncMap{

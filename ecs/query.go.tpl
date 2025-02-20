@@ -94,7 +94,7 @@ func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 
 func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 	return {{range $i, $v := $upper}}{{if $i}},
-	    {{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}
+		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}
 }
 {{end -}}
 {{end}}
