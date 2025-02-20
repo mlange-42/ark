@@ -40,8 +40,8 @@ func run(rounds, iters, entities int) {
 
 		for j := 0; j < entities; j++ {
 			e := world.NewEntity()
-			posMap.Add(e)
-			velMap.Add(e)
+			posMap.Add(e, &position{})
+			velMap.Add(e, &velocity{})
 		}
 
 		query := ecs.NewQuery2[position, velocity](&world).Build()

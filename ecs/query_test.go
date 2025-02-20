@@ -15,20 +15,16 @@ func TestQuery2(t *testing.T) {
 
 	for range 10 {
 		e1 := w.NewEntity()
-		posMap.Add(e1)
+		posMap.Add(e1, &Position{})
 
 		e2 := w.NewEntity()
-		posMap.Add(e2)
-		velMap.Add(e2)
-
-		posMap.Get(e2).X = 100
+		posMap.Add(e2, &Position{X: 100, Y: 0})
+		velMap.Add(e2, &Velocity{})
 
 		e3 := w.NewEntity()
-		posMap.Add(e3)
-		velMap.Add(e3)
-		headMap.Add(e3)
-
-		posMap.Get(e3).X = 100
+		posMap.Add(e3, &Position{X: 100, Y: 0})
+		velMap.Add(e3, &Velocity{})
+		headMap.Add(e3, &Heading{})
 	}
 
 	query := NewQuery2[Position, Velocity](&w).Build()
@@ -68,9 +64,8 @@ func BenchmarkQuery2(b *testing.B) {
 
 	for range n {
 		e := world.NewEntity()
-		posMap.Add(e)
-		velMap.Add(e)
-		velMap.Get(e).X = 1
+		posMap.Add(e, &Position{})
+		velMap.Add(e, &Velocity{X: 1, Y: 0})
 	}
 
 	query := NewQuery2[Position, Velocity](&world).Build()

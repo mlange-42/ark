@@ -14,8 +14,8 @@ func TestMap(t *testing.T) {
 
 	e1 := w.NewEntity()
 
-	posMap.Add(e1)
-	velMap.Add(e1)
+	posMap.Add(e1, &Position{})
+	velMap.Add(e1, &Velocity{})
 
 	assert.True(t, posMap.Has(e1))
 	assert.True(t, velMap.Has(e1))

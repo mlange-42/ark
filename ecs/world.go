@@ -68,7 +68,7 @@ func (w *World) createEntity(table tableID) Entity {
 	return entity
 }
 
-func (w *World) exchange(entity Entity, add []ID, rem []ID) {
+func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer) {
 	// TODO: check lock!
 	if !w.Alive(entity) {
 		panic("can't exchange components on a dead entity")
@@ -93,6 +93,14 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID) {
 		if mask.Get(id) {
 			comp := oldTable.Get(id, uintptr(index.row))
 			newTable.Set(id, newIndex, comp)
+		}
+	}
+	if addComps != nil {
+		if len(add) != len(addComps) {
+			panic("lengths of IDs and components to add do not match")
+		}
+		for i, id := range add {
+			newTable.Set(id, newIndex, addComps[i])
 		}
 	}
 
