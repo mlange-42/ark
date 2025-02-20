@@ -3,9 +3,13 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"html/template"
+	"os"
 	"strings"
+	"text/template"
 )
+
+const queryTemplate = "./ecs/query.go.tpl"
+const queryOutput = "./ecs/query.go"
 
 func main() {
 	funcMap := template.FuncMap{
@@ -16,17 +20,17 @@ func main() {
 		"join":         join,
 	}
 
-	t, err := template.New("query").Funcs(funcMap).ParseFiles("./ecs/query.go.tpl")
+	t, err := template.New("query").Funcs(funcMap).ParseFiles(queryTemplate)
 	if err != nil {
 		panic(err)
 	}
 
 	var result bytes.Buffer
-	err = t.Execute(&result, nil)
+	err = t.ExecuteTemplate(&result, "query", nil)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(result.String())
+	os.WriteFile(queryOutput, result.Bytes(), 0644)
 }
 
 func makeRange(min, max int) []int {
