@@ -15,9 +15,6 @@ type column struct {
 
 // newColumn creates a new column for a given type and capacity.
 func newColumn(tp reflect.Type, capacity int) column {
-	size, align := tp.Size(), uintptr(tp.Align())
-	size = (size + (align - 1)) / align * align
-
 	// TODO: should be use a slice instead of an array here?
 	data := reflect.New(reflect.ArrayOf(capacity, tp)).Elem()
 	pointer := data.Addr().UnsafePointer()
@@ -25,7 +22,7 @@ func newColumn(tp reflect.Type, capacity int) column {
 	return column{
 		data:     data,
 		pointer:  pointer,
-		itemSize: size,
+		itemSize: sizeOf(tp),
 		len:      0,
 	}
 }
