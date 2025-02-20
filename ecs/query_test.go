@@ -77,3 +77,36 @@ func BenchmarkQuery2(b *testing.B) {
 		}
 	}
 }
+
+type iQuery2[A any, B any] interface {
+	Next() bool
+	Get() (*A, *B)
+}
+
+func newIQuery2[A any, B any](world *World) iQuery2[A, B] {
+	q := NewQuery2[A, B](world).Build()
+	return &q
+}
+
+func BenchmarkQuery2Interface(b *testing.B) {
+	n := 100000
+	world := NewWorld(1024)
+
+	posMap := NewMap[Position](&world)
+	velMap := NewMap[Velocity](&world)
+
+	for range n {
+		e := world.NewEntity()
+		posMap.Add(e, &Position{})
+		velMap.Add(e, &Velocity{X: 1, Y: 0})
+	}
+
+	query := newIQuery2[Position, Velocity](&world)
+	for b.Loop() {
+		for query.Next() {
+			pos, vel := query.Get()
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
+	}
+}
