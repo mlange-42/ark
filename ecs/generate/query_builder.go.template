@@ -53,6 +53,5 @@ func (q *QueryBuilder{{.}}{{$genericsShort}}) Build() Query{{.}}{{$genericsShort
 		},
 	}
 }
-
 {{end -}}
-{{end}}
+{{end -}}

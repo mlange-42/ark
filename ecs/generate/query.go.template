@@ -79,4 +79,4 @@ func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}
 }
 {{end -}}
-{{end}}
+{{end -}}
