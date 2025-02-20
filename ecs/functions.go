@@ -16,13 +16,13 @@ import "reflect"
 func ComponentID[T any](w *World) ID {
 	tp := reflect.TypeOf((*T)(nil)).Elem()
 
-	id, newID := w.registry.ComponentID(tp)
-	if newID {
-		// TODO: check lock and unroll
-		//if w.IsLocked() {
-		//	w.registry.unregisterLastComponent()
-		//	panic("attempt to register a new component in a locked world")
-		//}
-	}
+	id, _ := w.registry.ComponentID(tp)
+	//if newID {
+	//	TODO: check lock and unroll
+	//	if w.IsLocked() {
+	//		w.registry.unregisterLastComponent()
+	//		panic("attempt to register a new component in a locked world")
+	//	}
+	//}
 	return id
 }
