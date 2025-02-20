@@ -31,3 +31,34 @@ func TestWorldNewEntity(t *testing.T) {
 	assert.EqualValues(t, 0, idx.table)
 	assert.EqualValues(t, 2, idx.row)
 }
+
+func TestWorldExchange(t *testing.T) {
+	w := NewWorld(1024)
+
+	posID := ComponentID[Position](&w)
+	velID := ComponentID[Velocity](&w)
+
+	e1 := w.NewEntity()
+	e2 := w.NewEntity()
+	e3 := w.NewEntity()
+
+	w.exchange(e1, []ID{posID}, nil)
+	w.exchange(e2, []ID{posID, velID}, nil)
+	w.exchange(e3, []ID{posID, velID}, nil)
+
+	assert.True(t, w.has(e1, posID))
+	assert.False(t, w.has(e1, velID))
+
+	assert.True(t, w.has(e2, posID))
+	assert.True(t, w.has(e2, velID))
+
+	pos := (*Position)(w.get(e1, posID))
+	pos.X = 100
+
+	pos = (*Position)(w.get(e1, posID))
+	assert.Equal(t, pos.X, 100.0)
+
+	w.exchange(e2, nil, []ID{posID})
+	assert.False(t, w.has(e2, posID))
+	assert.True(t, w.has(e2, velID))
+}

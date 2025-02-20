@@ -9,6 +9,7 @@ import (
 //
 // Use build tag `tiny` to reduce all masks to 64 bits.
 const MaskTotalBits = 256
+const wordSize = 64
 
 // Mask is a 256 bit bitmask.
 // It is also a [Filter] for including certain components.
@@ -134,4 +135,32 @@ func (b *Mask) TotalBitsSet() int {
 // Equals returns whether two masks are equal.
 func (b *Mask) Equals(other *Mask) bool {
 	return b.bits == other.bits
+}
+
+func (b *Mask) toTypes(reg *registry) []ID {
+	count := int(b.TotalBitsSet())
+	types := make([]ID, count)
+
+	totalIDs := reg.Count()
+	bins := totalIDs/wordSize + 1
+	bits := totalIDs % wordSize
+
+	idx := 0
+	for i := 0; i < bins; i++ {
+		if b.bits[i] == 0 {
+			continue
+		}
+		cnt := wordSize
+		if i == bins-1 {
+			cnt = bits
+		}
+		for j := 0; j < cnt; j++ {
+			id := ID{id: uint8(i*wordSize + j)}
+			if b.Get(id) {
+				types[idx] = id
+				idx++
+			}
+		}
+	}
+	return types
 }

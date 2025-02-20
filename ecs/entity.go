@@ -3,6 +3,7 @@ package ecs
 type entityID uint32
 
 var entityType = typeOf[Entity]()
+var entitySize = sizeOf(entityType)
 
 // Entity identifier.
 type Entity struct {

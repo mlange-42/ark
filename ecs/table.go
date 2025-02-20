@@ -5,6 +5,8 @@ import "unsafe"
 type tableID uint32
 
 type table struct {
+	id         tableID
+	archetype  archetypeID
 	components []int16
 	entities   column
 	columns    []column
@@ -14,7 +16,7 @@ type table struct {
 	zeroPointer unsafe.Pointer
 }
 
-func newTable(capacity uint32, reg *registry, ids ...ID) table {
+func newTable(id tableID, archetype archetypeID, capacity uint32, reg *registry, ids ...ID) table {
 	components := make([]int16, MaskTotalBits)
 	entities := newColumn(entityType, capacity)
 	columns := make([]column, len(ids))
@@ -23,7 +25,7 @@ func newTable(capacity uint32, reg *registry, ids ...ID) table {
 		components[i] = -1
 	}
 
-	var maxSize uintptr = 0
+	var maxSize uintptr = entitySize
 	for i, id := range ids {
 		components[id.id] = int16(i)
 		columns[i] = newColumn(reg.Types[id.id], capacity)
@@ -39,6 +41,8 @@ func newTable(capacity uint32, reg *registry, ids ...ID) table {
 	}
 
 	return table{
+		id:          id,
+		archetype:   archetype,
 		components:  components,
 		entities:    entities,
 		columns:     columns,
@@ -60,6 +64,10 @@ func (t *table) Get(component ID, index uint32) unsafe.Pointer {
 	return t.columns[t.components[component.id]].Get(index)
 }
 
+func (t *table) Has(component ID) bool {
+	return t.components[component.id] >= 0
+}
+
 func (t *table) GetEntity(index uint32) Entity {
 	return *(*Entity)(t.entities.Get(index))
 }
@@ -74,4 +82,16 @@ func (t *table) GetColumn(component ID) *column {
 
 func (t *table) GetEntities(component ID) *column {
 	return &t.entities
+}
+
+func (t *table) Set(component ID, index uint32, comp unsafe.Pointer) {
+	t.columns[t.components[component.id]].Set(index, comp)
+}
+
+func (t *table) Remove(index uint32) bool {
+	swapped := t.entities.Remove(index, t.zeroPointer)
+	for i := range t.columns {
+		t.columns[i].Remove(index, t.zeroPointer)
+	}
+	return swapped
 }
