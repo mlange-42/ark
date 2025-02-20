@@ -68,7 +68,7 @@ func (w *World) createEntity(table tableID) Entity {
 
 func (w *World) exchange(entity Entity, add []ID, rem []ID) {
 	// TODO: check lock!
-	if !w.entityPool.Alive(entity) {
+	if !w.Alive(entity) {
 		panic("can't exchange components on a dead entity")
 	}
 	if len(add) == 0 && len(rem) == 0 {
