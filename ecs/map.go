@@ -1,5 +1,7 @@
 package ecs
 
+import "unsafe"
+
 // Map is a mapper to access components of an entity.
 type Map[T any] struct {
 	world   *World
@@ -33,16 +35,16 @@ func (m *Map[T]) Has(entity Entity) bool {
 	return m.storage.columns[index.table] != nil
 }
 
-func (m *Map[T]) Add(entity Entity) {
+func (m *Map[T]) Add(entity Entity, comp *T) {
 	if !m.world.Alive(entity) {
 		panic("can't add a component to a dead entity")
 	}
-	m.world.exchange(entity, []ID{m.id}, nil)
+	m.world.exchange(entity, []ID{m.id}, nil, []unsafe.Pointer{unsafe.Pointer(comp)})
 }
 
 func (m *Map[T]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove a component from a dead entity")
 	}
-	m.world.exchange(entity, nil, []ID{m.id})
+	m.world.exchange(entity, nil, []ID{m.id}, nil)
 }
