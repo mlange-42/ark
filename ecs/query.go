@@ -10,18 +10,22 @@ type cursor struct {
 
 // Query0 is a filter for two components.
 type Query0 struct {
-	world  *World
-	mask   Mask
-	cursor cursor
-	table  *table
+	world      *World
+	mask       Mask
+	cursor     cursor
+	table      *table
+	components []*componentStorage
 }
 
 // NewQuery0 creates a new [Query0].
 func NewQuery0(world *World) Query0 {
+	ids := [0]ID{}
+	components := make([]*componentStorage, 0)
 
 	return Query0{
-		world: world,
-		mask:  All(),
+		world:      world,
+		mask:       All(ids[:]...),
+		components: components,
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -73,18 +77,23 @@ type Query1[A any] struct {
 	mask       Mask
 	cursor     cursor
 	table      *table
-	componentA *componentStorage
+	components []*componentStorage
 	columnA    *column
 }
 
 // NewQuery1 creates a new [Query1].
 func NewQuery1[A any](world *World) Query1[A] {
-	idA := ComponentID[A](world)
+	ids := [1]ID{}
+	ids[0] = ComponentID[A](world)
+	components := make([]*componentStorage, 1)
+	for i := range 1 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
 
 	return Query1[A]{
 		world:      world,
-		mask:       All(idA),
-		componentA: &world.storage.components[idA.id],
+		mask:       All(ids[:]...),
+		components: components,
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -110,7 +119,7 @@ func (q *Query1[A]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.componentA.columns[q.cursor.table]
+		q.columnA = q.components[0].columns[q.cursor.table]
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -137,22 +146,25 @@ type Query2[A any, B any] struct {
 	mask       Mask
 	cursor     cursor
 	table      *table
-	componentA *componentStorage
-	componentB *componentStorage
+	components []*componentStorage
 	columnA    *column
 	columnB    *column
 }
 
 // NewQuery2 creates a new [Query2].
 func NewQuery2[A any, B any](world *World) Query2[A, B] {
-	idA := ComponentID[A](world)
-	idB := ComponentID[B](world)
+	ids := [2]ID{}
+	ids[0] = ComponentID[A](world)
+	ids[1] = ComponentID[B](world)
+	components := make([]*componentStorage, 2)
+	for i := range 2 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
 
 	return Query2[A, B]{
 		world:      world,
-		mask:       All(idA, idB),
-		componentA: &world.storage.components[idA.id],
-		componentB: &world.storage.components[idB.id],
+		mask:       All(ids[:]...),
+		components: components,
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -178,8 +190,8 @@ func (q *Query2[A, B]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.componentA.columns[q.cursor.table]
-		q.columnB = q.componentB.columns[q.cursor.table]
+		q.columnA = q.components[0].columns[q.cursor.table]
+		q.columnB = q.components[1].columns[q.cursor.table]
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -207,9 +219,7 @@ type Query3[A any, B any, C any] struct {
 	mask       Mask
 	cursor     cursor
 	table      *table
-	componentA *componentStorage
-	componentB *componentStorage
-	componentC *componentStorage
+	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
@@ -217,16 +227,19 @@ type Query3[A any, B any, C any] struct {
 
 // NewQuery3 creates a new [Query3].
 func NewQuery3[A any, B any, C any](world *World) Query3[A, B, C] {
-	idA := ComponentID[A](world)
-	idB := ComponentID[B](world)
-	idC := ComponentID[C](world)
+	ids := [3]ID{}
+	ids[0] = ComponentID[A](world)
+	ids[1] = ComponentID[B](world)
+	ids[2] = ComponentID[C](world)
+	components := make([]*componentStorage, 3)
+	for i := range 3 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
 
 	return Query3[A, B, C]{
 		world:      world,
-		mask:       All(idA, idB, idC),
-		componentA: &world.storage.components[idA.id],
-		componentB: &world.storage.components[idB.id],
-		componentC: &world.storage.components[idC.id],
+		mask:       All(ids[:]...),
+		components: components,
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -252,9 +265,9 @@ func (q *Query3[A, B, C]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.componentA.columns[q.cursor.table]
-		q.columnB = q.componentB.columns[q.cursor.table]
-		q.columnC = q.componentC.columns[q.cursor.table]
+		q.columnA = q.components[0].columns[q.cursor.table]
+		q.columnB = q.components[1].columns[q.cursor.table]
+		q.columnC = q.components[2].columns[q.cursor.table]
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -283,10 +296,7 @@ type Query4[A any, B any, C any, D any] struct {
 	mask       Mask
 	cursor     cursor
 	table      *table
-	componentA *componentStorage
-	componentB *componentStorage
-	componentC *componentStorage
-	componentD *componentStorage
+	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
@@ -295,18 +305,20 @@ type Query4[A any, B any, C any, D any] struct {
 
 // NewQuery4 creates a new [Query4].
 func NewQuery4[A any, B any, C any, D any](world *World) Query4[A, B, C, D] {
-	idA := ComponentID[A](world)
-	idB := ComponentID[B](world)
-	idC := ComponentID[C](world)
-	idD := ComponentID[D](world)
+	ids := [4]ID{}
+	ids[0] = ComponentID[A](world)
+	ids[1] = ComponentID[B](world)
+	ids[2] = ComponentID[C](world)
+	ids[3] = ComponentID[D](world)
+	components := make([]*componentStorage, 4)
+	for i := range 4 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
 
 	return Query4[A, B, C, D]{
 		world:      world,
-		mask:       All(idA, idB, idC, idD),
-		componentA: &world.storage.components[idA.id],
-		componentB: &world.storage.components[idB.id],
-		componentC: &world.storage.components[idC.id],
-		componentD: &world.storage.components[idD.id],
+		mask:       All(ids[:]...),
+		components: components,
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -332,10 +344,10 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.componentA.columns[q.cursor.table]
-		q.columnB = q.componentB.columns[q.cursor.table]
-		q.columnC = q.componentC.columns[q.cursor.table]
-		q.columnD = q.componentD.columns[q.cursor.table]
+		q.columnA = q.components[0].columns[q.cursor.table]
+		q.columnB = q.components[1].columns[q.cursor.table]
+		q.columnC = q.components[2].columns[q.cursor.table]
+		q.columnD = q.components[3].columns[q.cursor.table]
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -365,11 +377,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	mask       Mask
 	cursor     cursor
 	table      *table
-	componentA *componentStorage
-	componentB *componentStorage
-	componentC *componentStorage
-	componentD *componentStorage
-	componentE *componentStorage
+	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
@@ -379,20 +387,21 @@ type Query5[A any, B any, C any, D any, E any] struct {
 
 // NewQuery5 creates a new [Query5].
 func NewQuery5[A any, B any, C any, D any, E any](world *World) Query5[A, B, C, D, E] {
-	idA := ComponentID[A](world)
-	idB := ComponentID[B](world)
-	idC := ComponentID[C](world)
-	idD := ComponentID[D](world)
-	idE := ComponentID[E](world)
+	ids := [5]ID{}
+	ids[0] = ComponentID[A](world)
+	ids[1] = ComponentID[B](world)
+	ids[2] = ComponentID[C](world)
+	ids[3] = ComponentID[D](world)
+	ids[4] = ComponentID[E](world)
+	components := make([]*componentStorage, 5)
+	for i := range 5 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
 
 	return Query5[A, B, C, D, E]{
 		world:      world,
-		mask:       All(idA, idB, idC, idD, idE),
-		componentA: &world.storage.components[idA.id],
-		componentB: &world.storage.components[idB.id],
-		componentC: &world.storage.components[idC.id],
-		componentD: &world.storage.components[idD.id],
-		componentE: &world.storage.components[idE.id],
+		mask:       All(ids[:]...),
+		components: components,
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -418,11 +427,11 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.componentA.columns[q.cursor.table]
-		q.columnB = q.componentB.columns[q.cursor.table]
-		q.columnC = q.componentC.columns[q.cursor.table]
-		q.columnD = q.componentD.columns[q.cursor.table]
-		q.columnE = q.componentE.columns[q.cursor.table]
+		q.columnA = q.components[0].columns[q.cursor.table]
+		q.columnB = q.components[1].columns[q.cursor.table]
+		q.columnC = q.components[2].columns[q.cursor.table]
+		q.columnD = q.components[3].columns[q.cursor.table]
+		q.columnE = q.components[4].columns[q.cursor.table]
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -453,12 +462,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	mask       Mask
 	cursor     cursor
 	table      *table
-	componentA *componentStorage
-	componentB *componentStorage
-	componentC *componentStorage
-	componentD *componentStorage
-	componentE *componentStorage
-	componentF *componentStorage
+	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
@@ -469,22 +473,22 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 
 // NewQuery6 creates a new [Query6].
 func NewQuery6[A any, B any, C any, D any, E any, F any](world *World) Query6[A, B, C, D, E, F] {
-	idA := ComponentID[A](world)
-	idB := ComponentID[B](world)
-	idC := ComponentID[C](world)
-	idD := ComponentID[D](world)
-	idE := ComponentID[E](world)
-	idF := ComponentID[F](world)
+	ids := [6]ID{}
+	ids[0] = ComponentID[A](world)
+	ids[1] = ComponentID[B](world)
+	ids[2] = ComponentID[C](world)
+	ids[3] = ComponentID[D](world)
+	ids[4] = ComponentID[E](world)
+	ids[5] = ComponentID[F](world)
+	components := make([]*componentStorage, 6)
+	for i := range 6 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
 
 	return Query6[A, B, C, D, E, F]{
 		world:      world,
-		mask:       All(idA, idB, idC, idD, idE, idF),
-		componentA: &world.storage.components[idA.id],
-		componentB: &world.storage.components[idB.id],
-		componentC: &world.storage.components[idC.id],
-		componentD: &world.storage.components[idD.id],
-		componentE: &world.storage.components[idE.id],
-		componentF: &world.storage.components[idF.id],
+		mask:       All(ids[:]...),
+		components: components,
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -510,12 +514,12 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.componentA.columns[q.cursor.table]
-		q.columnB = q.componentB.columns[q.cursor.table]
-		q.columnC = q.componentC.columns[q.cursor.table]
-		q.columnD = q.componentD.columns[q.cursor.table]
-		q.columnE = q.componentE.columns[q.cursor.table]
-		q.columnF = q.componentF.columns[q.cursor.table]
+		q.columnA = q.components[0].columns[q.cursor.table]
+		q.columnB = q.components[1].columns[q.cursor.table]
+		q.columnC = q.components[2].columns[q.cursor.table]
+		q.columnD = q.components[3].columns[q.cursor.table]
+		q.columnE = q.components[4].columns[q.cursor.table]
+		q.columnF = q.components[5].columns[q.cursor.table]
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -547,13 +551,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	mask       Mask
 	cursor     cursor
 	table      *table
-	componentA *componentStorage
-	componentB *componentStorage
-	componentC *componentStorage
-	componentD *componentStorage
-	componentE *componentStorage
-	componentF *componentStorage
-	componentG *componentStorage
+	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
@@ -565,24 +563,23 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 
 // NewQuery7 creates a new [Query7].
 func NewQuery7[A any, B any, C any, D any, E any, F any, G any](world *World) Query7[A, B, C, D, E, F, G] {
-	idA := ComponentID[A](world)
-	idB := ComponentID[B](world)
-	idC := ComponentID[C](world)
-	idD := ComponentID[D](world)
-	idE := ComponentID[E](world)
-	idF := ComponentID[F](world)
-	idG := ComponentID[G](world)
+	ids := [7]ID{}
+	ids[0] = ComponentID[A](world)
+	ids[1] = ComponentID[B](world)
+	ids[2] = ComponentID[C](world)
+	ids[3] = ComponentID[D](world)
+	ids[4] = ComponentID[E](world)
+	ids[5] = ComponentID[F](world)
+	ids[6] = ComponentID[G](world)
+	components := make([]*componentStorage, 7)
+	for i := range 7 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
 
 	return Query7[A, B, C, D, E, F, G]{
 		world:      world,
-		mask:       All(idA, idB, idC, idD, idE, idF, idG),
-		componentA: &world.storage.components[idA.id],
-		componentB: &world.storage.components[idB.id],
-		componentC: &world.storage.components[idC.id],
-		componentD: &world.storage.components[idD.id],
-		componentE: &world.storage.components[idE.id],
-		componentF: &world.storage.components[idF.id],
-		componentG: &world.storage.components[idG.id],
+		mask:       All(ids[:]...),
+		components: components,
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -608,13 +605,13 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.componentA.columns[q.cursor.table]
-		q.columnB = q.componentB.columns[q.cursor.table]
-		q.columnC = q.componentC.columns[q.cursor.table]
-		q.columnD = q.componentD.columns[q.cursor.table]
-		q.columnE = q.componentE.columns[q.cursor.table]
-		q.columnF = q.componentF.columns[q.cursor.table]
-		q.columnG = q.componentG.columns[q.cursor.table]
+		q.columnA = q.components[0].columns[q.cursor.table]
+		q.columnB = q.components[1].columns[q.cursor.table]
+		q.columnC = q.components[2].columns[q.cursor.table]
+		q.columnD = q.components[3].columns[q.cursor.table]
+		q.columnE = q.components[4].columns[q.cursor.table]
+		q.columnF = q.components[5].columns[q.cursor.table]
+		q.columnG = q.components[6].columns[q.cursor.table]
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -647,14 +644,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	mask       Mask
 	cursor     cursor
 	table      *table
-	componentA *componentStorage
-	componentB *componentStorage
-	componentC *componentStorage
-	componentD *componentStorage
-	componentE *componentStorage
-	componentF *componentStorage
-	componentG *componentStorage
-	componentH *componentStorage
+	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
@@ -667,26 +657,24 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 
 // NewQuery8 creates a new [Query8].
 func NewQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) Query8[A, B, C, D, E, F, G, H] {
-	idA := ComponentID[A](world)
-	idB := ComponentID[B](world)
-	idC := ComponentID[C](world)
-	idD := ComponentID[D](world)
-	idE := ComponentID[E](world)
-	idF := ComponentID[F](world)
-	idG := ComponentID[G](world)
-	idH := ComponentID[H](world)
+	ids := [8]ID{}
+	ids[0] = ComponentID[A](world)
+	ids[1] = ComponentID[B](world)
+	ids[2] = ComponentID[C](world)
+	ids[3] = ComponentID[D](world)
+	ids[4] = ComponentID[E](world)
+	ids[5] = ComponentID[F](world)
+	ids[6] = ComponentID[G](world)
+	ids[7] = ComponentID[H](world)
+	components := make([]*componentStorage, 8)
+	for i := range 8 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
 
 	return Query8[A, B, C, D, E, F, G, H]{
 		world:      world,
-		mask:       All(idA, idB, idC, idD, idE, idF, idG, idH),
-		componentA: &world.storage.components[idA.id],
-		componentB: &world.storage.components[idB.id],
-		componentC: &world.storage.components[idC.id],
-		componentD: &world.storage.components[idD.id],
-		componentE: &world.storage.components[idE.id],
-		componentF: &world.storage.components[idF.id],
-		componentG: &world.storage.components[idG.id],
-		componentH: &world.storage.components[idH.id],
+		mask:       All(ids[:]...),
+		components: components,
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -712,14 +700,14 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.componentA.columns[q.cursor.table]
-		q.columnB = q.componentB.columns[q.cursor.table]
-		q.columnC = q.componentC.columns[q.cursor.table]
-		q.columnD = q.componentD.columns[q.cursor.table]
-		q.columnE = q.componentE.columns[q.cursor.table]
-		q.columnF = q.componentF.columns[q.cursor.table]
-		q.columnG = q.componentG.columns[q.cursor.table]
-		q.columnH = q.componentH.columns[q.cursor.table]
+		q.columnA = q.components[0].columns[q.cursor.table]
+		q.columnB = q.components[1].columns[q.cursor.table]
+		q.columnC = q.components[2].columns[q.cursor.table]
+		q.columnD = q.components[3].columns[q.cursor.table]
+		q.columnE = q.components[4].columns[q.cursor.table]
+		q.columnF = q.components[5].columns[q.cursor.table]
+		q.columnG = q.components[6].columns[q.cursor.table]
+		q.columnH = q.components[7].columns[q.cursor.table]
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)

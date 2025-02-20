@@ -10,6 +10,7 @@ type cursor struct {
 }
 
 {{range makeRange 0 8}}
+{{- $n := . -}}
 {{- $upper := upperLetters . -}}
 {{- $generics := "" -}}
 {{- $genericsShort := "" -}}
@@ -28,9 +29,7 @@ type Query{{.}}{{$generics}} struct {
 	mask       Mask
 	cursor     cursor
 	table      *table
-	{{- range $upper}}
-	component{{.}} *componentStorage
-	{{- end}}
+	components []*componentStorage
 	{{- range $upper}}
 	column{{.}}    *column
 	{{- end}}
@@ -38,16 +37,19 @@ type Query{{.}}{{$generics}} struct {
 
 // NewQuery{{.}} creates a new [Query{{.}}].
 func NewQuery{{.}}{{$generics}}(world *World) Query{{.}}{{$genericsShort}} {
-	{{- range $upper}}
-	id{{.}} := ComponentID[{{.}}](world)
+	ids := [{{.}}]ID{}
+	{{- range $i, $v := $upper}}
+	ids[{{$i}}] = ComponentID[{{$v}}](world)
 	{{- end}}
+	components := make([]*componentStorage, {{.}})
+	{{if .}}for i := range {{.}} {
+		components[i] = &world.storage.components[ids[i].id]
+	}{{end}}
 
 	return Query{{.}}{{$genericsShort}}{
 		world:      world,
-		mask:       All({{$mask}}),
-		{{- range $upper}}
-		component{{.}}: &world.storage.components[id{{.}}.id],
-		{{- end}}
+		mask:       All(ids[:]...),
+		components: components,
 		cursor: cursor{
 			table:    -1,
 			index:    0,
@@ -73,8 +75,8 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		{{- range $upper}}
-		q.column{{.}} = q.component{{.}}.columns[q.cursor.table]
+		{{- range $i, $v := $upper}}
+		q.column{{$v}} = q.components[{{$i}}].columns[q.cursor.table]
 		{{- end}}
 
 		q.cursor.index = 0
