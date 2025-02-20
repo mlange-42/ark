@@ -2,6 +2,8 @@ package ecs
 
 import "unsafe"
 
+type tableID uint32
+
 type table struct {
 	components []int16
 	entities   column
@@ -9,7 +11,7 @@ type table struct {
 	relations  []Entity
 }
 
-func newTable(capacity int, reg *registry, ids ...ID) table {
+func newTable(capacity uint32, reg *registry, ids ...ID) table {
 	components := make([]int16, MaskTotalBits)
 	entities := newColumn(entityType, capacity)
 	columns := make([]column, len(ids))
@@ -28,6 +30,14 @@ func newTable(capacity int, reg *registry, ids ...ID) table {
 		columns:    columns,
 		relations:  make([]Entity, len(ids)),
 	}
+}
+
+func (t *table) Add(entity Entity) uint32 {
+	_, idx := t.entities.Add(unsafe.Pointer(&entity))
+	for i := range t.columns {
+		t.columns[i].Alloc(1)
+	}
+	return idx
 }
 
 func (t *table) Get(component ID, index uint32) unsafe.Pointer {

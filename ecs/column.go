@@ -14,9 +14,9 @@ type column struct {
 }
 
 // newColumn creates a new column for a given type and capacity.
-func newColumn(tp reflect.Type, capacity int) column {
+func newColumn(tp reflect.Type, capacity uint32) column {
 	// TODO: should be use a slice instead of an array here?
-	data := reflect.New(reflect.ArrayOf(capacity, tp)).Elem()
+	data := reflect.New(reflect.ArrayOf(int(capacity), tp)).Elem()
 	pointer := data.Addr().UnsafePointer()
 
 	return column{
@@ -43,10 +43,16 @@ func (c *column) Get(index uint32) unsafe.Pointer {
 }
 
 // Add adds a component to the column.
-func (c *column) Add(comp unsafe.Pointer) unsafe.Pointer {
+func (c *column) Add(comp unsafe.Pointer) (unsafe.Pointer, uint32) {
 	c.Extend(1)
 	c.len++
-	return c.Set(c.len-1, comp)
+	return c.Set(c.len-1, comp), c.len - 1
+}
+
+// Alloc allocates memory for the given number of components.
+func (c *column) Alloc(n uint32) {
+	c.Extend(n)
+	c.len += n
 }
 
 // Set overwrites the component at the given index.
@@ -79,8 +85,8 @@ func (c *column) Remove(index uint32) bool {
 // Extend the column to be able to store the given number of additional components.
 // Has no effect of the column's capacity is already sufficient.
 // If the capacity needs to be increased, it will be doubled until it is sufficient.
-func (c *column) Extend(by int) {
-	required := c.Len() + by
+func (c *column) Extend(by uint32) {
+	required := c.Len() + int(by)
 	cap := c.Cap()
 	if cap >= required {
 		return

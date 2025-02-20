@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewTable(t *testing.T) {
-	w := NewWorld()
+	w := NewWorld(1024)
 	_ = ComponentID[Label](&w)
 	posID := ComponentID[Position](&w)
 	velID := ComponentID[Velocity](&w)

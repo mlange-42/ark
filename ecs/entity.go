@@ -15,6 +15,8 @@ func newEntity(id entityID) Entity {
 }
 
 type entityIndex struct {
-	table int
-	row   int
+	table tableID
+	row   uint32
 }
+
+type entities []entityIndex
