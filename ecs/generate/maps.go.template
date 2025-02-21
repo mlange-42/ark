@@ -67,6 +67,16 @@ func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$return}} {
 		{{end}}(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row)){{end}}
 }
 
+// HasAll return whether the given entity has all mapped components.
+func (m *Map{{.}}{{$genericsShort}}) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.entities[entity.id]
+	return {{range $i, $v := $upper}}{{if $i}} &&
+		{{end}}m.storage{{$v}}.columns[index.table] != nil{{end}}
+}
+
 // Add the mapped components to the given entity.
 func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}) {
 	if !m.world.Alive(entity) {

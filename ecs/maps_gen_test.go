@@ -24,6 +24,7 @@ func TestMap2(t *testing.T) {
 		pos, vel := mapper.Get(e)
 		assert.Equal(t, Position{v + 1, v + 2}, *pos)
 		assert.Equal(t, Velocity{v + 3, v + 4}, *vel)
+		assert.True(t, mapper.HasAll(e))
 	}
 
 	for _, e := range entities {
