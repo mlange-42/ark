@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"reflect"
 	"unsafe"
 )
 
@@ -153,4 +154,9 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 		w.entities[swapEntity.id].row = index.row
 	}
 	w.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+}
+
+func (w *World) componentID(tp reflect.Type) ID {
+	id, _ := w.storage.registry.ComponentID(tp)
+	return ID{id: id}
 }

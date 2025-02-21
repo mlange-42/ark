@@ -7,25 +7,25 @@ import (
 
 // componentRegistry keeps track of type IDs.
 type registry struct {
-	Components map[reflect.Type]ID // Mapping from types to IDs.
-	Types      []reflect.Type      // Mapping from IDs to types.
-	IDs        []ID                // List of IDs.
-	Used       Mask                // Mapping from IDs tu used status.
+	Components map[reflect.Type]uint8 // Mapping from types to IDs.
+	Types      []reflect.Type         // Mapping from IDs to types.
+	IDs        []uint8                // List of IDs.
+	Used       Mask                   // Mapping from IDs tu used status.
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
 func newRegistry() registry {
 	return registry{
-		Components: map[reflect.Type]ID{},
+		Components: map[reflect.Type]uint8{},
 		Types:      make([]reflect.Type, MaskTotalBits),
 		Used:       Mask{},
-		IDs:        []ID{},
+		IDs:        []uint8{},
 	}
 }
 
 // ComponentID returns the ID for a component type, and registers it if not already registered.
 // The second return value indicates if it is a newly created ID.
-func (r *registry) ComponentID(tp reflect.Type) (ID, bool) {
+func (r *registry) ComponentID(tp reflect.Type) (uint8, bool) {
 	if id, ok := r.Components[tp]; ok {
 		return id, false
 	}
@@ -33,8 +33,8 @@ func (r *registry) ComponentID(tp reflect.Type) (ID, bool) {
 }
 
 // ComponentType returns the type of a component by ID.
-func (r *registry) ComponentType(id ID) (reflect.Type, bool) {
-	return r.Types[id.id], r.Used.Get(ID{id: id.id})
+func (r *registry) ComponentType(id uint8) (reflect.Type, bool) {
+	return r.Types[id], r.Used.Get(ID{id: id})
 }
 
 // Count returns the total number of reserved IDs. It is the maximum ID plus 1.
@@ -55,14 +55,15 @@ func (r *registry) Reset() {
 }
 
 // registerComponent registers a components and assigns an ID for it.
-func (r *registry) registerComponent(tp reflect.Type, totalBits int) ID {
+func (r *registry) registerComponent(tp reflect.Type, totalBits int) uint8 {
 	val := len(r.Components)
 	if val >= totalBits {
 		panic(fmt.Sprintf("exceeded the maximum of %d component types or resource types", totalBits))
 	}
+	newID := uint8(val)
 	id := id(val)
-	r.Components[tp], r.Types[id.id] = id, tp
+	r.Components[tp], r.Types[newID] = newID, tp
 	r.Used.Set(id, true)
-	r.IDs = append(r.IDs, id)
-	return id
+	r.IDs = append(r.IDs, newID)
+	return newID
 }

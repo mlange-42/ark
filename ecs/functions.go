@@ -24,7 +24,7 @@ func ComponentID[T any](w *World) ID {
 	//		panic("attempt to register a new component in a locked world")
 	//	}
 	//}
-	return id
+	return ID{id: id}
 }
 
 // Comp is a helper to pass component types to functions and methods.
