@@ -21,8 +21,8 @@ func NewFilter0(world *World) *FilterBuilder0 {
 }
 
 // Build creates a [Filter0] from this builder.
-func (q *FilterBuilder0) Build() Filter0 {
-	return Filter0{
+func (q *FilterBuilder0) Build() *Filter0 {
+	return &Filter0{
 		world: q.world,
 		ids:   q.ids,
 		mask:  All(q.ids[:]...),
@@ -50,8 +50,8 @@ func NewFilter1[A any](world *World) *FilterBuilder1[A] {
 }
 
 // Build creates a [Filter1] from this builder.
-func (q *FilterBuilder1[A]) Build() Filter1[A] {
-	return Filter1[A]{
+func (q *FilterBuilder1[A]) Build() *Filter1[A] {
+	return &Filter1[A]{
 		world: q.world,
 		ids:   q.ids,
 		mask:  All(q.ids[:]...),
@@ -80,8 +80,8 @@ func NewFilter2[A any, B any](world *World) *FilterBuilder2[A, B] {
 }
 
 // Build creates a [Filter2] from this builder.
-func (q *FilterBuilder2[A, B]) Build() Filter2[A, B] {
-	return Filter2[A, B]{
+func (q *FilterBuilder2[A, B]) Build() *Filter2[A, B] {
+	return &Filter2[A, B]{
 		world: q.world,
 		ids:   q.ids,
 		mask:  All(q.ids[:]...),
@@ -111,8 +111,8 @@ func NewFilter3[A any, B any, C any](world *World) *FilterBuilder3[A, B, C] {
 }
 
 // Build creates a [Filter3] from this builder.
-func (q *FilterBuilder3[A, B, C]) Build() Filter3[A, B, C] {
-	return Filter3[A, B, C]{
+func (q *FilterBuilder3[A, B, C]) Build() *Filter3[A, B, C] {
+	return &Filter3[A, B, C]{
 		world: q.world,
 		ids:   q.ids,
 		mask:  All(q.ids[:]...),
@@ -143,8 +143,8 @@ func NewFilter4[A any, B any, C any, D any](world *World) *FilterBuilder4[A, B, 
 }
 
 // Build creates a [Filter4] from this builder.
-func (q *FilterBuilder4[A, B, C, D]) Build() Filter4[A, B, C, D] {
-	return Filter4[A, B, C, D]{
+func (q *FilterBuilder4[A, B, C, D]) Build() *Filter4[A, B, C, D] {
+	return &Filter4[A, B, C, D]{
 		world: q.world,
 		ids:   q.ids,
 		mask:  All(q.ids[:]...),
@@ -176,8 +176,8 @@ func NewFilter5[A any, B any, C any, D any, E any](world *World) *FilterBuilder5
 }
 
 // Build creates a [Filter5] from this builder.
-func (q *FilterBuilder5[A, B, C, D, E]) Build() Filter5[A, B, C, D, E] {
-	return Filter5[A, B, C, D, E]{
+func (q *FilterBuilder5[A, B, C, D, E]) Build() *Filter5[A, B, C, D, E] {
+	return &Filter5[A, B, C, D, E]{
 		world: q.world,
 		ids:   q.ids,
 		mask:  All(q.ids[:]...),
@@ -210,8 +210,8 @@ func NewFilter6[A any, B any, C any, D any, E any, F any](world *World) *FilterB
 }
 
 // Build creates a [Filter6] from this builder.
-func (q *FilterBuilder6[A, B, C, D, E, F]) Build() Filter6[A, B, C, D, E, F] {
-	return Filter6[A, B, C, D, E, F]{
+func (q *FilterBuilder6[A, B, C, D, E, F]) Build() *Filter6[A, B, C, D, E, F] {
+	return &Filter6[A, B, C, D, E, F]{
 		world: q.world,
 		ids:   q.ids,
 		mask:  All(q.ids[:]...),
@@ -245,8 +245,8 @@ func NewFilter7[A any, B any, C any, D any, E any, F any, G any](world *World) *
 }
 
 // Build creates a [Filter7] from this builder.
-func (q *FilterBuilder7[A, B, C, D, E, F, G]) Build() Filter7[A, B, C, D, E, F, G] {
-	return Filter7[A, B, C, D, E, F, G]{
+func (q *FilterBuilder7[A, B, C, D, E, F, G]) Build() *Filter7[A, B, C, D, E, F, G] {
+	return &Filter7[A, B, C, D, E, F, G]{
 		world: q.world,
 		ids:   q.ids,
 		mask:  All(q.ids[:]...),
@@ -281,8 +281,8 @@ func NewFilter8[A any, B any, C any, D any, E any, F any, G any, H any](world *W
 }
 
 // Build creates a [Filter8] from this builder.
-func (q *FilterBuilder8[A, B, C, D, E, F, G, H]) Build() Filter8[A, B, C, D, E, F, G, H] {
-	return Filter8[A, B, C, D, E, F, G, H]{
+func (q *FilterBuilder8[A, B, C, D, E, F, G, H]) Build() *Filter8[A, B, C, D, E, F, G, H] {
+	return &Filter8[A, B, C, D, E, F, G, H]{
 		world: q.world,
 		ids:   q.ids,
 		mask:  All(q.ids[:]...),

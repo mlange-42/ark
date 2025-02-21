@@ -35,8 +35,8 @@ func NewFilter{{.}}{{$generics}}(world *World) *FilterBuilder{{.}}{{$genericsSho
 }
 
 // Build creates a [Filter{{.}}] from this builder.
-func (q *FilterBuilder{{.}}{{$genericsShort}}) Build() Filter{{.}}{{$genericsShort}} {
-	return Filter{{.}}{{$genericsShort}}{
+func (q *FilterBuilder{{.}}{{$genericsShort}}) Build() *Filter{{.}}{{$genericsShort}} {
+	return &Filter{{.}}{{$genericsShort}}{
 		world:      q.world,
 		ids:        q.ids,
 		mask:       All(q.ids[:]...),
