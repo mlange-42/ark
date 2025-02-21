@@ -41,8 +41,7 @@ func NewExchange{{.}}{{$generics}}(world *World) *Exchange{{.}}{{$genericsShort}
 func (ex *Exchange{{.}}{{$genericsShort}}) Removes(components ...Comp) *Exchange{{.}}{{$genericsShort}} {
 	ids := make([]ID, len(components))
 	for i, c := range components {
-		id, _ := ex.world.storage.registry.ComponentID(c.tp)
-		ids[i] = id
+		ids[i] = ex.world.componentID(c.tp)
 	}
 	ex.remove = ids
 	return ex

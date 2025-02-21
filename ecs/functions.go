@@ -24,7 +24,7 @@ func ComponentID[T any](w *World) ID {
 	//		panic("attempt to register a new component in a locked world")
 	//	}
 	//}
-	return id
+	return ID{id: id}
 }
 
 // Comp is a helper to pass component types to functions and methods.
@@ -36,4 +36,13 @@ type Comp struct {
 // C creates a [Comp] instance for the given type.
 func C[T any]() Comp {
 	return Comp{typeOf[T]()}
+}
+
+// ResourceID returns the [ResID] for a resource type via generics.
+// Registers the type if it is not already registered.
+//
+// The number of resources per [World] is limited to [MaskTotalBits].
+func ResourceID[T any](w *World) ResID {
+	tp := reflect.TypeOf((*T)(nil)).Elem()
+	return w.resourceID(tp)
 }

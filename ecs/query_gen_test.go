@@ -60,7 +60,7 @@ func TestQuery2(t *testing.T) {
 
 func BenchmarkQuery2(b *testing.B) {
 	n := 1000
-	world := NewWorld(1024)
+	world := NewWorld(128)
 
 	posMap := NewMap[Position](&world)
 	velMap := NewMap[Velocity](&world)

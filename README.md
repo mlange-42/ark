@@ -6,7 +6,7 @@
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/ark)
 [![MIT license](https://img.shields.io/badge/MIT-brightgreen?label=license)](https://github.com/mlange-42/ark/blob/main/LICENSE)
 
-Ark is a work in progress Entity Component System in Go.
+Ark is a work in progress Entity Component System for Go.
 
 Ark implements the lessons learned from my other Go ECS: [Arche](https://github.com/mlange-42/arche).
 The primary aims are:
@@ -27,7 +27,7 @@ However, please be aware that the API is still unstable.
 - [x] Exchange components (add/remove in one operation)
 - [x] Queries with basic component filters
 - [x] World component access for specific entities
-- [ ] ECS resources
+- [x] ECS resources
 - [ ] Entity relationships
 - [ ] Batch operations
 - [ ] (De)-serialization (`ark-serde`)
