@@ -62,3 +62,35 @@ func TestWorldExchange(t *testing.T) {
 	assert.False(t, w.has(e2, posID))
 	assert.True(t, w.has(e2, velID))
 }
+
+func TestWorldRemoveEntity(t *testing.T) {
+	w := NewWorld(1024)
+
+	mapper := NewMap2[Position, Velocity](&w)
+
+	entities := make([]Entity, 0, 100)
+	for range 100 {
+		e := mapper.NewEntity(&Position{}, &Velocity{})
+		entities = append(entities, e)
+	}
+
+	filter := NewFilter0(&w).Build()
+	query := filter.Query()
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 100, cnt)
+
+	for _, e := range entities {
+		w.RemoveEntity(e)
+		assert.False(t, w.Alive(e))
+	}
+
+	query = filter.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}

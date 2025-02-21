@@ -1,10 +1,14 @@
 package ecs
 
 import (
+	"math"
 	"unsafe"
 )
 
 type tableID uint32
+
+// maxTableID is used as table ID for unused entities.
+const maxTableID = math.MaxUint32
 
 type table struct {
 	id         tableID
