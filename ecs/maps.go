@@ -29,7 +29,8 @@ func (m *Map1[A]) Get(entity Entity) *A {
 		panic("can't get components of a dead entity")
 	}
 	index := m.world.entities[entity.id]
-	return (*A)(m.storageA.columns[index.table].Get(uintptr(index.row)))
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -78,8 +79,9 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 		panic("can't get components of a dead entity")
 	}
 	index := m.world.entities[entity.id]
-	return (*A)(m.storageA.columns[index.table].Get(uintptr(index.row))),
-		(*B)(m.storageB.columns[index.table].Get(uintptr(index.row)))
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -132,9 +134,10 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 		panic("can't get components of a dead entity")
 	}
 	index := m.world.entities[entity.id]
-	return (*A)(m.storageA.columns[index.table].Get(uintptr(index.row))),
-		(*B)(m.storageB.columns[index.table].Get(uintptr(index.row))),
-		(*C)(m.storageC.columns[index.table].Get(uintptr(index.row)))
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -191,10 +194,11 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 		panic("can't get components of a dead entity")
 	}
 	index := m.world.entities[entity.id]
-	return (*A)(m.storageA.columns[index.table].Get(uintptr(index.row))),
-		(*B)(m.storageB.columns[index.table].Get(uintptr(index.row))),
-		(*C)(m.storageC.columns[index.table].Get(uintptr(index.row))),
-		(*D)(m.storageD.columns[index.table].Get(uintptr(index.row)))
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -255,11 +259,12 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 		panic("can't get components of a dead entity")
 	}
 	index := m.world.entities[entity.id]
-	return (*A)(m.storageA.columns[index.table].Get(uintptr(index.row))),
-		(*B)(m.storageB.columns[index.table].Get(uintptr(index.row))),
-		(*C)(m.storageC.columns[index.table].Get(uintptr(index.row))),
-		(*D)(m.storageD.columns[index.table].Get(uintptr(index.row))),
-		(*E)(m.storageE.columns[index.table].Get(uintptr(index.row)))
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -324,12 +329,13 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 		panic("can't get components of a dead entity")
 	}
 	index := m.world.entities[entity.id]
-	return (*A)(m.storageA.columns[index.table].Get(uintptr(index.row))),
-		(*B)(m.storageB.columns[index.table].Get(uintptr(index.row))),
-		(*C)(m.storageC.columns[index.table].Get(uintptr(index.row))),
-		(*D)(m.storageD.columns[index.table].Get(uintptr(index.row))),
-		(*E)(m.storageE.columns[index.table].Get(uintptr(index.row))),
-		(*F)(m.storageF.columns[index.table].Get(uintptr(index.row)))
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -398,13 +404,14 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 		panic("can't get components of a dead entity")
 	}
 	index := m.world.entities[entity.id]
-	return (*A)(m.storageA.columns[index.table].Get(uintptr(index.row))),
-		(*B)(m.storageB.columns[index.table].Get(uintptr(index.row))),
-		(*C)(m.storageC.columns[index.table].Get(uintptr(index.row))),
-		(*D)(m.storageD.columns[index.table].Get(uintptr(index.row))),
-		(*E)(m.storageE.columns[index.table].Get(uintptr(index.row))),
-		(*F)(m.storageF.columns[index.table].Get(uintptr(index.row))),
-		(*G)(m.storageG.columns[index.table].Get(uintptr(index.row)))
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -477,14 +484,15 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 		panic("can't get components of a dead entity")
 	}
 	index := m.world.entities[entity.id]
-	return (*A)(m.storageA.columns[index.table].Get(uintptr(index.row))),
-		(*B)(m.storageB.columns[index.table].Get(uintptr(index.row))),
-		(*C)(m.storageC.columns[index.table].Get(uintptr(index.row))),
-		(*D)(m.storageD.columns[index.table].Get(uintptr(index.row))),
-		(*E)(m.storageE.columns[index.table].Get(uintptr(index.row))),
-		(*F)(m.storageF.columns[index.table].Get(uintptr(index.row))),
-		(*G)(m.storageG.columns[index.table].Get(uintptr(index.row))),
-		(*H)(m.storageH.columns[index.table].Get(uintptr(index.row)))
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row))
 }
 
 // Add the mapped components to the given entity.
