@@ -102,3 +102,16 @@ func TestEntityPoolStochastic(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkPoolAlive(b *testing.B) {
+	pool := newEntityPool(1024)
+
+	for range 100 {
+		_ = pool.Get()
+	}
+	entity := Entity{50, 0}
+
+	for b.Loop() {
+		_ = pool.Alive(entity)
+	}
+}
