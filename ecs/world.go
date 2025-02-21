@@ -13,8 +13,11 @@ type World struct {
 
 // NewWorld creates a new [World].
 func NewWorld(initialCapacity uint32) World {
-	entities := make([]entityIndex, 1, initialCapacity)
+	entities := make([]entityIndex, 2, initialCapacity+reservedEntities)
+	// The zero entity
 	entities[0] = entityIndex{table: 0, row: 0}
+	// The wildcard entity
+	entities[1] = entityIndex{table: 0, row: 0}
 	return World{
 		storage:    newStorage(initialCapacity),
 		entities:   entities,

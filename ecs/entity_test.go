@@ -17,3 +17,14 @@ func TestEntityIndex(t *testing.T) {
 	assert.EqualValues(t, 0, index.table)
 	assert.EqualValues(t, 0, index.row)
 }
+
+func TestReservedEntities(t *testing.T) {
+	w := NewWorld(1024)
+
+	zero := Entity{}
+	wildcard := Entity{1, 0}
+
+	assert.False(t, w.Alive(zero))
+	assert.False(t, w.Alive(wildcard))
+	assert.False(t, w.Alive(Wildcard()))
+}

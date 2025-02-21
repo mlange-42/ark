@@ -2,6 +2,11 @@ package ecs
 
 import "math"
 
+// Reserved Entities.
+// Add this to initial capacities of entity pool and lists,
+// to avoid unexpected allocations.
+const reservedEntities = 2
+
 // entityPool is an implementation using implicit linked lists.
 // Implements https://skypjack.github.io/2019-05-06-ecs-baf-part-3/
 type entityPool struct {
@@ -12,8 +17,11 @@ type entityPool struct {
 
 // newEntityPool creates a new, initialized Entity pool.
 func newEntityPool(initialCapacity uint32) entityPool {
-	entities := make([]Entity, 1, initialCapacity)
+	entities := make([]Entity, 2, initialCapacity+reservedEntities)
+	// The zero entity
 	entities[0] = Entity{0, math.MaxUint32}
+	// The wildcard entity
+	entities[1] = Entity{1, math.MaxUint32}
 	return entityPool{
 		entities:  entities,
 		next:      0,

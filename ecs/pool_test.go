@@ -15,8 +15,9 @@ func TestEntityPoolConstructor(t *testing.T) {
 func TestEntityPool(t *testing.T) {
 	p := newEntityPool(128)
 
-	expectedAll := []Entity{newEntity(0), newEntity(1), newEntity(2), newEntity(3), newEntity(4), newEntity(5)}
+	expectedAll := []Entity{newEntity(0), newEntity(1), newEntity(2), newEntity(3), newEntity(4), newEntity(5), newEntity(6)}
 	expectedAll[0].gen = math.MaxUint32
+	expectedAll[1].gen = math.MaxUint32
 
 	for i := 0; i < 5; i++ {
 		_ = p.Get()
