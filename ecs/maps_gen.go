@@ -28,6 +28,13 @@ func (m *Map1[A]) Get(entity Entity) *A {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map1[A]) GetUnchecked(entity Entity) *A {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row))
@@ -78,6 +85,13 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -133,6 +147,13 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -193,6 +214,13 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -258,6 +286,13 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -328,6 +363,13 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -403,6 +445,13 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -483,6 +532,13 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),

@@ -56,7 +56,7 @@ func TestQuery2(t *testing.T) {
 }
 
 func BenchmarkQuery2(b *testing.B) {
-	n := 100000
+	n := 1000
 	world := NewWorld(1024)
 
 	posMap := NewMap[Position](&world)
@@ -89,7 +89,7 @@ func newIQuery2[A any, B any](world *World) iQuery2[A, B] {
 }
 
 func BenchmarkQuery2Interface(b *testing.B) {
-	n := 100000
+	n := 1000
 	world := NewWorld(1024)
 
 	posMap := NewMap[Position](&world)
