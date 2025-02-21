@@ -50,6 +50,9 @@ func (q *Query0) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
+	if q.table == nil && q.cursor.index >= 0 {
+		panic("query is already closed. Create a new one to iterate again")
+	}
 	q.table = nil
 	return false
 }
@@ -97,6 +100,9 @@ func (q *Query1[A]) nextTable() bool {
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
+	}
+	if q.table == nil && q.cursor.index >= 0 {
+		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.table = nil
 	q.columnA = nil
@@ -149,6 +155,9 @@ func (q *Query2[A, B]) nextTable() bool {
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
+	}
+	if q.table == nil && q.cursor.index >= 0 {
+		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.table = nil
 	q.columnA = nil
@@ -205,6 +214,9 @@ func (q *Query3[A, B, C]) nextTable() bool {
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
+	}
+	if q.table == nil && q.cursor.index >= 0 {
+		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.table = nil
 	q.columnA = nil
@@ -265,6 +277,9 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
+	}
+	if q.table == nil && q.cursor.index >= 0 {
+		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.table = nil
 	q.columnA = nil
@@ -329,6 +344,9 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
+	}
+	if q.table == nil && q.cursor.index >= 0 {
+		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.table = nil
 	q.columnA = nil
@@ -397,6 +415,9 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
+	}
+	if q.table == nil && q.cursor.index >= 0 {
+		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.table = nil
 	q.columnA = nil
@@ -469,6 +490,9 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
+	}
+	if q.table == nil && q.cursor.index >= 0 {
+		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.table = nil
 	q.columnA = nil
@@ -545,6 +569,9 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
+	}
+	if q.table == nil && q.cursor.index >= 0 {
+		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.table = nil
 	q.columnA = nil
