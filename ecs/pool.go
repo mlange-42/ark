@@ -5,11 +5,6 @@ import (
 	"unsafe"
 )
 
-// Reserved Entities.
-// Add this to initial capacities of entity pool and lists,
-// to avoid unexpected allocations.
-const reservedEntities = 2
-
 // entityPool is an implementation using implicit linked lists.
 // Implements https://skypjack.github.io/2019-05-06-ecs-baf-part-3/
 type entityPool struct {
@@ -17,20 +12,22 @@ type entityPool struct {
 	next      entityID
 	available uint32
 	pointer   unsafe.Pointer
+	reserved  entityID
 }
 
 // newEntityPool creates a new, initialized Entity pool.
-func newEntityPool(initialCapacity uint32) entityPool {
-	entities := make([]Entity, 2, initialCapacity+reservedEntities)
-	// The zero entity
-	entities[0] = Entity{0, math.MaxUint32}
-	// The wildcard entity
-	entities[1] = Entity{1, math.MaxUint32}
+func newEntityPool(initialCapacity uint32, reserved uint32) entityPool {
+	entities := make([]Entity, reserved, initialCapacity+reserved)
+	// Reserved zero and wildcard entities.
+	for i := range reserved {
+		entities[i] = Entity{entityID(i), math.MaxUint32}
+	}
 	return entityPool{
 		entities:  entities,
 		next:      0,
 		available: 0,
 		pointer:   unsafe.Pointer(&entities[0]),
+		reserved:  entityID(reserved),
 	}
 }
 
@@ -54,7 +51,7 @@ func (p *entityPool) getNew() Entity {
 
 // Recycle hands an entity back for recycling.
 func (p *entityPool) Recycle(e Entity) {
-	if e.id < 2 {
+	if e.id < p.reserved {
 		panic("can't recycle reserved zero or wildcard entity")
 	}
 	p.entities[e.id].gen++
@@ -64,7 +61,7 @@ func (p *entityPool) Recycle(e Entity) {
 
 // Reset recycles all entities. Does NOT free the reserved memory.
 func (p *entityPool) Reset() {
-	p.entities = p.entities[:reservedEntities]
+	p.entities = p.entities[:p.reserved]
 	p.next = 0
 	p.available = 0
 }
@@ -76,12 +73,12 @@ func (p *entityPool) Alive(e Entity) bool {
 
 // Len returns the current number of used entities.
 func (p *entityPool) Len() int {
-	return len(p.entities) - reservedEntities - int(p.available)
+	return len(p.entities) - int(p.reserved) - int(p.available)
 }
 
 // Cap returns the current capacity (used and recycled entities).
 func (p *entityPool) Cap() int {
-	return len(p.entities) - reservedEntities
+	return len(p.entities) - int(p.reserved)
 }
 
 // TotalCap returns the current capacity in terms of reserved memory.
