@@ -72,10 +72,10 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	q.cursor.table = -1
-	q.cursor.index = 0
-	q.cursor.maxIndex = -1
 	q.table = nil
+	{{- range $i, $v := $upper}}
+	q.column{{$v}} = nil
+	{{- end}}
 	return false
 }
 {{end -}}

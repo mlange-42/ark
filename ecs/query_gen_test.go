@@ -27,7 +27,8 @@ func TestQuery2(t *testing.T) {
 		headMap.Add(e3, &Heading{})
 	}
 
-	query := NewQuery2[Position, Velocity](&w).Build()
+	filter := NewFilter2[Position, Velocity](&w).Build()
+	query := filter.Query()
 
 	cnt := 0
 	for query.Next() {
@@ -39,6 +40,7 @@ func TestQuery2(t *testing.T) {
 
 	assert.Equal(t, 20, cnt)
 
+	query = filter.Query()
 	cnt = 0
 	for query.Next() {
 		pos, vel := query.Get()
@@ -46,6 +48,7 @@ func TestQuery2(t *testing.T) {
 		cnt++
 	}
 
+	query = filter.Query()
 	cnt = 0
 	for query.Next() {
 		pos, vel := query.Get()
@@ -68,7 +71,8 @@ func BenchmarkQuery2(b *testing.B) {
 		velMap.Add(e, &Velocity{X: 1, Y: 0})
 	}
 
-	query := NewQuery2[Position, Velocity](&world).Build()
+	filter := NewFilter2[Position, Velocity](&world).Build()
+	query := filter.Query()
 	for b.Loop() {
 		for query.Next() {
 			pos, vel := query.Get()
@@ -84,7 +88,8 @@ type iQuery2[A any, B any] interface {
 }
 
 func newIQuery2[A any, B any](world *World) iQuery2[A, B] {
-	q := NewQuery2[A, B](world).Build()
+	filter := NewFilter2[A, B](world).Build()
+	q := filter.Query()
 	return &q
 }
 

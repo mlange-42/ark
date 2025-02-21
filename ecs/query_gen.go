@@ -50,9 +50,6 @@ func (q *Query0) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	q.cursor.table = -1
-	q.cursor.index = 0
-	q.cursor.maxIndex = -1
 	q.table = nil
 	return false
 }
@@ -101,10 +98,8 @@ func (q *Query1[A]) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	q.cursor.table = -1
-	q.cursor.index = 0
-	q.cursor.maxIndex = -1
 	q.table = nil
+	q.columnA = nil
 	return false
 }
 
@@ -155,10 +150,9 @@ func (q *Query2[A, B]) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	q.cursor.table = -1
-	q.cursor.index = 0
-	q.cursor.maxIndex = -1
 	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
 	return false
 }
 
@@ -212,10 +206,10 @@ func (q *Query3[A, B, C]) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	q.cursor.table = -1
-	q.cursor.index = 0
-	q.cursor.maxIndex = -1
 	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
 	return false
 }
 
@@ -272,10 +266,11 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	q.cursor.table = -1
-	q.cursor.index = 0
-	q.cursor.maxIndex = -1
 	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
 	return false
 }
 
@@ -335,10 +330,12 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	q.cursor.table = -1
-	q.cursor.index = 0
-	q.cursor.maxIndex = -1
 	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
 	return false
 }
 
@@ -401,10 +398,13 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	q.cursor.table = -1
-	q.cursor.index = 0
-	q.cursor.maxIndex = -1
 	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.columnF = nil
 	return false
 }
 
@@ -470,10 +470,14 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	q.cursor.table = -1
-	q.cursor.index = 0
-	q.cursor.maxIndex = -1
 	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.columnF = nil
+	q.columnG = nil
 	return false
 }
 
@@ -542,9 +546,14 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	q.cursor.table = -1
-	q.cursor.index = 0
-	q.cursor.maxIndex = -1
 	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.columnF = nil
+	q.columnG = nil
+	q.columnH = nil
 	return false
 }
