@@ -15,31 +15,33 @@ func TestEntityPoolConstructor(t *testing.T) {
 func TestEntityPool(t *testing.T) {
 	p := newEntityPool(128)
 
-	expectedAll := []Entity{newEntity(0), newEntity(1), newEntity(2), newEntity(3), newEntity(4), newEntity(5)}
+	expectedAll := []Entity{newEntity(0), newEntity(1), newEntity(2), newEntity(3), newEntity(4), newEntity(5), newEntity(6)}
 	expectedAll[0].gen = math.MaxUint32
+	expectedAll[1].gen = math.MaxUint32
 
 	for i := 0; i < 5; i++ {
 		_ = p.Get()
 	}
 	assert.Equal(t, expectedAll, p.entities, "Wrong initial entities")
 
-	assert.PanicsWithValue(t, "can't recycle reserved zero entity", func() { p.Recycle(p.entities[0]) })
+	assert.PanicsWithValue(t, "can't recycle reserved zero or wildcard entity", func() { p.Recycle(p.entities[0]) })
+	assert.PanicsWithValue(t, "can't recycle reserved zero or wildcard entity", func() { p.Recycle(p.entities[1]) })
 
-	e0 := p.entities[1]
+	e0 := p.entities[reservedEntities]
 	p.Recycle(e0)
 	assert.False(t, p.Alive(e0), "Dead entity should not be alive")
 
 	e0Old := e0
 	e0 = p.Get()
-	expectedAll[1].gen++
+	expectedAll[reservedEntities].gen++
 	assert.True(t, p.Alive(e0), "Recycled entity of new generation should be alive")
 	assert.False(t, p.Alive(e0Old), "Recycled entity of old generation should not be alive")
 
 	assert.Equal(t, expectedAll, p.entities, "Wrong entities after get/recycle")
 
-	e0Old = p.entities[1]
+	e0Old = p.entities[reservedEntities]
 	for i := 0; i < 5; i++ {
-		p.Recycle(p.entities[i+1])
+		p.Recycle(p.entities[i+reservedEntities])
 		expectedAll[i+1].gen++
 	}
 
@@ -51,6 +53,7 @@ func TestEntityPool(t *testing.T) {
 
 	assert.False(t, p.Alive(e0Old), "Recycled entity of old generation should not be alive")
 	assert.False(t, p.Alive(Entity{}), "Zero entity should not be alive")
+	assert.False(t, p.Alive(Entity{1, 0}), "Wildcard entity should not be alive")
 }
 
 func TestEntityPoolStochastic(t *testing.T) {
