@@ -3,6 +3,6 @@ package main
 // Code generation for generic queries and maps.
 
 //go:generate go run .
-//go:generate go fmt ../query.go
-//go:generate go fmt ../query_builder.go
-//go:generate go fmt ../maps.go
+//go:generate go fmt ../query_gen.go
+//go:generate go fmt ../query_builder_gen.go
+//go:generate go fmt ../maps_gen.go

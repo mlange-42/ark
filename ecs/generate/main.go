@@ -14,9 +14,9 @@ type genFile struct {
 }
 
 var files = []genFile{
-	{"./query.go.template", "../query.go"},
-	{"./query_builder.go.template", "../query_builder.go"},
-	{"./maps.go.template", "../maps.go"},
+	{"./query.go.template", "../query_gen.go"},
+	{"./query_builder.go.template", "../query_builder_gen.go"},
+	{"./maps.go.template", "../maps_gen.go"},
 }
 
 func main() {
