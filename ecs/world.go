@@ -13,11 +13,11 @@ type World struct {
 
 // NewWorld creates a new [World].
 func NewWorld(initialCapacity uint32) World {
-	entities := make([]entityIndex, 2, initialCapacity+reservedEntities)
-	// The zero entity
-	entities[0] = entityIndex{table: 0, row: 0}
-	// The wildcard entity
-	entities[1] = entityIndex{table: 0, row: 0}
+	entities := make([]entityIndex, reservedEntities, initialCapacity+reservedEntities)
+	// Reserved zero and wildcard entities
+	for i := range reservedEntities {
+		entities[i] = entityIndex{table: maxTableID, row: 0}
+	}
 	return World{
 		storage:    newStorage(initialCapacity),
 		entities:   entities,
@@ -27,11 +27,38 @@ func NewWorld(initialCapacity uint32) World {
 
 // NewEntity creates a new [Entity].
 func (w *World) NewEntity() Entity {
+	// TODO: check lock.
 	entity, _ := w.createEntity(0)
 	return entity
 }
 
+// Alive return whether the given entity is alive.
+func (w *World) Alive(entity Entity) bool {
+	return w.entityPool.Alive(entity)
+}
+
+// RemoveEntity removes the given entity from the world.
+func (w *World) RemoveEntity(entity Entity) {
+	// TODO: check lock.
+	if !w.entityPool.Alive(entity) {
+		panic("can't remove a dead entity")
+	}
+	index := &w.entities[entity.id]
+	table := &w.storage.tables[index.table]
+
+	swapped := table.Remove(index.row)
+
+	w.entityPool.Recycle(entity)
+
+	if swapped {
+		swapEntity := table.GetEntity(uintptr(index.row))
+		w.entities[swapEntity.id].row = index.row
+	}
+	index.table = maxTableID
+}
+
 func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer) Entity {
+	// TODO: check lock.
 	mask := All(ids...)
 	newTable := w.storage.findOrCreateTable(&mask)
 	entity, idx := w.createEntity(newTable.id)
@@ -45,11 +72,6 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer) Entity {
 		}
 	}
 	return entity
-}
-
-// Alive return whether the given entity is alive.
-func (w *World) Alive(entity Entity) bool {
-	return w.entityPool.Alive(entity)
 }
 
 func (w *World) get(entity Entity, component ID) unsafe.Pointer {
@@ -89,7 +111,7 @@ func (w *World) createEntity(table tableID) (Entity, uint32) {
 }
 
 func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer) {
-	// TODO: check lock!
+	// TODO: check lock.
 	if !w.Alive(entity) {
 		panic("can't exchange components on a dead entity")
 	}
