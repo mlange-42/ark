@@ -24,7 +24,7 @@ However, please be aware that the API is still unstable.
 - [x] Create and remove entities
 - [x] Create entities with components
 - [x] Add and remove components
-- [ ] Exchange components (add/remove in one operation)
+- [x] Exchange components (add/remove in one operation)
 - [x] Queries with basic component filters
 - [x] World component access for specific entities
 - [ ] ECS resources
