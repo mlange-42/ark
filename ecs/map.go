@@ -23,6 +23,10 @@ func (m *Map[T]) Get(entity Entity) *T {
 	if !m.world.Alive(entity) {
 		panic("can't get a component of a dead entity")
 	}
+	return m.GetUnchecked(entity)
+}
+
+func (m *Map[T]) GetUnchecked(entity Entity) *T {
 	index := m.world.entities[entity.id]
 	return (*T)(m.storage.columns[index.table].Get(uintptr(index.row)))
 }
@@ -31,6 +35,10 @@ func (m *Map[T]) Has(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't get a component of a dead entity")
 	}
+	return m.HasUnchecked(entity)
+}
+
+func (m *Map[T]) HasUnchecked(entity Entity) bool {
 	index := m.world.entities[entity.id]
 	return m.storage.columns[index.table] != nil
 }

@@ -45,6 +45,11 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$return}} {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
+	return m.GetUnchecked(entity)
+}
+
+// Get returns the mapped components for the given entity.
+func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$return}} {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
 	return {{range $i, $v := $upper}}{{if $i}},
