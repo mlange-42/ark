@@ -18,6 +18,7 @@ var files = []genFile{
 	{"./filter.go.template", "../filter_gen.go"},
 	{"./query.go.template", "../query_gen.go"},
 	{"./maps.go.template", "../maps_gen.go"},
+	{"./exchange.go.template", "../exchange_gen.go"},
 }
 
 func main() {

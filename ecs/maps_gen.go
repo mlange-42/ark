@@ -12,14 +12,14 @@ type Map1[A any] struct {
 }
 
 // NewMap1 creates a new [Map1].
-func NewMap1[A any](w *World) Map1[A] {
+func NewMap1[A any](world *World) Map1[A] {
 	ids := []ID{
-		ComponentID[A](w),
+		ComponentID[A](world),
 	}
 	return Map1[A]{
-		world:    w,
+		world:    world,
 		ids:      ids,
-		storageA: &w.storage.components[ids[0].id],
+		storageA: &world.storage.components[ids[0].id],
 	}
 }
 
@@ -74,16 +74,16 @@ type Map2[A any, B any] struct {
 }
 
 // NewMap2 creates a new [Map2].
-func NewMap2[A any, B any](w *World) Map2[A, B] {
+func NewMap2[A any, B any](world *World) Map2[A, B] {
 	ids := []ID{
-		ComponentID[A](w),
-		ComponentID[B](w),
+		ComponentID[A](world),
+		ComponentID[B](world),
 	}
 	return Map2[A, B]{
-		world:    w,
+		world:    world,
 		ids:      ids,
-		storageA: &w.storage.components[ids[0].id],
-		storageB: &w.storage.components[ids[1].id],
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
 	}
 }
 
@@ -142,18 +142,18 @@ type Map3[A any, B any, C any] struct {
 }
 
 // NewMap3 creates a new [Map3].
-func NewMap3[A any, B any, C any](w *World) Map3[A, B, C] {
+func NewMap3[A any, B any, C any](world *World) Map3[A, B, C] {
 	ids := []ID{
-		ComponentID[A](w),
-		ComponentID[B](w),
-		ComponentID[C](w),
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
 	}
 	return Map3[A, B, C]{
-		world:    w,
+		world:    world,
 		ids:      ids,
-		storageA: &w.storage.components[ids[0].id],
-		storageB: &w.storage.components[ids[1].id],
-		storageC: &w.storage.components[ids[2].id],
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
+		storageC: &world.storage.components[ids[2].id],
 	}
 }
 
@@ -216,20 +216,20 @@ type Map4[A any, B any, C any, D any] struct {
 }
 
 // NewMap4 creates a new [Map4].
-func NewMap4[A any, B any, C any, D any](w *World) Map4[A, B, C, D] {
+func NewMap4[A any, B any, C any, D any](world *World) Map4[A, B, C, D] {
 	ids := []ID{
-		ComponentID[A](w),
-		ComponentID[B](w),
-		ComponentID[C](w),
-		ComponentID[D](w),
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
 	}
 	return Map4[A, B, C, D]{
-		world:    w,
+		world:    world,
 		ids:      ids,
-		storageA: &w.storage.components[ids[0].id],
-		storageB: &w.storage.components[ids[1].id],
-		storageC: &w.storage.components[ids[2].id],
-		storageD: &w.storage.components[ids[3].id],
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
+		storageC: &world.storage.components[ids[2].id],
+		storageD: &world.storage.components[ids[3].id],
 	}
 }
 
@@ -296,22 +296,22 @@ type Map5[A any, B any, C any, D any, E any] struct {
 }
 
 // NewMap5 creates a new [Map5].
-func NewMap5[A any, B any, C any, D any, E any](w *World) Map5[A, B, C, D, E] {
+func NewMap5[A any, B any, C any, D any, E any](world *World) Map5[A, B, C, D, E] {
 	ids := []ID{
-		ComponentID[A](w),
-		ComponentID[B](w),
-		ComponentID[C](w),
-		ComponentID[D](w),
-		ComponentID[E](w),
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
 	}
 	return Map5[A, B, C, D, E]{
-		world:    w,
+		world:    world,
 		ids:      ids,
-		storageA: &w.storage.components[ids[0].id],
-		storageB: &w.storage.components[ids[1].id],
-		storageC: &w.storage.components[ids[2].id],
-		storageD: &w.storage.components[ids[3].id],
-		storageE: &w.storage.components[ids[4].id],
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
+		storageC: &world.storage.components[ids[2].id],
+		storageD: &world.storage.components[ids[3].id],
+		storageE: &world.storage.components[ids[4].id],
 	}
 }
 
@@ -382,24 +382,24 @@ type Map6[A any, B any, C any, D any, E any, F any] struct {
 }
 
 // NewMap6 creates a new [Map6].
-func NewMap6[A any, B any, C any, D any, E any, F any](w *World) Map6[A, B, C, D, E, F] {
+func NewMap6[A any, B any, C any, D any, E any, F any](world *World) Map6[A, B, C, D, E, F] {
 	ids := []ID{
-		ComponentID[A](w),
-		ComponentID[B](w),
-		ComponentID[C](w),
-		ComponentID[D](w),
-		ComponentID[E](w),
-		ComponentID[F](w),
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+		ComponentID[F](world),
 	}
 	return Map6[A, B, C, D, E, F]{
-		world:    w,
+		world:    world,
 		ids:      ids,
-		storageA: &w.storage.components[ids[0].id],
-		storageB: &w.storage.components[ids[1].id],
-		storageC: &w.storage.components[ids[2].id],
-		storageD: &w.storage.components[ids[3].id],
-		storageE: &w.storage.components[ids[4].id],
-		storageF: &w.storage.components[ids[5].id],
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
+		storageC: &world.storage.components[ids[2].id],
+		storageD: &world.storage.components[ids[3].id],
+		storageE: &world.storage.components[ids[4].id],
+		storageF: &world.storage.components[ids[5].id],
 	}
 }
 
@@ -474,26 +474,26 @@ type Map7[A any, B any, C any, D any, E any, F any, G any] struct {
 }
 
 // NewMap7 creates a new [Map7].
-func NewMap7[A any, B any, C any, D any, E any, F any, G any](w *World) Map7[A, B, C, D, E, F, G] {
+func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) Map7[A, B, C, D, E, F, G] {
 	ids := []ID{
-		ComponentID[A](w),
-		ComponentID[B](w),
-		ComponentID[C](w),
-		ComponentID[D](w),
-		ComponentID[E](w),
-		ComponentID[F](w),
-		ComponentID[G](w),
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+		ComponentID[F](world),
+		ComponentID[G](world),
 	}
 	return Map7[A, B, C, D, E, F, G]{
-		world:    w,
+		world:    world,
 		ids:      ids,
-		storageA: &w.storage.components[ids[0].id],
-		storageB: &w.storage.components[ids[1].id],
-		storageC: &w.storage.components[ids[2].id],
-		storageD: &w.storage.components[ids[3].id],
-		storageE: &w.storage.components[ids[4].id],
-		storageF: &w.storage.components[ids[5].id],
-		storageG: &w.storage.components[ids[6].id],
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
+		storageC: &world.storage.components[ids[2].id],
+		storageD: &world.storage.components[ids[3].id],
+		storageE: &world.storage.components[ids[4].id],
+		storageF: &world.storage.components[ids[5].id],
+		storageG: &world.storage.components[ids[6].id],
 	}
 }
 
@@ -572,28 +572,28 @@ type Map8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 }
 
 // NewMap8 creates a new [Map8].
-func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](w *World) Map8[A, B, C, D, E, F, G, H] {
+func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) Map8[A, B, C, D, E, F, G, H] {
 	ids := []ID{
-		ComponentID[A](w),
-		ComponentID[B](w),
-		ComponentID[C](w),
-		ComponentID[D](w),
-		ComponentID[E](w),
-		ComponentID[F](w),
-		ComponentID[G](w),
-		ComponentID[H](w),
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+		ComponentID[F](world),
+		ComponentID[G](world),
+		ComponentID[H](world),
 	}
 	return Map8[A, B, C, D, E, F, G, H]{
-		world:    w,
+		world:    world,
 		ids:      ids,
-		storageA: &w.storage.components[ids[0].id],
-		storageB: &w.storage.components[ids[1].id],
-		storageC: &w.storage.components[ids[2].id],
-		storageD: &w.storage.components[ids[3].id],
-		storageE: &w.storage.components[ids[4].id],
-		storageF: &w.storage.components[ids[5].id],
-		storageG: &w.storage.components[ids[6].id],
-		storageH: &w.storage.components[ids[7].id],
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
+		storageC: &world.storage.components[ids[2].id],
+		storageD: &world.storage.components[ids[3].id],
+		storageE: &world.storage.components[ids[4].id],
+		storageF: &world.storage.components[ids[5].id],
+		storageG: &world.storage.components[ids[6].id],
+		storageH: &world.storage.components[ids[7].id],
 	}
 }
 

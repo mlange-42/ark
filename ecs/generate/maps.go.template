@@ -25,17 +25,17 @@ type Map{{.}}{{$generics}} struct {
 }
 
 // NewMap{{.}} creates a new [Map{{.}}].
-func NewMap{{.}}{{$generics}}(w *World) Map{{.}}{{$genericsShort}} {
+func NewMap{{.}}{{$generics}}(world *World) Map{{.}}{{$genericsShort}} {
 	ids := []ID{
 		{{- range $upper}}
-		ComponentID[{{.}}](w),
+		ComponentID[{{.}}](world),
 		{{- end}}
 	}
 	return Map{{.}}{{$genericsShort}}{
-		world:    w,
+		world:    world,
 		ids:      ids,
 		{{- range $i, $v := $upper}}
-		storage{{$v}}: &w.storage.components[ids[{{$i}}].id],
+		storage{{$v}}: &world.storage.components[ids[{{$i}}].id],
 		{{- end}}
 	}
 }

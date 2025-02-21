@@ -26,3 +26,14 @@ func ComponentID[T any](w *World) ID {
 	//}
 	return id
 }
+
+// Comp is a helper to pass component types to functions and methods.
+// Use function [C] to create one.
+type Comp struct {
+	tp reflect.Type
+}
+
+// C creates a [Comp] instance for the given type.
+func C[T any]() Comp {
+	return Comp{typeOf[T]()}
+}
