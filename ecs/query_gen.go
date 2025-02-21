@@ -26,6 +26,16 @@ func (q *Query0) Next() bool {
 	return q.nextTable()
 }
 
+// Entity returns the current entity.
+func (q *Query0) Entity() Entity {
+	return q.table.GetEntity(q.cursor.index)
+}
+
+// Get returns the queries components of the current entity.
+func (q *Query0) Get() {
+	return
+}
+
 func (q *Query0) nextTable() bool {
 	maxTableIndex := len(q.world.storage.tables) - 1
 	for q.cursor.table < maxTableIndex {
@@ -47,16 +57,6 @@ func (q *Query0) nextTable() bool {
 	return false
 }
 
-// Entity returns the current entity.
-func (q *Query0) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queries components of the current entity.
-func (q *Query0) Get() {
-	return
-}
-
 // Query1 is a filter for two components.
 type Query1[A any] struct {
 	world      *World
@@ -74,6 +74,16 @@ func (q *Query1[A]) Next() bool {
 		return true
 	}
 	return q.nextTable()
+}
+
+// Entity returns the current entity.
+func (q *Query1[A]) Entity() Entity {
+	return q.table.GetEntity(q.cursor.index)
+}
+
+// Get returns the queries components of the current entity.
+func (q *Query1[A]) Get() *A {
+	return (*A)(q.columnA.Get(q.cursor.index))
 }
 
 func (q *Query1[A]) nextTable() bool {
@@ -98,16 +108,6 @@ func (q *Query1[A]) nextTable() bool {
 	return false
 }
 
-// Entity returns the current entity.
-func (q *Query1[A]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queries components of the current entity.
-func (q *Query1[A]) Get() *A {
-	return (*A)(q.columnA.Get(q.cursor.index))
-}
-
 // Query2 is a filter for two components.
 type Query2[A any, B any] struct {
 	world      *World
@@ -126,6 +126,17 @@ func (q *Query2[A, B]) Next() bool {
 		return true
 	}
 	return q.nextTable()
+}
+
+// Entity returns the current entity.
+func (q *Query2[A, B]) Entity() Entity {
+	return q.table.GetEntity(q.cursor.index)
+}
+
+// Get returns the queries components of the current entity.
+func (q *Query2[A, B]) Get() (*A, *B) {
+	return (*A)(q.columnA.Get(q.cursor.index)),
+		(*B)(q.columnB.Get(q.cursor.index))
 }
 
 func (q *Query2[A, B]) nextTable() bool {
@@ -151,17 +162,6 @@ func (q *Query2[A, B]) nextTable() bool {
 	return false
 }
 
-// Entity returns the current entity.
-func (q *Query2[A, B]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queries components of the current entity.
-func (q *Query2[A, B]) Get() (*A, *B) {
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index))
-}
-
 // Query3 is a filter for two components.
 type Query3[A any, B any, C any] struct {
 	world      *World
@@ -181,6 +181,18 @@ func (q *Query3[A, B, C]) Next() bool {
 		return true
 	}
 	return q.nextTable()
+}
+
+// Entity returns the current entity.
+func (q *Query3[A, B, C]) Entity() Entity {
+	return q.table.GetEntity(q.cursor.index)
+}
+
+// Get returns the queries components of the current entity.
+func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
+	return (*A)(q.columnA.Get(q.cursor.index)),
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index))
 }
 
 func (q *Query3[A, B, C]) nextTable() bool {
@@ -207,18 +219,6 @@ func (q *Query3[A, B, C]) nextTable() bool {
 	return false
 }
 
-// Entity returns the current entity.
-func (q *Query3[A, B, C]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queries components of the current entity.
-func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index))
-}
-
 // Query4 is a filter for two components.
 type Query4[A any, B any, C any, D any] struct {
 	world      *World
@@ -239,6 +239,19 @@ func (q *Query4[A, B, C, D]) Next() bool {
 		return true
 	}
 	return q.nextTable()
+}
+
+// Entity returns the current entity.
+func (q *Query4[A, B, C, D]) Entity() Entity {
+	return q.table.GetEntity(q.cursor.index)
+}
+
+// Get returns the queries components of the current entity.
+func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
+	return (*A)(q.columnA.Get(q.cursor.index)),
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index)),
+		(*D)(q.columnD.Get(q.cursor.index))
 }
 
 func (q *Query4[A, B, C, D]) nextTable() bool {
@@ -266,19 +279,6 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 	return false
 }
 
-// Entity returns the current entity.
-func (q *Query4[A, B, C, D]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queries components of the current entity.
-func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index)),
-		(*D)(q.columnD.Get(q.cursor.index))
-}
-
 // Query5 is a filter for two components.
 type Query5[A any, B any, C any, D any, E any] struct {
 	world      *World
@@ -300,6 +300,20 @@ func (q *Query5[A, B, C, D, E]) Next() bool {
 		return true
 	}
 	return q.nextTable()
+}
+
+// Entity returns the current entity.
+func (q *Query5[A, B, C, D, E]) Entity() Entity {
+	return q.table.GetEntity(q.cursor.index)
+}
+
+// Get returns the queries components of the current entity.
+func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
+	return (*A)(q.columnA.Get(q.cursor.index)),
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index)),
+		(*D)(q.columnD.Get(q.cursor.index)),
+		(*E)(q.columnE.Get(q.cursor.index))
 }
 
 func (q *Query5[A, B, C, D, E]) nextTable() bool {
@@ -328,20 +342,6 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 	return false
 }
 
-// Entity returns the current entity.
-func (q *Query5[A, B, C, D, E]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queries components of the current entity.
-func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index)),
-		(*D)(q.columnD.Get(q.cursor.index)),
-		(*E)(q.columnE.Get(q.cursor.index))
-}
-
 // Query6 is a filter for two components.
 type Query6[A any, B any, C any, D any, E any, F any] struct {
 	world      *World
@@ -364,6 +364,21 @@ func (q *Query6[A, B, C, D, E, F]) Next() bool {
 		return true
 	}
 	return q.nextTable()
+}
+
+// Entity returns the current entity.
+func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
+	return q.table.GetEntity(q.cursor.index)
+}
+
+// Get returns the queries components of the current entity.
+func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
+	return (*A)(q.columnA.Get(q.cursor.index)),
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index)),
+		(*D)(q.columnD.Get(q.cursor.index)),
+		(*E)(q.columnE.Get(q.cursor.index)),
+		(*F)(q.columnF.Get(q.cursor.index))
 }
 
 func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
@@ -393,21 +408,6 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 	return false
 }
 
-// Entity returns the current entity.
-func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queries components of the current entity.
-func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index)),
-		(*D)(q.columnD.Get(q.cursor.index)),
-		(*E)(q.columnE.Get(q.cursor.index)),
-		(*F)(q.columnF.Get(q.cursor.index))
-}
-
 // Query7 is a filter for two components.
 type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world      *World
@@ -431,6 +431,22 @@ func (q *Query7[A, B, C, D, E, F, G]) Next() bool {
 		return true
 	}
 	return q.nextTable()
+}
+
+// Entity returns the current entity.
+func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
+	return q.table.GetEntity(q.cursor.index)
+}
+
+// Get returns the queries components of the current entity.
+func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
+	return (*A)(q.columnA.Get(q.cursor.index)),
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index)),
+		(*D)(q.columnD.Get(q.cursor.index)),
+		(*E)(q.columnE.Get(q.cursor.index)),
+		(*F)(q.columnF.Get(q.cursor.index)),
+		(*G)(q.columnG.Get(q.cursor.index))
 }
 
 func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
@@ -461,22 +477,6 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 	return false
 }
 
-// Entity returns the current entity.
-func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queries components of the current entity.
-func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index)),
-		(*D)(q.columnD.Get(q.cursor.index)),
-		(*E)(q.columnE.Get(q.cursor.index)),
-		(*F)(q.columnF.Get(q.cursor.index)),
-		(*G)(q.columnG.Get(q.cursor.index))
-}
-
 // Query8 is a filter for two components.
 type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world      *World
@@ -501,6 +501,23 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Next() bool {
 		return true
 	}
 	return q.nextTable()
+}
+
+// Entity returns the current entity.
+func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
+	return q.table.GetEntity(q.cursor.index)
+}
+
+// Get returns the queries components of the current entity.
+func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) {
+	return (*A)(q.columnA.Get(q.cursor.index)),
+		(*B)(q.columnB.Get(q.cursor.index)),
+		(*C)(q.columnC.Get(q.cursor.index)),
+		(*D)(q.columnD.Get(q.cursor.index)),
+		(*E)(q.columnE.Get(q.cursor.index)),
+		(*F)(q.columnF.Get(q.cursor.index)),
+		(*G)(q.columnG.Get(q.cursor.index)),
+		(*H)(q.columnH.Get(q.cursor.index))
 }
 
 func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
@@ -530,21 +547,4 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
 	q.cursor.maxIndex = -1
 	q.table = nil
 	return false
-}
-
-// Entity returns the current entity.
-func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queries components of the current entity.
-func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) {
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index)),
-		(*D)(q.columnD.Get(q.cursor.index)),
-		(*E)(q.columnE.Get(q.cursor.index)),
-		(*F)(q.columnF.Get(q.cursor.index)),
-		(*G)(q.columnG.Get(q.cursor.index)),
-		(*H)(q.columnH.Get(q.cursor.index))
 }

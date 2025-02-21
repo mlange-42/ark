@@ -44,6 +44,17 @@ func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 	return q.nextTable()
 }
 
+// Entity returns the current entity.
+func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
+	return q.table.GetEntity(q.cursor.index)
+}
+
+// Get returns the queries components of the current entity.
+func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
+	return {{range $i, $v := $upper}}{{if $i}},
+		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}
+}
+
 func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 	maxTableIndex := len(q.world.storage.tables) - 1
 	for q.cursor.table < maxTableIndex {
@@ -66,17 +77,6 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 	q.cursor.maxIndex = -1
 	q.table = nil
 	return false
-}
-
-// Entity returns the current entity.
-func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queries components of the current entity.
-func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
-	return {{range $i, $v := $upper}}{{if $i}},
-		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}
 }
 {{end -}}
 {{end -}}
