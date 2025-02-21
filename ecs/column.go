@@ -5,6 +5,8 @@ import (
 	"unsafe"
 )
 
+var columnPointerSize = sizeOf(typeOf[*column]())
+
 // column storage for components in an archetype.
 type column struct {
 	data     reflect.Value

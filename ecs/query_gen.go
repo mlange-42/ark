@@ -95,7 +95,7 @@ func (q *Query1[A]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.cursor.table]
+		q.columnA = q.components[0].GetColumn(tableID(q.cursor.table))
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -148,8 +148,8 @@ func (q *Query2[A, B]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.cursor.table]
-		q.columnB = q.components[1].columns[q.cursor.table]
+		q.columnA = q.components[0].GetColumn(tableID(q.cursor.table))
+		q.columnB = q.components[1].GetColumn(tableID(q.cursor.table))
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -204,9 +204,9 @@ func (q *Query3[A, B, C]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.cursor.table]
-		q.columnB = q.components[1].columns[q.cursor.table]
-		q.columnC = q.components[2].columns[q.cursor.table]
+		q.columnA = q.components[0].GetColumn(tableID(q.cursor.table))
+		q.columnB = q.components[1].GetColumn(tableID(q.cursor.table))
+		q.columnC = q.components[2].GetColumn(tableID(q.cursor.table))
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -263,10 +263,10 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.cursor.table]
-		q.columnB = q.components[1].columns[q.cursor.table]
-		q.columnC = q.components[2].columns[q.cursor.table]
-		q.columnD = q.components[3].columns[q.cursor.table]
+		q.columnA = q.components[0].GetColumn(tableID(q.cursor.table))
+		q.columnB = q.components[1].GetColumn(tableID(q.cursor.table))
+		q.columnC = q.components[2].GetColumn(tableID(q.cursor.table))
+		q.columnD = q.components[3].GetColumn(tableID(q.cursor.table))
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -325,11 +325,11 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.cursor.table]
-		q.columnB = q.components[1].columns[q.cursor.table]
-		q.columnC = q.components[2].columns[q.cursor.table]
-		q.columnD = q.components[3].columns[q.cursor.table]
-		q.columnE = q.components[4].columns[q.cursor.table]
+		q.columnA = q.components[0].GetColumn(tableID(q.cursor.table))
+		q.columnB = q.components[1].GetColumn(tableID(q.cursor.table))
+		q.columnC = q.components[2].GetColumn(tableID(q.cursor.table))
+		q.columnD = q.components[3].GetColumn(tableID(q.cursor.table))
+		q.columnE = q.components[4].GetColumn(tableID(q.cursor.table))
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -390,12 +390,12 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.cursor.table]
-		q.columnB = q.components[1].columns[q.cursor.table]
-		q.columnC = q.components[2].columns[q.cursor.table]
-		q.columnD = q.components[3].columns[q.cursor.table]
-		q.columnE = q.components[4].columns[q.cursor.table]
-		q.columnF = q.components[5].columns[q.cursor.table]
+		q.columnA = q.components[0].GetColumn(tableID(q.cursor.table))
+		q.columnB = q.components[1].GetColumn(tableID(q.cursor.table))
+		q.columnC = q.components[2].GetColumn(tableID(q.cursor.table))
+		q.columnD = q.components[3].GetColumn(tableID(q.cursor.table))
+		q.columnE = q.components[4].GetColumn(tableID(q.cursor.table))
+		q.columnF = q.components[5].GetColumn(tableID(q.cursor.table))
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -458,13 +458,13 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.cursor.table]
-		q.columnB = q.components[1].columns[q.cursor.table]
-		q.columnC = q.components[2].columns[q.cursor.table]
-		q.columnD = q.components[3].columns[q.cursor.table]
-		q.columnE = q.components[4].columns[q.cursor.table]
-		q.columnF = q.components[5].columns[q.cursor.table]
-		q.columnG = q.components[6].columns[q.cursor.table]
+		q.columnA = q.components[0].GetColumn(tableID(q.cursor.table))
+		q.columnB = q.components[1].GetColumn(tableID(q.cursor.table))
+		q.columnC = q.components[2].GetColumn(tableID(q.cursor.table))
+		q.columnD = q.components[3].GetColumn(tableID(q.cursor.table))
+		q.columnE = q.components[4].GetColumn(tableID(q.cursor.table))
+		q.columnF = q.components[5].GetColumn(tableID(q.cursor.table))
+		q.columnG = q.components[6].GetColumn(tableID(q.cursor.table))
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
@@ -529,14 +529,14 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
 		if !archetype.mask.Contains(&q.mask) || q.table.entities.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.cursor.table]
-		q.columnB = q.components[1].columns[q.cursor.table]
-		q.columnC = q.components[2].columns[q.cursor.table]
-		q.columnD = q.components[3].columns[q.cursor.table]
-		q.columnE = q.components[4].columns[q.cursor.table]
-		q.columnF = q.components[5].columns[q.cursor.table]
-		q.columnG = q.components[6].columns[q.cursor.table]
-		q.columnH = q.components[7].columns[q.cursor.table]
+		q.columnA = q.components[0].GetColumn(tableID(q.cursor.table))
+		q.columnB = q.components[1].GetColumn(tableID(q.cursor.table))
+		q.columnC = q.components[2].GetColumn(tableID(q.cursor.table))
+		q.columnD = q.components[3].GetColumn(tableID(q.cursor.table))
+		q.columnE = q.components[4].GetColumn(tableID(q.cursor.table))
+		q.columnF = q.components[5].GetColumn(tableID(q.cursor.table))
+		q.columnG = q.components[6].GetColumn(tableID(q.cursor.table))
+		q.columnH = q.components[7].GetColumn(tableID(q.cursor.table))
 
 		q.cursor.index = 0
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)

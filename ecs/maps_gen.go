@@ -37,7 +37,7 @@ func (m *Map1[A]) Get(entity Entity) *A {
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
-	return (*A)(m.storageA.columns[index.table].Get(row))
+	return (*A)(m.storageA.GetColumn(index.table).Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -94,8 +94,8 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row))
+	return (*A)(m.storageA.GetColumn(index.table).Get(row)),
+		(*B)(m.storageB.GetColumn(index.table).Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -156,9 +156,9 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row))
+	return (*A)(m.storageA.GetColumn(index.table).Get(row)),
+		(*B)(m.storageB.GetColumn(index.table).Get(row)),
+		(*C)(m.storageC.GetColumn(index.table).Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -223,10 +223,10 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row))
+	return (*A)(m.storageA.GetColumn(index.table).Get(row)),
+		(*B)(m.storageB.GetColumn(index.table).Get(row)),
+		(*C)(m.storageC.GetColumn(index.table).Get(row)),
+		(*D)(m.storageD.GetColumn(index.table).Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -295,11 +295,11 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row))
+	return (*A)(m.storageA.GetColumn(index.table).Get(row)),
+		(*B)(m.storageB.GetColumn(index.table).Get(row)),
+		(*C)(m.storageC.GetColumn(index.table).Get(row)),
+		(*D)(m.storageD.GetColumn(index.table).Get(row)),
+		(*E)(m.storageE.GetColumn(index.table).Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -372,12 +372,12 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row)),
-		(*F)(m.storageF.columns[index.table].Get(row))
+	return (*A)(m.storageA.GetColumn(index.table).Get(row)),
+		(*B)(m.storageB.GetColumn(index.table).Get(row)),
+		(*C)(m.storageC.GetColumn(index.table).Get(row)),
+		(*D)(m.storageD.GetColumn(index.table).Get(row)),
+		(*E)(m.storageE.GetColumn(index.table).Get(row)),
+		(*F)(m.storageF.GetColumn(index.table).Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -454,13 +454,13 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row)),
-		(*F)(m.storageF.columns[index.table].Get(row)),
-		(*G)(m.storageG.columns[index.table].Get(row))
+	return (*A)(m.storageA.GetColumn(index.table).Get(row)),
+		(*B)(m.storageB.GetColumn(index.table).Get(row)),
+		(*C)(m.storageC.GetColumn(index.table).Get(row)),
+		(*D)(m.storageD.GetColumn(index.table).Get(row)),
+		(*E)(m.storageE.GetColumn(index.table).Get(row)),
+		(*F)(m.storageF.GetColumn(index.table).Get(row)),
+		(*G)(m.storageG.GetColumn(index.table).Get(row))
 }
 
 // Add the mapped components to the given entity.
@@ -541,14 +541,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row)),
-		(*F)(m.storageF.columns[index.table].Get(row)),
-		(*G)(m.storageG.columns[index.table].Get(row)),
-		(*H)(m.storageH.columns[index.table].Get(row))
+	return (*A)(m.storageA.GetColumn(index.table).Get(row)),
+		(*B)(m.storageB.GetColumn(index.table).Get(row)),
+		(*C)(m.storageC.GetColumn(index.table).Get(row)),
+		(*D)(m.storageD.GetColumn(index.table).Get(row)),
+		(*E)(m.storageE.GetColumn(index.table).Get(row)),
+		(*F)(m.storageF.GetColumn(index.table).Get(row)),
+		(*G)(m.storageG.GetColumn(index.table).Get(row)),
+		(*H)(m.storageH.GetColumn(index.table).Get(row))
 }
 
 // Add the mapped components to the given entity.

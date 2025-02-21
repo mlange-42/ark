@@ -34,11 +34,11 @@ func TestTypeSizes(t *testing.T) {
 }
 
 func printTypeSize[T any]() {
-	tp := reflect.TypeOf((*T)(nil)).Elem()
+	tp := typeOf[T]()
 	fmt.Printf("%18s: %5d B\n", tp.Name(), tp.Size())
 }
 
 func printTypeSizeName[T any](name string) {
-	tp := reflect.TypeOf((*T)(nil)).Elem()
+	tp := typeOf[T]()
 	fmt.Printf("%18s: %5d B\n", name, tp.Size())
 }

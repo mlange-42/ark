@@ -1,6 +1,8 @@
 package ecs
 
-import "unsafe"
+import (
+	"unsafe"
+)
 
 // Map is a mapper to access components of an entity.
 type Map[T any] struct {
@@ -32,7 +34,7 @@ func (m *Map[T]) Get(entity Entity) *T {
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) GetUnchecked(entity Entity) *T {
 	index := m.world.entities[entity.id]
-	return (*T)(m.storage.columns[index.table].Get(uintptr(index.row)))
+	return (*T)(m.storage.GetColumn(index.table).Get(uintptr(index.row)))
 }
 
 // Has return whether the given entity has the mapped component.
@@ -48,7 +50,7 @@ func (m *Map[T]) Has(entity Entity) bool {
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) HasUnchecked(entity Entity) bool {
 	index := m.world.entities[entity.id]
-	return m.storage.columns[index.table] != nil
+	return m.storage.GetColumn(index.table) != nil
 }
 
 // Add the mapped component to the given entity.

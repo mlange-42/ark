@@ -55,7 +55,7 @@ func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$return}} {
 	index := m.world.entities[entity.id]
 	row := uintptr(index.row)
 	return {{range $i, $v := $upper}}{{if $i}},
-		{{end}}(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row)){{end}}
+		{{end}}(*{{$v}})(m.storage{{$v}}.GetColumn(index.table).Get(row)){{end}}
 }
 
 // Add the mapped components to the given entity.

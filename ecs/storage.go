@@ -1,6 +1,9 @@
 package ecs
 
-import "fmt"
+import (
+	"fmt"
+	"unsafe"
+)
 
 type storage struct {
 	registry        registry
@@ -12,6 +15,16 @@ type storage struct {
 
 type componentStorage struct {
 	columns []*column
+	pointer unsafe.Pointer
+}
+
+func (s *componentStorage) AddColumn(c *column) {
+	s.columns = append(s.columns, c)
+	s.pointer = unsafe.Pointer(&s.columns[0])
+}
+
+func (s *componentStorage) GetColumn(index tableID) *column {
+	return *(**column)(unsafe.Add(s.pointer, columnPointerSize*uintptr(index)))
 }
 
 func newStorage(capacity uint32) storage {
@@ -22,7 +35,7 @@ func newStorage(capacity uint32) storage {
 	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []*table{&tables[0]}))
 	components := make([]componentStorage, MaskTotalBits)
 	for i := range components {
-		components[i].columns = append(components[i].columns, nil)
+		components[i].AddColumn(nil)
 	}
 	return storage{
 		registry:        reg,
@@ -68,9 +81,9 @@ func (s *storage) createTable(archetype *archetype) *table {
 		id := ID{id: uint8(i)}
 		comps := &s.components[i]
 		if archetype.mask.Get(id) {
-			comps.columns = append(comps.columns, table.GetColumn(id))
+			comps.AddColumn(table.GetColumn(id))
 		} else {
-			comps.columns = append(comps.columns, nil)
+			comps.AddColumn(nil)
 		}
 	}
 	return table
