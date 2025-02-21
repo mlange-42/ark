@@ -1,6 +1,9 @@
 package ecs
 
-import "math"
+import (
+	"math"
+	"unsafe"
+)
 
 // Reserved Entities.
 // Add this to initial capacities of entity pool and lists,
@@ -13,6 +16,7 @@ type entityPool struct {
 	entities  []Entity
 	next      entityID
 	available uint32
+	pointer   unsafe.Pointer
 }
 
 // newEntityPool creates a new, initialized Entity pool.
@@ -26,6 +30,7 @@ func newEntityPool(initialCapacity uint32) entityPool {
 		entities:  entities,
 		next:      0,
 		available: 0,
+		pointer:   unsafe.Pointer(&entities[0]),
 	}
 }
 
@@ -66,7 +71,7 @@ func (p *entityPool) Reset() {
 
 // Alive returns whether an entity is still alive, based on the entity's generations.
 func (p *entityPool) Alive(e Entity) bool {
-	return e.gen == p.entities[e.id].gen
+	return e.gen == (*Entity)(unsafe.Add(p.pointer, entitySize*uintptr(e.id))).gen
 }
 
 // Len returns the current number of used entities.
