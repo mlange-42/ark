@@ -72,7 +72,7 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 		return true
 	}
-	if q.table == nil && q.cursor.index >= 0 {
+	if q.table == nil {
 		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.table = nil
