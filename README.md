@@ -16,4 +16,23 @@ The primary aims are:
 - a more structured design due to better planning of features
 - more focus on the generic API
 
-At the moment, Ark is not in a usable state yet.
+## Feature road map
+
+At the moment, Ark supports all basic ECS functionality.
+However, please be aware that the API is still unstable.
+
+- [x] Create and remove entities
+- [x] Create entities with components
+- [x] Add and remove components
+- [ ] Exchange components (add/remove in one operation)
+- [x] Queries with basic component filters
+- [x] World component access for specific entities
+- [ ] ECS resources
+- [ ] Entity relationships
+- [ ] Batch operations
+- [ ] (De)-serialization (`ark-serde`)
+- [ ] Event system
+
+## License
+
+This project is distributed under the [MIT license](./LICENSE).

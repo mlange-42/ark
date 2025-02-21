@@ -93,4 +93,8 @@ func TestWorldRemoveEntity(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 0, cnt)
+
+	e := w.NewEntity()
+	w.RemoveEntity(e)
+	assert.False(t, w.Alive(e))
 }
