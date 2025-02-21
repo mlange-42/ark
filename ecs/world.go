@@ -21,7 +21,7 @@ func NewWorld(initialCapacity uint32) World {
 	return World{
 		storage:    newStorage(initialCapacity),
 		entities:   entities,
-		entityPool: newEntityPool(initialCapacity),
+		entityPool: newEntityPool(initialCapacity, reservedEntities),
 	}
 }
 
