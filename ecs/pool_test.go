@@ -57,15 +57,16 @@ func TestEntityPool(t *testing.T) {
 }
 
 func TestEntityPoolStochastic(t *testing.T) {
-	p := newEntityPool(128, reservedEntities)
+	n := 32
+	p := newEntityPool(16, reservedEntities)
 
-	for i := 0; i < 10; i++ {
+	for range n {
 		p.Reset()
 		assert.Equal(t, 0, p.Len())
 		assert.Equal(t, 0, p.Available())
 
 		alive := map[Entity]bool{}
-		for i := 0; i < 10; i++ {
+		for range n {
 			e := p.Get()
 			alive[e] = true
 		}
@@ -81,7 +82,7 @@ func TestEntityPoolStochastic(t *testing.T) {
 		for e, isAlive := range alive {
 			assert.Equal(t, isAlive, p.Alive(e), "Wrong alive state of entity %v after 1st removal. Entity is %v", e, p.entities[e.id])
 		}
-		for i := 0; i < 10; i++ {
+		for range n {
 			e := p.Get()
 			alive[e] = true
 		}

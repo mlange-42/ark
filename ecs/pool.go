@@ -46,6 +46,7 @@ func (p *entityPool) Get() Entity {
 func (p *entityPool) getNew() Entity {
 	e := Entity{id: entityID(len(p.entities)), gen: 0}
 	p.entities = append(p.entities, e)
+	p.pointer = unsafe.Pointer(&p.entities[0])
 	return e
 }
 

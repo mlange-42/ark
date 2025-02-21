@@ -16,7 +16,7 @@ func TestNewWorld(t *testing.T) {
 }
 
 func TestWorldNewEntity(t *testing.T) {
-	w := NewWorld(1024)
+	w := NewWorld(8)
 
 	assert.False(t, w.Alive(Entity{}))
 	for i := range 10 {
@@ -33,7 +33,7 @@ func TestWorldNewEntity(t *testing.T) {
 }
 
 func TestWorldExchange(t *testing.T) {
-	w := NewWorld(1024)
+	w := NewWorld(2)
 
 	posID := ComponentID[Position](&w)
 	velID := ComponentID[Velocity](&w)
@@ -64,13 +64,14 @@ func TestWorldExchange(t *testing.T) {
 }
 
 func TestWorldRemoveEntity(t *testing.T) {
-	w := NewWorld(1024)
+	w := NewWorld(32)
 
 	mapper := NewMap2[Position, Velocity](&w)
 
 	entities := make([]Entity, 0, 100)
 	for range 100 {
 		e := mapper.NewEntity(&Position{}, &Velocity{})
+		assert.True(t, w.Alive(e))
 		entities = append(entities, e)
 	}
 
@@ -78,6 +79,7 @@ func TestWorldRemoveEntity(t *testing.T) {
 	query := filter.Query()
 	cnt := 0
 	for query.Next() {
+		assert.True(t, w.Alive(query.Entity()))
 		cnt++
 	}
 	assert.Equal(t, 100, cnt)
