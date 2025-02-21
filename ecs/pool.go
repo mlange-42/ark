@@ -49,8 +49,8 @@ func (p *entityPool) getNew() Entity {
 
 // Recycle hands an entity back for recycling.
 func (p *entityPool) Recycle(e Entity) {
-	if e.id == 0 {
-		panic("can't recycle reserved zero entity")
+	if e.id < 2 {
+		panic("can't recycle reserved zero or wildcard entity")
 	}
 	p.entities[e.id].gen++
 	p.next, p.entities[e.id].id = e.id, p.next
@@ -59,7 +59,7 @@ func (p *entityPool) Recycle(e Entity) {
 
 // Reset recycles all entities. Does NOT free the reserved memory.
 func (p *entityPool) Reset() {
-	p.entities = p.entities[:1]
+	p.entities = p.entities[:reservedEntities]
 	p.next = 0
 	p.available = 0
 }
@@ -71,12 +71,12 @@ func (p *entityPool) Alive(e Entity) bool {
 
 // Len returns the current number of used entities.
 func (p *entityPool) Len() int {
-	return len(p.entities) - 1 - int(p.available)
+	return len(p.entities) - reservedEntities - int(p.available)
 }
 
 // Cap returns the current capacity (used and recycled entities).
 func (p *entityPool) Cap() int {
-	return len(p.entities) - 1
+	return len(p.entities) - reservedEntities
 }
 
 // TotalCap returns the current capacity in terms of reserved memory.
