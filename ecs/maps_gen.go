@@ -47,6 +47,15 @@ func (m *Map1[A]) GetUnchecked(entity Entity) *A {
 	return (*A)(m.storageA.columns[index.table].Get(row))
 }
 
+// HasAll return whether the given entity has all mapped components.
+func (m *Map1[A]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.entities[entity.id]
+	return m.storageA.columns[index.table] != nil
+}
+
 // Add the mapped components to the given entity.
 func (m *Map1[A]) Add(entity Entity, a *A) {
 	if !m.world.Alive(entity) {
@@ -111,6 +120,16 @@ func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map2[A, B]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -183,6 +202,17 @@ func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
 		(*C)(m.storageC.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil &&
+		m.storageC.columns[index.table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -261,6 +291,18 @@ func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
 		(*B)(m.storageB.columns[index.table].Get(row)),
 		(*C)(m.storageC.columns[index.table].Get(row)),
 		(*D)(m.storageD.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil &&
+		m.storageC.columns[index.table] != nil &&
+		m.storageD.columns[index.table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -345,6 +387,19 @@ func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
 		(*C)(m.storageC.columns[index.table].Get(row)),
 		(*D)(m.storageD.columns[index.table].Get(row)),
 		(*E)(m.storageE.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil &&
+		m.storageC.columns[index.table] != nil &&
+		m.storageD.columns[index.table] != nil &&
+		m.storageE.columns[index.table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -435,6 +490,20 @@ func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E
 		(*D)(m.storageD.columns[index.table].Get(row)),
 		(*E)(m.storageE.columns[index.table].Get(row)),
 		(*F)(m.storageF.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil &&
+		m.storageC.columns[index.table] != nil &&
+		m.storageD.columns[index.table] != nil &&
+		m.storageE.columns[index.table] != nil &&
+		m.storageF.columns[index.table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -531,6 +600,21 @@ func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D,
 		(*E)(m.storageE.columns[index.table].Get(row)),
 		(*F)(m.storageF.columns[index.table].Get(row)),
 		(*G)(m.storageG.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil &&
+		m.storageC.columns[index.table] != nil &&
+		m.storageD.columns[index.table] != nil &&
+		m.storageE.columns[index.table] != nil &&
+		m.storageF.columns[index.table] != nil &&
+		m.storageG.columns[index.table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -633,6 +717,22 @@ func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, 
 		(*F)(m.storageF.columns[index.table].Get(row)),
 		(*G)(m.storageG.columns[index.table].Get(row)),
 		(*H)(m.storageH.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil &&
+		m.storageC.columns[index.table] != nil &&
+		m.storageD.columns[index.table] != nil &&
+		m.storageE.columns[index.table] != nil &&
+		m.storageF.columns[index.table] != nil &&
+		m.storageG.columns[index.table] != nil &&
+		m.storageH.columns[index.table] != nil
 }
 
 // Add the mapped components to the given entity.
