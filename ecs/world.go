@@ -10,6 +10,7 @@ type World struct {
 	storage    storage
 	entities   entities
 	entityPool entityPool
+	resources  Resources
 }
 
 // NewWorld creates a new [World].
@@ -23,6 +24,7 @@ func NewWorld(initialCapacity uint32) World {
 		storage:    newStorage(initialCapacity),
 		entities:   entities,
 		entityPool: newEntityPool(initialCapacity, reservedEntities),
+		resources:  newResources(),
 	}
 }
 
@@ -56,6 +58,13 @@ func (w *World) RemoveEntity(entity Entity) {
 		w.entities[swapEntity.id].row = index.row
 	}
 	index.table = maxTableID
+}
+
+// Resources of the world.
+//
+// Resources are component-like data that is not associated to an entity, but unique to the world.
+func (w *World) Resources() *Resources {
+	return &w.resources
 }
 
 func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer) Entity {
@@ -159,4 +168,9 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 func (w *World) componentID(tp reflect.Type) ID {
 	id, _ := w.storage.registry.ComponentID(tp)
 	return ID{id: id}
+}
+
+func (w *World) resourceID(tp reflect.Type) ResID {
+	id, _ := w.resources.registry.ComponentID(tp)
+	return ResID{id: id}
 }
