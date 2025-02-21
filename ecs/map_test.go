@@ -29,3 +29,14 @@ func TestMap(t *testing.T) {
 	posMap.Remove(e1)
 	assert.False(t, posMap.Has(e1))
 }
+
+func TestMapNewEntity(t *testing.T) {
+	w := NewWorld(1024)
+
+	posMap := NewMap[Position](&w)
+
+	e := posMap.NewEntity(&Position{X: 1, Y: 2})
+
+	pos := posMap.Get(e)
+	assert.Equal(t, Position{X: 1, Y: 2}, *pos)
+}

@@ -19,6 +19,11 @@ func NewMap[T any](w *World) Map[T] {
 	}
 }
 
+// NewEntity creates a new entity with the mapped component.
+func (m *Map[T]) NewEntity(comp *T) Entity {
+	return m.world.newEntityWith([]ID{m.id}, []unsafe.Pointer{unsafe.Pointer(comp)})
+}
+
 // Get returns the mapped component for the given entity.
 func (m *Map[T]) Get(entity Entity) *T {
 	if !m.world.Alive(entity) {

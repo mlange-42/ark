@@ -27,7 +27,24 @@ func NewWorld(initialCapacity uint32) World {
 
 // NewEntity creates a new [Entity].
 func (w *World) NewEntity() Entity {
-	return w.createEntity(0)
+	entity, _ := w.createEntity(0)
+	return entity
+}
+
+func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer) Entity {
+	mask := All(ids...)
+	newTable := w.storage.findOrCreateTable(&mask)
+	entity, idx := w.createEntity(newTable.id)
+
+	if comps != nil {
+		if len(ids) != len(comps) {
+			panic("lengths of IDs and components to add do not match")
+		}
+		for i, id := range ids {
+			newTable.Set(id, idx, comps[i])
+		}
+	}
+	return entity
 }
 
 // Alive return whether the given entity is alive.
@@ -58,7 +75,7 @@ func (w *World) getEntityIndex(entity Entity) entityIndex {
 	return w.entities[entity.id]
 }
 
-func (w *World) createEntity(table tableID) Entity {
+func (w *World) createEntity(table tableID) (Entity, uint32) {
 	entity := w.entityPool.Get()
 
 	idx := w.storage.tables[table].Add(entity)
@@ -68,7 +85,7 @@ func (w *World) createEntity(table tableID) Entity {
 	} else {
 		w.entities[entity.id] = entityIndex{table: table, row: idx}
 	}
-	return entity
+	return entity, idx
 }
 
 func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer) {

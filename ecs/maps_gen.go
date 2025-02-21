@@ -23,6 +23,13 @@ func NewMap1[A any](w *World) Map1[A] {
 	}
 }
 
+// NewEntity creates a new entity with the mapped components.
+func (m *Map1[A]) NewEntity(a *A) Entity {
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+	})
+}
+
 // Get returns the mapped components for the given entity.
 func (m *Map1[A]) Get(entity Entity) *A {
 	if !m.world.Alive(entity) {
@@ -78,6 +85,14 @@ func NewMap2[A any, B any](w *World) Map2[A, B] {
 		storageA: &w.storage.components[ids[0].id],
 		storageB: &w.storage.components[ids[1].id],
 	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+func (m *Map2[A, B]) NewEntity(a *A, b *B) Entity {
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+	})
 }
 
 // Get returns the mapped components for the given entity.
@@ -140,6 +155,15 @@ func NewMap3[A any, B any, C any](w *World) Map3[A, B, C] {
 		storageB: &w.storage.components[ids[1].id],
 		storageC: &w.storage.components[ids[2].id],
 	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C) Entity {
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+	})
 }
 
 // Get returns the mapped components for the given entity.
@@ -207,6 +231,16 @@ func NewMap4[A any, B any, C any, D any](w *World) Map4[A, B, C, D] {
 		storageC: &w.storage.components[ids[2].id],
 		storageD: &w.storage.components[ids[3].id],
 	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D) Entity {
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+	})
 }
 
 // Get returns the mapped components for the given entity.
@@ -279,6 +313,17 @@ func NewMap5[A any, B any, C any, D any, E any](w *World) Map5[A, B, C, D, E] {
 		storageD: &w.storage.components[ids[3].id],
 		storageE: &w.storage.components[ids[4].id],
 	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E) Entity {
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+	})
 }
 
 // Get returns the mapped components for the given entity.
@@ -356,6 +401,18 @@ func NewMap6[A any, B any, C any, D any, E any, F any](w *World) Map6[A, B, C, D
 		storageE: &w.storage.components[ids[4].id],
 		storageF: &w.storage.components[ids[5].id],
 	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F) Entity {
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+	})
 }
 
 // Get returns the mapped components for the given entity.
@@ -438,6 +495,19 @@ func NewMap7[A any, B any, C any, D any, E any, F any, G any](w *World) Map7[A, 
 		storageF: &w.storage.components[ids[5].id],
 		storageG: &w.storage.components[ids[6].id],
 	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G) Entity {
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+	})
 }
 
 // Get returns the mapped components for the given entity.
@@ -525,6 +595,20 @@ func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](w *World) M
 		storageG: &w.storage.components[ids[6].id],
 		storageH: &w.storage.components[ids[7].id],
 	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H) Entity {
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+	})
 }
 
 // Get returns the mapped components for the given entity.

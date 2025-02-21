@@ -40,6 +40,15 @@ func NewMap{{.}}{{$generics}}(w *World) Map{{.}}{{$genericsShort}} {
 	}
 }
 
+// NewEntity creates a new entity with the mapped components.
+func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}) Entity {
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		{{- range $lower}}
+		unsafe.Pointer({{.}}),
+		{{- end}}
+	})
+}
+
 // Get returns the mapped components for the given entity.
 func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$return}} {
 	if !m.world.Alive(entity) {

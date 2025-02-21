@@ -29,6 +29,11 @@ func TestMap2(t *testing.T) {
 	for _, e := range entities {
 		mapper.Remove(e)
 	}
+
+	e := mapper.NewEntity(&Position{101, 102}, &Velocity{103, 104})
+	pos, vel := mapper.Get(e)
+	assert.Equal(t, Position{101, 102}, *pos)
+	assert.Equal(t, Velocity{103, 104}, *vel)
 }
 
 func BenchmarkMap2(b *testing.B) {
