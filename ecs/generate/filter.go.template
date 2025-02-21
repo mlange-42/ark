@@ -19,9 +19,9 @@ package ecs
 
 // Filter{{.}} is a filter for two components.
 type Filter{{.}}{{$generics}} struct {
-	world      *World
-	mask       Mask
-	ids        []ID
+	world *World
+	mask  Mask
+	ids   []ID
 }
 
 // Query creates a [Query{{.}}] from this filter.
