@@ -9,6 +9,7 @@
 Ark is a work in progress Entity Component System for Go.
 
 Ark implements the lessons learned from my other Go ECS: [Arche](https://github.com/mlange-42/arche).
+If you are familiar with Arche, you will feel at home.
 The primary aims are:
 
 - More feature-complete entity relationships
