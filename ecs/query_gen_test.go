@@ -82,6 +82,34 @@ func TestQuery2Empty(t *testing.T) {
 	assert.Panics(t, func() { query.Next() })
 }
 
+func TestQuery2Advanced(t *testing.T) {
+	w := NewWorld(4)
+
+	mapPosVel := NewMap2[Position, Velocity](&w)
+	mapPosVelHead := NewMap3[Position, Velocity, Heading](&w)
+	mapAll := NewMap4[Position, Velocity, Heading, CompA](&w)
+
+	for range 10 {
+		_ = mapPosVel.NewEntity(&Position{}, &Velocity{})
+		_ = mapPosVelHead.NewEntity(&Position{}, &Velocity{}, &Heading{})
+		_ = mapAll.NewEntity(&Position{}, &Velocity{}, &Heading{}, &CompA{})
+	}
+
+	filter := NewFilter2[Position, Velocity](&w).
+		With(C[Heading]()).
+		Without(C[CompA]()).
+		Build()
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+		assert.True(t, mapPosVelHead.HasAll(query.Entity()))
+		assert.False(t, mapAll.HasAll(query.Entity()))
+	}
+	assert.Equal(t, 10, cnt)
+}
+
 func TestQuery2Closed(t *testing.T) {
 	w := NewWorld(4)
 	mapper := NewMap2[Position, Velocity](&w)
