@@ -15,8 +15,7 @@ import "reflect"
 // ⚠️ Warning: Using IDs that are outside of the range of registered IDs anywhere in [World] or other places will result in undefined behavior!
 func ComponentID[T any](w *World) ID {
 	tp := reflect.TypeOf((*T)(nil)).Elem()
-	id := w.componentID(tp)
-	return id
+	return w.componentID(tp)
 }
 
 // Comp is a helper to pass component types to functions and methods.
