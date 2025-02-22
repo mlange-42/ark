@@ -14,7 +14,7 @@ func all(ids ...ID) *Mask {
 
 func TestMask(t *testing.T) {
 	big := uint8(MaskTotalBits - 2)
-	mask := All(id(1), id(2), id(13), id(27), id(int(big)))
+	mask := All(id(1), id(2), id(13), id(27), id8(big))
 
 	assert.Equal(t, 5, mask.TotalBitsSet())
 
@@ -22,12 +22,12 @@ func TestMask(t *testing.T) {
 	assert.True(t, mask.Get(id(2)))
 	assert.True(t, mask.Get(id(13)))
 	assert.True(t, mask.Get(id(27)))
-	assert.True(t, mask.Get(id(int(big))))
+	assert.True(t, mask.Get(id8(big)))
 
 	assert.False(t, mask.Get(id(0)))
 	assert.False(t, mask.Get(id(3)))
-	assert.False(t, mask.Get(id(int(big-1))))
-	assert.False(t, mask.Get(id(int(big+1))))
+	assert.False(t, mask.Get(id8(big-1)))
+	assert.False(t, mask.Get(id8(big+1)))
 
 	mask.Set(id(0), true)
 	mask.Set(id(1), false)
@@ -55,15 +55,15 @@ func TestMask(t *testing.T) {
 func TestBitMaskLogic(t *testing.T) {
 	big := uint8(MaskTotalBits - 2)
 
-	assert.Equal(t, All(id(5)), all(id(0), id(5)).And(all(id(5), id(int(big)))))
-	assert.Equal(t, All(id(0), id(5), id(int(big))), all(id(0), id(5)).Or(all(id(5), id(int(big)))))
-	assert.Equal(t, All(id(0), id(int(big))), all(id(0), id(5)).Xor(all(id(5), id(int(big)))))
+	assert.Equal(t, All(id(5)), all(id(0), id(5)).And(all(id(5), id8(big))))
+	assert.Equal(t, All(id(0), id(5), id8(big)), all(id(0), id(5)).Or(all(id(5), id8(big))))
+	assert.Equal(t, All(id(0), id8(big)), all(id(0), id(5)).Xor(all(id(5), id8(big))))
 }
 
 func TestBitMaskCopy(t *testing.T) {
 	big := uint8(MaskTotalBits - 2)
 
-	mask := All(id(1), id(2), id(13), id(27), id(int(big)))
+	mask := All(id(1), id(2), id(13), id(27), id8(big))
 	mask2 := mask
 	mask3 := &mask
 
