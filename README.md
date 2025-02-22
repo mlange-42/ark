@@ -31,6 +31,7 @@ However, please be aware that the API is still unstable.
 - [x] ECS resources
 - [ ] Entity relationships
 - [ ] Batch operations
+- [ ] Unsafe API for runtime types
 - [ ] (De)-serialization (`ark-serde`)
 - [ ] Event system
 
