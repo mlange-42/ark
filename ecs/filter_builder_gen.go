@@ -4,9 +4,10 @@ package ecs
 
 // FilterBuilder0 builds a [Filter0].
 type FilterBuilder0 struct {
-	world *World
-	ids   []ID
-	mask  Mask
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // NewFilter0 creates a new [FilterBuilder0].
@@ -31,20 +32,31 @@ func (q *FilterBuilder0) With(comps ...Comp) *FilterBuilder0 {
 	return q
 }
 
+// With specifies components to exclude.
+func (q *FilterBuilder0) Without(comps ...Comp) *FilterBuilder0 {
+	for _, c := range comps {
+		id := q.world.componentID(c.tp)
+		q.without.Set(id, true)
+	}
+	return q
+}
+
 // Build creates a [Filter0] from this builder.
 func (q *FilterBuilder0) Build() *Filter0 {
 	return &Filter0{
-		world: q.world,
-		ids:   q.ids,
-		mask:  q.mask,
+		world:   q.world,
+		ids:     q.ids,
+		mask:    q.mask,
+		without: q.without,
 	}
 }
 
 // FilterBuilder1 builds a [Filter1].
 type FilterBuilder1[A any] struct {
-	world *World
-	ids   []ID
-	mask  Mask
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // NewFilter1 creates a new [FilterBuilder1].
@@ -71,20 +83,31 @@ func (q *FilterBuilder1[A]) With(comps ...Comp) *FilterBuilder1[A] {
 	return q
 }
 
+// With specifies components to exclude.
+func (q *FilterBuilder1[A]) Without(comps ...Comp) *FilterBuilder1[A] {
+	for _, c := range comps {
+		id := q.world.componentID(c.tp)
+		q.without.Set(id, true)
+	}
+	return q
+}
+
 // Build creates a [Filter1] from this builder.
 func (q *FilterBuilder1[A]) Build() *Filter1[A] {
 	return &Filter1[A]{
-		world: q.world,
-		ids:   q.ids,
-		mask:  q.mask,
+		world:   q.world,
+		ids:     q.ids,
+		mask:    q.mask,
+		without: q.without,
 	}
 }
 
 // FilterBuilder2 builds a [Filter2].
 type FilterBuilder2[A any, B any] struct {
-	world *World
-	ids   []ID
-	mask  Mask
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // NewFilter2 creates a new [FilterBuilder2].
@@ -112,20 +135,31 @@ func (q *FilterBuilder2[A, B]) With(comps ...Comp) *FilterBuilder2[A, B] {
 	return q
 }
 
+// With specifies components to exclude.
+func (q *FilterBuilder2[A, B]) Without(comps ...Comp) *FilterBuilder2[A, B] {
+	for _, c := range comps {
+		id := q.world.componentID(c.tp)
+		q.without.Set(id, true)
+	}
+	return q
+}
+
 // Build creates a [Filter2] from this builder.
 func (q *FilterBuilder2[A, B]) Build() *Filter2[A, B] {
 	return &Filter2[A, B]{
-		world: q.world,
-		ids:   q.ids,
-		mask:  q.mask,
+		world:   q.world,
+		ids:     q.ids,
+		mask:    q.mask,
+		without: q.without,
 	}
 }
 
 // FilterBuilder3 builds a [Filter3].
 type FilterBuilder3[A any, B any, C any] struct {
-	world *World
-	ids   []ID
-	mask  Mask
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // NewFilter3 creates a new [FilterBuilder3].
@@ -154,20 +188,31 @@ func (q *FilterBuilder3[A, B, C]) With(comps ...Comp) *FilterBuilder3[A, B, C] {
 	return q
 }
 
+// With specifies components to exclude.
+func (q *FilterBuilder3[A, B, C]) Without(comps ...Comp) *FilterBuilder3[A, B, C] {
+	for _, c := range comps {
+		id := q.world.componentID(c.tp)
+		q.without.Set(id, true)
+	}
+	return q
+}
+
 // Build creates a [Filter3] from this builder.
 func (q *FilterBuilder3[A, B, C]) Build() *Filter3[A, B, C] {
 	return &Filter3[A, B, C]{
-		world: q.world,
-		ids:   q.ids,
-		mask:  q.mask,
+		world:   q.world,
+		ids:     q.ids,
+		mask:    q.mask,
+		without: q.without,
 	}
 }
 
 // FilterBuilder4 builds a [Filter4].
 type FilterBuilder4[A any, B any, C any, D any] struct {
-	world *World
-	ids   []ID
-	mask  Mask
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // NewFilter4 creates a new [FilterBuilder4].
@@ -197,20 +242,31 @@ func (q *FilterBuilder4[A, B, C, D]) With(comps ...Comp) *FilterBuilder4[A, B, C
 	return q
 }
 
+// With specifies components to exclude.
+func (q *FilterBuilder4[A, B, C, D]) Without(comps ...Comp) *FilterBuilder4[A, B, C, D] {
+	for _, c := range comps {
+		id := q.world.componentID(c.tp)
+		q.without.Set(id, true)
+	}
+	return q
+}
+
 // Build creates a [Filter4] from this builder.
 func (q *FilterBuilder4[A, B, C, D]) Build() *Filter4[A, B, C, D] {
 	return &Filter4[A, B, C, D]{
-		world: q.world,
-		ids:   q.ids,
-		mask:  q.mask,
+		world:   q.world,
+		ids:     q.ids,
+		mask:    q.mask,
+		without: q.without,
 	}
 }
 
 // FilterBuilder5 builds a [Filter5].
 type FilterBuilder5[A any, B any, C any, D any, E any] struct {
-	world *World
-	ids   []ID
-	mask  Mask
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // NewFilter5 creates a new [FilterBuilder5].
@@ -241,20 +297,31 @@ func (q *FilterBuilder5[A, B, C, D, E]) With(comps ...Comp) *FilterBuilder5[A, B
 	return q
 }
 
+// With specifies components to exclude.
+func (q *FilterBuilder5[A, B, C, D, E]) Without(comps ...Comp) *FilterBuilder5[A, B, C, D, E] {
+	for _, c := range comps {
+		id := q.world.componentID(c.tp)
+		q.without.Set(id, true)
+	}
+	return q
+}
+
 // Build creates a [Filter5] from this builder.
 func (q *FilterBuilder5[A, B, C, D, E]) Build() *Filter5[A, B, C, D, E] {
 	return &Filter5[A, B, C, D, E]{
-		world: q.world,
-		ids:   q.ids,
-		mask:  q.mask,
+		world:   q.world,
+		ids:     q.ids,
+		mask:    q.mask,
+		without: q.without,
 	}
 }
 
 // FilterBuilder6 builds a [Filter6].
 type FilterBuilder6[A any, B any, C any, D any, E any, F any] struct {
-	world *World
-	ids   []ID
-	mask  Mask
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // NewFilter6 creates a new [FilterBuilder6].
@@ -286,20 +353,31 @@ func (q *FilterBuilder6[A, B, C, D, E, F]) With(comps ...Comp) *FilterBuilder6[A
 	return q
 }
 
+// With specifies components to exclude.
+func (q *FilterBuilder6[A, B, C, D, E, F]) Without(comps ...Comp) *FilterBuilder6[A, B, C, D, E, F] {
+	for _, c := range comps {
+		id := q.world.componentID(c.tp)
+		q.without.Set(id, true)
+	}
+	return q
+}
+
 // Build creates a [Filter6] from this builder.
 func (q *FilterBuilder6[A, B, C, D, E, F]) Build() *Filter6[A, B, C, D, E, F] {
 	return &Filter6[A, B, C, D, E, F]{
-		world: q.world,
-		ids:   q.ids,
-		mask:  q.mask,
+		world:   q.world,
+		ids:     q.ids,
+		mask:    q.mask,
+		without: q.without,
 	}
 }
 
 // FilterBuilder7 builds a [Filter7].
 type FilterBuilder7[A any, B any, C any, D any, E any, F any, G any] struct {
-	world *World
-	ids   []ID
-	mask  Mask
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // NewFilter7 creates a new [FilterBuilder7].
@@ -332,20 +410,31 @@ func (q *FilterBuilder7[A, B, C, D, E, F, G]) With(comps ...Comp) *FilterBuilder
 	return q
 }
 
+// With specifies components to exclude.
+func (q *FilterBuilder7[A, B, C, D, E, F, G]) Without(comps ...Comp) *FilterBuilder7[A, B, C, D, E, F, G] {
+	for _, c := range comps {
+		id := q.world.componentID(c.tp)
+		q.without.Set(id, true)
+	}
+	return q
+}
+
 // Build creates a [Filter7] from this builder.
 func (q *FilterBuilder7[A, B, C, D, E, F, G]) Build() *Filter7[A, B, C, D, E, F, G] {
 	return &Filter7[A, B, C, D, E, F, G]{
-		world: q.world,
-		ids:   q.ids,
-		mask:  q.mask,
+		world:   q.world,
+		ids:     q.ids,
+		mask:    q.mask,
+		without: q.without,
 	}
 }
 
 // FilterBuilder8 builds a [Filter8].
 type FilterBuilder8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
-	world *World
-	ids   []ID
-	mask  Mask
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // NewFilter8 creates a new [FilterBuilder8].
@@ -379,11 +468,21 @@ func (q *FilterBuilder8[A, B, C, D, E, F, G, H]) With(comps ...Comp) *FilterBuil
 	return q
 }
 
+// With specifies components to exclude.
+func (q *FilterBuilder8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *FilterBuilder8[A, B, C, D, E, F, G, H] {
+	for _, c := range comps {
+		id := q.world.componentID(c.tp)
+		q.without.Set(id, true)
+	}
+	return q
+}
+
 // Build creates a [Filter8] from this builder.
 func (q *FilterBuilder8[A, B, C, D, E, F, G, H]) Build() *Filter8[A, B, C, D, E, F, G, H] {
 	return &Filter8[A, B, C, D, E, F, G, H]{
-		world: q.world,
-		ids:   q.ids,
-		mask:  q.mask,
+		world:   q.world,
+		ids:     q.ids,
+		mask:    q.mask,
+		without: q.without,
 	}
 }

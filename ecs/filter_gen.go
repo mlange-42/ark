@@ -5,125 +5,134 @@ package ecs
 // Filter0 is a filter for 0 components.
 // Use a [FilterBuilder0] ([NewFilter0]) to create one.
 type Filter0 struct {
-	world *World
-	mask  Mask
-	ids   []ID
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // Query creates a [Query0] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter0) Query() Query0 {
-	return newQuery0(q.world, q.mask)
+	return newQuery0(q.world, q.mask, q.without)
 }
 
 // Filter1 is a filter for 1 components.
 // Use a [FilterBuilder1] ([NewFilter1]) to create one.
 type Filter1[A any] struct {
-	world *World
-	mask  Mask
-	ids   []ID
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // Query creates a [Query1] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter1[A]) Query() Query1[A] {
-	return newQuery1[A](q.world, q.mask, q.ids)
+	return newQuery1[A](q.world, q.mask, q.without, q.ids)
 }
 
 // Filter2 is a filter for 2 components.
 // Use a [FilterBuilder2] ([NewFilter2]) to create one.
 type Filter2[A any, B any] struct {
-	world *World
-	mask  Mask
-	ids   []ID
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // Query creates a [Query2] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter2[A, B]) Query() Query2[A, B] {
-	return newQuery2[A, B](q.world, q.mask, q.ids)
+	return newQuery2[A, B](q.world, q.mask, q.without, q.ids)
 }
 
 // Filter3 is a filter for 3 components.
 // Use a [FilterBuilder3] ([NewFilter3]) to create one.
 type Filter3[A any, B any, C any] struct {
-	world *World
-	mask  Mask
-	ids   []ID
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // Query creates a [Query3] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter3[A, B, C]) Query() Query3[A, B, C] {
-	return newQuery3[A, B, C](q.world, q.mask, q.ids)
+	return newQuery3[A, B, C](q.world, q.mask, q.without, q.ids)
 }
 
 // Filter4 is a filter for 4 components.
 // Use a [FilterBuilder4] ([NewFilter4]) to create one.
 type Filter4[A any, B any, C any, D any] struct {
-	world *World
-	mask  Mask
-	ids   []ID
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // Query creates a [Query4] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter4[A, B, C, D]) Query() Query4[A, B, C, D] {
-	return newQuery4[A, B, C, D](q.world, q.mask, q.ids)
+	return newQuery4[A, B, C, D](q.world, q.mask, q.without, q.ids)
 }
 
 // Filter5 is a filter for 5 components.
 // Use a [FilterBuilder5] ([NewFilter5]) to create one.
 type Filter5[A any, B any, C any, D any, E any] struct {
-	world *World
-	mask  Mask
-	ids   []ID
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // Query creates a [Query5] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter5[A, B, C, D, E]) Query() Query5[A, B, C, D, E] {
-	return newQuery5[A, B, C, D, E](q.world, q.mask, q.ids)
+	return newQuery5[A, B, C, D, E](q.world, q.mask, q.without, q.ids)
 }
 
 // Filter6 is a filter for 6 components.
 // Use a [FilterBuilder6] ([NewFilter6]) to create one.
 type Filter6[A any, B any, C any, D any, E any, F any] struct {
-	world *World
-	mask  Mask
-	ids   []ID
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // Query creates a [Query6] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter6[A, B, C, D, E, F]) Query() Query6[A, B, C, D, E, F] {
-	return newQuery6[A, B, C, D, E, F](q.world, q.mask, q.ids)
+	return newQuery6[A, B, C, D, E, F](q.world, q.mask, q.without, q.ids)
 }
 
 // Filter7 is a filter for 7 components.
 // Use a [FilterBuilder7] ([NewFilter7]) to create one.
 type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
-	world *World
-	mask  Mask
-	ids   []ID
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // Query creates a [Query7] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter7[A, B, C, D, E, F, G]) Query() Query7[A, B, C, D, E, F, G] {
-	return newQuery7[A, B, C, D, E, F, G](q.world, q.mask, q.ids)
+	return newQuery7[A, B, C, D, E, F, G](q.world, q.mask, q.without, q.ids)
 }
 
 // Filter8 is a filter for 8 components.
 // Use a [FilterBuilder8] ([NewFilter8]) to create one.
 type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
-	world *World
-	mask  Mask
-	ids   []ID
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // Query creates a [Query8] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter8[A, B, C, D, E, F, G, H]) Query() Query8[A, B, C, D, E, F, G, H] {
-	return newQuery8[A, B, C, D, E, F, G, H](q.world, q.mask, q.ids)
+	return newQuery8[A, B, C, D, E, F, G, H](q.world, q.mask, q.without, q.ids)
 }

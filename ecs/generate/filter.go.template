@@ -20,15 +20,16 @@ package ecs
 // Filter{{.}} is a filter for {{.}} components.
 // Use a [FilterBuilder{{.}}] ([NewFilter{{.}}]) to create one.
 type Filter{{.}}{{$generics}} struct {
-	world *World
-	mask  Mask
-	ids   []ID
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // Query creates a [Query{{.}}] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter{{.}}{{$genericsShort}}) Query() Query{{.}}{{$genericsShort}} {
-	return newQuery{{.}}{{$genericsShort}}(q.world, q.mask{{if .}}, q.ids{{end}})
+	return newQuery{{.}}{{$genericsShort}}(q.world, q.mask, q.without{{if .}}, q.ids{{end}})
 }
 {{end -}}
 {{end -}}

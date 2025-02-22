@@ -14,9 +14,10 @@ package ecs
 
 // FilterBuilder{{.}} builds a [Filter{{.}}].
 type FilterBuilder{{.}}{{$generics}} struct {
-	world *World
-	ids   []ID
-	mask  Mask
+	world   *World
+	ids     []ID
+	mask    Mask
+	without Mask
 }
 
 // NewFilter{{.}} creates a new [FilterBuilder{{.}}].
@@ -45,12 +46,22 @@ func (q *FilterBuilder{{.}}{{$genericsShort}}) With(comps ...Comp) *FilterBuilde
 	return q
 }
 
+// With specifies components to exclude.
+func (q *FilterBuilder{{.}}{{$genericsShort}}) Without(comps ...Comp) *FilterBuilder{{.}}{{$genericsShort}} {
+	for _,c := range comps {
+		id := q.world.componentID(c.tp)
+		q.without.Set(id, true)
+	}
+	return q
+}
+
 // Build creates a [Filter{{.}}] from this builder.
 func (q *FilterBuilder{{.}}{{$genericsShort}}) Build() *Filter{{.}}{{$genericsShort}} {
 	return &Filter{{.}}{{$genericsShort}}{
-		world:      q.world,
-		ids:        q.ids,
-		mask:       q.mask,
+		world:   q.world,
+		ids:     q.ids,
+		mask:    q.mask,
+		without: q.without,
 	}
 }
 {{end -}}
