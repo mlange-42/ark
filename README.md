@@ -11,10 +11,10 @@ Ark is a work in progress Entity Component System for Go.
 Ark implements the lessons learned from my other Go ECS: [Arche](https://github.com/mlange-42/arche).
 The primary aims are:
 
-- more feature-complete entity relationships
-- making it even faster than Arche (already achieved)
-- a more structured design due to better planning of features
-- more focus on the generic API
+- More feature-complete entity relationships
+- Making it even faster than Arche (already achieved)
+- A more structured design due to better planning of features
+- More focus on the generic API
 
 ## Feature road map
 
@@ -26,10 +26,12 @@ However, please be aware that the API is still unstable.
 - [x] Add and remove components
 - [x] Exchange components (add/remove in one operation)
 - [x] Queries with basic component filters
+- [ ] Advanced filters like `With`, `Without` and `Optional`
 - [x] World component access for specific entities
 - [x] ECS resources
 - [ ] Entity relationships
 - [ ] Batch operations
+- [ ] Unsafe API for runtime types
 - [ ] (De)-serialization (`ark-serde`)
 - [ ] Event system
 
