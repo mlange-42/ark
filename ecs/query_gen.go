@@ -12,9 +12,26 @@ type cursor struct {
 type Query0 struct {
 	world      *World
 	mask       Mask
+	lock       uint8
 	cursor     cursor
 	table      *table
 	components []*componentStorage
+}
+
+func newQuery0(world *World, mask Mask) Query0 {
+	components := make([]*componentStorage, 0)
+
+	return Query0{
+		world:      world,
+		mask:       mask,
+		lock:       world.lock(),
+		components: components,
+		cursor: cursor{
+			table:    -1,
+			index:    0,
+			maxIndex: -1,
+		},
+	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -36,6 +53,15 @@ func (q *Query0) Get() {
 	return
 }
 
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query0) Close() {
+	q.table = nil
+	q.world.unlock(q.lock)
+}
+
 func (q *Query0) nextTable() bool {
 	maxTableIndex := len(q.world.storage.tables) - 1
 	for q.cursor.table < maxTableIndex {
@@ -54,6 +80,8 @@ func (q *Query0) nextTable() bool {
 		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.table = nil
+
+	q.world.unlock(q.lock)
 	return false
 }
 
@@ -61,10 +89,30 @@ func (q *Query0) nextTable() bool {
 type Query1[A any] struct {
 	world      *World
 	mask       Mask
+	lock       uint8
 	cursor     cursor
 	table      *table
 	components []*componentStorage
 	columnA    *column
+}
+
+func newQuery1[A any](world *World, mask Mask, ids []ID) Query1[A] {
+	components := make([]*componentStorage, 1)
+	for i := range 1 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
+
+	return Query1[A]{
+		world:      world,
+		mask:       mask,
+		lock:       world.lock(),
+		components: components,
+		cursor: cursor{
+			table:    -1,
+			index:    0,
+			maxIndex: -1,
+		},
+	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -84,6 +132,16 @@ func (q *Query1[A]) Entity() Entity {
 // Get returns the queries components of the current entity.
 func (q *Query1[A]) Get() *A {
 	return (*A)(q.columnA.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query1[A]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query1[A]) nextTable() bool {
@@ -106,6 +164,8 @@ func (q *Query1[A]) nextTable() bool {
 	}
 	q.table = nil
 	q.columnA = nil
+
+	q.world.unlock(q.lock)
 	return false
 }
 
@@ -113,11 +173,31 @@ func (q *Query1[A]) nextTable() bool {
 type Query2[A any, B any] struct {
 	world      *World
 	mask       Mask
+	lock       uint8
 	cursor     cursor
 	table      *table
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
+}
+
+func newQuery2[A any, B any](world *World, mask Mask, ids []ID) Query2[A, B] {
+	components := make([]*componentStorage, 2)
+	for i := range 2 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
+
+	return Query2[A, B]{
+		world:      world,
+		mask:       mask,
+		lock:       world.lock(),
+		components: components,
+		cursor: cursor{
+			table:    -1,
+			index:    0,
+			maxIndex: -1,
+		},
+	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -138,6 +218,17 @@ func (q *Query2[A, B]) Entity() Entity {
 func (q *Query2[A, B]) Get() (*A, *B) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query2[A, B]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query2[A, B]) nextTable() bool {
@@ -162,6 +253,8 @@ func (q *Query2[A, B]) nextTable() bool {
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
+
+	q.world.unlock(q.lock)
 	return false
 }
 
@@ -169,12 +262,32 @@ func (q *Query2[A, B]) nextTable() bool {
 type Query3[A any, B any, C any] struct {
 	world      *World
 	mask       Mask
+	lock       uint8
 	cursor     cursor
 	table      *table
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
+}
+
+func newQuery3[A any, B any, C any](world *World, mask Mask, ids []ID) Query3[A, B, C] {
+	components := make([]*componentStorage, 3)
+	for i := range 3 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
+
+	return Query3[A, B, C]{
+		world:      world,
+		mask:       mask,
+		lock:       world.lock(),
+		components: components,
+		cursor: cursor{
+			table:    -1,
+			index:    0,
+			maxIndex: -1,
+		},
+	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -196,6 +309,18 @@ func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query3[A, B, C]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query3[A, B, C]) nextTable() bool {
@@ -222,6 +347,8 @@ func (q *Query3[A, B, C]) nextTable() bool {
 	q.columnA = nil
 	q.columnB = nil
 	q.columnC = nil
+
+	q.world.unlock(q.lock)
 	return false
 }
 
@@ -229,6 +356,7 @@ func (q *Query3[A, B, C]) nextTable() bool {
 type Query4[A any, B any, C any, D any] struct {
 	world      *World
 	mask       Mask
+	lock       uint8
 	cursor     cursor
 	table      *table
 	components []*componentStorage
@@ -236,6 +364,25 @@ type Query4[A any, B any, C any, D any] struct {
 	columnB    *column
 	columnC    *column
 	columnD    *column
+}
+
+func newQuery4[A any, B any, C any, D any](world *World, mask Mask, ids []ID) Query4[A, B, C, D] {
+	components := make([]*componentStorage, 4)
+	for i := range 4 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
+
+	return Query4[A, B, C, D]{
+		world:      world,
+		mask:       mask,
+		lock:       world.lock(),
+		components: components,
+		cursor: cursor{
+			table:    -1,
+			index:    0,
+			maxIndex: -1,
+		},
+	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -258,6 +405,19 @@ func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index)),
 		(*D)(q.columnD.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query4[A, B, C, D]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query4[A, B, C, D]) nextTable() bool {
@@ -286,6 +446,8 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 	q.columnB = nil
 	q.columnC = nil
 	q.columnD = nil
+
+	q.world.unlock(q.lock)
 	return false
 }
 
@@ -293,6 +455,7 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 type Query5[A any, B any, C any, D any, E any] struct {
 	world      *World
 	mask       Mask
+	lock       uint8
 	cursor     cursor
 	table      *table
 	components []*componentStorage
@@ -301,6 +464,25 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnC    *column
 	columnD    *column
 	columnE    *column
+}
+
+func newQuery5[A any, B any, C any, D any, E any](world *World, mask Mask, ids []ID) Query5[A, B, C, D, E] {
+	components := make([]*componentStorage, 5)
+	for i := range 5 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
+
+	return Query5[A, B, C, D, E]{
+		world:      world,
+		mask:       mask,
+		lock:       world.lock(),
+		components: components,
+		cursor: cursor{
+			table:    -1,
+			index:    0,
+			maxIndex: -1,
+		},
+	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -324,6 +506,20 @@ func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 		(*C)(q.columnC.Get(q.cursor.index)),
 		(*D)(q.columnD.Get(q.cursor.index)),
 		(*E)(q.columnE.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query5[A, B, C, D, E]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query5[A, B, C, D, E]) nextTable() bool {
@@ -354,6 +550,8 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 	q.columnC = nil
 	q.columnD = nil
 	q.columnE = nil
+
+	q.world.unlock(q.lock)
 	return false
 }
 
@@ -361,6 +559,7 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 type Query6[A any, B any, C any, D any, E any, F any] struct {
 	world      *World
 	mask       Mask
+	lock       uint8
 	cursor     cursor
 	table      *table
 	components []*componentStorage
@@ -370,6 +569,25 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnD    *column
 	columnE    *column
 	columnF    *column
+}
+
+func newQuery6[A any, B any, C any, D any, E any, F any](world *World, mask Mask, ids []ID) Query6[A, B, C, D, E, F] {
+	components := make([]*componentStorage, 6)
+	for i := range 6 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
+
+	return Query6[A, B, C, D, E, F]{
+		world:      world,
+		mask:       mask,
+		lock:       world.lock(),
+		components: components,
+		cursor: cursor{
+			table:    -1,
+			index:    0,
+			maxIndex: -1,
+		},
+	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -394,6 +612,21 @@ func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 		(*D)(q.columnD.Get(q.cursor.index)),
 		(*E)(q.columnE.Get(q.cursor.index)),
 		(*F)(q.columnF.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query6[A, B, C, D, E, F]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.columnF = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
@@ -426,6 +659,8 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 	q.columnD = nil
 	q.columnE = nil
 	q.columnF = nil
+
+	q.world.unlock(q.lock)
 	return false
 }
 
@@ -433,6 +668,7 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world      *World
 	mask       Mask
+	lock       uint8
 	cursor     cursor
 	table      *table
 	components []*componentStorage
@@ -443,6 +679,25 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnE    *column
 	columnF    *column
 	columnG    *column
+}
+
+func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, mask Mask, ids []ID) Query7[A, B, C, D, E, F, G] {
+	components := make([]*componentStorage, 7)
+	for i := range 7 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
+
+	return Query7[A, B, C, D, E, F, G]{
+		world:      world,
+		mask:       mask,
+		lock:       world.lock(),
+		components: components,
+		cursor: cursor{
+			table:    -1,
+			index:    0,
+			maxIndex: -1,
+		},
+	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -468,6 +723,22 @@ func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 		(*E)(q.columnE.Get(q.cursor.index)),
 		(*F)(q.columnF.Get(q.cursor.index)),
 		(*G)(q.columnG.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query7[A, B, C, D, E, F, G]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.columnF = nil
+	q.columnG = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
@@ -502,6 +773,8 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 	q.columnE = nil
 	q.columnF = nil
 	q.columnG = nil
+
+	q.world.unlock(q.lock)
 	return false
 }
 
@@ -509,6 +782,7 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world      *World
 	mask       Mask
+	lock       uint8
 	cursor     cursor
 	table      *table
 	components []*componentStorage
@@ -520,6 +794,25 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnF    *column
 	columnG    *column
 	columnH    *column
+}
+
+func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, mask Mask, ids []ID) Query8[A, B, C, D, E, F, G, H] {
+	components := make([]*componentStorage, 8)
+	for i := range 8 {
+		components[i] = &world.storage.components[ids[i].id]
+	}
+
+	return Query8[A, B, C, D, E, F, G, H]{
+		world:      world,
+		mask:       mask,
+		lock:       world.lock(),
+		components: components,
+		cursor: cursor{
+			table:    -1,
+			index:    0,
+			maxIndex: -1,
+		},
+	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -546,6 +839,23 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) 
 		(*F)(q.columnF.Get(q.cursor.index)),
 		(*G)(q.columnG.Get(q.cursor.index)),
 		(*H)(q.columnH.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.columnF = nil
+	q.columnG = nil
+	q.columnH = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
@@ -582,5 +892,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
 	q.columnF = nil
 	q.columnG = nil
 	q.columnH = nil
+
+	q.world.unlock(q.lock)
 	return false
 }

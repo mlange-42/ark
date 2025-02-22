@@ -27,12 +27,32 @@ type cursor struct {
 type Query{{.}}{{$generics}} struct {
 	world      *World
 	mask       Mask
+	lock       uint8
 	cursor     cursor
 	table      *table
 	components []*componentStorage
 	{{- range $upper}}
 	column{{.}}    *column
 	{{- end}}
+}
+
+func newQuery{{.}}{{$generics}}(world *World, mask Mask{{if .}}, ids []ID{{end}}) Query{{.}}{{$genericsShort}} {
+	components := make([]*componentStorage, {{.}})
+	{{if .}}for i := range {{.}} {
+		components[i] = &world.storage.components[ids[i].id]
+	}{{end}}
+	
+	return Query{{.}}{{$genericsShort}}{
+		world:      world,
+		mask:       mask,
+		lock:       world.lock(),
+		components: components,
+		cursor: cursor{
+			table:    -1,
+			index:    0,
+			maxIndex: -1,
+		},
+	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -53,6 +73,18 @@ func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 	return {{range $i, $v := $upper}}{{if $i}},
 		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query{{.}}{{$genericsShort}}) Close() {
+	q.table = nil
+	{{- range $i, $v := $upper}}
+	q.column{{$v}} = nil
+	{{- end}}
+	q.world.unlock(q.lock)
 }
 
 func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
@@ -79,6 +111,8 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 	{{- range $i, $v := $upper}}
 	q.column{{$v}} = nil
 	{{- end}}
+
+	q.world.unlock(q.lock)
 	return false
 }
 {{end -}}

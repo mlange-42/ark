@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"fmt"
 	"math"
 	"unsafe"
 )
@@ -90,4 +91,51 @@ func (p *entityPool) TotalCap() int {
 // Available returns the current number of available/recycled entities.
 func (p *entityPool) Available() int {
 	return int(p.available)
+}
+
+// bitPool is a pool of bits that makes it possible to obtain an un-set bit,
+// and to recycle that bit for later use.
+// This implementation uses an implicit list.
+type bitPool struct {
+	length    uint16
+	bits      [MaskTotalBits]uint8
+	next      uint8
+	available uint8
+}
+
+// Get returns a fresh or recycled bit.
+func (p *bitPool) Get() uint8 {
+	if p.available == 0 {
+		return p.getNew()
+	}
+	curr := p.next
+	p.next, p.bits[p.next] = p.bits[p.next], p.next
+	p.available--
+	return p.bits[curr]
+}
+
+// Allocates and returns a new bit. For internal use.
+func (p *bitPool) getNew() uint8 {
+	if p.length >= MaskTotalBits {
+		panic(fmt.Sprintf("run out of the maximum of %d bits. "+
+			"This is likely caused by unclosed queries that lock the world. "+
+			"Make sure that all queries finish their iteration or are closed manually", MaskTotalBits))
+	}
+	b := uint8(p.length)
+	p.bits[p.length] = b
+	p.length++
+	return b
+}
+
+// Recycle hands a bit back for recycling.
+func (p *bitPool) Recycle(b uint8) {
+	p.next, p.bits[b] = b, p.next
+	p.available++
+}
+
+// Reset recycles all bits.
+func (p *bitPool) Reset() {
+	p.next = 0
+	p.length = 0
+	p.available = 0
 }
