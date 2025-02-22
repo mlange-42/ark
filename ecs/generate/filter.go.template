@@ -17,7 +17,8 @@ package ecs
 {{- $mask = join "id" ", id" "" $upper -}}
 {{- end}}
 
-// Filter{{.}} is a filter for two components.
+// Filter{{.}} is a filter for {{.}} components.
+// Use a [FilterBuilder{{.}}] ([NewFilter{{.}}]) to create one.
 type Filter{{.}}{{$generics}} struct {
 	world *World
 	mask  Mask

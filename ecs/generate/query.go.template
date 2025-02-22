@@ -23,7 +23,8 @@ type cursor struct {
 {{- $mask = join "id" ", id" "" $upper -}}
 {{- end}}
 
-// Query{{.}} is a filter for two components.
+// Query{{.}} is a query for {{.}} components.
+// Use a [NewFilter{{.}}] to create one.
 type Query{{.}}{{$generics}} struct {
 	world      *World
 	mask       Mask
@@ -69,7 +70,7 @@ func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
-// Get returns the queries components of the current entity.
+// Get returns the queried components of the current entity.
 func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 	return {{range $i, $v := $upper}}{{if $i}},
 		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}

@@ -108,13 +108,10 @@ func BenchmarkQueryPosVel_1000(b *testing.B) {
 	n := 1000
 	world := NewWorld(128)
 
-	posMap := NewMap[Position](&world)
-	velMap := NewMap[Velocity](&world)
+	mapper := NewMap2[Position, Velocity](&world)
 
 	for range n {
-		e := world.NewEntity()
-		posMap.Add(e, &Position{})
-		velMap.Add(e, &Velocity{X: 1, Y: 0})
+		_ = mapper.NewEntity(&Position{}, &Velocity{X: 1, Y: 0})
 	}
 
 	filter := NewFilter2[Position, Velocity](&world).Build()
