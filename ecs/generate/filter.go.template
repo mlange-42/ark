@@ -27,21 +27,7 @@ type Filter{{.}}{{$generics}} struct {
 // Query creates a [Query{{.}}] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter{{.}}{{$genericsShort}}) Query() Query{{.}}{{$genericsShort}} {
-	components := make([]*componentStorage, {{.}})
-	{{if .}}for i := range {{.}} {
-		components[i] = &q.world.storage.components[q.ids[i].id]
-	}{{end}}
-	
-	return Query{{.}}{{$genericsShort}}{
-		world:      q.world,
-		mask:       q.mask,
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
+	return newQuery{{.}}{{$genericsShort}}(q.world, q.mask{{if .}}, q.ids{{end}})
 }
 {{end -}}
 {{end -}}

@@ -27,7 +27,8 @@ func NewWorld(initialCapacity uint32) World {
 
 // NewEntity creates a new [Entity].
 func (w *World) NewEntity() Entity {
-	// TODO: check lock.
+	w.checkLocked()
+
 	entity, _ := w.createEntity(0)
 	return entity
 }

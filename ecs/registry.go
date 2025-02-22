@@ -67,3 +67,13 @@ func (r *registry) registerComponent(tp reflect.Type, totalBits int) uint8 {
 	r.IDs = append(r.IDs, newID)
 	return newID
 }
+
+func (r *registry) unregisterLastComponent() {
+	newID := uint8(len(r.Components) - 1)
+	id := id8(newID)
+	tp, _ := r.ComponentType(newID)
+	delete(r.Components, tp)
+	r.Types[newID] = nil
+	r.Used.Set(id, false)
+	r.IDs = r.IDs[:len(r.IDs)-1]
+}

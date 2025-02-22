@@ -6,7 +6,8 @@ import (
 )
 
 func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer) Entity {
-	// TODO: check lock.
+	w.checkLocked()
+
 	mask := All(ids...)
 	newTable := w.storage.findOrCreateTable(&mask)
 	entity, idx := w.createEntity(newTable.id)
@@ -59,7 +60,8 @@ func (w *World) createEntity(table tableID) (Entity, uint32) {
 }
 
 func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer) {
-	// TODO: check lock.
+	w.checkLocked()
+
 	if !w.Alive(entity) {
 		panic("can't exchange components on a dead entity")
 	}
@@ -106,11 +108,10 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 func (w *World) componentID(tp reflect.Type) ID {
 	id, newID := w.storage.registry.ComponentID(tp)
 	if newID {
-		//	TODO: check lock and unroll
-		//	if w.IsLocked() {
-		//		w.registry.unregisterLastComponent()
-		//		panic("attempt to register a new component in a locked world")
-		//	}
+		if w.IsLocked() {
+			w.storage.registry.unregisterLastComponent()
+			panic("attempt to register a new component in a locked world")
+		}
 		w.storage.AddComponent(id)
 	}
 	return ID{id: id}
@@ -129,4 +130,11 @@ func (w *World) lock() uint8 {
 // unlock unlocks the given lock bit.
 func (w *World) unlock(l uint8) {
 	w.locks.Unlock(l)
+}
+
+// checkLocked checks if the world is locked, and panics if so.
+func (w *World) checkLocked() {
+	if w.IsLocked() {
+		panic("attempt to modify a locked world")
+	}
 }

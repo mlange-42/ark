@@ -12,18 +12,7 @@ type Filter0 struct {
 // Query creates a [Query0] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter0) Query() Query0 {
-	components := make([]*componentStorage, 0)
-
-	return Query0{
-		world:      q.world,
-		mask:       q.mask,
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
+	return newQuery0(q.world, q.mask)
 }
 
 // Filter1 is a filter for two components.
@@ -36,21 +25,7 @@ type Filter1[A any] struct {
 // Query creates a [Query1] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter1[A]) Query() Query1[A] {
-	components := make([]*componentStorage, 1)
-	for i := range 1 {
-		components[i] = &q.world.storage.components[q.ids[i].id]
-	}
-
-	return Query1[A]{
-		world:      q.world,
-		mask:       q.mask,
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
+	return newQuery1[A](q.world, q.mask, q.ids)
 }
 
 // Filter2 is a filter for two components.
@@ -63,21 +38,7 @@ type Filter2[A any, B any] struct {
 // Query creates a [Query2] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter2[A, B]) Query() Query2[A, B] {
-	components := make([]*componentStorage, 2)
-	for i := range 2 {
-		components[i] = &q.world.storage.components[q.ids[i].id]
-	}
-
-	return Query2[A, B]{
-		world:      q.world,
-		mask:       q.mask,
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
+	return newQuery2[A, B](q.world, q.mask, q.ids)
 }
 
 // Filter3 is a filter for two components.
@@ -90,21 +51,7 @@ type Filter3[A any, B any, C any] struct {
 // Query creates a [Query3] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter3[A, B, C]) Query() Query3[A, B, C] {
-	components := make([]*componentStorage, 3)
-	for i := range 3 {
-		components[i] = &q.world.storage.components[q.ids[i].id]
-	}
-
-	return Query3[A, B, C]{
-		world:      q.world,
-		mask:       q.mask,
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
+	return newQuery3[A, B, C](q.world, q.mask, q.ids)
 }
 
 // Filter4 is a filter for two components.
@@ -117,21 +64,7 @@ type Filter4[A any, B any, C any, D any] struct {
 // Query creates a [Query4] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter4[A, B, C, D]) Query() Query4[A, B, C, D] {
-	components := make([]*componentStorage, 4)
-	for i := range 4 {
-		components[i] = &q.world.storage.components[q.ids[i].id]
-	}
-
-	return Query4[A, B, C, D]{
-		world:      q.world,
-		mask:       q.mask,
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
+	return newQuery4[A, B, C, D](q.world, q.mask, q.ids)
 }
 
 // Filter5 is a filter for two components.
@@ -144,21 +77,7 @@ type Filter5[A any, B any, C any, D any, E any] struct {
 // Query creates a [Query5] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter5[A, B, C, D, E]) Query() Query5[A, B, C, D, E] {
-	components := make([]*componentStorage, 5)
-	for i := range 5 {
-		components[i] = &q.world.storage.components[q.ids[i].id]
-	}
-
-	return Query5[A, B, C, D, E]{
-		world:      q.world,
-		mask:       q.mask,
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
+	return newQuery5[A, B, C, D, E](q.world, q.mask, q.ids)
 }
 
 // Filter6 is a filter for two components.
@@ -171,21 +90,7 @@ type Filter6[A any, B any, C any, D any, E any, F any] struct {
 // Query creates a [Query6] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter6[A, B, C, D, E, F]) Query() Query6[A, B, C, D, E, F] {
-	components := make([]*componentStorage, 6)
-	for i := range 6 {
-		components[i] = &q.world.storage.components[q.ids[i].id]
-	}
-
-	return Query6[A, B, C, D, E, F]{
-		world:      q.world,
-		mask:       q.mask,
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
+	return newQuery6[A, B, C, D, E, F](q.world, q.mask, q.ids)
 }
 
 // Filter7 is a filter for two components.
@@ -198,21 +103,7 @@ type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 // Query creates a [Query7] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter7[A, B, C, D, E, F, G]) Query() Query7[A, B, C, D, E, F, G] {
-	components := make([]*componentStorage, 7)
-	for i := range 7 {
-		components[i] = &q.world.storage.components[q.ids[i].id]
-	}
-
-	return Query7[A, B, C, D, E, F, G]{
-		world:      q.world,
-		mask:       q.mask,
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
+	return newQuery7[A, B, C, D, E, F, G](q.world, q.mask, q.ids)
 }
 
 // Filter8 is a filter for two components.
@@ -225,19 +116,5 @@ type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 // Query creates a [Query8] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter8[A, B, C, D, E, F, G, H]) Query() Query8[A, B, C, D, E, F, G, H] {
-	components := make([]*componentStorage, 8)
-	for i := range 8 {
-		components[i] = &q.world.storage.components[q.ids[i].id]
-	}
-
-	return Query8[A, B, C, D, E, F, G, H]{
-		world:      q.world,
-		mask:       q.mask,
-		components: components,
-		cursor: cursor{
-			table:    -1,
-			index:    0,
-			maxIndex: -1,
-		},
-	}
+	return newQuery8[A, B, C, D, E, F, G, H](q.world, q.mask, q.ids)
 }
