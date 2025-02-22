@@ -20,16 +20,12 @@ func newStorage(capacity uint32) storage {
 	tables = append(tables, newTable(0, 0, capacity, &reg))
 	archetypes := make([]archetype, 0, 128)
 	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []*table{&tables[0]}))
-	components := make([]componentStorage, MaskTotalBits)
-	for i := range components {
-		components[i].columns = append(components[i].columns, nil)
-	}
 	return storage{
 		registry:        reg,
 		archetypes:      archetypes,
 		tables:          tables,
 		initialCapacity: capacity,
-		components:      components,
+		components:      make([]componentStorage, 0, MaskTotalBits),
 	}
 }
 
@@ -50,6 +46,13 @@ func (s *storage) findOrCreateTable(mask *Mask) *table {
 		table = s.createTable(arch)
 	}
 	return table
+}
+
+func (s *storage) AddComponent(id uint8) {
+	if len(s.components) != int(id) {
+		panic("components can only be added to a storage sequentially")
+	}
+	s.components = append(s.components, componentStorage{columns: make([]*column, len(s.tables))})
 }
 
 func (s *storage) createArchetype(mask *Mask) *archetype {

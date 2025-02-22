@@ -166,7 +166,15 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 }
 
 func (w *World) componentID(tp reflect.Type) ID {
-	id, _ := w.storage.registry.ComponentID(tp)
+	id, newID := w.storage.registry.ComponentID(tp)
+	if newID {
+		//	TODO: check lock and unroll
+		//	if w.IsLocked() {
+		//		w.registry.unregisterLastComponent()
+		//		panic("attempt to register a new component in a locked world")
+		//	}
+		w.storage.AddComponent(id)
+	}
 	return ID{id: id}
 }
 

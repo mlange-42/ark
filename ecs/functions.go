@@ -15,16 +15,8 @@ import "reflect"
 // ⚠️ Warning: Using IDs that are outside of the range of registered IDs anywhere in [World] or other places will result in undefined behavior!
 func ComponentID[T any](w *World) ID {
 	tp := reflect.TypeOf((*T)(nil)).Elem()
-
-	id, _ := w.storage.registry.ComponentID(tp)
-	//if newID {
-	//	TODO: check lock and unroll
-	//	if w.IsLocked() {
-	//		w.registry.unregisterLastComponent()
-	//		panic("attempt to register a new component in a locked world")
-	//	}
-	//}
-	return ID{id: id}
+	id := w.componentID(tp)
+	return id
 }
 
 // Comp is a helper to pass component types to functions and methods.
