@@ -44,7 +44,7 @@ func run(rounds, iters, entities int) {
 			velMap.Add(e, &velocity{})
 		}
 
-		filter := ecs.NewFilter2[position, velocity](&world).Build()
+		filter := ecs.NewFilter2[position, velocity](&world)
 		for j := 0; j < iters; j++ {
 			query := filter.Query()
 			for query.Next() {
