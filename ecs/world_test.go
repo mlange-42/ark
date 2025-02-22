@@ -75,7 +75,7 @@ func TestWorldRemoveEntity(t *testing.T) {
 		entities = append(entities, e)
 	}
 
-	filter := NewFilter0(&w).Build()
+	filter := NewFilter0(&w)
 	query := filter.Query()
 	cnt := 0
 	for query.Next() {

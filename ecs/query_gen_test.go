@@ -27,7 +27,7 @@ func TestQuery2(t *testing.T) {
 		headMap.Add(e3, &Heading{})
 	}
 
-	filter := NewFilter2[Position, Velocity](&w).Build()
+	filter := NewFilter2[Position, Velocity](&w)
 	query := filter.Query()
 
 	cnt := 0
@@ -68,7 +68,7 @@ func TestQuery2Empty(t *testing.T) {
 		posMap.Add(e1, &Position{})
 	}
 
-	filter := NewFilter2[Position, Velocity](&w).Build()
+	filter := NewFilter2[Position, Velocity](&w)
 	query := filter.Query()
 
 	cnt := 0
@@ -97,8 +97,8 @@ func TestQuery2Advanced(t *testing.T) {
 
 	filter := NewFilter2[Position, Velocity](&w).
 		With(C[Heading]()).
-		Without(C[CompA]()).
-		Build()
+		Without(C[CompA]())
+
 	query := filter.Query()
 
 	cnt := 0
@@ -118,7 +118,7 @@ func TestQuery2Closed(t *testing.T) {
 		mapper.Add(e1, &Position{}, &Velocity{})
 	}
 
-	filter := NewFilter2[Position, Velocity](&w).Build()
+	filter := NewFilter2[Position, Velocity](&w)
 	query := filter.Query()
 
 	cnt := 0
@@ -142,7 +142,7 @@ func BenchmarkQueryPosVel_1000(b *testing.B) {
 		_ = mapper.NewEntity(&Position{}, &Velocity{X: 1, Y: 0})
 	}
 
-	filter := NewFilter2[Position, Velocity](&world).Build()
+	filter := NewFilter2[Position, Velocity](&world)
 	for b.Loop() {
 		query := filter.Query()
 		for query.Next() {
