@@ -53,6 +53,15 @@ func (q *Query0) Get() {
 	return
 }
 
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query0) Close() {
+	q.table = nil
+	q.world.unlock(q.lock)
+}
+
 func (q *Query0) nextTable() bool {
 	maxTableIndex := len(q.world.storage.tables) - 1
 	for q.cursor.table < maxTableIndex {
@@ -123,6 +132,16 @@ func (q *Query1[A]) Entity() Entity {
 // Get returns the queries components of the current entity.
 func (q *Query1[A]) Get() *A {
 	return (*A)(q.columnA.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query1[A]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query1[A]) nextTable() bool {
@@ -199,6 +218,17 @@ func (q *Query2[A, B]) Entity() Entity {
 func (q *Query2[A, B]) Get() (*A, *B) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query2[A, B]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query2[A, B]) nextTable() bool {
@@ -279,6 +309,18 @@ func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query3[A, B, C]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query3[A, B, C]) nextTable() bool {
@@ -363,6 +405,19 @@ func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index)),
 		(*D)(q.columnD.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query4[A, B, C, D]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query4[A, B, C, D]) nextTable() bool {
@@ -451,6 +506,20 @@ func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 		(*C)(q.columnC.Get(q.cursor.index)),
 		(*D)(q.columnD.Get(q.cursor.index)),
 		(*E)(q.columnE.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query5[A, B, C, D, E]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query5[A, B, C, D, E]) nextTable() bool {
@@ -543,6 +612,21 @@ func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 		(*D)(q.columnD.Get(q.cursor.index)),
 		(*E)(q.columnE.Get(q.cursor.index)),
 		(*F)(q.columnF.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query6[A, B, C, D, E, F]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.columnF = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
@@ -639,6 +723,22 @@ func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 		(*E)(q.columnE.Get(q.cursor.index)),
 		(*F)(q.columnF.Get(q.cursor.index)),
 		(*G)(q.columnG.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query7[A, B, C, D, E, F, G]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.columnF = nil
+	q.columnG = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
@@ -739,6 +839,23 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) 
 		(*F)(q.columnF.Get(q.cursor.index)),
 		(*G)(q.columnG.Get(q.cursor.index)),
 		(*H)(q.columnH.Get(q.cursor.index))
+}
+
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
+	q.table = nil
+	q.columnA = nil
+	q.columnB = nil
+	q.columnC = nil
+	q.columnD = nil
+	q.columnE = nil
+	q.columnF = nil
+	q.columnG = nil
+	q.columnH = nil
+	q.world.unlock(q.lock)
 }
 
 func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {

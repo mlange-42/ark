@@ -75,6 +75,18 @@ func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}
 }
 
+// Close closes the Query and unlocks the world.
+//
+// Automatically called when iteration finishes.
+// Needs to be called only if breaking out of the query iteration or not iterating at all.
+func (q *Query{{.}}{{$genericsShort}}) Close() {
+	q.table = nil
+	{{- range $i, $v := $upper}}
+	q.column{{$v}} = nil
+	{{- end}}
+	q.world.unlock(q.lock)
+}
+
 func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 	maxTableIndex := len(q.world.storage.tables) - 1
 	for q.cursor.table < maxTableIndex {
