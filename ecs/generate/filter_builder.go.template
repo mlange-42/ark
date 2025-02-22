@@ -16,6 +16,7 @@ package ecs
 type FilterBuilder{{.}}{{$generics}} struct {
 	world *World
 	ids   []ID
+	mask  Mask
 }
 
 // NewFilter{{.}} creates a new [FilterBuilder{{.}}].
@@ -31,7 +32,17 @@ func NewFilter{{.}}{{$generics}}(world *World) *FilterBuilder{{.}}{{$genericsSho
 	return &FilterBuilder{{.}}{{$genericsShort}}{
 		world: world,
 		ids:   ids,
+		mask:  All(ids...),
 	}
+}
+
+// With specifies additional components to filter for.
+func (q *FilterBuilder{{.}}{{$genericsShort}}) With(comps ...Comp) *FilterBuilder{{.}}{{$genericsShort}} {
+	for _,c := range comps {
+		id := q.world.componentID(c.tp)
+		q.mask.Set(id, true)
+	}
+	return q
 }
 
 // Build creates a [Filter{{.}}] from this builder.
@@ -39,7 +50,7 @@ func (q *FilterBuilder{{.}}{{$genericsShort}}) Build() *Filter{{.}}{{$genericsSh
 	return &Filter{{.}}{{$genericsShort}}{
 		world:      q.world,
 		ids:        q.ids,
-		mask:       All(q.ids[:]...),
+		mask:       q.mask,
 	}
 }
 {{end -}}
