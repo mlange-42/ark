@@ -2,7 +2,7 @@ package ecs
 
 import "unsafe"
 
-// Map is a mapper to access components of an entity.
+// Map is a mapper to access and manipulate components of an entity.
 type Map[T any] struct {
 	world   *World
 	id      ID
