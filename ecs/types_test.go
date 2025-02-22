@@ -20,6 +20,14 @@ type Heading struct {
 
 type Label struct{}
 
+type CompA struct {
+	X, Y float64
+}
+
+type CompB struct {
+	X, Y float64
+}
+
 func TestTypeSizes(t *testing.T) {
 	printTypeSize[Entity]()
 	printTypeSize[entityIndex]()

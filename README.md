@@ -27,7 +27,7 @@ However, please be aware that the API is still unstable.
 - [x] Add and remove components
 - [x] Exchange components (add/remove in one operation)
 - [x] Queries with basic component filters
-- [ ] Advanced filters like `With`, `Without` and `Optional`
+- [x] Advanced filters like `With` and `Without`
 - [x] World component access for specific entities
 - [x] ECS resources
 - [ ] Entity relationships
