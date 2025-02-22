@@ -37,7 +37,7 @@ func TestMap2(t *testing.T) {
 	assert.Equal(t, Velocity{103, 104}, *vel)
 }
 
-func BenchmarkMap2(b *testing.B) {
+func BenchmarkMapPosVel_1000(b *testing.B) {
 	n := 1000
 	world := NewWorld(1024)
 
@@ -59,7 +59,7 @@ func BenchmarkMap2(b *testing.B) {
 	}
 }
 
-func BenchmarkMap2Unchecked(b *testing.B) {
+func BenchmarkMapPosVel_1000_Unchecked(b *testing.B) {
 	n := 1000
 	world := NewWorld(1024)
 

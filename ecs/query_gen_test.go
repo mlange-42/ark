@@ -104,7 +104,7 @@ func TestQuery2Closed(t *testing.T) {
 	assert.Panics(t, func() { query.Next() })
 }
 
-func BenchmarkQuery2(b *testing.B) {
+func BenchmarkQueryPosVel_1000(b *testing.B) {
 	n := 1000
 	world := NewWorld(128)
 
