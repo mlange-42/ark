@@ -102,3 +102,7 @@ func (t *table) Remove(index uint32) bool {
 	}
 	return swapped
 }
+
+func (t *table) Len() int {
+	return t.entities.Len()
+}

@@ -88,6 +88,15 @@ func (q *Query0) nextArchetype() bool {
 			continue
 		}
 
+		if !archetype.hasRelation {
+			table := archetype.tables[0]
+			if table.Len() > 0 {
+				q.setTable(0, table)
+				return true
+			}
+			continue
+		}
+
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -105,16 +114,21 @@ func (q *Query0) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		q.table = archetype.tables[q.cursor.table]
-		if q.table.entities.Len() == 0 {
+		table := archetype.tables[q.cursor.table]
+		if table.Len() == 0 {
 			continue
 		}
-
-		q.cursor.index = 0
-		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+		q.setTable(q.cursor.table, table)
 		return true
 	}
 	return false
+}
+
+func (q *Query0) setTable(index int, table *table) {
+	q.cursor.table = index
+	q.table = table
+	q.cursor.index = 0
+	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 }
 
 // Query1 is a query for 1 components.
@@ -201,6 +215,15 @@ func (q *Query1[A]) nextArchetype() bool {
 			continue
 		}
 
+		if !archetype.hasRelation {
+			table := archetype.tables[0]
+			if table.Len() > 0 {
+				q.setTable(0, table)
+				return true
+			}
+			continue
+		}
+
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -218,17 +241,22 @@ func (q *Query1[A]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		q.table = archetype.tables[q.cursor.table]
-		if q.table.entities.Len() == 0 {
+		table := archetype.tables[q.cursor.table]
+		if table.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.table.id]
-
-		q.cursor.index = 0
-		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+		q.setTable(q.cursor.table, table)
 		return true
 	}
 	return false
+}
+
+func (q *Query1[A]) setTable(index int, table *table) {
+	q.cursor.table = index
+	q.table = table
+	q.columnA = q.components[0].columns[q.table.id]
+	q.cursor.index = 0
+	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 }
 
 // Query2 is a query for 2 components.
@@ -318,6 +346,15 @@ func (q *Query2[A, B]) nextArchetype() bool {
 			continue
 		}
 
+		if !archetype.hasRelation {
+			table := archetype.tables[0]
+			if table.Len() > 0 {
+				q.setTable(0, table)
+				return true
+			}
+			continue
+		}
+
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -335,18 +372,23 @@ func (q *Query2[A, B]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		q.table = archetype.tables[q.cursor.table]
-		if q.table.entities.Len() == 0 {
+		table := archetype.tables[q.cursor.table]
+		if table.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.table.id]
-		q.columnB = q.components[1].columns[q.table.id]
-
-		q.cursor.index = 0
-		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+		q.setTable(q.cursor.table, table)
 		return true
 	}
 	return false
+}
+
+func (q *Query2[A, B]) setTable(index int, table *table) {
+	q.cursor.table = index
+	q.table = table
+	q.columnA = q.components[0].columns[q.table.id]
+	q.columnB = q.components[1].columns[q.table.id]
+	q.cursor.index = 0
+	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 }
 
 // Query3 is a query for 3 components.
@@ -439,6 +481,15 @@ func (q *Query3[A, B, C]) nextArchetype() bool {
 			continue
 		}
 
+		if !archetype.hasRelation {
+			table := archetype.tables[0]
+			if table.Len() > 0 {
+				q.setTable(0, table)
+				return true
+			}
+			continue
+		}
+
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -456,19 +507,24 @@ func (q *Query3[A, B, C]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		q.table = archetype.tables[q.cursor.table]
-		if q.table.entities.Len() == 0 {
+		table := archetype.tables[q.cursor.table]
+		if table.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.table.id]
-		q.columnB = q.components[1].columns[q.table.id]
-		q.columnC = q.components[2].columns[q.table.id]
-
-		q.cursor.index = 0
-		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+		q.setTable(q.cursor.table, table)
 		return true
 	}
 	return false
+}
+
+func (q *Query3[A, B, C]) setTable(index int, table *table) {
+	q.cursor.table = index
+	q.table = table
+	q.columnA = q.components[0].columns[q.table.id]
+	q.columnB = q.components[1].columns[q.table.id]
+	q.columnC = q.components[2].columns[q.table.id]
+	q.cursor.index = 0
+	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 }
 
 // Query4 is a query for 4 components.
@@ -564,6 +620,15 @@ func (q *Query4[A, B, C, D]) nextArchetype() bool {
 			continue
 		}
 
+		if !archetype.hasRelation {
+			table := archetype.tables[0]
+			if table.Len() > 0 {
+				q.setTable(0, table)
+				return true
+			}
+			continue
+		}
+
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -581,20 +646,25 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		q.table = archetype.tables[q.cursor.table]
-		if q.table.entities.Len() == 0 {
+		table := archetype.tables[q.cursor.table]
+		if table.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.table.id]
-		q.columnB = q.components[1].columns[q.table.id]
-		q.columnC = q.components[2].columns[q.table.id]
-		q.columnD = q.components[3].columns[q.table.id]
-
-		q.cursor.index = 0
-		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+		q.setTable(q.cursor.table, table)
 		return true
 	}
 	return false
+}
+
+func (q *Query4[A, B, C, D]) setTable(index int, table *table) {
+	q.cursor.table = index
+	q.table = table
+	q.columnA = q.components[0].columns[q.table.id]
+	q.columnB = q.components[1].columns[q.table.id]
+	q.columnC = q.components[2].columns[q.table.id]
+	q.columnD = q.components[3].columns[q.table.id]
+	q.cursor.index = 0
+	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 }
 
 // Query5 is a query for 5 components.
@@ -693,6 +763,15 @@ func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 			continue
 		}
 
+		if !archetype.hasRelation {
+			table := archetype.tables[0]
+			if table.Len() > 0 {
+				q.setTable(0, table)
+				return true
+			}
+			continue
+		}
+
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -710,21 +789,26 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		q.table = archetype.tables[q.cursor.table]
-		if q.table.entities.Len() == 0 {
+		table := archetype.tables[q.cursor.table]
+		if table.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.table.id]
-		q.columnB = q.components[1].columns[q.table.id]
-		q.columnC = q.components[2].columns[q.table.id]
-		q.columnD = q.components[3].columns[q.table.id]
-		q.columnE = q.components[4].columns[q.table.id]
-
-		q.cursor.index = 0
-		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+		q.setTable(q.cursor.table, table)
 		return true
 	}
 	return false
+}
+
+func (q *Query5[A, B, C, D, E]) setTable(index int, table *table) {
+	q.cursor.table = index
+	q.table = table
+	q.columnA = q.components[0].columns[q.table.id]
+	q.columnB = q.components[1].columns[q.table.id]
+	q.columnC = q.components[2].columns[q.table.id]
+	q.columnD = q.components[3].columns[q.table.id]
+	q.columnE = q.components[4].columns[q.table.id]
+	q.cursor.index = 0
+	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 }
 
 // Query6 is a query for 6 components.
@@ -826,6 +910,15 @@ func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 			continue
 		}
 
+		if !archetype.hasRelation {
+			table := archetype.tables[0]
+			if table.Len() > 0 {
+				q.setTable(0, table)
+				return true
+			}
+			continue
+		}
+
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -843,22 +936,27 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		q.table = archetype.tables[q.cursor.table]
-		if q.table.entities.Len() == 0 {
+		table := archetype.tables[q.cursor.table]
+		if table.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.table.id]
-		q.columnB = q.components[1].columns[q.table.id]
-		q.columnC = q.components[2].columns[q.table.id]
-		q.columnD = q.components[3].columns[q.table.id]
-		q.columnE = q.components[4].columns[q.table.id]
-		q.columnF = q.components[5].columns[q.table.id]
-
-		q.cursor.index = 0
-		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+		q.setTable(q.cursor.table, table)
 		return true
 	}
 	return false
+}
+
+func (q *Query6[A, B, C, D, E, F]) setTable(index int, table *table) {
+	q.cursor.table = index
+	q.table = table
+	q.columnA = q.components[0].columns[q.table.id]
+	q.columnB = q.components[1].columns[q.table.id]
+	q.columnC = q.components[2].columns[q.table.id]
+	q.columnD = q.components[3].columns[q.table.id]
+	q.columnE = q.components[4].columns[q.table.id]
+	q.columnF = q.components[5].columns[q.table.id]
+	q.cursor.index = 0
+	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 }
 
 // Query7 is a query for 7 components.
@@ -963,6 +1061,15 @@ func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 			continue
 		}
 
+		if !archetype.hasRelation {
+			table := archetype.tables[0]
+			if table.Len() > 0 {
+				q.setTable(0, table)
+				return true
+			}
+			continue
+		}
+
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -980,23 +1087,28 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		q.table = archetype.tables[q.cursor.table]
-		if q.table.entities.Len() == 0 {
+		table := archetype.tables[q.cursor.table]
+		if table.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.table.id]
-		q.columnB = q.components[1].columns[q.table.id]
-		q.columnC = q.components[2].columns[q.table.id]
-		q.columnD = q.components[3].columns[q.table.id]
-		q.columnE = q.components[4].columns[q.table.id]
-		q.columnF = q.components[5].columns[q.table.id]
-		q.columnG = q.components[6].columns[q.table.id]
-
-		q.cursor.index = 0
-		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+		q.setTable(q.cursor.table, table)
 		return true
 	}
 	return false
+}
+
+func (q *Query7[A, B, C, D, E, F, G]) setTable(index int, table *table) {
+	q.cursor.table = index
+	q.table = table
+	q.columnA = q.components[0].columns[q.table.id]
+	q.columnB = q.components[1].columns[q.table.id]
+	q.columnC = q.components[2].columns[q.table.id]
+	q.columnD = q.components[3].columns[q.table.id]
+	q.columnE = q.components[4].columns[q.table.id]
+	q.columnF = q.components[5].columns[q.table.id]
+	q.columnG = q.components[6].columns[q.table.id]
+	q.cursor.index = 0
+	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 }
 
 // Query8 is a query for 8 components.
@@ -1104,6 +1216,15 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 			continue
 		}
 
+		if !archetype.hasRelation {
+			table := archetype.tables[0]
+			if table.Len() > 0 {
+				q.setTable(0, table)
+				return true
+			}
+			continue
+		}
+
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -1121,22 +1242,27 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		q.table = archetype.tables[q.cursor.table]
-		if q.table.entities.Len() == 0 {
+		table := archetype.tables[q.cursor.table]
+		if table.Len() == 0 {
 			continue
 		}
-		q.columnA = q.components[0].columns[q.table.id]
-		q.columnB = q.components[1].columns[q.table.id]
-		q.columnC = q.components[2].columns[q.table.id]
-		q.columnD = q.components[3].columns[q.table.id]
-		q.columnE = q.components[4].columns[q.table.id]
-		q.columnF = q.components[5].columns[q.table.id]
-		q.columnG = q.components[6].columns[q.table.id]
-		q.columnH = q.components[7].columns[q.table.id]
-
-		q.cursor.index = 0
-		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+		q.setTable(q.cursor.table, table)
 		return true
 	}
 	return false
+}
+
+func (q *Query8[A, B, C, D, E, F, G, H]) setTable(index int, table *table) {
+	q.cursor.table = index
+	q.table = table
+	q.columnA = q.components[0].columns[q.table.id]
+	q.columnB = q.components[1].columns[q.table.id]
+	q.columnC = q.components[2].columns[q.table.id]
+	q.columnD = q.components[3].columns[q.table.id]
+	q.columnE = q.components[4].columns[q.table.id]
+	q.columnF = q.components[5].columns[q.table.id]
+	q.columnG = q.components[6].columns[q.table.id]
+	q.columnH = q.components[7].columns[q.table.id]
+	q.cursor.index = 0
+	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
 }

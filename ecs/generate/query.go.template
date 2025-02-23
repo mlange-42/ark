@@ -113,6 +113,15 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 			continue
 		}
 
+		if !archetype.hasRelation {
+			table := archetype.tables[0]
+			if table.Len() > 0 {
+				q.setTable(0, table)
+				return true
+			}
+			continue
+		}
+
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -130,19 +139,25 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		q.table = archetype.tables[q.cursor.table]
-		if q.table.entities.Len() == 0 {
+		table := archetype.tables[q.cursor.table]
+		if table.Len() == 0 {
 			continue
 		}
-		{{- range $i, $v := $upper}}
-		q.column{{$v}} = q.components[{{$i}}].columns[q.table.id]
-		{{- end}}
-
-		q.cursor.index = 0
-		q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+		q.setTable(q.cursor.table, table)
 		return true
 	}
 	return false
 }
+
+func (q *Query{{.}}{{$genericsShort}}) setTable(index int, table *table) {
+	q.cursor.table = index
+	q.table = table
+	{{- range $i, $v := $upper}}
+	q.column{{$v}} = q.components[{{$i}}].columns[q.table.id]
+	{{- end}}
+	q.cursor.index = 0
+	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+}
+
 {{end -}}
 {{end -}}
