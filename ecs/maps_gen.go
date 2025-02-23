@@ -44,7 +44,7 @@ func (m *Map1[A]) Get(entity Entity) *A {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row))
 }
@@ -54,7 +54,7 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil
 }
 
@@ -130,7 +130,7 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row))
@@ -141,7 +141,7 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil
 }
@@ -223,7 +223,7 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -235,7 +235,7 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil
@@ -323,7 +323,7 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -336,7 +336,7 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil &&
@@ -430,7 +430,7 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -444,7 +444,7 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil &&
@@ -544,7 +544,7 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -559,7 +559,7 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil &&
@@ -665,7 +665,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -681,7 +681,7 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil &&
@@ -793,7 +793,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -810,7 +810,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil &&

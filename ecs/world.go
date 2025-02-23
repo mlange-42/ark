@@ -2,29 +2,17 @@ package ecs
 
 // World is the central type holding entity and component data, as well as resources.
 type World struct {
-	storage    storage
-	entities   entities
-	isTarget   []bool
-	entityPool entityPool
-	resources  Resources
-	locks      lock
+	storage   storage
+	resources Resources
+	locks     lock
 }
 
 // NewWorld creates a new [World].
 func NewWorld(initialCapacity uint32) World {
-	entities := make([]entityIndex, reservedEntities, initialCapacity+reservedEntities)
-	isTarget := make([]bool, reservedEntities, initialCapacity+reservedEntities)
-	// Reserved zero and wildcard entities
-	for i := range reservedEntities {
-		entities[i] = entityIndex{table: maxTableID, row: 0}
-	}
 	return World{
-		storage:    newStorage(initialCapacity),
-		entities:   entities,
-		isTarget:   isTarget,
-		entityPool: newEntityPool(initialCapacity, reservedEntities),
-		resources:  newResources(),
-		locks:      lock{},
+		storage:   newStorage(initialCapacity),
+		resources: newResources(),
+		locks:     lock{},
 	}
 }
 
@@ -32,39 +20,19 @@ func NewWorld(initialCapacity uint32) World {
 func (w *World) NewEntity() Entity {
 	w.checkLocked()
 
-	entity, _ := w.createEntity(0)
+	entity, _ := w.storage.createEntity(0)
 	return entity
 }
 
 // Alive return whether the given entity is alive.
 func (w *World) Alive(entity Entity) bool {
-	return w.entityPool.Alive(entity)
+	return w.storage.entityPool.Alive(entity)
 }
 
 // RemoveEntity removes the given entity from the world.
 func (w *World) RemoveEntity(entity Entity) {
 	w.checkLocked()
-
-	if !w.entityPool.Alive(entity) {
-		panic("can't remove a dead entity")
-	}
-	index := &w.entities[entity.id]
-	table := &w.storage.tables[index.table]
-
-	swapped := table.Remove(index.row)
-
-	w.entityPool.Recycle(entity)
-
-	if swapped {
-		swapEntity := table.GetEntity(uintptr(index.row))
-		w.entities[swapEntity.id].row = index.row
-	}
-	index.table = maxTableID
-
-	if w.isTarget[entity.id] {
-		w.storage.cleanupArchetypes(entity)
-		w.isTarget[entity.id] = false
-	}
+	w.storage.RemoveEntity(entity)
 }
 
 // IsLocked returns whether the world is locked by any queries.
