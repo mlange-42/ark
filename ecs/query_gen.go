@@ -15,6 +15,7 @@ type Query0 struct {
 	world      *World
 	mask       Mask
 	without    Mask
+	relations  []relationID
 	lock       uint8
 	cursor     cursor
 	table      *table
@@ -22,13 +23,14 @@ type Query0 struct {
 	hasWithout bool
 }
 
-func newQuery0(world *World, mask Mask, without Mask) Query0 {
+func newQuery0(world *World, mask Mask, without Mask, relations []relationID) Query0 {
 	components := make([]*componentStorage, 0)
 
 	return Query0{
 		world:      world,
 		mask:       mask,
 		without:    without,
+		relations:  relations,
 		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
@@ -118,6 +120,9 @@ func (q *Query0) nextTable() bool {
 		if table.Len() == 0 {
 			continue
 		}
+		if !table.Matches(q.relations) {
+			continue
+		}
 		q.setTable(q.cursor.table, table)
 		return true
 	}
@@ -137,6 +142,7 @@ type Query1[A any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
+	relations  []relationID
 	lock       uint8
 	cursor     cursor
 	table      *table
@@ -145,7 +151,7 @@ type Query1[A any] struct {
 	hasWithout bool
 }
 
-func newQuery1[A any](world *World, mask Mask, without Mask, ids []ID) Query1[A] {
+func newQuery1[A any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query1[A] {
 	components := make([]*componentStorage, 1)
 	for i := range 1 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -155,6 +161,7 @@ func newQuery1[A any](world *World, mask Mask, without Mask, ids []ID) Query1[A]
 		world:      world,
 		mask:       mask,
 		without:    without,
+		relations:  relations,
 		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
@@ -245,6 +252,9 @@ func (q *Query1[A]) nextTable() bool {
 		if table.Len() == 0 {
 			continue
 		}
+		if !table.Matches(q.relations) {
+			continue
+		}
 		q.setTable(q.cursor.table, table)
 		return true
 	}
@@ -265,6 +275,7 @@ type Query2[A any, B any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
+	relations  []relationID
 	lock       uint8
 	cursor     cursor
 	table      *table
@@ -274,7 +285,7 @@ type Query2[A any, B any] struct {
 	hasWithout bool
 }
 
-func newQuery2[A any, B any](world *World, mask Mask, without Mask, ids []ID) Query2[A, B] {
+func newQuery2[A any, B any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query2[A, B] {
 	components := make([]*componentStorage, 2)
 	for i := range 2 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -284,6 +295,7 @@ func newQuery2[A any, B any](world *World, mask Mask, without Mask, ids []ID) Qu
 		world:      world,
 		mask:       mask,
 		without:    without,
+		relations:  relations,
 		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
@@ -376,6 +388,9 @@ func (q *Query2[A, B]) nextTable() bool {
 		if table.Len() == 0 {
 			continue
 		}
+		if !table.Matches(q.relations) {
+			continue
+		}
 		q.setTable(q.cursor.table, table)
 		return true
 	}
@@ -397,6 +412,7 @@ type Query3[A any, B any, C any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
+	relations  []relationID
 	lock       uint8
 	cursor     cursor
 	table      *table
@@ -407,7 +423,7 @@ type Query3[A any, B any, C any] struct {
 	hasWithout bool
 }
 
-func newQuery3[A any, B any, C any](world *World, mask Mask, without Mask, ids []ID) Query3[A, B, C] {
+func newQuery3[A any, B any, C any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query3[A, B, C] {
 	components := make([]*componentStorage, 3)
 	for i := range 3 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -417,6 +433,7 @@ func newQuery3[A any, B any, C any](world *World, mask Mask, without Mask, ids [
 		world:      world,
 		mask:       mask,
 		without:    without,
+		relations:  relations,
 		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
@@ -511,6 +528,9 @@ func (q *Query3[A, B, C]) nextTable() bool {
 		if table.Len() == 0 {
 			continue
 		}
+		if !table.Matches(q.relations) {
+			continue
+		}
 		q.setTable(q.cursor.table, table)
 		return true
 	}
@@ -533,6 +553,7 @@ type Query4[A any, B any, C any, D any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
+	relations  []relationID
 	lock       uint8
 	cursor     cursor
 	table      *table
@@ -544,7 +565,7 @@ type Query4[A any, B any, C any, D any] struct {
 	hasWithout bool
 }
 
-func newQuery4[A any, B any, C any, D any](world *World, mask Mask, without Mask, ids []ID) Query4[A, B, C, D] {
+func newQuery4[A any, B any, C any, D any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query4[A, B, C, D] {
 	components := make([]*componentStorage, 4)
 	for i := range 4 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -554,6 +575,7 @@ func newQuery4[A any, B any, C any, D any](world *World, mask Mask, without Mask
 		world:      world,
 		mask:       mask,
 		without:    without,
+		relations:  relations,
 		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
@@ -650,6 +672,9 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 		if table.Len() == 0 {
 			continue
 		}
+		if !table.Matches(q.relations) {
+			continue
+		}
 		q.setTable(q.cursor.table, table)
 		return true
 	}
@@ -673,6 +698,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
+	relations  []relationID
 	lock       uint8
 	cursor     cursor
 	table      *table
@@ -685,7 +711,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	hasWithout bool
 }
 
-func newQuery5[A any, B any, C any, D any, E any](world *World, mask Mask, without Mask, ids []ID) Query5[A, B, C, D, E] {
+func newQuery5[A any, B any, C any, D any, E any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query5[A, B, C, D, E] {
 	components := make([]*componentStorage, 5)
 	for i := range 5 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -695,6 +721,7 @@ func newQuery5[A any, B any, C any, D any, E any](world *World, mask Mask, witho
 		world:      world,
 		mask:       mask,
 		without:    without,
+		relations:  relations,
 		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
@@ -793,6 +820,9 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 		if table.Len() == 0 {
 			continue
 		}
+		if !table.Matches(q.relations) {
+			continue
+		}
 		q.setTable(q.cursor.table, table)
 		return true
 	}
@@ -817,6 +847,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
+	relations  []relationID
 	lock       uint8
 	cursor     cursor
 	table      *table
@@ -830,7 +861,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	hasWithout bool
 }
 
-func newQuery6[A any, B any, C any, D any, E any, F any](world *World, mask Mask, without Mask, ids []ID) Query6[A, B, C, D, E, F] {
+func newQuery6[A any, B any, C any, D any, E any, F any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query6[A, B, C, D, E, F] {
 	components := make([]*componentStorage, 6)
 	for i := range 6 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -840,6 +871,7 @@ func newQuery6[A any, B any, C any, D any, E any, F any](world *World, mask Mask
 		world:      world,
 		mask:       mask,
 		without:    without,
+		relations:  relations,
 		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
@@ -940,6 +972,9 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 		if table.Len() == 0 {
 			continue
 		}
+		if !table.Matches(q.relations) {
+			continue
+		}
 		q.setTable(q.cursor.table, table)
 		return true
 	}
@@ -965,6 +1000,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
+	relations  []relationID
 	lock       uint8
 	cursor     cursor
 	table      *table
@@ -979,7 +1015,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	hasWithout bool
 }
 
-func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, mask Mask, without Mask, ids []ID) Query7[A, B, C, D, E, F, G] {
+func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query7[A, B, C, D, E, F, G] {
 	components := make([]*componentStorage, 7)
 	for i := range 7 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -989,6 +1025,7 @@ func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, ma
 		world:      world,
 		mask:       mask,
 		without:    without,
+		relations:  relations,
 		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
@@ -1091,6 +1128,9 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 		if table.Len() == 0 {
 			continue
 		}
+		if !table.Matches(q.relations) {
+			continue
+		}
 		q.setTable(q.cursor.table, table)
 		return true
 	}
@@ -1117,6 +1157,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
+	relations  []relationID
 	lock       uint8
 	cursor     cursor
 	table      *table
@@ -1132,7 +1173,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	hasWithout bool
 }
 
-func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, mask Mask, without Mask, ids []ID) Query8[A, B, C, D, E, F, G, H] {
+func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query8[A, B, C, D, E, F, G, H] {
 	components := make([]*componentStorage, 8)
 	for i := range 8 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -1142,6 +1183,7 @@ func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *Wo
 		world:      world,
 		mask:       mask,
 		without:    without,
+		relations:  relations,
 		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
@@ -1244,6 +1286,9 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
 		q.cursor.table++
 		table := archetype.tables[q.cursor.table]
 		if table.Len() == 0 {
+			continue
+		}
+		if !table.Matches(q.relations) {
 			continue
 		}
 		q.setTable(q.cursor.table, table)

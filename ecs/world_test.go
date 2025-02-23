@@ -112,8 +112,32 @@ func TestWorldRelations(t *testing.T) {
 	assert.True(t, w.storage.registry.IsRelation[2])
 
 	for range 10 {
+		mapper.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent1))
 		mapper.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent2))
 		mapper.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent1))
+		mapper.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent2))
 	}
 
+	filter := NewFilter3[Position, ChildOf, ChildOf2](&w)
+
+	query := filter.Query()
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 40, cnt)
+
+	query = filter.Query(Rel(1, parent1), Rel(2, parent2))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 10, cnt)
+
+	query = filter.Query(Rel(1, parent1))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 20, cnt)
 }

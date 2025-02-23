@@ -4,10 +4,11 @@ package ecs
 
 // Filter0 is a filter for 0 components.
 type Filter0 struct {
-	world   *World
-	ids     []ID
-	mask    Mask
-	without Mask
+	world     *World
+	ids       []ID
+	mask      Mask
+	without   Mask
+	relations []relationID
 }
 
 // NewFilter0 creates a new [Filter0].
@@ -43,16 +44,18 @@ func (q *Filter0) Without(comps ...Comp) *Filter0 {
 
 // Query creates a [Query0] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter0) Query() Query0 {
-	return newQuery0(q.world, q.mask, q.without)
+func (q *Filter0) Query(rel ...RelationIndex) Query0 {
+	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	return newQuery0(q.world, q.mask, q.without, q.relations)
 }
 
 // Filter1 is a filter for 1 components.
 type Filter1[A any] struct {
-	world   *World
-	ids     []ID
-	mask    Mask
-	without Mask
+	world     *World
+	ids       []ID
+	mask      Mask
+	without   Mask
+	relations []relationID
 }
 
 // NewFilter1 creates a new [Filter1].
@@ -90,16 +93,18 @@ func (q *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
 
 // Query creates a [Query1] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter1[A]) Query() Query1[A] {
-	return newQuery1[A](q.world, q.mask, q.without, q.ids)
+func (q *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
+	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	return newQuery1[A](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
 // Filter2 is a filter for 2 components.
 type Filter2[A any, B any] struct {
-	world   *World
-	ids     []ID
-	mask    Mask
-	without Mask
+	world     *World
+	ids       []ID
+	mask      Mask
+	without   Mask
+	relations []relationID
 }
 
 // NewFilter2 creates a new [Filter2].
@@ -138,16 +143,18 @@ func (q *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
 
 // Query creates a [Query2] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter2[A, B]) Query() Query2[A, B] {
-	return newQuery2[A, B](q.world, q.mask, q.without, q.ids)
+func (q *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
+	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	return newQuery2[A, B](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
 // Filter3 is a filter for 3 components.
 type Filter3[A any, B any, C any] struct {
-	world   *World
-	ids     []ID
-	mask    Mask
-	without Mask
+	world     *World
+	ids       []ID
+	mask      Mask
+	without   Mask
+	relations []relationID
 }
 
 // NewFilter3 creates a new [Filter3].
@@ -187,16 +194,18 @@ func (q *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
 
 // Query creates a [Query3] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter3[A, B, C]) Query() Query3[A, B, C] {
-	return newQuery3[A, B, C](q.world, q.mask, q.without, q.ids)
+func (q *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
+	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	return newQuery3[A, B, C](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
 // Filter4 is a filter for 4 components.
 type Filter4[A any, B any, C any, D any] struct {
-	world   *World
-	ids     []ID
-	mask    Mask
-	without Mask
+	world     *World
+	ids       []ID
+	mask      Mask
+	without   Mask
+	relations []relationID
 }
 
 // NewFilter4 creates a new [Filter4].
@@ -237,16 +246,18 @@ func (q *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
 
 // Query creates a [Query4] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter4[A, B, C, D]) Query() Query4[A, B, C, D] {
-	return newQuery4[A, B, C, D](q.world, q.mask, q.without, q.ids)
+func (q *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
+	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	return newQuery4[A, B, C, D](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
 // Filter5 is a filter for 5 components.
 type Filter5[A any, B any, C any, D any, E any] struct {
-	world   *World
-	ids     []ID
-	mask    Mask
-	without Mask
+	world     *World
+	ids       []ID
+	mask      Mask
+	without   Mask
+	relations []relationID
 }
 
 // NewFilter5 creates a new [Filter5].
@@ -288,16 +299,18 @@ func (q *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] 
 
 // Query creates a [Query5] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter5[A, B, C, D, E]) Query() Query5[A, B, C, D, E] {
-	return newQuery5[A, B, C, D, E](q.world, q.mask, q.without, q.ids)
+func (q *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, E] {
+	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	return newQuery5[A, B, C, D, E](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
 // Filter6 is a filter for 6 components.
 type Filter6[A any, B any, C any, D any, E any, F any] struct {
-	world   *World
-	ids     []ID
-	mask    Mask
-	without Mask
+	world     *World
+	ids       []ID
+	mask      Mask
+	without   Mask
+	relations []relationID
 }
 
 // NewFilter6 creates a new [Filter6].
@@ -340,16 +353,18 @@ func (q *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, 
 
 // Query creates a [Query6] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter6[A, B, C, D, E, F]) Query() Query6[A, B, C, D, E, F] {
-	return newQuery6[A, B, C, D, E, F](q.world, q.mask, q.without, q.ids)
+func (q *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, D, E, F] {
+	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	return newQuery6[A, B, C, D, E, F](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
 // Filter7 is a filter for 7 components.
 type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
-	world   *World
-	ids     []ID
-	mask    Mask
-	without Mask
+	world     *World
+	ids       []ID
+	mask      Mask
+	without   Mask
+	relations []relationID
 }
 
 // NewFilter7 creates a new [Filter7].
@@ -393,16 +408,18 @@ func (q *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, 
 
 // Query creates a [Query7] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter7[A, B, C, D, E, F, G]) Query() Query7[A, B, C, D, E, F, G] {
-	return newQuery7[A, B, C, D, E, F, G](q.world, q.mask, q.without, q.ids)
+func (q *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, C, D, E, F, G] {
+	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	return newQuery7[A, B, C, D, E, F, G](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
 // Filter8 is a filter for 8 components.
 type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
-	world   *World
-	ids     []ID
-	mask    Mask
-	without Mask
+	world     *World
+	ids       []ID
+	mask      Mask
+	without   Mask
+	relations []relationID
 }
 
 // NewFilter8 creates a new [Filter8].
@@ -447,6 +464,7 @@ func (q *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, 
 
 // Query creates a [Query8] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter8[A, B, C, D, E, F, G, H]) Query() Query8[A, B, C, D, E, F, G, H] {
-	return newQuery8[A, B, C, D, E, F, G, H](q.world, q.mask, q.without, q.ids)
+func (q *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, B, C, D, E, F, G, H] {
+	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	return newQuery8[A, B, C, D, E, F, G, H](q.world, q.mask, q.without, q.ids, q.relations)
 }

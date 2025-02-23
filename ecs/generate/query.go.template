@@ -30,6 +30,7 @@ type Query{{.}}{{$generics}} struct {
 	world      *World
 	mask       Mask
 	without    Mask
+	relations  []relationID
 	lock       uint8
 	cursor     cursor
 	table      *table
@@ -40,7 +41,7 @@ type Query{{.}}{{$generics}} struct {
 	hasWithout bool
 }
 
-func newQuery{{.}}{{$generics}}(world *World, mask Mask, without Mask{{if .}}, ids []ID{{end}}) Query{{.}}{{$genericsShort}} {
+func newQuery{{.}}{{$generics}}(world *World, mask Mask, without Mask{{if .}}, ids []ID{{end}}, relations []relationID) Query{{.}}{{$genericsShort}} {
 	components := make([]*componentStorage, {{.}})
 	{{if .}}for i := range {{.}} {
 		components[i] = &world.storage.components[ids[i].id]
@@ -50,6 +51,7 @@ func newQuery{{.}}{{$generics}}(world *World, mask Mask, without Mask{{if .}}, i
 		world:      world,
 		mask:       mask,
 		without:    without,
+		relations:  relations,
 		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
@@ -141,6 +143,9 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 		q.cursor.table++
 		table := archetype.tables[q.cursor.table]
 		if table.Len() == 0 {
+			continue
+		}
+		if !table.Matches(q.relations) {
 			continue
 		}
 		q.setTable(q.cursor.table, table)
