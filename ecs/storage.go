@@ -3,7 +3,7 @@ package ecs
 import "fmt"
 
 type storage struct {
-	registry        registry
+	registry        componentRegistry
 	archetypes      []archetype
 	tables          []table
 	initialCapacity uint32
@@ -15,11 +15,11 @@ type componentStorage struct {
 }
 
 func newStorage(capacity uint32) storage {
-	reg := newRegistry()
+	reg := newComponentRegistry()
 	tables := make([]table, 0, 128)
-	tables = append(tables, newTable(0, 0, capacity, &reg))
+	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}))
 	archetypes := make([]archetype, 0, 128)
-	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []*table{&tables[0]}))
+	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []*table{&tables[0]}, &reg))
 	return storage{
 		registry:        reg,
 		archetypes:      archetypes,
@@ -56,15 +56,15 @@ func (s *storage) AddComponent(id uint8) {
 }
 
 func (s *storage) createArchetype(mask *Mask) *archetype {
-	comps := mask.toTypes(&s.registry)
+	comps := mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
-	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), mask, comps, nil))
+	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), mask, comps, nil, &s.registry))
 	return &s.archetypes[index]
 }
 
 func (s *storage) createTable(archetype *archetype) *table {
 	index := len(s.tables)
-	s.tables = append(s.tables, newTable(tableID(index), archetype.id, s.initialCapacity, &s.registry, archetype.components...))
+	s.tables = append(s.tables, newTable(tableID(index), archetype.id, s.initialCapacity, &s.registry, archetype.components))
 	table := &s.tables[index]
 	archetype.tables = append(archetype.tables, table)
 	for i := range s.components {

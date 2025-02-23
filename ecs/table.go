@@ -22,7 +22,7 @@ type table struct {
 	zeroPointer unsafe.Pointer
 }
 
-func newTable(id tableID, archetype archetypeID, capacity uint32, reg *registry, ids ...ID) table {
+func newTable(id tableID, archetype archetypeID, capacity uint32, reg *componentRegistry, ids []ID) table {
 	components := make([]int16, MaskTotalBits)
 	entities := newColumn(entityType, capacity)
 	columns := make([]column, len(ids))

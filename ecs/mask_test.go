@@ -111,11 +111,11 @@ func TestMaskToTypes(t *testing.T) {
 	id2 := ComponentID[Velocity](&w)
 
 	mask := All()
-	comps := mask.toTypes(&w.storage.registry)
+	comps := mask.toTypes(&w.storage.registry.registry)
 	assert.Equal(t, []ID{}, comps)
 
 	mask = All(id1, id2)
-	comps = mask.toTypes(&w.storage.registry)
+	comps = mask.toTypes(&w.storage.registry.registry)
 	assert.Equal(t, []ID{id1, id2}, comps)
 }
 
