@@ -43,17 +43,6 @@ func (r relations) toRelations(ids []ID, out []relationID) []relationID {
 	return out
 }
 
-func (r relations) toRelation(id ID, out []relationID) []relationID {
-	out = out[:0]
-	for _, rel := range r {
-		out = append(out, relationID{
-			component: id,
-			target:    rel.target,
-		})
-	}
-	return out
-}
-
 type relationEntities []Entity
 
 func (r relationEntities) toRelation(id ID, out []relationID) []relationID {
