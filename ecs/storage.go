@@ -134,8 +134,6 @@ func (s *storage) createArchetype(mask *Mask) *archetype {
 }
 
 func (s *storage) createTable(archetype *archetype, relations []relationID) *table {
-	index := tableID(len(s.tables))
-
 	targets := make([]Entity, len(archetype.components))
 	numRelations := uint8(0)
 	for _, rel := range relations {
@@ -147,13 +145,20 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 		panic("relations must be fully specified")
 	}
 
-	s.tables = append(s.tables, newTable(
-		index, archetype.id, s.initialCapacity, &s.registry,
-		archetype.components, archetype.componentsMap,
-		archetype.isRelation, targets, relations))
+	var newTableID tableID
+	if id, ok := archetype.GetFreeTable(); ok {
+		newTableID = id
+		s.tables[newTableID].recycle(targets, relations)
+	} else {
+		newTableID = tableID(len(s.tables))
+		s.tables = append(s.tables, newTable(
+			newTableID, archetype.id, s.initialCapacity, &s.registry,
+			archetype.components, archetype.componentsMap,
+			archetype.isRelation, targets, relations))
+	}
 
-	table := &s.tables[index]
-	archetype.tables = append(archetype.tables, index)
+	table := &s.tables[newTableID]
+	archetype.tables = append(archetype.tables, newTableID)
 	for i := range s.components {
 		id := ID{id: uint8(i)}
 		comps := &s.components[i]
@@ -205,11 +210,26 @@ func (s *storage) cleanupArchetypes(target Entity) {
 			if !ok {
 				newTable = s.createTable(archetype, newRelations)
 			}
-			_ = newTable
+			s.moveEntities(table, newTable)
+			archetype.FreeTable(newTable.id)
 
 			newRelations = newRelations[:0]
 		}
 	}
+}
+
+// moveEntities moves all entities from src to dst.
+func (s *storage) moveEntities(src, dst *table) {
+	oldLen := dst.Len()
+	dst.AddAll(src)
+
+	newLen := dst.Len()
+	newTable := dst.id
+	for i := oldLen; i < newLen; i++ {
+		entity := dst.GetEntity(uintptr(i))
+		s.entities[entity.id] = entityIndex{table: newTable, row: uint32(i)}
+	}
+	src.Reset()
 }
 
 func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relationID) []relationID {

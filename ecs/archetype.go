@@ -1,5 +1,7 @@
 package ecs
 
+import "slices"
+
 type archetypeID uint32
 
 type archetype struct {
@@ -9,6 +11,7 @@ type archetype struct {
 	componentsMap []int16
 	isRelation    []bool
 	tables        []tableID
+	freeTables    []tableID
 	numRelations  uint8
 }
 
@@ -58,4 +61,24 @@ func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, 
 		}
 	}
 	return nil, false
+}
+
+func (a *archetype) GetFreeTable() (tableID, bool) {
+	if len(a.freeTables) == 0 {
+		return 0, false
+	}
+	last := len(a.freeTables) - 1
+	table := a.freeTables[last]
+	a.freeTables = a.freeTables[:last]
+	return table, true
+}
+
+func (a *archetype) FreeTable(table tableID) {
+	index := slices.Index(a.tables, table)
+	last := len(a.tables) - 1
+
+	a.tables[index], a.tables[last] = a.tables[last], a.tables[index]
+	a.tables = a.tables[:last]
+
+	a.freeTables = append(a.freeTables, table)
 }

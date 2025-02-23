@@ -61,6 +61,11 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 	}
 }
 
+func (t *table) recycle(targets []Entity, relationIDs []relationID) {
+	t.relations = targets
+	t.relationIDs = relationIDs
+}
+
 func (t *table) Add(entity Entity) uint32 {
 	_, idx := t.entities.Add(unsafe.Pointer(&entity))
 
@@ -104,6 +109,20 @@ func (t *table) Remove(index uint32) bool {
 		t.columns[i].Remove(index, t.zeroPointer)
 	}
 	return swapped
+}
+
+func (t *table) Reset() {
+	t.entities.Reset(nil)
+	for c := range t.columns {
+		t.columns[c].Reset(t.zeroPointer)
+	}
+}
+
+func (t *table) AddAll(other *table) {
+	t.entities.AddAll(&other.entities)
+	for c := range t.columns {
+		t.columns[c].AddAll(&t.columns[c])
+	}
 }
 
 func (t *table) MatchesExact(relations []relationID) bool {
