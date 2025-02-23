@@ -16,6 +16,7 @@ type table struct {
 	archetype   archetypeID
 	components  []int16
 	entities    column
+	ids         []ID
 	columns     []column
 	isRelation  []bool
 	relations   []Entity
@@ -26,8 +27,7 @@ type table struct {
 }
 
 func newTable(id tableID, archetype archetypeID, capacity uint32, reg *componentRegistry,
-	ids []ID, componentsMap []int16,
-	isRelation []bool, targets []Entity, relationIDs []relationID) table {
+	ids []ID, componentsMap []int16, isRelation []bool, targets []Entity, relationIDs []relationID) table {
 
 	entities := newColumn(entityType, capacity)
 	columns := make([]column, len(ids))
@@ -51,6 +51,7 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 		archetype:   archetype,
 		components:  componentsMap,
 		entities:    entities,
+		ids:         ids,
 		columns:     columns,
 		isRelation:  isRelation,
 		relations:   targets,

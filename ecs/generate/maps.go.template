@@ -99,5 +99,14 @@ func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
 	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
+
+// Remove the mapped components from the given entity.
+func (m *Map{{.}}{{$genericsShort}}) SetRelations(entity Entity, rel ...RelationIndex) {
+	if !m.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.world.setRelations(entity, m.relations)
+}
 {{end -}}
 {{end -}}

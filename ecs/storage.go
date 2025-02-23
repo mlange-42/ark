@@ -17,7 +17,7 @@ type componentStorage struct {
 func newStorage(capacity uint32) storage {
 	reg := newComponentRegistry()
 	tables := make([]table, 0, 128)
-	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, []int16{}, []bool{}, []Entity{}, []relationID{}))
+	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, make([]int16, MaskTotalBits), []bool{}, []Entity{}, []relationID{}))
 	archetypes := make([]archetype, 0, 128)
 	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []*table{&tables[0]}, &reg))
 	return storage{
@@ -79,7 +79,8 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 
 	s.tables = append(s.tables, newTable(
 		tableID(index), archetype.id, s.initialCapacity, &s.registry,
-		archetype.components, archetype.componentsMap, archetype.isRelation, targets, relations))
+		archetype.components, archetype.componentsMap,
+		archetype.isRelation, targets, relations))
 
 	table := &s.tables[index]
 	archetype.tables = append(archetype.tables, table)

@@ -21,8 +21,8 @@ func NewMap[T any](w *World) Map[T] {
 }
 
 // NewEntity creates a new entity with the mapped component.
-func (m *Map[T]) NewEntity(comp *T, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelation(m.id, m.relations)
+func (m *Map[T]) NewEntity(comp *T, rel ...Entity) Entity {
+	m.relations = relationEntities(rel).toRelation(m.id, m.relations)
 	return m.world.newEntityWith([]ID{m.id}, []unsafe.Pointer{unsafe.Pointer(comp)}, m.relations)
 }
 
@@ -59,11 +59,11 @@ func (m *Map[T]) HasUnchecked(entity Entity) bool {
 }
 
 // Add the mapped component to the given entity.
-func (m *Map[T]) Add(entity Entity, comp *T, rel ...RelationIndex) {
+func (m *Map[T]) Add(entity Entity, comp *T, rel ...Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't add a component to a dead entity")
 	}
-	m.relations = relations(rel).toRelation(m.id, m.relations)
+	m.relations = relationEntities(rel).toRelation(m.id, m.relations)
 	m.world.exchange(entity, []ID{m.id}, nil, []unsafe.Pointer{unsafe.Pointer(comp)}, m.relations)
 }
 
@@ -73,4 +73,15 @@ func (m *Map[T]) Remove(entity Entity) {
 		panic("can't remove a component from a dead entity")
 	}
 	m.world.exchange(entity, nil, []ID{m.id}, nil, nil)
+}
+
+// SetRelation sets the relation target for the entity and the mapped component.
+func (m *Map[T]) SetRelation(entity Entity, target Entity) {
+	m.relations = target.toRelation(m.id, m.relations)
+	m.world.setRelations(entity, m.relations)
+}
+
+// GetRelation returns the relation target for the entity and the mapped component.
+func (m *Map[T]) GetRelation(entity Entity) Entity {
+	return m.world.getRelation(entity, m.id)
 }

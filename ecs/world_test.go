@@ -142,8 +142,23 @@ func TestWorldRelations(t *testing.T) {
 	assert.Equal(t, 20, cnt)
 
 	mapper2 := NewMap2[Position, ChildOf](&w)
-	child2Map := NewMap[ChildOf2](&w)
+	child2Map := NewMap1[ChildOf2](&w)
 
 	e := mapper2.NewEntity(&Position{}, &ChildOf{}, Rel(1, parent1))
-	child2Map.Add(e, &ChildOf2{}, Rel(1, parent2))
+	child2Map.Add(e, &ChildOf2{}, Rel(0, parent2))
+}
+
+func TestWorldSetRelations(t *testing.T) {
+	w := NewWorld(16)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	mapper := NewMap[ChildOf](&w)
+
+	e := mapper.NewEntity(&ChildOf{}, parent1)
+	assert.Equal(t, parent1, mapper.GetRelation(e))
+
+	mapper.SetRelation(e, parent2)
+	assert.Equal(t, parent2, mapper.GetRelation(e))
 }

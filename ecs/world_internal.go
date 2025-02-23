@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"fmt"
 	"reflect"
 	"unsafe"
 )
@@ -107,6 +108,85 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 	w.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
 
 	w.registerTargets(relations)
+}
+
+// setRelations sets the target entities for an entity relations.
+func (w *World) setRelations(entity Entity, relations []relationID) {
+	w.checkLocked()
+
+	if !w.entityPool.Alive(entity) {
+		panic("can't set relation for a dead entity")
+	}
+
+	index := &w.entities[entity.id]
+	oldTable := &w.storage.tables[index.table]
+
+	newRelations, changed := w.getExchangeTargets(oldTable, relations)
+	if !changed {
+		return
+	}
+
+	oldArch := &w.storage.archetypes[oldTable.archetype]
+	newTable, ok := oldArch.GetTable(newRelations)
+	if !ok {
+		newTable = w.storage.createTable(oldArch, newRelations)
+	}
+	newIndex := newTable.Add(entity)
+
+	for _, id := range oldArch.components {
+		comp := oldTable.Get(id, uintptr(index.row))
+		newTable.Set(id, newIndex, comp)
+	}
+
+	swapped := oldTable.Remove(index.row)
+
+	if swapped {
+		swapEntity := oldTable.GetEntity(uintptr(index.row))
+		w.entities[swapEntity.id].row = index.row
+	}
+	w.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+
+	w.registerTargets(relations)
+}
+
+func (w World) getRelation(entity Entity, comp ID) Entity {
+	if !w.entityPool.Alive(entity) {
+		panic("can't get relation for a dead entity")
+	}
+	return w.storage.tables[w.entities[entity.id].table].GetRelation(comp)
+}
+
+func (w World) getExchangeTargets(oldTable *table, relations []relationID) ([]relationID, bool) {
+	changed := false
+	targets := append([]Entity(nil), oldTable.relations...)
+	for _, rel := range relations {
+		if !rel.target.IsZero() && !w.entityPool.Alive(rel.target) {
+			panic("can't make a dead entity a relation target")
+		}
+		index := oldTable.components[rel.component.id]
+		if !oldTable.isRelation[index] {
+			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
+		}
+		if rel.target == targets[index] {
+			continue
+		}
+		targets[index] = rel.target
+		changed = true
+	}
+	if !changed {
+		return nil, false
+	}
+
+	result := make([]relationID, 0, len(oldTable.relationIDs))
+	for i, e := range targets {
+		if !oldTable.isRelation[i] {
+			continue
+		}
+		id := oldTable.ids[i]
+		result = append(result, relationID{component: id, target: e})
+	}
+
+	return result, true
 }
 
 func (w *World) componentID(tp reflect.Type) ID {

@@ -16,6 +16,20 @@ type relationID struct {
 	target    Entity
 }
 
+// RelationIndex specifies an entity relation target by component index.
+type RelationIndex struct {
+	index  uint8
+	target Entity
+}
+
+// Rel creates a new RelationIndex.
+func Rel(index int, target Entity) RelationIndex {
+	return RelationIndex{
+		index:  uint8(index),
+		target: target,
+	}
+}
+
 type relations []RelationIndex
 
 func (r relations) toRelations(ids []ID, out []relationID) []relationID {
@@ -40,16 +54,15 @@ func (r relations) toRelation(id ID, out []relationID) []relationID {
 	return out
 }
 
-// RelationIndex specifies an entity relation target by component index.
-type RelationIndex struct {
-	index  uint8
-	target Entity
-}
+type relationEntities []Entity
 
-// Rel creates a new RelationIndex.
-func Rel(index int, target Entity) RelationIndex {
-	return RelationIndex{
-		index:  uint8(index),
-		target: target,
+func (r relationEntities) toRelation(id ID, out []relationID) []relationID {
+	out = out[:0]
+	for _, rel := range r {
+		out = append(out, relationID{
+			component: id,
+			target:    rel,
+		})
 	}
+	return out
 }

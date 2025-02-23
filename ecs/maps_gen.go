@@ -77,6 +77,15 @@ func (m *Map1[A]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
+// Remove the mapped components from the given entity.
+func (m *Map1[A]) SetRelations(entity Entity, rel ...RelationIndex) {
+	if !m.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.world.setRelations(entity, m.relations)
+}
+
 // Map2 is a mapper to access 2 components of an entity.
 type Map2[A any, B any] struct {
 	world     *World
@@ -155,6 +164,15 @@ func (m *Map2[A, B]) Remove(entity Entity) {
 		panic("can't remove components from a dead entity")
 	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map2[A, B]) SetRelations(entity Entity, rel ...RelationIndex) {
+	if !m.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.world.setRelations(entity, m.relations)
 }
 
 // Map3 is a mapper to access 3 components of an entity.
@@ -242,6 +260,15 @@ func (m *Map3[A, B, C]) Remove(entity Entity) {
 		panic("can't remove components from a dead entity")
 	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map3[A, B, C]) SetRelations(entity Entity, rel ...RelationIndex) {
+	if !m.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.world.setRelations(entity, m.relations)
 }
 
 // Map4 is a mapper to access 4 components of an entity.
@@ -336,6 +363,15 @@ func (m *Map4[A, B, C, D]) Remove(entity Entity) {
 		panic("can't remove components from a dead entity")
 	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map4[A, B, C, D]) SetRelations(entity Entity, rel ...RelationIndex) {
+	if !m.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.world.setRelations(entity, m.relations)
 }
 
 // Map5 is a mapper to access 5 components of an entity.
@@ -437,6 +473,15 @@ func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
 		panic("can't remove components from a dead entity")
 	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map5[A, B, C, D, E]) SetRelations(entity Entity, rel ...RelationIndex) {
+	if !m.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.world.setRelations(entity, m.relations)
 }
 
 // Map6 is a mapper to access 6 components of an entity.
@@ -545,6 +590,15 @@ func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
 		panic("can't remove components from a dead entity")
 	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map6[A, B, C, D, E, F]) SetRelations(entity Entity, rel ...RelationIndex) {
+	if !m.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.world.setRelations(entity, m.relations)
 }
 
 // Map7 is a mapper to access 7 components of an entity.
@@ -660,6 +714,15 @@ func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
 		panic("can't remove components from a dead entity")
 	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map7[A, B, C, D, E, F, G]) SetRelations(entity Entity, rel ...RelationIndex) {
+	if !m.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.world.setRelations(entity, m.relations)
 }
 
 // Map8 is a mapper to access 8 components of an entity.
@@ -782,4 +845,13 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
 		panic("can't remove components from a dead entity")
 	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map8[A, B, C, D, E, F, G, H]) SetRelations(entity Entity, rel ...RelationIndex) {
+	if !m.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.world.setRelations(entity, m.relations)
 }
