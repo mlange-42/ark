@@ -65,6 +65,8 @@ func (q *Query0) Get() {
 // Automatically called when iteration finishes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query0) Close() {
+	q.cursor.archetype = -2
+	q.cursor.table = -2
 	q.table = nil
 	q.world.unlock(q.lock)
 }
@@ -91,12 +93,10 @@ func (q *Query0) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.table == nil {
+	if q.cursor.archetype < -1 {
 		panic("query is already closed. Create a new one to iterate again")
 	}
-	q.table = nil
-
-	q.world.unlock(q.lock)
+	q.Close()
 	return false
 }
 
@@ -177,6 +177,8 @@ func (q *Query1[A]) Get() *A {
 // Automatically called when iteration finishes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query1[A]) Close() {
+	q.cursor.archetype = -2
+	q.cursor.table = -2
 	q.table = nil
 	q.columnA = nil
 	q.world.unlock(q.lock)
@@ -204,13 +206,10 @@ func (q *Query1[A]) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.table == nil {
+	if q.cursor.archetype < -1 {
 		panic("query is already closed. Create a new one to iterate again")
 	}
-	q.table = nil
-	q.columnA = nil
-
-	q.world.unlock(q.lock)
+	q.Close()
 	return false
 }
 
@@ -294,6 +293,8 @@ func (q *Query2[A, B]) Get() (*A, *B) {
 // Automatically called when iteration finishes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query2[A, B]) Close() {
+	q.cursor.archetype = -2
+	q.cursor.table = -2
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -322,14 +323,10 @@ func (q *Query2[A, B]) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.table == nil {
+	if q.cursor.archetype < -1 {
 		panic("query is already closed. Create a new one to iterate again")
 	}
-	q.table = nil
-	q.columnA = nil
-	q.columnB = nil
-
-	q.world.unlock(q.lock)
+	q.Close()
 	return false
 }
 
@@ -416,6 +413,8 @@ func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 // Automatically called when iteration finishes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query3[A, B, C]) Close() {
+	q.cursor.archetype = -2
+	q.cursor.table = -2
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -445,15 +444,10 @@ func (q *Query3[A, B, C]) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.table == nil {
+	if q.cursor.archetype < -1 {
 		panic("query is already closed. Create a new one to iterate again")
 	}
-	q.table = nil
-	q.columnA = nil
-	q.columnB = nil
-	q.columnC = nil
-
-	q.world.unlock(q.lock)
+	q.Close()
 	return false
 }
 
@@ -543,6 +537,8 @@ func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 // Automatically called when iteration finishes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query4[A, B, C, D]) Close() {
+	q.cursor.archetype = -2
+	q.cursor.table = -2
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -573,16 +569,10 @@ func (q *Query4[A, B, C, D]) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.table == nil {
+	if q.cursor.archetype < -1 {
 		panic("query is already closed. Create a new one to iterate again")
 	}
-	q.table = nil
-	q.columnA = nil
-	q.columnB = nil
-	q.columnC = nil
-	q.columnD = nil
-
-	q.world.unlock(q.lock)
+	q.Close()
 	return false
 }
 
@@ -675,6 +665,8 @@ func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 // Automatically called when iteration finishes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query5[A, B, C, D, E]) Close() {
+	q.cursor.archetype = -2
+	q.cursor.table = -2
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -706,17 +698,10 @@ func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.table == nil {
+	if q.cursor.archetype < -1 {
 		panic("query is already closed. Create a new one to iterate again")
 	}
-	q.table = nil
-	q.columnA = nil
-	q.columnB = nil
-	q.columnC = nil
-	q.columnD = nil
-	q.columnE = nil
-
-	q.world.unlock(q.lock)
+	q.Close()
 	return false
 }
 
@@ -812,6 +797,8 @@ func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 // Automatically called when iteration finishes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query6[A, B, C, D, E, F]) Close() {
+	q.cursor.archetype = -2
+	q.cursor.table = -2
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -844,18 +831,10 @@ func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.table == nil {
+	if q.cursor.archetype < -1 {
 		panic("query is already closed. Create a new one to iterate again")
 	}
-	q.table = nil
-	q.columnA = nil
-	q.columnB = nil
-	q.columnC = nil
-	q.columnD = nil
-	q.columnE = nil
-	q.columnF = nil
-
-	q.world.unlock(q.lock)
+	q.Close()
 	return false
 }
 
@@ -954,6 +933,8 @@ func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 // Automatically called when iteration finishes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query7[A, B, C, D, E, F, G]) Close() {
+	q.cursor.archetype = -2
+	q.cursor.table = -2
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -987,19 +968,10 @@ func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.table == nil {
+	if q.cursor.archetype < -1 {
 		panic("query is already closed. Create a new one to iterate again")
 	}
-	q.table = nil
-	q.columnA = nil
-	q.columnB = nil
-	q.columnC = nil
-	q.columnD = nil
-	q.columnE = nil
-	q.columnF = nil
-	q.columnG = nil
-
-	q.world.unlock(q.lock)
+	q.Close()
 	return false
 }
 
@@ -1101,6 +1073,8 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) 
 // Automatically called when iteration finishes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
+	q.cursor.archetype = -2
+	q.cursor.table = -2
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -1135,20 +1109,10 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.table == nil {
+	if q.cursor.archetype < -1 {
 		panic("query is already closed. Create a new one to iterate again")
 	}
-	q.table = nil
-	q.columnA = nil
-	q.columnB = nil
-	q.columnC = nil
-	q.columnD = nil
-	q.columnE = nil
-	q.columnF = nil
-	q.columnG = nil
-	q.columnH = nil
-
-	q.world.unlock(q.lock)
+	q.Close()
 	return false
 }
 
