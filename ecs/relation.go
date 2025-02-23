@@ -53,10 +53,3 @@ func Rel(index int, target Entity) RelationIndex {
 		target: target,
 	}
 }
-
-func (r *RelationIndex) toRelation(ids []ID) relationID {
-	return relationID{
-		component: ids[r.index],
-		target:    r.target,
-	}
-}

@@ -4,6 +4,7 @@ package ecs
 type World struct {
 	storage    storage
 	entities   entities
+	isTarget   []bool
 	entityPool entityPool
 	resources  Resources
 	locks      lock
@@ -12,6 +13,7 @@ type World struct {
 // NewWorld creates a new [World].
 func NewWorld(initialCapacity uint32) World {
 	entities := make([]entityIndex, reservedEntities, initialCapacity+reservedEntities)
+	isTarget := make([]bool, reservedEntities, initialCapacity+reservedEntities)
 	// Reserved zero and wildcard entities
 	for i := range reservedEntities {
 		entities[i] = entityIndex{table: maxTableID, row: 0}
@@ -19,6 +21,7 @@ func NewWorld(initialCapacity uint32) World {
 	return World{
 		storage:    newStorage(initialCapacity),
 		entities:   entities,
+		isTarget:   isTarget,
 		entityPool: newEntityPool(initialCapacity, reservedEntities),
 		resources:  newResources(),
 		locks:      lock{},

@@ -20,6 +20,7 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []rela
 			newTable.Set(id, idx, comps[i])
 		}
 	}
+	w.registerTargets(relations)
 	return entity
 }
 
@@ -53,6 +54,7 @@ func (w *World) createEntity(table tableID) (Entity, uint32) {
 	len := len(w.entities)
 	if int(entity.id) == len {
 		w.entities = append(w.entities, entityIndex{table: table, row: idx})
+		w.isTarget = append(w.isTarget, false)
 	} else {
 		w.entities[entity.id] = entityIndex{table: table, row: idx}
 	}
@@ -103,6 +105,8 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 		w.entities[swapEntity.id].row = index.row
 	}
 	w.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+
+	w.registerTargets(relations)
 }
 
 func (w *World) componentID(tp reflect.Type) ID {
@@ -136,5 +140,11 @@ func (w *World) unlock(l uint8) {
 func (w *World) checkLocked() {
 	if w.IsLocked() {
 		panic("attempt to modify a locked world")
+	}
+}
+
+func (w *World) registerTargets(relations []relationID) {
+	for _, rel := range relations {
+		w.isTarget[rel.target.id] = true
 	}
 }
