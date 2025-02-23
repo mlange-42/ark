@@ -127,7 +127,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	}
 
 	oldArch := &w.storage.archetypes[oldTable.archetype]
-	newTable, ok := oldArch.GetTable(newRelations)
+	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
 	if !ok {
 		newTable = w.storage.createTable(oldArch, newRelations)
 	}
@@ -227,4 +227,13 @@ func (w *World) registerTargets(relations []relationID) {
 	for _, rel := range relations {
 		w.isTarget[rel.target.id] = true
 	}
+}
+
+// Removes empty archetypes that have a target relation to the given entity.
+func (w *World) cleanupArchetypes(target Entity) {
+	/*for _, node := range w.relationNodes {
+		if arch, ok := node.archetypeMap[target]; ok && arch.Len() == 0 {
+			w.removeArchetype(arch)
+		}
+	}*/
 }

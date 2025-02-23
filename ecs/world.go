@@ -43,7 +43,8 @@ func (w *World) Alive(entity Entity) bool {
 
 // RemoveEntity removes the given entity from the world.
 func (w *World) RemoveEntity(entity Entity) {
-	// TODO: check lock.
+	w.checkLocked()
+
 	if !w.entityPool.Alive(entity) {
 		panic("can't remove a dead entity")
 	}
@@ -59,6 +60,11 @@ func (w *World) RemoveEntity(entity Entity) {
 		w.entities[swapEntity.id].row = index.row
 	}
 	index.table = maxTableID
+
+	if w.isTarget[entity.id] {
+		w.cleanupArchetypes(entity)
+		w.isTarget[entity.id] = false
+	}
 }
 
 // IsLocked returns whether the world is locked by any queries.

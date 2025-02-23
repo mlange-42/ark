@@ -8,11 +8,11 @@ type archetype struct {
 	components    []ID
 	componentsMap []int16
 	isRelation    []bool
-	tables        []*table
+	tables        []tableID
 	numRelations  uint8
 }
 
-func newArchetype(id archetypeID, mask *Mask, components []ID, tables []*table, reg *componentRegistry) archetype {
+func newArchetype(id archetypeID, mask *Mask, components []ID, tables []tableID, reg *componentRegistry) archetype {
 	componentsMap := make([]int16, MaskTotalBits)
 	for i := range MaskTotalBits {
 		componentsMap[i] = -1
@@ -44,16 +44,17 @@ func (a *archetype) HasRelations() bool {
 	return a.numRelations > 0
 }
 
-func (a *archetype) GetTable(relations []relationID) (*table, bool) {
+func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, bool) {
 	if len(a.tables) == 0 {
 		return nil, false
 	}
 	if !a.HasRelations() {
-		return a.tables[0], true
+		return &storage.tables[a.tables[0]], true
 	}
 	for _, t := range a.tables {
-		if t.MatchesExact(relations) {
-			return t, true
+		table := &storage.tables[t]
+		if table.MatchesExact(relations) {
+			return table, true
 		}
 	}
 	return nil, false
