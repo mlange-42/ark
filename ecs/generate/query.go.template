@@ -138,7 +138,7 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
 			continue
 		}
 		{{- range $i, $v := $upper}}
-		q.column{{$v}} = q.components[{{$i}}].columns[q.cursor.table]
+		q.column{{$v}} = q.components[{{$i}}].columns[q.table.id]
 		{{- end}}
 
 		q.cursor.index = 0
