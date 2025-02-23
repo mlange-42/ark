@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"fmt"
 	"math"
 	"unsafe"
 )
@@ -11,19 +12,23 @@ type tableID uint32
 const maxTableID = math.MaxUint32
 
 type table struct {
-	id           tableID
-	archetype    archetypeID
-	components   []int16
-	entities     column
-	columns      []column
-	relations    []Entity
-	numRelations uint8
+	id          tableID
+	archetype   archetypeID
+	components  []int16
+	entities    column
+	columns     []column
+	isRelation  []bool
+	relations   []Entity
+	relationIDs []relationID
 
 	zeroValue   []byte
 	zeroPointer unsafe.Pointer
 }
 
-func newTable(id tableID, archetype archetypeID, capacity uint32, reg *componentRegistry, ids []ID, componentsMap []int16, targets []Entity, numRelations uint8) table {
+func newTable(id tableID, archetype archetypeID, capacity uint32, reg *componentRegistry,
+	ids []ID, componentsMap []int16,
+	isRelation []bool, targets []Entity, relationIDs []relationID) table {
+
 	entities := newColumn(entityType, capacity)
 	columns := make([]column, len(ids))
 
@@ -42,15 +47,16 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 	}
 
 	return table{
-		id:           id,
-		archetype:    archetype,
-		components:   componentsMap,
-		entities:     entities,
-		columns:      columns,
-		relations:    targets,
-		numRelations: numRelations,
-		zeroValue:    zeroValue,
-		zeroPointer:  zeroPointer,
+		id:          id,
+		archetype:   archetype,
+		components:  componentsMap,
+		entities:    entities,
+		columns:     columns,
+		isRelation:  isRelation,
+		relations:   targets,
+		zeroValue:   zeroValue,
+		zeroPointer: zeroPointer,
+		relationIDs: relationIDs,
 	}
 }
 
@@ -100,10 +106,13 @@ func (t *table) Remove(index uint32) bool {
 }
 
 func (t *table) MatchesExact(relations []relationID) bool {
-	if len(relations) != int(t.numRelations) {
+	if len(relations) != len(t.relationIDs) {
 		panic("relation targets must be fully specified")
 	}
 	for _, rel := range relations {
+		if !t.isRelation[rel.component.id] {
+			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
+		}
 		if rel.target == wildcard {
 			panic("relation targets must be fully specified, no wildcard allowed")
 		}
@@ -116,6 +125,9 @@ func (t *table) MatchesExact(relations []relationID) bool {
 
 func (t *table) Matches(relations []relationID) bool {
 	for _, rel := range relations {
+		if !t.isRelation[rel.component.id] {
+			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
+		}
 		if rel.target == wildcard {
 			continue
 		}

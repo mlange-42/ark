@@ -9,7 +9,7 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []rela
 	w.checkLocked()
 
 	mask := All(ids...)
-	newTable := w.storage.findOrCreateTable(&mask, relations)
+	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], &mask, relations)
 	entity, idx := w.createEntity(newTable.id)
 
 	if comps != nil {
@@ -80,7 +80,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 
 	oldIDs := oldArchetype.components
 
-	newTable := w.storage.findOrCreateTable(&mask, relations)
+	newTable := w.storage.findOrCreateTable(oldTable, &mask, relations)
 	newIndex := newTable.Add(entity)
 
 	for _, id := range oldIDs {

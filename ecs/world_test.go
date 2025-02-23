@@ -107,15 +107,15 @@ func TestWorldRelations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	mapper := NewMap3[Position, ChildOf, ChildOf2](&w)
+	mapper1 := NewMap3[Position, ChildOf, ChildOf2](&w)
 	assert.True(t, w.storage.registry.IsRelation[1])
 	assert.True(t, w.storage.registry.IsRelation[2])
 
 	for range 10 {
-		mapper.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent1))
-		mapper.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent2))
-		mapper.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent1))
-		mapper.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent2))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent1))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent2))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent1))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent2))
 	}
 
 	filter := NewFilter3[Position, ChildOf, ChildOf2](&w)
@@ -140,4 +140,10 @@ func TestWorldRelations(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 20, cnt)
+
+	mapper2 := NewMap2[Position, ChildOf](&w)
+	child2Map := NewMap[ChildOf2](&w)
+
+	e := mapper2.NewEntity(&Position{}, &ChildOf{}, Rel(1, parent1))
+	child2Map.Add(e, &ChildOf2{}, Rel(1, parent2))
 }

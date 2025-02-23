@@ -17,7 +17,7 @@ type componentStorage struct {
 func newStorage(capacity uint32) storage {
 	reg := newComponentRegistry()
 	tables := make([]table, 0, 128)
-	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, []int16{}, []Entity{}, 0))
+	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, []int16{}, []bool{}, []Entity{}, []relationID{}))
 	archetypes := make([]archetype, 0, 128)
 	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []*table{&tables[0]}, &reg))
 	return storage{
@@ -29,7 +29,7 @@ func newStorage(capacity uint32) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(mask *Mask, relations []relationID) *table {
+func (s *storage) findOrCreateTable(oldTable *table, mask *Mask, relations []relationID) *table {
 	// TODO: use archetype graph
 	var arch *archetype
 	for i := range s.archetypes {
@@ -41,9 +41,10 @@ func (s *storage) findOrCreateTable(mask *Mask, relations []relationID) *table {
 	if arch == nil {
 		arch = s.createArchetype(mask)
 	}
-	table, ok := arch.GetTable(relations)
+	allRelation := appendNew(oldTable.relationIDs, relations...)
+	table, ok := arch.GetTable(allRelation)
 	if !ok {
-		table = s.createTable(arch, relations)
+		table = s.createTable(arch, allRelation)
 	}
 	return table
 }
@@ -76,7 +77,10 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 		panic("relations must be fully specified")
 	}
 
-	s.tables = append(s.tables, newTable(tableID(index), archetype.id, s.initialCapacity, &s.registry, archetype.components, archetype.componentsMap, targets, numRelations))
+	s.tables = append(s.tables, newTable(
+		tableID(index), archetype.id, s.initialCapacity, &s.registry,
+		archetype.components, archetype.componentsMap, archetype.isRelation, targets, relations))
+
 	table := &s.tables[index]
 	archetype.tables = append(archetype.tables, table)
 	for i := range s.components {
