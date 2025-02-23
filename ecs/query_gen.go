@@ -88,7 +88,7 @@ func (q *Query0) nextArchetype() bool {
 			continue
 		}
 
-		if !archetype.hasRelation {
+		if !archetype.HasRelations() {
 			table := archetype.tables[0]
 			if table.Len() > 0 {
 				q.setTable(0, table)
@@ -215,7 +215,7 @@ func (q *Query1[A]) nextArchetype() bool {
 			continue
 		}
 
-		if !archetype.hasRelation {
+		if !archetype.HasRelations() {
 			table := archetype.tables[0]
 			if table.Len() > 0 {
 				q.setTable(0, table)
@@ -346,7 +346,7 @@ func (q *Query2[A, B]) nextArchetype() bool {
 			continue
 		}
 
-		if !archetype.hasRelation {
+		if !archetype.HasRelations() {
 			table := archetype.tables[0]
 			if table.Len() > 0 {
 				q.setTable(0, table)
@@ -481,7 +481,7 @@ func (q *Query3[A, B, C]) nextArchetype() bool {
 			continue
 		}
 
-		if !archetype.hasRelation {
+		if !archetype.HasRelations() {
 			table := archetype.tables[0]
 			if table.Len() > 0 {
 				q.setTable(0, table)
@@ -620,7 +620,7 @@ func (q *Query4[A, B, C, D]) nextArchetype() bool {
 			continue
 		}
 
-		if !archetype.hasRelation {
+		if !archetype.HasRelations() {
 			table := archetype.tables[0]
 			if table.Len() > 0 {
 				q.setTable(0, table)
@@ -763,7 +763,7 @@ func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 			continue
 		}
 
-		if !archetype.hasRelation {
+		if !archetype.HasRelations() {
 			table := archetype.tables[0]
 			if table.Len() > 0 {
 				q.setTable(0, table)
@@ -910,7 +910,7 @@ func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 			continue
 		}
 
-		if !archetype.hasRelation {
+		if !archetype.HasRelations() {
 			table := archetype.tables[0]
 			if table.Len() > 0 {
 				q.setTable(0, table)
@@ -1061,7 +1061,7 @@ func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 			continue
 		}
 
-		if !archetype.hasRelation {
+		if !archetype.HasRelations() {
 			table := archetype.tables[0]
 			if table.Len() > 0 {
 				q.setTable(0, table)
@@ -1216,7 +1216,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 			continue
 		}
 
-		if !archetype.hasRelation {
+		if !archetype.HasRelations() {
 			table := archetype.tables[0]
 			if table.Len() > 0 {
 				q.setTable(0, table)

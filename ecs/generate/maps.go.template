@@ -46,7 +46,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}) Entity {
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
 		{{- end}}
-	})
+	}, nil)
 }
 
 // Get returns the mapped components for the given entity.
@@ -86,7 +86,7 @@ func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}) {
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
 		{{- end}}
-	})
+	}, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -94,7 +94,7 @@ func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 {{end -}}
 {{end -}}

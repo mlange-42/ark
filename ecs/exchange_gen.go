@@ -39,7 +39,7 @@ func (ex *Exchange1[A]) Removes(components ...Comp) *Exchange1[A] {
 func (ex *Exchange1[A]) Exchange(entity Entity, a *A) {
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
-	})
+	}, nil)
 }
 
 // Exchange2 allows to exchange components of entities.
@@ -79,7 +79,7 @@ func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B) {
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
-	})
+	}, nil)
 }
 
 // Exchange3 allows to exchange components of entities.
@@ -121,7 +121,7 @@ func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C) {
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
-	})
+	}, nil)
 }
 
 // Exchange4 allows to exchange components of entities.
@@ -165,7 +165,7 @@ func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D)
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
-	})
+	}, nil)
 }
 
 // Exchange5 allows to exchange components of entities.
@@ -211,7 +211,7 @@ func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d 
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
-	})
+	}, nil)
 }
 
 // Exchange6 allows to exchange components of entities.
@@ -259,7 +259,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C,
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
-	})
+	}, nil)
 }
 
 // Exchange7 allows to exchange components of entities.
@@ -309,7 +309,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c 
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
-	})
+	}, nil)
 }
 
 // Exchange8 allows to exchange components of entities.
@@ -361,5 +361,5 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B,
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
 		unsafe.Pointer(h),
-	})
+	}, nil)
 }

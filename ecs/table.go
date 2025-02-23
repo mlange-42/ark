@@ -11,29 +11,24 @@ type tableID uint32
 const maxTableID = math.MaxUint32
 
 type table struct {
-	id         tableID
-	archetype  archetypeID
-	components []int16
-	entities   column
-	columns    []column
-	relations  []Entity
+	id           tableID
+	archetype    archetypeID
+	components   []int16
+	entities     column
+	columns      []column
+	relations    []Entity
+	numRelations uint8
 
 	zeroValue   []byte
 	zeroPointer unsafe.Pointer
 }
 
-func newTable(id tableID, archetype archetypeID, capacity uint32, reg *componentRegistry, ids []ID) table {
-	components := make([]int16, MaskTotalBits)
+func newTable(id tableID, archetype archetypeID, capacity uint32, reg *componentRegistry, ids []ID, componentsMap []int16, targets []Entity, numRelations uint8) table {
 	entities := newColumn(entityType, capacity)
 	columns := make([]column, len(ids))
 
-	for i := range MaskTotalBits {
-		components[i] = -1
-	}
-
 	var maxSize uintptr = entitySize
 	for i, id := range ids {
-		components[id.id] = int16(i)
 		columns[i] = newColumn(reg.Types[id.id], capacity)
 		if columns[i].itemSize > maxSize {
 			maxSize = columns[i].itemSize
@@ -47,14 +42,15 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 	}
 
 	return table{
-		id:          id,
-		archetype:   archetype,
-		components:  components,
-		entities:    entities,
-		columns:     columns,
-		relations:   make([]Entity, len(ids)),
-		zeroValue:   zeroValue,
-		zeroPointer: zeroPointer,
+		id:           id,
+		archetype:    archetype,
+		components:   componentsMap,
+		entities:     entities,
+		columns:      columns,
+		relations:    targets,
+		numRelations: numRelations,
+		zeroValue:    zeroValue,
+		zeroPointer:  zeroPointer,
 	}
 }
 
@@ -101,6 +97,33 @@ func (t *table) Remove(index uint32) bool {
 		t.columns[i].Remove(index, t.zeroPointer)
 	}
 	return swapped
+}
+
+func (t *table) MatchesExact(relations []relation) bool {
+	if len(relations) != int(t.numRelations) {
+		panic("relation targets must be fully specified")
+	}
+	for _, rel := range relations {
+		if rel.target == wildcard {
+			panic("relation targets must be fully specified, no wildcard allowed")
+		}
+		if rel.target != t.relations[t.components[rel.component.id]] {
+			return false
+		}
+	}
+	return true
+}
+
+func (t *table) Matches(relations []relation) bool {
+	for _, rel := range relations {
+		if rel.target == wildcard {
+			continue
+		}
+		if rel.target != t.relations[t.components[rel.component.id]] {
+			return false
+		}
+	}
+	return true
 }
 
 func (t *table) Len() int {

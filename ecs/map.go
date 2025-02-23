@@ -21,7 +21,7 @@ func NewMap[T any](w *World) Map[T] {
 
 // NewEntity creates a new entity with the mapped component.
 func (m *Map[T]) NewEntity(comp *T) Entity {
-	return m.world.newEntityWith([]ID{m.id}, []unsafe.Pointer{unsafe.Pointer(comp)})
+	return m.world.newEntityWith([]ID{m.id}, []unsafe.Pointer{unsafe.Pointer(comp)}, nil)
 }
 
 // Get returns the mapped component for the given entity.
@@ -61,7 +61,7 @@ func (m *Map[T]) Add(entity Entity, comp *T) {
 	if !m.world.Alive(entity) {
 		panic("can't add a component to a dead entity")
 	}
-	m.world.exchange(entity, []ID{m.id}, nil, []unsafe.Pointer{unsafe.Pointer(comp)})
+	m.world.exchange(entity, []ID{m.id}, nil, []unsafe.Pointer{unsafe.Pointer(comp)}, nil)
 }
 
 // Remove the mapped component from the given entity.
@@ -69,5 +69,5 @@ func (m *Map[T]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove a component from a dead entity")
 	}
-	m.world.exchange(entity, nil, []ID{m.id}, nil)
+	m.world.exchange(entity, nil, []ID{m.id}, nil, nil)
 }

@@ -113,7 +113,7 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 			continue
 		}
 
-		if !archetype.hasRelation {
+		if !archetype.HasRelations() {
 			table := archetype.tables[0]
 			if table.Len() > 0 {
 				q.setTable(0, table)

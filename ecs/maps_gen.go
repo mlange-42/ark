@@ -27,7 +27,7 @@ func NewMap1[A any](world *World) Map1[A] {
 func (m *Map1[A]) NewEntity(a *A) Entity {
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
-	})
+	}, nil)
 }
 
 // Get returns the mapped components for the given entity.
@@ -63,7 +63,7 @@ func (m *Map1[A]) Add(entity Entity, a *A) {
 	}
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
-	})
+	}, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -71,7 +71,7 @@ func (m *Map1[A]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
 // Map2 is a mapper to access 2 components of an entity.
@@ -101,7 +101,7 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B) Entity {
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
-	})
+	}, nil)
 }
 
 // Get returns the mapped components for the given entity.
@@ -140,7 +140,7 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B) {
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
-	})
+	}, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -148,7 +148,7 @@ func (m *Map2[A, B]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
 // Map3 is a mapper to access 3 components of an entity.
@@ -182,7 +182,7 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C) Entity {
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
-	})
+	}, nil)
 }
 
 // Get returns the mapped components for the given entity.
@@ -224,7 +224,7 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C) {
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
-	})
+	}, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -232,7 +232,7 @@ func (m *Map3[A, B, C]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
 // Map4 is a mapper to access 4 components of an entity.
@@ -270,7 +270,7 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D) Entity {
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
-	})
+	}, nil)
 }
 
 // Get returns the mapped components for the given entity.
@@ -315,7 +315,7 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D) {
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
-	})
+	}, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -323,7 +323,7 @@ func (m *Map4[A, B, C, D]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
 // Map5 is a mapper to access 5 components of an entity.
@@ -365,7 +365,7 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E) Entity {
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
-	})
+	}, nil)
 }
 
 // Get returns the mapped components for the given entity.
@@ -413,7 +413,7 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E) {
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
-	})
+	}, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -421,7 +421,7 @@ func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
 // Map6 is a mapper to access 6 components of an entity.
@@ -467,7 +467,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F) E
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
-	})
+	}, nil)
 }
 
 // Get returns the mapped components for the given entity.
@@ -518,7 +518,7 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
-	})
+	}, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -526,7 +526,7 @@ func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
 // Map7 is a mapper to access 7 components of an entity.
@@ -576,7 +576,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
-	})
+	}, nil)
 }
 
 // Get returns the mapped components for the given entity.
@@ -630,7 +630,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
-	})
+	}, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -638,7 +638,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
 // Map8 is a mapper to access 8 components of an entity.
@@ -692,7 +692,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
 		unsafe.Pointer(h),
-	})
+	}, nil)
 }
 
 // Get returns the mapped components for the given entity.
@@ -749,7 +749,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
 		unsafe.Pointer(h),
-	})
+	}, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -757,5 +757,5 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.exchange(entity, nil, m.ids, nil, nil)
 }

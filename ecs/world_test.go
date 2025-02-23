@@ -42,9 +42,9 @@ func TestWorldExchange(t *testing.T) {
 	e2 := w.NewEntity()
 	e3 := w.NewEntity()
 
-	w.exchange(e1, []ID{posID}, nil, nil)
-	w.exchange(e2, []ID{posID, velID}, nil, nil)
-	w.exchange(e3, []ID{posID, velID}, nil, nil)
+	w.exchange(e1, []ID{posID}, nil, nil, nil)
+	w.exchange(e2, []ID{posID, velID}, nil, nil, nil)
+	w.exchange(e3, []ID{posID, velID}, nil, nil, nil)
 
 	assert.True(t, w.has(e1, posID))
 	assert.False(t, w.has(e1, velID))
@@ -58,7 +58,7 @@ func TestWorldExchange(t *testing.T) {
 	pos = (*Position)(w.get(e1, posID))
 	assert.Equal(t, pos.X, 100.0)
 
-	w.exchange(e2, nil, []ID{posID}, nil)
+	w.exchange(e2, nil, []ID{posID}, nil, nil)
 	assert.False(t, w.has(e2, posID))
 	assert.True(t, w.has(e2, velID))
 }

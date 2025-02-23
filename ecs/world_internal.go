@@ -5,11 +5,11 @@ import (
 	"unsafe"
 )
 
-func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer) Entity {
+func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []relation) Entity {
 	w.checkLocked()
 
 	mask := All(ids...)
-	newTable := w.storage.findOrCreateTable(&mask)
+	newTable := w.storage.findOrCreateTable(&mask, relations)
 	entity, idx := w.createEntity(newTable.id)
 
 	if comps != nil {
@@ -59,7 +59,7 @@ func (w *World) createEntity(table tableID) (Entity, uint32) {
 	return entity, idx
 }
 
-func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer) {
+func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer, relations []relation) {
 	w.checkLocked()
 
 	if !w.Alive(entity) {
@@ -78,7 +78,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 
 	oldIDs := oldArchetype.components
 
-	newTable := w.storage.findOrCreateTable(&mask)
+	newTable := w.storage.findOrCreateTable(&mask, relations)
 	newIndex := newTable.Add(entity)
 
 	for _, id := range oldIDs {

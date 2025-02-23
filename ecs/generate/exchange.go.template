@@ -54,7 +54,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}) {
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
 		{{- end}}
-	})
+	}, nil)
 }
 {{end -}}
 {{end -}}
