@@ -22,6 +22,7 @@ type Map{{.}}{{$generics}} struct {
 	{{- range $upper}}
 	storage{{.}} *componentStorage
 	{{- end}}
+	relations []relationID
 }
 
 // NewMap{{.}} creates a new [Map{{.}}].
@@ -41,12 +42,13 @@ func NewMap{{.}}{{$generics}}(world *World) Map{{.}}{{$genericsShort}} {
 }
 
 // NewEntity creates a new entity with the mapped components.
-func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}) Entity {
+func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...RelationIndex) Entity {
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
 		{{- end}}
-	})
+	}, m.relations)
 }
 
 // Get returns the mapped components for the given entity.
@@ -78,15 +80,16 @@ func (m *Map{{.}}{{$genericsShort}}) HasAll(entity Entity) bool {
 }
 
 // Add the mapped components to the given entity.
-func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}) {
+func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
 		{{- end}}
-	})
+	}, m.relations)
 }
 
 // Remove the mapped components from the given entity.
@@ -94,7 +97,16 @@ func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map{{.}}{{$genericsShort}}) SetRelations(entity Entity, rel ...RelationIndex) {
+	if !m.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.world.setRelations(entity, m.relations)
 }
 {{end -}}
 {{end -}}

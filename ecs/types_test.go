@@ -20,6 +20,14 @@ type Heading struct {
 
 type Label struct{}
 
+type ChildOf struct {
+	Relation
+}
+
+type ChildOf2 struct {
+	Relation
+}
+
 type CompA struct {
 	X, Y float64
 }

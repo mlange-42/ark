@@ -3,7 +3,7 @@ package ecs
 import "fmt"
 
 type storage struct {
-	registry        registry
+	registry        componentRegistry
 	archetypes      []archetype
 	tables          []table
 	initialCapacity uint32
@@ -15,11 +15,11 @@ type componentStorage struct {
 }
 
 func newStorage(capacity uint32) storage {
-	reg := newRegistry()
+	reg := newComponentRegistry()
 	tables := make([]table, 0, 128)
-	tables = append(tables, newTable(0, 0, capacity, &reg))
+	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, make([]int16, MaskTotalBits), []bool{}, []Entity{}, []relationID{}))
 	archetypes := make([]archetype, 0, 128)
-	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []*table{&tables[0]}))
+	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []*table{&tables[0]}, &reg))
 	return storage{
 		registry:        reg,
 		archetypes:      archetypes,
@@ -29,7 +29,7 @@ func newStorage(capacity uint32) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(mask *Mask) *table {
+func (s *storage) findOrCreateTable(oldTable *table, mask *Mask, relations []relationID) *table {
 	// TODO: use archetype graph
 	var arch *archetype
 	for i := range s.archetypes {
@@ -41,9 +41,10 @@ func (s *storage) findOrCreateTable(mask *Mask) *table {
 	if arch == nil {
 		arch = s.createArchetype(mask)
 	}
-	table, ok := arch.GetTable()
+	allRelation := appendNew(oldTable.relationIDs, relations...)
+	table, ok := arch.GetTable(allRelation)
 	if !ok {
-		table = s.createTable(arch)
+		table = s.createTable(arch, allRelation)
 	}
 	return table
 }
@@ -56,15 +57,31 @@ func (s *storage) AddComponent(id uint8) {
 }
 
 func (s *storage) createArchetype(mask *Mask) *archetype {
-	comps := mask.toTypes(&s.registry)
+	comps := mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
-	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), mask, comps, nil))
+	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), mask, comps, nil, &s.registry))
 	return &s.archetypes[index]
 }
 
-func (s *storage) createTable(archetype *archetype) *table {
+func (s *storage) createTable(archetype *archetype, relations []relationID) *table {
 	index := len(s.tables)
-	s.tables = append(s.tables, newTable(tableID(index), archetype.id, s.initialCapacity, &s.registry, archetype.components...))
+
+	targets := make([]Entity, len(archetype.components))
+	numRelations := uint8(0)
+	for _, rel := range relations {
+		idx := archetype.componentsMap[rel.component.id]
+		targets[idx] = rel.target
+		numRelations++
+	}
+	if numRelations != archetype.numRelations {
+		panic("relations must be fully specified")
+	}
+
+	s.tables = append(s.tables, newTable(
+		tableID(index), archetype.id, s.initialCapacity, &s.registry,
+		archetype.components, archetype.componentsMap,
+		archetype.isRelation, targets, relations))
+
 	table := &s.tables[index]
 	archetype.tables = append(archetype.tables, table)
 	for i := range s.components {

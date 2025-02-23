@@ -42,9 +42,9 @@ func TestWorldExchange(t *testing.T) {
 	e2 := w.NewEntity()
 	e3 := w.NewEntity()
 
-	w.exchange(e1, []ID{posID}, nil, nil)
-	w.exchange(e2, []ID{posID, velID}, nil, nil)
-	w.exchange(e3, []ID{posID, velID}, nil, nil)
+	w.exchange(e1, []ID{posID}, nil, nil, nil)
+	w.exchange(e2, []ID{posID, velID}, nil, nil, nil)
+	w.exchange(e3, []ID{posID, velID}, nil, nil, nil)
 
 	assert.True(t, w.has(e1, posID))
 	assert.False(t, w.has(e1, velID))
@@ -58,7 +58,7 @@ func TestWorldExchange(t *testing.T) {
 	pos = (*Position)(w.get(e1, posID))
 	assert.Equal(t, pos.X, 100.0)
 
-	w.exchange(e2, nil, []ID{posID}, nil)
+	w.exchange(e2, nil, []ID{posID}, nil, nil)
 	assert.False(t, w.has(e2, posID))
 	assert.True(t, w.has(e2, velID))
 }
@@ -99,4 +99,69 @@ func TestWorldRemoveEntity(t *testing.T) {
 	e := w.NewEntity()
 	w.RemoveEntity(e)
 	assert.False(t, w.Alive(e))
+}
+
+func TestWorldRelations(t *testing.T) {
+	w := NewWorld(16)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	mapper1 := NewMap3[Position, ChildOf, ChildOf2](&w)
+	assert.True(t, w.storage.registry.IsRelation[1])
+	assert.True(t, w.storage.registry.IsRelation[2])
+
+	for range 10 {
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent1))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent2))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent1))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent2))
+	}
+
+	filter := NewFilter3[Position, ChildOf, ChildOf2](&w)
+
+	query := filter.Query()
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 40, cnt)
+
+	query = filter.Query(Rel(1, parent1), Rel(2, parent2))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 10, cnt)
+
+	query = filter.Query(Rel(1, parent1))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 20, cnt)
+
+	mapper2 := NewMap2[Position, ChildOf](&w)
+	child2Map := NewMap1[ChildOf2](&w)
+
+	e := mapper2.NewEntity(&Position{}, &ChildOf{}, Rel(1, parent1))
+	child2Map.Add(e, &ChildOf2{}, Rel(0, parent2))
+}
+
+func TestWorldSetRelations(t *testing.T) {
+	w := NewWorld(16)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	map1 := NewMap[ChildOf](&w)
+	map2 := NewMap[ChildOf2](&w)
+
+	e := map1.NewEntity(&ChildOf{}, parent1)
+	map2.Add(e, &ChildOf2{}, parent1)
+	assert.Equal(t, parent1, map1.GetRelation(e))
+
+	map1.SetRelation(e, parent2)
+	assert.Equal(t, parent2, map1.GetRelation(e))
+	assert.Equal(t, parent1, map2.GetRelation(e))
 }

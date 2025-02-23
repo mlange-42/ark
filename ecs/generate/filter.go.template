@@ -14,10 +14,11 @@ package ecs
 
 // Filter{{.}} is a filter for {{.}} components.
 type Filter{{.}}{{$generics}} struct {
-	world   *World
-	ids     []ID
-	mask    Mask
-	without Mask
+	world     *World
+	ids       []ID
+	mask      Mask
+	without   Mask
+	relations []relationID
 }
 
 // NewFilter{{.}} creates a new [Filter{{.}}].
@@ -57,8 +58,9 @@ func (q *Filter{{.}}{{$genericsShort}}) Without(comps ...Comp) *Filter{{.}}{{$ge
 
 // Query creates a [Query{{.}}] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter{{.}}{{$genericsShort}}) Query() Query{{.}}{{$genericsShort}} {
-	return newQuery{{.}}{{$genericsShort}}(q.world, q.mask, q.without{{if .}}, q.ids{{end}})
+func (q *Filter{{.}}{{$genericsShort}}) Query(rel ...RelationIndex) Query{{.}}{{$genericsShort}} {
+	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	return newQuery{{.}}{{$genericsShort}}(q.world, q.mask, q.without{{if .}}, q.ids{{end}}, q.relations)
 }
 {{end -}}
 {{end -}}

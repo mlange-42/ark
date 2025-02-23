@@ -32,6 +32,15 @@ func (e Entity) isWildcard() bool {
 	return e.id == 1
 }
 
+func (e Entity) toRelation(id ID, out []relationID) []relationID {
+	out = out[:0]
+	out = append(out, relationID{
+		component: id,
+		target:    Entity(e),
+	})
+	return out
+}
+
 type entityIndex struct {
 	table tableID
 	row   uint32

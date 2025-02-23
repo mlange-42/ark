@@ -12,7 +12,10 @@ func TestNewTable(t *testing.T) {
 	posID := ComponentID[Position](&w)
 	velID := ComponentID[Velocity](&w)
 
-	table := newTable(0, 0, 8, &w.storage.registry, posID, velID)
+	compMap := make([]int16, MaskTotalBits)
+	compMap[1] = 0
+	compMap[2] = 1
+	table := newTable(0, 0, 8, &w.storage.registry, []ID{posID, velID}, compMap, make([]bool, 2), make([]Entity, 2), []relationID{})
 
 	assert.Equal(t, 2, len(table.columns))
 	assert.Equal(t, 2, len(table.relations))
