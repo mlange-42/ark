@@ -100,3 +100,20 @@ func TestWorldRemoveEntity(t *testing.T) {
 	w.RemoveEntity(e)
 	assert.False(t, w.Alive(e))
 }
+
+func TestWorldRelations(t *testing.T) {
+	w := NewWorld(16)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	mapper := NewMap3[Position, ChildOf, ChildOf2](&w)
+	assert.True(t, w.storage.registry.IsRelation[1])
+	assert.True(t, w.storage.registry.IsRelation[2])
+
+	for range 10 {
+		mapper.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent2))
+		mapper.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent1))
+	}
+
+}

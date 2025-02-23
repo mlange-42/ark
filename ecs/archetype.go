@@ -24,7 +24,7 @@ func newArchetype(id archetypeID, mask *Mask, components []ID, tables []*table, 
 	numRelations := uint8(0)
 	isRelation := make([]bool, len(components))
 	for _, id := range components {
-		if reg.IsRelation.Get(id) {
+		if reg.IsRelation[id.id] {
 			isRelation[id.id] = true
 			numRelations++
 		}
@@ -44,7 +44,7 @@ func (a *archetype) HasRelations() bool {
 	return a.numRelations > 0
 }
 
-func (a *archetype) GetTable(relations []relation) (*table, bool) {
+func (a *archetype) GetTable(relations []relationID) (*table, bool) {
 	if len(a.tables) == 0 {
 		return nil, false
 	}

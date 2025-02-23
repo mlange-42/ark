@@ -83,14 +83,14 @@ func (r *registry) unregisterLastComponent() {
 // are relation components and/or contain (or are) pointers.
 type componentRegistry struct {
 	registry
-	IsRelation Mask // Mapping from IDs to whether the component is a relation component.
+	IsRelation []bool
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
 func newComponentRegistry() componentRegistry {
 	return componentRegistry{
 		registry:   newRegistry(),
-		IsRelation: Mask{},
+		IsRelation: make([]bool, MaskTotalBits),
 	}
 }
 
@@ -106,14 +106,14 @@ func (r *componentRegistry) ComponentID(tp reflect.Type) (uint8, bool) {
 // Reset clears the registry.
 func (r *componentRegistry) Reset() {
 	r.registry.Reset()
-	r.IsRelation.Reset()
+	r.IsRelation = make([]bool, MaskTotalBits)
 }
 
 // registerComponent registers a components and assigns an ID for it.
 func (r *componentRegistry) registerComponent(tp reflect.Type, totalBits int) uint8 {
 	newID := r.registry.registerComponent(tp, totalBits)
 	if r.isRelation(tp) {
-		r.IsRelation.Set(id8(newID), true)
+		r.IsRelation[newID] = true
 	}
 	return newID
 }
@@ -121,7 +121,7 @@ func (r *componentRegistry) registerComponent(tp reflect.Type, totalBits int) ui
 func (r *componentRegistry) unregisterLastComponent() {
 	newID := uint8(len(r.Components) - 1)
 	r.registry.unregisterLastComponent()
-	r.IsRelation.Set(id8(newID), false)
+	r.IsRelation[newID] = false
 }
 
 // isRelation determines whether a type is a relation component.

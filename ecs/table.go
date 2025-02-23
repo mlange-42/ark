@@ -99,7 +99,7 @@ func (t *table) Remove(index uint32) bool {
 	return swapped
 }
 
-func (t *table) MatchesExact(relations []relation) bool {
+func (t *table) MatchesExact(relations []relationID) bool {
 	if len(relations) != int(t.numRelations) {
 		panic("relation targets must be fully specified")
 	}
@@ -114,7 +114,7 @@ func (t *table) MatchesExact(relations []relation) bool {
 	return true
 }
 
-func (t *table) Matches(relations []relation) bool {
+func (t *table) Matches(relations []relationID) bool {
 	for _, rel := range relations {
 		if rel.target == wildcard {
 			continue

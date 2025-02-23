@@ -19,9 +19,10 @@ import "unsafe"
 // It adds the given components. Use [Exchange{{.}}.Removes]
 // to set components to be removed.
 type Exchange{{.}}{{$generics}} struct {
-	world  *World
-	ids    []ID
-	remove []ID
+	world     *World
+	ids       []ID
+	remove    []ID
+	relations []relationID
 }
 
 // NewExchange{{.}} creates an [Exchange{{.}}].
@@ -49,12 +50,13 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Removes(components ...Comp) *Exchange
 
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange{{.}}.Removes].
-func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}) {
+func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
 		{{- end}}
-	}, nil)
+	}, ex.relations)
 }
 {{end -}}
 {{end -}}

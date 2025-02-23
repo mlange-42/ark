@@ -8,9 +8,10 @@ import "unsafe"
 // It adds the given components. Use [Exchange1.Removes]
 // to set components to be removed.
 type Exchange1[A any] struct {
-	world  *World
-	ids    []ID
-	remove []ID
+	world     *World
+	ids       []ID
+	remove    []ID
+	relations []relationID
 }
 
 // NewExchange1 creates an [Exchange1].
@@ -36,19 +37,21 @@ func (ex *Exchange1[A]) Removes(components ...Comp) *Exchange1[A] {
 
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange1.Removes].
-func (ex *Exchange1[A]) Exchange(entity Entity, a *A) {
+func (ex *Exchange1[A]) Exchange(entity Entity, a *A, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
-	}, nil)
+	}, ex.relations)
 }
 
 // Exchange2 allows to exchange components of entities.
 // It adds the given components. Use [Exchange2.Removes]
 // to set components to be removed.
 type Exchange2[A any, B any] struct {
-	world  *World
-	ids    []ID
-	remove []ID
+	world     *World
+	ids       []ID
+	remove    []ID
+	relations []relationID
 }
 
 // NewExchange2 creates an [Exchange2].
@@ -75,20 +78,22 @@ func (ex *Exchange2[A, B]) Removes(components ...Comp) *Exchange2[A, B] {
 
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange2.Removes].
-func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B) {
+func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
-	}, nil)
+	}, ex.relations)
 }
 
 // Exchange3 allows to exchange components of entities.
 // It adds the given components. Use [Exchange3.Removes]
 // to set components to be removed.
 type Exchange3[A any, B any, C any] struct {
-	world  *World
-	ids    []ID
-	remove []ID
+	world     *World
+	ids       []ID
+	remove    []ID
+	relations []relationID
 }
 
 // NewExchange3 creates an [Exchange3].
@@ -116,21 +121,23 @@ func (ex *Exchange3[A, B, C]) Removes(components ...Comp) *Exchange3[A, B, C] {
 
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange3.Removes].
-func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C) {
+func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
-	}, nil)
+	}, ex.relations)
 }
 
 // Exchange4 allows to exchange components of entities.
 // It adds the given components. Use [Exchange4.Removes]
 // to set components to be removed.
 type Exchange4[A any, B any, C any, D any] struct {
-	world  *World
-	ids    []ID
-	remove []ID
+	world     *World
+	ids       []ID
+	remove    []ID
+	relations []relationID
 }
 
 // NewExchange4 creates an [Exchange4].
@@ -159,22 +166,24 @@ func (ex *Exchange4[A, B, C, D]) Removes(components ...Comp) *Exchange4[A, B, C,
 
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange4.Removes].
-func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D) {
+func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
-	}, nil)
+	}, ex.relations)
 }
 
 // Exchange5 allows to exchange components of entities.
 // It adds the given components. Use [Exchange5.Removes]
 // to set components to be removed.
 type Exchange5[A any, B any, C any, D any, E any] struct {
-	world  *World
-	ids    []ID
-	remove []ID
+	world     *World
+	ids       []ID
+	remove    []ID
+	relations []relationID
 }
 
 // NewExchange5 creates an [Exchange5].
@@ -204,23 +213,25 @@ func (ex *Exchange5[A, B, C, D, E]) Removes(components ...Comp) *Exchange5[A, B,
 
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange5.Removes].
-func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E) {
+func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
-	}, nil)
+	}, ex.relations)
 }
 
 // Exchange6 allows to exchange components of entities.
 // It adds the given components. Use [Exchange6.Removes]
 // to set components to be removed.
 type Exchange6[A any, B any, C any, D any, E any, F any] struct {
-	world  *World
-	ids    []ID
-	remove []ID
+	world     *World
+	ids       []ID
+	remove    []ID
+	relations []relationID
 }
 
 // NewExchange6 creates an [Exchange6].
@@ -251,7 +262,8 @@ func (ex *Exchange6[A, B, C, D, E, F]) Removes(components ...Comp) *Exchange6[A,
 
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange6.Removes].
-func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F) {
+func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -259,16 +271,17 @@ func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C,
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
-	}, nil)
+	}, ex.relations)
 }
 
 // Exchange7 allows to exchange components of entities.
 // It adds the given components. Use [Exchange7.Removes]
 // to set components to be removed.
 type Exchange7[A any, B any, C any, D any, E any, F any, G any] struct {
-	world  *World
-	ids    []ID
-	remove []ID
+	world     *World
+	ids       []ID
+	remove    []ID
+	relations []relationID
 }
 
 // NewExchange7 creates an [Exchange7].
@@ -300,7 +313,8 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Removes(components ...Comp) *Exchange7
 
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange7.Removes].
-func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G) {
+func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -309,16 +323,17 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c 
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
-	}, nil)
+	}, ex.relations)
 }
 
 // Exchange8 allows to exchange components of entities.
 // It adds the given components. Use [Exchange8.Removes]
 // to set components to be removed.
 type Exchange8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
-	world  *World
-	ids    []ID
-	remove []ID
+	world     *World
+	ids       []ID
+	remove    []ID
+	relations []relationID
 }
 
 // NewExchange8 creates an [Exchange8].
@@ -351,7 +366,8 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Removes(components ...Comp) *Exchan
 
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange8.Removes].
-func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H) {
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -361,5 +377,5 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B,
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
 		unsafe.Pointer(h),
-	}, nil)
+	}, ex.relations)
 }

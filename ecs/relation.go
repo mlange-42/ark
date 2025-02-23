@@ -11,7 +11,52 @@ var relationType = typeOf[Relation]()
 // Currently, each entity can only have a single relation component.
 type Relation struct{}
 
-type relation struct {
+type relationID struct {
 	component ID
 	target    Entity
+}
+
+type relations []RelationIndex
+
+func (r relations) toRelations(ids []ID, out []relationID) []relationID {
+	out = out[:0]
+	for _, rel := range r {
+		out = append(out, relationID{
+			component: ids[rel.index],
+			target:    rel.target,
+		})
+	}
+	return out
+}
+
+func (r relations) toRelation(id ID, out []relationID) []relationID {
+	out = out[:0]
+	for _, rel := range r {
+		out = append(out, relationID{
+			component: id,
+			target:    rel.target,
+		})
+	}
+	return out
+}
+
+// RelationIndex specifies an entity relation target by component index.
+type RelationIndex struct {
+	index  uint8
+	target Entity
+}
+
+// Rel creates a new RelationIndex.
+func Rel(index int, target Entity) RelationIndex {
+	return RelationIndex{
+		index:  uint8(index),
+		target: target,
+	}
+}
+
+func (r *RelationIndex) toRelation(ids []ID) relationID {
+	return relationID{
+		component: ids[r.index],
+		target:    r.target,
+	}
 }

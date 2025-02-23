@@ -29,7 +29,7 @@ func newStorage(capacity uint32) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(mask *Mask, relations []relation) *table {
+func (s *storage) findOrCreateTable(mask *Mask, relations []relationID) *table {
 	// TODO: use archetype graph
 	var arch *archetype
 	for i := range s.archetypes {
@@ -62,7 +62,7 @@ func (s *storage) createArchetype(mask *Mask) *archetype {
 	return &s.archetypes[index]
 }
 
-func (s *storage) createTable(archetype *archetype, relations []relation) *table {
+func (s *storage) createTable(archetype *archetype, relations []relationID) *table {
 	index := len(s.tables)
 
 	targets := make([]Entity, len(archetype.components))
@@ -71,6 +71,9 @@ func (s *storage) createTable(archetype *archetype, relations []relation) *table
 		idx := archetype.componentsMap[rel.component.id]
 		targets[idx] = rel.target
 		numRelations++
+	}
+	if numRelations != archetype.numRelations {
+		panic("relations must be fully specified")
 	}
 
 	s.tables = append(s.tables, newTable(tableID(index), archetype.id, s.initialCapacity, &s.registry, archetype.components, archetype.componentsMap, targets, numRelations))

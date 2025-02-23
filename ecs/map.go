@@ -4,9 +4,10 @@ import "unsafe"
 
 // Map is a mapper to access and manipulate components of an entity.
 type Map[T any] struct {
-	world   *World
-	id      ID
-	storage *componentStorage
+	world     *World
+	id        ID
+	storage   *componentStorage
+	relations []relationID
 }
 
 // NewMap creates a new [Map].
@@ -20,8 +21,9 @@ func NewMap[T any](w *World) Map[T] {
 }
 
 // NewEntity creates a new entity with the mapped component.
-func (m *Map[T]) NewEntity(comp *T) Entity {
-	return m.world.newEntityWith([]ID{m.id}, []unsafe.Pointer{unsafe.Pointer(comp)}, nil)
+func (m *Map[T]) NewEntity(comp *T, rel ...RelationIndex) Entity {
+	m.relations = relations(rel).toRelation(m.id, m.relations)
+	return m.world.newEntityWith([]ID{m.id}, []unsafe.Pointer{unsafe.Pointer(comp)}, m.relations)
 }
 
 // Get returns the mapped component for the given entity.
@@ -57,11 +59,12 @@ func (m *Map[T]) HasUnchecked(entity Entity) bool {
 }
 
 // Add the mapped component to the given entity.
-func (m *Map[T]) Add(entity Entity, comp *T) {
+func (m *Map[T]) Add(entity Entity, comp *T, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't add a component to a dead entity")
 	}
-	m.world.exchange(entity, []ID{m.id}, nil, []unsafe.Pointer{unsafe.Pointer(comp)}, nil)
+	m.relations = relations(rel).toRelation(m.id, m.relations)
+	m.world.exchange(entity, []ID{m.id}, nil, []unsafe.Pointer{unsafe.Pointer(comp)}, m.relations)
 }
 
 // Remove the mapped component from the given entity.

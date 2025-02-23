@@ -5,7 +5,7 @@ import (
 	"unsafe"
 )
 
-func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []relation) Entity {
+func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []relationID) Entity {
 	w.checkLocked()
 
 	mask := All(ids...)
@@ -59,7 +59,7 @@ func (w *World) createEntity(table tableID) (Entity, uint32) {
 	return entity, idx
 }
 
-func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer, relations []relation) {
+func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer, relations []relationID) {
 	w.checkLocked()
 
 	if !w.Alive(entity) {
