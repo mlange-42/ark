@@ -3,11 +3,12 @@ package ecs
 import "fmt"
 
 type storage struct {
-	registry        componentRegistry
-	archetypes      []archetype
-	tables          []table
-	initialCapacity uint32
-	components      []componentStorage
+	registry           componentRegistry
+	archetypes         []archetype
+	relationArchetypes []archetypeID
+	tables             []table
+	components         []componentStorage
+	initialCapacity    uint32
 }
 
 type componentStorage struct {
@@ -60,7 +61,11 @@ func (s *storage) createArchetype(mask *Mask) *archetype {
 	comps := mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
 	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), mask, comps, nil, &s.registry))
-	return &s.archetypes[index]
+	archetype := &s.archetypes[index]
+	if archetype.HasRelations() {
+		s.relationArchetypes = append(s.relationArchetypes, archetype.id)
+	}
+	return archetype
 }
 
 func (s *storage) createTable(archetype *archetype, relations []relationID) *table {
@@ -109,4 +114,57 @@ func (s *storage) getExchangeMask(mask *Mask, add []ID, rem []ID) {
 		}
 		mask.Set(comp, true)
 	}
+}
+
+// Removes empty archetypes that have a target relation to the given entity.
+func (s *storage) cleanupArchetypes(target Entity) {
+	newRelations := []relationID{}
+	for _, arch := range s.relationArchetypes {
+		archetype := &s.archetypes[arch]
+		for _, t := range archetype.tables {
+			table := &s.tables[t]
+
+			foundTarget := false
+			for _, rel := range table.relationIDs {
+				if rel.target.id == target.id {
+					newRelations = append(newRelations, relationID{component: rel.component, target: Entity{}})
+					foundTarget = true
+				}
+			}
+			if !foundTarget {
+				continue
+			}
+
+			allRelations := s.getExchangeTargets(table, newRelations)
+			newTable, ok := archetype.GetTable(s, allRelations)
+			if !ok {
+				newTable = s.createTable(archetype, newRelations)
+			}
+			_ = newTable
+
+			newRelations = newRelations[:0]
+		}
+	}
+}
+
+func (s *storage) getExchangeTargets(oldTable *table, relations []relationID) []relationID {
+	targets := append([]Entity(nil), oldTable.relations...)
+	for _, rel := range relations {
+		index := oldTable.components[rel.component.id]
+		if rel.target == targets[index] {
+			continue
+		}
+		targets[index] = rel.target
+	}
+
+	result := make([]relationID, 0, len(oldTable.relationIDs))
+	for i, e := range targets {
+		if !oldTable.isRelation[i] {
+			continue
+		}
+		id := oldTable.ids[i]
+		result = append(result, relationID{component: id, target: e})
+	}
+
+	return result
 }

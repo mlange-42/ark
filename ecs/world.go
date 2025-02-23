@@ -62,7 +62,7 @@ func (w *World) RemoveEntity(entity Entity) {
 	index.table = maxTableID
 
 	if w.isTarget[entity.id] {
-		w.cleanupArchetypes(entity)
+		w.storage.cleanupArchetypes(entity)
 		w.isTarget[entity.id] = false
 	}
 }

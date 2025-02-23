@@ -228,12 +228,3 @@ func (w *World) registerTargets(relations []relationID) {
 		w.isTarget[rel.target.id] = true
 	}
 }
-
-// Removes empty archetypes that have a target relation to the given entity.
-func (w *World) cleanupArchetypes(target Entity) {
-	/*for _, node := range w.relationNodes {
-		if arch, ok := node.archetypeMap[target]; ok && arch.Len() == 0 {
-			w.removeArchetype(arch)
-		}
-	}*/
-}
