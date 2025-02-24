@@ -155,8 +155,8 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 			newTableID, archetype.id, s.initialCapacity, &s.registry,
 			archetype.components, archetype.componentsMap,
 			archetype.isRelation, targets, relations))
-		archetype.tables = append(archetype.tables, newTableID)
 	}
+	archetype.AddTable(&s.tables[newTableID])
 
 	table := &s.tables[newTableID]
 	for i := range s.components {
