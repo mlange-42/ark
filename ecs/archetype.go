@@ -26,9 +26,9 @@ func newArchetype(id archetypeID, mask *Mask, components []ID, tables []tableID,
 
 	numRelations := uint8(0)
 	isRelation := make([]bool, len(components))
-	for _, id := range components {
+	for i, id := range components {
 		if reg.IsRelation[id.id] {
-			isRelation[id.id] = true
+			isRelation[i] = true
 			numRelations++
 		}
 	}
@@ -71,7 +71,6 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 	table := a.freeTables[last]
 
 	a.freeTables = a.freeTables[:last]
-	a.tables = append(a.tables, table)
 
 	return table, true
 }
@@ -84,4 +83,8 @@ func (a *archetype) FreeTable(table tableID) {
 	a.tables = a.tables[:last]
 
 	a.freeTables = append(a.freeTables, table)
+}
+
+func (a *archetype) AddTable(table *table) {
+	a.tables = append(a.tables, table.id)
 }

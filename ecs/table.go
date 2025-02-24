@@ -130,13 +130,14 @@ func (t *table) MatchesExact(relations []relationID) bool {
 		panic("relation targets must be fully specified")
 	}
 	for _, rel := range relations {
-		if !t.isRelation[rel.component.id] {
+		index := t.components[rel.component.id]
+		if !t.isRelation[index] {
 			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
 		}
 		if rel.target == wildcard {
 			panic("relation targets must be fully specified, no wildcard allowed")
 		}
-		if rel.target != t.relations[t.components[rel.component.id]] {
+		if rel.target != t.relations[index] {
 			return false
 		}
 	}
