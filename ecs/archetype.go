@@ -62,7 +62,13 @@ func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, 
 	if !a.HasRelations() {
 		return &storage.tables[a.tables[0]], true
 	}
-	for _, t := range a.tables {
+
+	index := a.componentsMap[relations[0].component.id]
+	tables, ok := a.relationTables[index][relations[0].target.id]
+	if !ok {
+		return nil, false
+	}
+	for _, t := range tables.tables {
 		table := &storage.tables[t]
 		if table.MatchesExact(relations) {
 			return table, true
