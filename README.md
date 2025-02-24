@@ -16,6 +16,10 @@ The primary aims are:
 - A more structured design due to better planning of features
 - More focus on the generic API
 
+For documentation besides the [API docs](https://pkg.go.dev/github.com/mlange-42/ark),
+see Arche and its [user guide](https://mlange-42.github.io/arche/) for now.
+Ark closely resembles Arche's generic API, and most information about Arche also applies to Ark.
+
 ## Feature road map
 
 At the moment, Ark supports all basic ECS functionality.
@@ -34,6 +38,7 @@ However, please be aware that the API is still unstable.
 - [ ] Unsafe API for runtime types
 - [ ] (De)-serialization (`ark-serde`)
 - [ ] Event system
+- [ ] Comprehensive user guide
 
 ## License
 
