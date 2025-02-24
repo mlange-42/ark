@@ -28,6 +28,19 @@ type ChildOf2 struct {
 	Relation
 }
 
+type SliceComp struct {
+	Slice []int
+}
+
+type PointerComp struct {
+	Ptr   *PointerType
+	Value int
+}
+
+type PointerType struct {
+	Pos *Position
+}
+
 type CompA struct {
 	X, Y float64
 }

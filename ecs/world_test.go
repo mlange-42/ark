@@ -1,6 +1,8 @@
 package ecs
 
 import (
+	"math/rand/v2"
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -210,4 +212,80 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 32, cnt)
+}
+
+func TestWorldRemoveGC(t *testing.T) {
+	w := NewWorld(128)
+	mapper := NewMap[SliceComp](&w)
+
+	runtime.GC()
+	mem1 := runtime.MemStats{}
+	mem2 := runtime.MemStats{}
+	runtime.ReadMemStats(&mem1)
+
+	entities := []Entity{}
+	for i := 0; i < 100; i++ {
+		e := mapper.NewEntity(&SliceComp{})
+		ws := mapper.Get(e)
+		ws.Slice = make([]int, 10000)
+		entities = append(entities, e)
+	}
+
+	runtime.GC()
+	runtime.ReadMemStats(&mem2)
+	heap := int(mem2.HeapInuse - mem1.HeapInuse)
+	assert.Greater(t, heap, 8000000)
+	assert.Less(t, heap, 10000000)
+
+	rand.Shuffle(len(entities), func(i, j int) {
+		entities[i], entities[j] = entities[j], entities[i]
+	})
+
+	for _, e := range entities {
+		w.RemoveEntity(e)
+	}
+
+	runtime.GC()
+	runtime.ReadMemStats(&mem2)
+	heap = int(mem2.HeapInuse - mem1.HeapInuse)
+	assert.Less(t, heap, 800000)
+
+	_ = mapper.NewEntity(&SliceComp{})
+}
+
+func TestWorldPointerStressTest(t *testing.T) {
+	w := NewWorld(128)
+
+	mapper := NewMap[PointerComp](&w)
+
+	count := 0
+	var entities []Entity
+
+	for i := 0; i < 1000; i++ {
+		add := rand.IntN(1000)
+		count += add
+		for n := 0; n < add; n++ {
+			e := mapper.NewEntity(&PointerComp{})
+			ptr := mapper.Get(e)
+			ptr.Ptr = &PointerType{&Position{X: float64(e.id), Y: 2}}
+		}
+
+		filter := NewFilter1[PointerComp](&w)
+		query := filter.Query()
+		for query.Next() {
+			ptr := query.Get()
+			assert.EqualValues(t, ptr.Ptr.Pos.X, int(query.Entity().id))
+			entities = append(entities, query.Entity())
+		}
+		rand.Shuffle(len(entities), func(i, j int) { entities[i], entities[j] = entities[j], entities[i] })
+
+		rem := rand.IntN(count)
+		count -= rem
+		for n := 0; n < rem; n++ {
+			w.RemoveEntity(entities[n])
+		}
+
+		entities = entities[:0]
+		runtime.GC()
+	}
 }
