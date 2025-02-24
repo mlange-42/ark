@@ -65,6 +65,11 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$return}} {
 func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$return}} {
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
+
+	{{- range $upper}}
+	checkMapHasComponent(m.storage{{.}}, index.table)
+	{{- end}}
+
 	return {{range $i, $v := $upper}}{{if $i}},
 		{{end}}(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row)){{end}}
 }

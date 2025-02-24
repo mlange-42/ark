@@ -67,6 +67,7 @@ func newQuery{{.}}{{$generics}}(world *World, mask Mask, without Mask{{if .}}, i
 
 // Next advances the query's cursor to the next entity.
 func (q *Query{{.}}{{$genericsShort}}) Next() bool {
+	checkQueryNext(&q.cursor)
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -76,11 +77,13 @@ func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
+	checkQueryGet(&q.cursor)
 	return q.table.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
 func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
+	checkQueryGet(&q.cursor)
 	return {{range $i, $v := $upper}}{{if $i}},
 		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}
 }
