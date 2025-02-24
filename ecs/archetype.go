@@ -113,3 +113,12 @@ func (a *archetype) AddTable(table *table) {
 		}
 	}
 }
+
+func (a *archetype) RemoveTarget(entity Entity) {
+	for i := range a.relationTables {
+		if !a.isRelation[i] {
+			continue
+		}
+		delete(a.relationTables[i], entity.id)
+	}
+}
