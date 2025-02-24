@@ -33,6 +33,7 @@ type Query{{.}}{{$generics}} struct {
 	relations  []relationID
 	lock       uint8
 	cursor     cursor
+	tables     []tableID
 	table      *table
 	components []*componentStorage
 	{{- range $upper}}
@@ -91,6 +92,7 @@ func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 func (q *Query{{.}}{{$genericsShort}}) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
+	q.tables = nil
 	q.table = nil
 	{{- range $i, $v := $upper}}
 	q.column{{$v}} = nil
@@ -124,6 +126,7 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 			continue
 		}
 
+		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -137,12 +140,10 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 }
 
 func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
-	archetype := &q.world.storage.archetypes[q.cursor.archetype]
-	maxTableIndex := len(archetype.tables) - 1
+	maxTableIndex := len(q.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		tableID := archetype.tables[q.cursor.table]
-		table := &q.world.storage.tables[tableID]
+		table := &q.world.storage.tables[q.tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}

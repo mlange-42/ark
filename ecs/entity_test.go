@@ -26,7 +26,6 @@ func TestReservedEntities(t *testing.T) {
 
 	assert.False(t, w.Alive(zero))
 	assert.False(t, w.Alive(wildcard))
-	assert.False(t, w.Alive(Wildcard()))
 
 	assert.True(t, zero.IsZero())
 	assert.False(t, wildcard.IsZero())

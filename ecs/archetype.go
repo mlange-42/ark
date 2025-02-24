@@ -71,6 +71,20 @@ func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, 
 	return nil, false
 }
 
+func (a *archetype) GetTables(relations []relationID) []tableID {
+	if !a.HasRelations() {
+		return a.tables
+	}
+	if len(relations) == 0 {
+		return a.tables
+	}
+	index := a.componentsMap[relations[0].component.id]
+	if tables, ok := a.relationTables[index][relations[0].target.id]; ok {
+		return tables.tables
+	}
+	return nil
+}
+
 func (a *archetype) GetFreeTable() (tableID, bool) {
 	if len(a.freeTables) == 0 {
 		return 0, false

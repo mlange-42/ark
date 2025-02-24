@@ -18,6 +18,7 @@ type Query0 struct {
 	relations  []relationID
 	lock       uint8
 	cursor     cursor
+	tables     []tableID
 	table      *table
 	components []*componentStorage
 	hasWithout bool
@@ -69,6 +70,7 @@ func (q *Query0) Get() {
 func (q *Query0) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
+	q.tables = nil
 	q.table = nil
 	q.world.unlock(q.lock)
 }
@@ -99,6 +101,7 @@ func (q *Query0) nextArchetype() bool {
 			continue
 		}
 
+		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -112,12 +115,10 @@ func (q *Query0) nextArchetype() bool {
 }
 
 func (q *Query0) nextTable() bool {
-	archetype := &q.world.storage.archetypes[q.cursor.archetype]
-	maxTableIndex := len(archetype.tables) - 1
+	maxTableIndex := len(q.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		tableID := archetype.tables[q.cursor.table]
-		table := &q.world.storage.tables[tableID]
+		table := &q.world.storage.tables[q.tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}
@@ -146,6 +147,7 @@ type Query1[A any] struct {
 	relations  []relationID
 	lock       uint8
 	cursor     cursor
+	tables     []tableID
 	table      *table
 	components []*componentStorage
 	columnA    *column
@@ -201,6 +203,7 @@ func (q *Query1[A]) Get() *A {
 func (q *Query1[A]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
+	q.tables = nil
 	q.table = nil
 	q.columnA = nil
 	q.world.unlock(q.lock)
@@ -232,6 +235,7 @@ func (q *Query1[A]) nextArchetype() bool {
 			continue
 		}
 
+		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -245,12 +249,10 @@ func (q *Query1[A]) nextArchetype() bool {
 }
 
 func (q *Query1[A]) nextTable() bool {
-	archetype := &q.world.storage.archetypes[q.cursor.archetype]
-	maxTableIndex := len(archetype.tables) - 1
+	maxTableIndex := len(q.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		tableID := archetype.tables[q.cursor.table]
-		table := &q.world.storage.tables[tableID]
+		table := &q.world.storage.tables[q.tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}
@@ -280,6 +282,7 @@ type Query2[A any, B any] struct {
 	relations  []relationID
 	lock       uint8
 	cursor     cursor
+	tables     []tableID
 	table      *table
 	components []*componentStorage
 	columnA    *column
@@ -337,6 +340,7 @@ func (q *Query2[A, B]) Get() (*A, *B) {
 func (q *Query2[A, B]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
+	q.tables = nil
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -369,6 +373,7 @@ func (q *Query2[A, B]) nextArchetype() bool {
 			continue
 		}
 
+		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -382,12 +387,10 @@ func (q *Query2[A, B]) nextArchetype() bool {
 }
 
 func (q *Query2[A, B]) nextTable() bool {
-	archetype := &q.world.storage.archetypes[q.cursor.archetype]
-	maxTableIndex := len(archetype.tables) - 1
+	maxTableIndex := len(q.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		tableID := archetype.tables[q.cursor.table]
-		table := &q.world.storage.tables[tableID]
+		table := &q.world.storage.tables[q.tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}
@@ -418,6 +421,7 @@ type Query3[A any, B any, C any] struct {
 	relations  []relationID
 	lock       uint8
 	cursor     cursor
+	tables     []tableID
 	table      *table
 	components []*componentStorage
 	columnA    *column
@@ -477,6 +481,7 @@ func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 func (q *Query3[A, B, C]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
+	q.tables = nil
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -510,6 +515,7 @@ func (q *Query3[A, B, C]) nextArchetype() bool {
 			continue
 		}
 
+		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -523,12 +529,10 @@ func (q *Query3[A, B, C]) nextArchetype() bool {
 }
 
 func (q *Query3[A, B, C]) nextTable() bool {
-	archetype := &q.world.storage.archetypes[q.cursor.archetype]
-	maxTableIndex := len(archetype.tables) - 1
+	maxTableIndex := len(q.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		tableID := archetype.tables[q.cursor.table]
-		table := &q.world.storage.tables[tableID]
+		table := &q.world.storage.tables[q.tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}
@@ -560,6 +564,7 @@ type Query4[A any, B any, C any, D any] struct {
 	relations  []relationID
 	lock       uint8
 	cursor     cursor
+	tables     []tableID
 	table      *table
 	components []*componentStorage
 	columnA    *column
@@ -621,6 +626,7 @@ func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 func (q *Query4[A, B, C, D]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
+	q.tables = nil
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -655,6 +661,7 @@ func (q *Query4[A, B, C, D]) nextArchetype() bool {
 			continue
 		}
 
+		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -668,12 +675,10 @@ func (q *Query4[A, B, C, D]) nextArchetype() bool {
 }
 
 func (q *Query4[A, B, C, D]) nextTable() bool {
-	archetype := &q.world.storage.archetypes[q.cursor.archetype]
-	maxTableIndex := len(archetype.tables) - 1
+	maxTableIndex := len(q.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		tableID := archetype.tables[q.cursor.table]
-		table := &q.world.storage.tables[tableID]
+		table := &q.world.storage.tables[q.tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}
@@ -706,6 +711,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	relations  []relationID
 	lock       uint8
 	cursor     cursor
+	tables     []tableID
 	table      *table
 	components []*componentStorage
 	columnA    *column
@@ -769,6 +775,7 @@ func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 func (q *Query5[A, B, C, D, E]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
+	q.tables = nil
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -804,6 +811,7 @@ func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 			continue
 		}
 
+		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -817,12 +825,10 @@ func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 }
 
 func (q *Query5[A, B, C, D, E]) nextTable() bool {
-	archetype := &q.world.storage.archetypes[q.cursor.archetype]
-	maxTableIndex := len(archetype.tables) - 1
+	maxTableIndex := len(q.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		tableID := archetype.tables[q.cursor.table]
-		table := &q.world.storage.tables[tableID]
+		table := &q.world.storage.tables[q.tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}
@@ -856,6 +862,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	relations  []relationID
 	lock       uint8
 	cursor     cursor
+	tables     []tableID
 	table      *table
 	components []*componentStorage
 	columnA    *column
@@ -921,6 +928,7 @@ func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
+	q.tables = nil
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -957,6 +965,7 @@ func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 			continue
 		}
 
+		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -970,12 +979,10 @@ func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 }
 
 func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
-	archetype := &q.world.storage.archetypes[q.cursor.archetype]
-	maxTableIndex := len(archetype.tables) - 1
+	maxTableIndex := len(q.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		tableID := archetype.tables[q.cursor.table]
-		table := &q.world.storage.tables[tableID]
+		table := &q.world.storage.tables[q.tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}
@@ -1010,6 +1017,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	relations  []relationID
 	lock       uint8
 	cursor     cursor
+	tables     []tableID
 	table      *table
 	components []*componentStorage
 	columnA    *column
@@ -1077,6 +1085,7 @@ func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
+	q.tables = nil
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -1114,6 +1123,7 @@ func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 			continue
 		}
 
+		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -1127,12 +1137,10 @@ func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 }
 
 func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
-	archetype := &q.world.storage.archetypes[q.cursor.archetype]
-	maxTableIndex := len(archetype.tables) - 1
+	maxTableIndex := len(q.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		tableID := archetype.tables[q.cursor.table]
-		table := &q.world.storage.tables[tableID]
+		table := &q.world.storage.tables[q.tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}
@@ -1168,6 +1176,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	relations  []relationID
 	lock       uint8
 	cursor     cursor
+	tables     []tableID
 	table      *table
 	components []*componentStorage
 	columnA    *column
@@ -1237,6 +1246,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) 
 func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
+	q.tables = nil
 	q.table = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -1275,6 +1285,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 			continue
 		}
 
+		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
 		if q.nextTable() {
 			return true
@@ -1288,12 +1299,10 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 }
 
 func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
-	archetype := &q.world.storage.archetypes[q.cursor.archetype]
-	maxTableIndex := len(archetype.tables) - 1
+	maxTableIndex := len(q.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		tableID := archetype.tables[q.cursor.table]
-		table := &q.world.storage.tables[tableID]
+		table := &q.world.storage.tables[q.tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}
