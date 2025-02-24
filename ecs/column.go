@@ -86,7 +86,9 @@ func (c *column) Remove(index uint32, zero unsafe.Pointer) bool {
 		copyPtr(src, dst, uintptr(c.itemSize))
 	}
 	c.len--
-	c.Zero(lastIndex, zero)
+	if zero != nil {
+		c.Zero(lastIndex, zero)
+	}
 	return swapped
 }
 

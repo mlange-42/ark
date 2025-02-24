@@ -165,3 +165,39 @@ func TestWorldSetRelations(t *testing.T) {
 	assert.Equal(t, parent2, map1.GetRelation(e))
 	assert.Equal(t, parent1, map2.GetRelation(e))
 }
+
+func TestWorldRelationRemoveTarget(t *testing.T) {
+	w := NewWorld(16)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	childMap := NewMap[ChildOf](&w)
+	posChildMap := NewMap2[Position, ChildOf](&w)
+
+	entities := []Entity{}
+	for range 32 {
+		e := posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, parent1))
+		assert.Equal(t, parent1, childMap.GetRelation(e))
+		entities = append(entities, e)
+	}
+	_ = posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, parent2))
+
+	w.RemoveEntity(parent1)
+
+	for _, e := range entities {
+		assert.Equal(t, Entity{}, childMap.GetRelation(e))
+	}
+
+	archetype := &w.storage.archetypes[1]
+	assert.Equal(t, []tableID{3, 2}, archetype.tables)
+	assert.Equal(t, []tableID{1}, archetype.freeTables)
+
+	for _, e := range entities {
+		childMap.SetRelation(e, parent3)
+		assert.Equal(t, parent3, childMap.GetRelation(e))
+	}
+	assert.Equal(t, []tableID{3, 2, 1}, archetype.tables)
+	assert.Equal(t, []tableID{}, archetype.freeTables)
+}

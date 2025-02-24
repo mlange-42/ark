@@ -155,10 +155,10 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 			newTableID, archetype.id, s.initialCapacity, &s.registry,
 			archetype.components, archetype.componentsMap,
 			archetype.isRelation, targets, relations))
+		archetype.tables = append(archetype.tables, newTableID)
 	}
 
 	table := &s.tables[newTableID]
-	archetype.tables = append(archetype.tables, newTableID)
 	for i := range s.components {
 		id := ID{id: uint8(i)}
 		comps := &s.components[i]
@@ -211,7 +211,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				newTable = s.createTable(archetype, newRelations)
 			}
 			s.moveEntities(table, newTable)
-			archetype.FreeTable(newTable.id)
+			archetype.FreeTable(table.id)
 
 			newRelations = newRelations[:0]
 		}

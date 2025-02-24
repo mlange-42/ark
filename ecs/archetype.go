@@ -69,7 +69,10 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 	}
 	last := len(a.freeTables) - 1
 	table := a.freeTables[last]
+
 	a.freeTables = a.freeTables[:last]
+	a.tables = append(a.tables, table)
+
 	return table, true
 }
 

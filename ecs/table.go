@@ -104,7 +104,7 @@ func (t *table) Set(component ID, index uint32, comp unsafe.Pointer) {
 }
 
 func (t *table) Remove(index uint32) bool {
-	swapped := t.entities.Remove(index, t.zeroPointer)
+	swapped := t.entities.Remove(index, nil)
 	for i := range t.columns {
 		t.columns[i].Remove(index, t.zeroPointer)
 	}
@@ -121,7 +121,7 @@ func (t *table) Reset() {
 func (t *table) AddAll(other *table) {
 	t.entities.AddAll(&other.entities)
 	for c := range t.columns {
-		t.columns[c].AddAll(&t.columns[c])
+		t.columns[c].AddAll(&other.columns[c])
 	}
 }
 
