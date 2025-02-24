@@ -145,9 +145,6 @@ func (t *table) MatchesExact(relations []relationID) bool {
 
 func (t *table) Matches(relations []relationID) bool {
 	for _, rel := range relations {
-		if !t.isRelation[rel.component.id] {
-			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
-		}
 		if rel.target == wildcard {
 			continue
 		}

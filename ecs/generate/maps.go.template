@@ -43,7 +43,7 @@ func NewMap{{.}}{{$generics}}(world *World) Map{{.}}{{$genericsShort}} {
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
@@ -84,7 +84,7 @@ func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...Relati
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
@@ -105,7 +105,7 @@ func (m *Map{{.}}{{$genericsShort}}) SetRelations(entity Entity, rel ...Relation
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 {{end -}}

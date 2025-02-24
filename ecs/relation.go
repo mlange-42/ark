@@ -1,5 +1,7 @@
 package ecs
 
+import "fmt"
+
 var relationType = typeOf[Relation]()
 
 // Relation is a marker for entity relation components.
@@ -32,11 +34,15 @@ func Rel(index int, target Entity) RelationIndex {
 
 type relations []RelationIndex
 
-func (r relations) toRelations(ids []ID, out []relationID) []relationID {
+func (r relations) toRelations(reg *componentRegistry, ids []ID, out []relationID) []relationID {
 	out = out[:0]
 	for _, rel := range r {
+		id := ids[rel.index]
+		if !reg.IsRelation[id.id] {
+			panic(fmt.Sprintf("component at index %d is not a relation component", rel.index))
+		}
 		out = append(out, relationID{
-			component: ids[rel.index],
+			component: id,
 			target:    rel.target,
 		})
 	}

@@ -51,7 +51,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Removes(components ...Comp) *Exchange
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange{{.}}.Removes].
 func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
