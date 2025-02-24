@@ -5,14 +5,19 @@ import "slices"
 type archetypeID uint32
 
 type archetype struct {
-	id            archetypeID
-	mask          Mask
-	components    []ID
-	componentsMap []int16
-	isRelation    []bool
-	tables        []tableID
-	freeTables    []tableID
-	numRelations  uint8
+	id             archetypeID
+	mask           Mask
+	components     []ID
+	componentsMap  []int16
+	isRelation     []bool
+	tables         []tableID
+	freeTables     []tableID
+	numRelations   uint8
+	relationTables []map[entityID]*tableIDs
+}
+
+type tableIDs struct {
+	tables []tableID
 }
 
 func newArchetype(id archetypeID, mask *Mask, components []ID, tables []tableID, reg *componentRegistry) archetype {
@@ -26,20 +31,23 @@ func newArchetype(id archetypeID, mask *Mask, components []ID, tables []tableID,
 
 	numRelations := uint8(0)
 	isRelation := make([]bool, len(components))
+	relationTables := make([]map[entityID]*tableIDs, len(components))
 	for i, id := range components {
 		if reg.IsRelation[id.id] {
 			isRelation[i] = true
+			relationTables[i] = map[entityID]*tableIDs{}
 			numRelations++
 		}
 	}
 	return archetype{
-		id:            id,
-		mask:          *mask,
-		components:    components,
-		componentsMap: componentsMap,
-		isRelation:    isRelation,
-		tables:        tables,
-		numRelations:  numRelations,
+		id:             id,
+		mask:           *mask,
+		components:     components,
+		componentsMap:  componentsMap,
+		isRelation:     isRelation,
+		tables:         tables,
+		numRelations:   numRelations,
+		relationTables: relationTables,
 	}
 }
 
@@ -87,4 +95,21 @@ func (a *archetype) FreeTable(table tableID) {
 
 func (a *archetype) AddTable(table *table) {
 	a.tables = append(a.tables, table.id)
+	if !a.HasRelations() {
+		return
+	}
+
+	for i := range table.ids {
+		if !table.isRelation[i] {
+			continue
+		}
+		target := table.relations[i]
+		relations := a.relationTables[i]
+
+		if tables, ok := relations[target.id]; ok {
+			tables.tables = append(tables.tables, table.id)
+		} else {
+			relations[target.id] = &tableIDs{tables: []tableID{table.id}}
+		}
+	}
 }
