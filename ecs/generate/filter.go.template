@@ -56,6 +56,13 @@ func (q *Filter{{.}}{{$genericsShort}}) Without(comps ...Comp) *Filter{{.}}{{$ge
 	return q
 }
 
+// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// and no other components are allowed.
+func (q *Filter{{.}}{{$genericsShort}}) Exclusive() *Filter{{.}}{{$genericsShort}} {
+	q.without = q.mask.Not()
+	return q
+}
+
 // Query creates a [Query{{.}}] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter{{.}}{{$genericsShort}}) Query(rel ...RelationIndex) Query{{.}}{{$genericsShort}} {

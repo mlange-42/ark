@@ -42,6 +42,13 @@ func (q *Filter0) Without(comps ...Comp) *Filter0 {
 	return q
 }
 
+// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// and no other components are allowed.
+func (q *Filter0) Exclusive() *Filter0 {
+	q.without = q.mask.Not()
+	return q
+}
+
 // Query creates a [Query0] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter0) Query(rel ...RelationIndex) Query0 {
@@ -88,6 +95,13 @@ func (q *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
 		id := q.world.componentID(c.tp)
 		q.without.Set(id, true)
 	}
+	return q
+}
+
+// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// and no other components are allowed.
+func (q *Filter1[A]) Exclusive() *Filter1[A] {
+	q.without = q.mask.Not()
 	return q
 }
 
@@ -138,6 +152,13 @@ func (q *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
 		id := q.world.componentID(c.tp)
 		q.without.Set(id, true)
 	}
+	return q
+}
+
+// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// and no other components are allowed.
+func (q *Filter2[A, B]) Exclusive() *Filter2[A, B] {
+	q.without = q.mask.Not()
 	return q
 }
 
@@ -192,6 +213,13 @@ func (q *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
 	return q
 }
 
+// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// and no other components are allowed.
+func (q *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
+	q.without = q.mask.Not()
+	return q
+}
+
 // Query creates a [Query3] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
@@ -241,6 +269,13 @@ func (q *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
 		id := q.world.componentID(c.tp)
 		q.without.Set(id, true)
 	}
+	return q
+}
+
+// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// and no other components are allowed.
+func (q *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
+	q.without = q.mask.Not()
 	return q
 }
 
@@ -297,6 +332,13 @@ func (q *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] 
 	return q
 }
 
+// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// and no other components are allowed.
+func (q *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
+	q.without = q.mask.Not()
+	return q
+}
+
 // Query creates a [Query5] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, E] {
@@ -348,6 +390,13 @@ func (q *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, 
 		id := q.world.componentID(c.tp)
 		q.without.Set(id, true)
 	}
+	return q
+}
+
+// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// and no other components are allowed.
+func (q *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
+	q.without = q.mask.Not()
 	return q
 }
 
@@ -406,6 +455,13 @@ func (q *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, 
 	return q
 }
 
+// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// and no other components are allowed.
+func (q *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G] {
+	q.without = q.mask.Not()
+	return q
+}
+
 // Query creates a [Query7] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, C, D, E, F, G] {
@@ -459,6 +515,13 @@ func (q *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, 
 		id := q.world.componentID(c.tp)
 		q.without.Set(id, true)
 	}
+	return q
+}
+
+// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// and no other components are allowed.
+func (q *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F, G, H] {
+	q.without = q.mask.Not()
 	return q
 }
 
