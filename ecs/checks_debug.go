@@ -13,3 +13,9 @@ func checkQueryGet(cursor *cursor) {
 		panic("query already iterated or iteration not started yet")
 	}
 }
+
+func checkMapHasComponent(comp *componentStorage, table tableID) {
+	if comp.columns[table] == nil {
+		panic("entity does not have the requested component")
+	}
+}
