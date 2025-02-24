@@ -1,9 +1,9 @@
 package main
 
 // Profiling:
-// go build ./profile
-// ./profile
-// go tool pprof -http=":8000" -nodefraction=0.001 ./profile cpu.pprof
+// go build ./query
+// ./query
+// go tool pprof -http=":8000" -nodefraction=0.001 ./query cpu.pprof
 
 import (
 	"github.com/mlange-42/ark/ecs"
@@ -23,7 +23,7 @@ type velocity struct {
 func main() {
 
 	count := 10
-	iters := 10000
+	iters := 2500
 	entities := 100000
 
 	stop := profile.Start(profile.CPUProfile, profile.ProfilePath("."))
