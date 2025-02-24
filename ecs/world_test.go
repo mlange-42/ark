@@ -106,12 +106,15 @@ func TestWorldRemoveEntity(t *testing.T) {
 func TestWorldRelations(t *testing.T) {
 	w := NewWorld(16)
 
+	_ = ComponentID[CompA](&w)
+	_ = ComponentID[CompB](&w)
+
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
 	mapper1 := NewMap3[Position, ChildOf, ChildOf2](&w)
-	assert.True(t, w.storage.registry.IsRelation[1])
-	assert.True(t, w.storage.registry.IsRelation[2])
+	assert.True(t, w.storage.registry.IsRelation[ComponentID[ChildOf](&w).id])
+	assert.True(t, w.storage.registry.IsRelation[ComponentID[ChildOf2](&w).id])
 
 	for range 10 {
 		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent1))
@@ -153,6 +156,9 @@ func TestWorldRelations(t *testing.T) {
 func TestWorldSetRelations(t *testing.T) {
 	w := NewWorld(16)
 
+	_ = ComponentID[CompA](&w)
+	_ = ComponentID[CompB](&w)
+
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
@@ -170,6 +176,9 @@ func TestWorldSetRelations(t *testing.T) {
 
 func TestWorldRelationRemoveTarget(t *testing.T) {
 	w := NewWorld(16)
+
+	_ = ComponentID[CompA](&w)
+	_ = ComponentID[CompB](&w)
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()

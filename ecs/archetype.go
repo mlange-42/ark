@@ -5,14 +5,15 @@ import "slices"
 type archetypeID uint32
 
 type archetype struct {
-	id            archetypeID
-	mask          Mask
-	components    []ID
-	componentsMap []int16
-	isRelation    []bool
-	tables        []tableID
-	freeTables    []tableID
-	numRelations  uint8
+	id             archetypeID
+	mask           Mask
+	components     []ID
+	componentsMap  []int16
+	isRelation     []bool
+	tables         []tableID
+	freeTables     []tableID
+	numRelations   uint8
+	relationTables []map[entityID][]tableID
 }
 
 func newArchetype(id archetypeID, mask *Mask, components []ID, tables []tableID, reg *componentRegistry) archetype {
@@ -26,9 +27,11 @@ func newArchetype(id archetypeID, mask *Mask, components []ID, tables []tableID,
 
 	numRelations := uint8(0)
 	isRelation := make([]bool, len(components))
-	for _, id := range components {
+	//relationTables := make([]map[entityID][]tableID, len(components))
+	for i, id := range components {
 		if reg.IsRelation[id.id] {
-			isRelation[id.id] = true
+			isRelation[i] = true
+			//relationTables[]
 			numRelations++
 		}
 	}
