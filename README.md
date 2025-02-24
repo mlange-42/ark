@@ -30,7 +30,7 @@ However, please be aware that the API is still unstable.
 - [x] Advanced filters like `With` and `Without`
 - [x] World component access for specific entities
 - [x] ECS resources
-- [ ] Entity relationships
+- [x] Entity relationships
 - [ ] Batch operations
 - [ ] Unsafe API for runtime types
 - [ ] (De)-serialization (`ark-serde`)
