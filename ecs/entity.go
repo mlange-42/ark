@@ -7,11 +7,6 @@ var entitySize = sizeOf(entityType)
 
 var wildcard = Entity{1, 0}
 
-// Wildcard entity for relation targets.
-func Wildcard() Entity {
-	return wildcard
-}
-
 // Entity identifier.
 type Entity struct {
 	id  entityID // Entity ID

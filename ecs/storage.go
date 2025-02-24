@@ -215,6 +215,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 
 			newRelations = newRelations[:0]
 		}
+		archetype.RemoveTarget(target)
 	}
 }
 
