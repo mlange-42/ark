@@ -178,7 +178,7 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 
 	entities := []Entity{}
 	for range 32 {
-		e := posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, parent1))
+		e := posChildMap.NewEntity(&Position{X: -1, Y: 1}, &ChildOf{}, Rel(1, parent1))
 		assert.Equal(t, parent1, childMap.GetRelation(e))
 		entities = append(entities, e)
 	}
@@ -200,4 +200,14 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 	}
 	assert.Equal(t, []tableID{3, 2, 1}, archetype.tables)
 	assert.Equal(t, []tableID{}, archetype.freeTables)
+
+	filter := NewFilter2[Position, ChildOf](&w)
+	query := filter.Query(Rel(1, parent3))
+	cnt := 0
+	for query.Next() {
+		pos, _ := query.Get()
+		assert.Equal(t, Position{X: -1, Y: 1}, *pos)
+		cnt++
+	}
+	assert.Equal(t, 32, cnt)
 }
