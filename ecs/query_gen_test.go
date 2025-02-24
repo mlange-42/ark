@@ -100,11 +100,21 @@ func TestQuery2Advanced(t *testing.T) {
 		Without(C[CompA]())
 
 	query := filter.Query()
-
 	cnt := 0
 	for query.Next() {
 		cnt++
 		assert.True(t, mapPosVelHead.HasAll(query.Entity()))
+		assert.False(t, mapAll.HasAll(query.Entity()))
+	}
+	assert.Equal(t, 10, cnt)
+
+	filter = NewFilter2[Position, Velocity](&w).Exclusive()
+	query = filter.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+		assert.True(t, mapPosVel.HasAll(query.Entity()))
+		assert.False(t, mapPosVelHead.HasAll(query.Entity()))
 		assert.False(t, mapAll.HasAll(query.Entity()))
 	}
 	assert.Equal(t, 10, cnt)
