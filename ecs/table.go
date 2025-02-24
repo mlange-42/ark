@@ -144,6 +144,9 @@ func (t *table) MatchesExact(relations []relationID) bool {
 }
 
 func (t *table) Matches(relations []relationID) bool {
+	if len(relations) == 0 {
+		return true
+	}
 	for _, rel := range relations {
 		if rel.target == wildcard {
 			continue
