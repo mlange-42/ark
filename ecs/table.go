@@ -61,6 +61,11 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 	}
 }
 
+func (t *table) recycle(targets []Entity, relationIDs []relationID) {
+	t.relations = targets
+	t.relationIDs = relationIDs
+}
+
 func (t *table) Add(entity Entity) uint32 {
 	_, idx := t.entities.Add(unsafe.Pointer(&entity))
 
@@ -99,11 +104,25 @@ func (t *table) Set(component ID, index uint32, comp unsafe.Pointer) {
 }
 
 func (t *table) Remove(index uint32) bool {
-	swapped := t.entities.Remove(index, t.zeroPointer)
+	swapped := t.entities.Remove(index, nil)
 	for i := range t.columns {
 		t.columns[i].Remove(index, t.zeroPointer)
 	}
 	return swapped
+}
+
+func (t *table) Reset() {
+	t.entities.Reset(nil)
+	for c := range t.columns {
+		t.columns[c].Reset(t.zeroPointer)
+	}
+}
+
+func (t *table) AddAll(other *table) {
+	t.entities.AddAll(&other.entities)
+	for c := range t.columns {
+		t.columns[c].AddAll(&other.columns[c])
+	}
 }
 
 func (t *table) MatchesExact(relations []relationID) bool {
@@ -125,10 +144,10 @@ func (t *table) MatchesExact(relations []relationID) bool {
 }
 
 func (t *table) Matches(relations []relationID) bool {
+	if len(relations) == 0 {
+		return true
+	}
 	for _, rel := range relations {
-		if !t.isRelation[rel.component.id] {
-			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
-		}
 		if rel.target == wildcard {
 			continue
 		}

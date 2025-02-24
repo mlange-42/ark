@@ -38,7 +38,7 @@ func (ex *Exchange1[A]) Removes(components ...Comp) *Exchange1[A] {
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange1.Removes].
 func (ex *Exchange1[A]) Exchange(entity Entity, a *A, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, ex.relations)
@@ -79,7 +79,7 @@ func (ex *Exchange2[A, B]) Removes(components ...Comp) *Exchange2[A, B] {
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange2.Removes].
 func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -122,7 +122,7 @@ func (ex *Exchange3[A, B, C]) Removes(components ...Comp) *Exchange3[A, B, C] {
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange3.Removes].
 func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -167,7 +167,7 @@ func (ex *Exchange4[A, B, C, D]) Removes(components ...Comp) *Exchange4[A, B, C,
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange4.Removes].
 func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -214,7 +214,7 @@ func (ex *Exchange5[A, B, C, D, E]) Removes(components ...Comp) *Exchange5[A, B,
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange5.Removes].
 func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -263,7 +263,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) Removes(components ...Comp) *Exchange6[A,
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange6.Removes].
 func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -314,7 +314,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Removes(components ...Comp) *Exchange7
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange7.Removes].
 func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -367,7 +367,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Removes(components ...Comp) *Exchan
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange8.Removes].
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),

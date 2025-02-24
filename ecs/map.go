@@ -38,7 +38,7 @@ func (m *Map[T]) Get(entity Entity) *T {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) GetUnchecked(entity Entity) *T {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return (*T)(m.storage.columns[index.table].Get(uintptr(index.row)))
 }
 
@@ -54,7 +54,7 @@ func (m *Map[T]) Has(entity Entity) bool {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) HasUnchecked(entity Entity) bool {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storage.columns[index.table] != nil
 }
 
@@ -83,5 +83,5 @@ func (m *Map[T]) SetRelation(entity Entity, target Entity) {
 
 // GetRelation returns the relation target for the entity and the mapped component.
 func (m *Map[T]) GetRelation(entity Entity) Entity {
-	return m.world.getRelation(entity, m.id)
+	return m.world.storage.getRelation(entity, m.id)
 }

@@ -55,6 +55,14 @@ func (c *column) Alloc(n uint32) {
 	c.len += n
 }
 
+func (c *column) AddAll(other *column) {
+	oldLen := c.len
+	c.Alloc(other.len)
+	src := other.Get(0)
+	dst := c.Get(uintptr(oldLen))
+	copyPtr(src, dst, c.itemSize*uintptr(other.len))
+}
+
 // Set overwrites the component at the given index.
 func (c *column) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
 	dst := c.Get(uintptr(index))
@@ -78,7 +86,9 @@ func (c *column) Remove(index uint32, zero unsafe.Pointer) bool {
 		copyPtr(src, dst, uintptr(c.itemSize))
 	}
 	c.len--
-	c.Zero(lastIndex, zero)
+	if zero != nil {
+		c.Zero(lastIndex, zero)
+	}
 	return swapped
 }
 
@@ -107,4 +117,33 @@ func (c *column) Zero(index uintptr, zero unsafe.Pointer) {
 	}
 	dst := unsafe.Add(c.pointer, index*c.itemSize)
 	copyPtr(zero, dst, uintptr(c.itemSize))
+}
+
+// Zero resets a block of storage in one buffer.
+func (c *column) ZeroRange(start, len uint32, zero unsafe.Pointer) {
+	size := uint32(c.itemSize)
+	if size == 0 {
+		return
+	}
+	var i uint32
+	for i = 0; i < len; i++ {
+		dst := unsafe.Add(c.pointer, (i+start)*size)
+		copyPtr(zero, dst, c.itemSize)
+	}
+}
+
+func (c *column) Reset(zero unsafe.Pointer) {
+	len := c.len
+	if c.len == 0 {
+		return
+	}
+	c.len = 0
+	if zero == nil {
+		return
+	}
+	if len <= 64 { // A coarse estimate where manually zeroing is faster
+		c.ZeroRange(0, len, zero)
+	} else {
+		c.data.SetZero()
+	}
 }

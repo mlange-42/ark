@@ -91,7 +91,7 @@ func (q *Query0) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := archetype.tables[0]
+			table := &q.world.storage.tables[archetype.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -116,7 +116,8 @@ func (q *Query0) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := archetype.tables[q.cursor.table]
+		tableID := archetype.tables[q.cursor.table]
+		table := &q.world.storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
 		}
@@ -223,7 +224,7 @@ func (q *Query1[A]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := archetype.tables[0]
+			table := &q.world.storage.tables[archetype.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -248,7 +249,8 @@ func (q *Query1[A]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := archetype.tables[q.cursor.table]
+		tableID := archetype.tables[q.cursor.table]
+		table := &q.world.storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
 		}
@@ -359,7 +361,7 @@ func (q *Query2[A, B]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := archetype.tables[0]
+			table := &q.world.storage.tables[archetype.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -384,7 +386,8 @@ func (q *Query2[A, B]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := archetype.tables[q.cursor.table]
+		tableID := archetype.tables[q.cursor.table]
+		table := &q.world.storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
 		}
@@ -499,7 +502,7 @@ func (q *Query3[A, B, C]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := archetype.tables[0]
+			table := &q.world.storage.tables[archetype.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -524,7 +527,8 @@ func (q *Query3[A, B, C]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := archetype.tables[q.cursor.table]
+		tableID := archetype.tables[q.cursor.table]
+		table := &q.world.storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
 		}
@@ -643,7 +647,7 @@ func (q *Query4[A, B, C, D]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := archetype.tables[0]
+			table := &q.world.storage.tables[archetype.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -668,7 +672,8 @@ func (q *Query4[A, B, C, D]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := archetype.tables[q.cursor.table]
+		tableID := archetype.tables[q.cursor.table]
+		table := &q.world.storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
 		}
@@ -791,7 +796,7 @@ func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := archetype.tables[0]
+			table := &q.world.storage.tables[archetype.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -816,7 +821,8 @@ func (q *Query5[A, B, C, D, E]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := archetype.tables[q.cursor.table]
+		tableID := archetype.tables[q.cursor.table]
+		table := &q.world.storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
 		}
@@ -943,7 +949,7 @@ func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := archetype.tables[0]
+			table := &q.world.storage.tables[archetype.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -968,7 +974,8 @@ func (q *Query6[A, B, C, D, E, F]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := archetype.tables[q.cursor.table]
+		tableID := archetype.tables[q.cursor.table]
+		table := &q.world.storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
 		}
@@ -1099,7 +1106,7 @@ func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := archetype.tables[0]
+			table := &q.world.storage.tables[archetype.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -1124,7 +1131,8 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := archetype.tables[q.cursor.table]
+		tableID := archetype.tables[q.cursor.table]
+		table := &q.world.storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
 		}
@@ -1259,7 +1267,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := archetype.tables[0]
+			table := &q.world.storage.tables[archetype.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -1284,7 +1292,8 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable() bool {
 	maxTableIndex := len(archetype.tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := archetype.tables[q.cursor.table]
+		tableID := archetype.tables[q.cursor.table]
+		table := &q.world.storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
 		}

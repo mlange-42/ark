@@ -9,7 +9,7 @@ import (
 func TestNewWorld(t *testing.T) {
 	w := NewWorld(1024)
 
-	assert.Equal(t, 2, len(w.entities))
+	assert.Equal(t, 2, len(w.storage.entities))
 	assert.Equal(t, 1, len(w.storage.tables))
 	assert.Equal(t, 1, len(w.storage.archetypes))
 	assert.Equal(t, 1, len(w.storage.archetypes[0].tables))
@@ -25,9 +25,9 @@ func TestWorldNewEntity(t *testing.T) {
 		assert.EqualValues(t, e.gen, 0)
 		assert.True(t, w.Alive(e))
 	}
-	assert.Equal(t, 12, len(w.entities))
+	assert.Equal(t, 12, len(w.storage.entities))
 
-	idx := w.getEntityIndex(Entity{4, 0})
+	idx := w.storage.entities[4]
 	assert.EqualValues(t, 0, idx.table)
 	assert.EqualValues(t, 2, idx.row)
 }
@@ -164,4 +164,50 @@ func TestWorldSetRelations(t *testing.T) {
 	map1.SetRelation(e, parent2)
 	assert.Equal(t, parent2, map1.GetRelation(e))
 	assert.Equal(t, parent1, map2.GetRelation(e))
+}
+
+func TestWorldRelationRemoveTarget(t *testing.T) {
+	w := NewWorld(16)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	childMap := NewMap[ChildOf](&w)
+	posChildMap := NewMap2[Position, ChildOf](&w)
+
+	entities := []Entity{}
+	for range 32 {
+		e := posChildMap.NewEntity(&Position{X: -1, Y: 1}, &ChildOf{}, Rel(1, parent1))
+		assert.Equal(t, parent1, childMap.GetRelation(e))
+		entities = append(entities, e)
+	}
+	_ = posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, parent2))
+
+	w.RemoveEntity(parent1)
+
+	for _, e := range entities {
+		assert.Equal(t, Entity{}, childMap.GetRelation(e))
+	}
+
+	archetype := &w.storage.archetypes[1]
+	assert.Equal(t, []tableID{3, 2}, archetype.tables)
+	assert.Equal(t, []tableID{1}, archetype.freeTables)
+
+	for _, e := range entities {
+		childMap.SetRelation(e, parent3)
+		assert.Equal(t, parent3, childMap.GetRelation(e))
+	}
+	assert.Equal(t, []tableID{3, 2, 1}, archetype.tables)
+	assert.Equal(t, []tableID{}, archetype.freeTables)
+
+	filter := NewFilter2[Position, ChildOf](&w)
+	query := filter.Query(Rel(1, parent3))
+	cnt := 0
+	for query.Next() {
+		pos, _ := query.Get()
+		assert.Equal(t, Position{X: -1, Y: 1}, *pos)
+		cnt++
+	}
+	assert.Equal(t, 32, cnt)
 }

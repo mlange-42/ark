@@ -1,7 +1,6 @@
 package ecs
 
 import (
-	"fmt"
 	"reflect"
 	"unsafe"
 )
@@ -11,7 +10,7 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []rela
 
 	mask := All(ids...)
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], &mask, relations)
-	entity, idx := w.createEntity(newTable.id)
+	entity, idx := w.storage.createEntity(newTable.id)
 
 	if comps != nil {
 		if len(ids) != len(comps) {
@@ -21,45 +20,24 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []rela
 			newTable.Set(id, idx, comps[i])
 		}
 	}
-	w.registerTargets(relations)
+	w.storage.registerTargets(relations)
 	return entity
 }
 
 func (w *World) get(entity Entity, component ID) unsafe.Pointer {
-	if !w.entityPool.Alive(entity) {
+	if !w.storage.entityPool.Alive(entity) {
 		panic("can't get component of a dead entity")
 	}
-	index := w.entities[entity.id]
+	index := w.storage.entities[entity.id]
 	return w.storage.tables[index.table].Get(component, uintptr(index.row))
 }
 
 func (w *World) has(entity Entity, component ID) bool {
-	if !w.entityPool.Alive(entity) {
+	if !w.storage.entityPool.Alive(entity) {
 		panic("can't get component of a dead entity")
 	}
-	index := w.entities[entity.id]
+	index := w.storage.entities[entity.id]
 	return w.storage.tables[index.table].Has(component)
-}
-
-func (w *World) getEntityIndex(entity Entity) entityIndex {
-	if !w.entityPool.Alive(entity) {
-		panic("can't get component of a dead entity")
-	}
-	return w.entities[entity.id]
-}
-
-func (w *World) createEntity(table tableID) (Entity, uint32) {
-	entity := w.entityPool.Get()
-
-	idx := w.storage.tables[table].Add(entity)
-	len := len(w.entities)
-	if int(entity.id) == len {
-		w.entities = append(w.entities, entityIndex{table: table, row: idx})
-		w.isTarget = append(w.isTarget, false)
-	} else {
-		w.entities[entity.id] = entityIndex{table: table, row: idx}
-	}
-	return entity, idx
 }
 
 func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer, relations []relationID) {
@@ -72,7 +50,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 		return
 	}
 
-	index := &w.entities[entity.id]
+	index := &w.storage.entities[entity.id]
 	oldTable := &w.storage.tables[index.table]
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
@@ -103,31 +81,31 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 
 	if swapped {
 		swapEntity := oldTable.GetEntity(uintptr(index.row))
-		w.entities[swapEntity.id].row = index.row
+		w.storage.entities[swapEntity.id].row = index.row
 	}
-	w.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
 
-	w.registerTargets(relations)
+	w.storage.registerTargets(relations)
 }
 
 // setRelations sets the target entities for an entity relations.
 func (w *World) setRelations(entity Entity, relations []relationID) {
 	w.checkLocked()
 
-	if !w.entityPool.Alive(entity) {
+	if !w.storage.entityPool.Alive(entity) {
 		panic("can't set relation for a dead entity")
 	}
 
-	index := &w.entities[entity.id]
+	index := &w.storage.entities[entity.id]
 	oldTable := &w.storage.tables[index.table]
 
-	newRelations, changed := w.getExchangeTargets(oldTable, relations)
+	newRelations, changed := w.storage.getExchangeTargets(oldTable, relations)
 	if !changed {
 		return
 	}
 
 	oldArch := &w.storage.archetypes[oldTable.archetype]
-	newTable, ok := oldArch.GetTable(newRelations)
+	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
 	if !ok {
 		newTable = w.storage.createTable(oldArch, newRelations)
 	}
@@ -142,51 +120,11 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 
 	if swapped {
 		swapEntity := oldTable.GetEntity(uintptr(index.row))
-		w.entities[swapEntity.id].row = index.row
+		w.storage.entities[swapEntity.id].row = index.row
 	}
-	w.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
 
-	w.registerTargets(relations)
-}
-
-func (w World) getRelation(entity Entity, comp ID) Entity {
-	if !w.entityPool.Alive(entity) {
-		panic("can't get relation for a dead entity")
-	}
-	return w.storage.tables[w.entities[entity.id].table].GetRelation(comp)
-}
-
-func (w World) getExchangeTargets(oldTable *table, relations []relationID) ([]relationID, bool) {
-	changed := false
-	targets := append([]Entity(nil), oldTable.relations...)
-	for _, rel := range relations {
-		if !rel.target.IsZero() && !w.entityPool.Alive(rel.target) {
-			panic("can't make a dead entity a relation target")
-		}
-		index := oldTable.components[rel.component.id]
-		if !oldTable.isRelation[index] {
-			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
-		}
-		if rel.target == targets[index] {
-			continue
-		}
-		targets[index] = rel.target
-		changed = true
-	}
-	if !changed {
-		return nil, false
-	}
-
-	result := make([]relationID, 0, len(oldTable.relationIDs))
-	for i, e := range targets {
-		if !oldTable.isRelation[i] {
-			continue
-		}
-		id := oldTable.ids[i]
-		result = append(result, relationID{component: id, target: e})
-	}
-
-	return result, true
+	w.storage.registerTargets(relations)
 }
 
 func (w *World) componentID(tp reflect.Type) ID {
@@ -220,11 +158,5 @@ func (w *World) unlock(l uint8) {
 func (w *World) checkLocked() {
 	if w.IsLocked() {
 		panic("attempt to modify a locked world")
-	}
-}
-
-func (w *World) registerTargets(relations []relationID) {
-	for _, rel := range relations {
-		w.isTarget[rel.target.id] = true
 	}
 }

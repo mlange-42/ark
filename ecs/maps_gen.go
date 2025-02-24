@@ -26,7 +26,7 @@ func NewMap1[A any](world *World) Map1[A] {
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map1[A]) NewEntity(a *A, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations)
@@ -44,7 +44,7 @@ func (m *Map1[A]) Get(entity Entity) *A {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row))
 }
@@ -54,7 +54,7 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil
 }
 
@@ -63,7 +63,7 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations)
@@ -82,7 +82,7 @@ func (m *Map1[A]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
@@ -111,7 +111,7 @@ func NewMap2[A any, B any](world *World) Map2[A, B] {
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -130,7 +130,7 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row))
@@ -141,7 +141,7 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil
 }
@@ -151,7 +151,7 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -171,7 +171,7 @@ func (m *Map2[A, B]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
@@ -203,7 +203,7 @@ func NewMap3[A any, B any, C any](world *World) Map3[A, B, C] {
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -223,7 +223,7 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -235,7 +235,7 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil
@@ -246,7 +246,7 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...RelationInde
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -267,7 +267,7 @@ func (m *Map3[A, B, C]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
@@ -302,7 +302,7 @@ func NewMap4[A any, B any, C any, D any](world *World) Map4[A, B, C, D] {
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -323,7 +323,7 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -336,7 +336,7 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil &&
@@ -348,7 +348,7 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -370,7 +370,7 @@ func (m *Map4[A, B, C, D]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
@@ -408,7 +408,7 @@ func NewMap5[A any, B any, C any, D any, E any](world *World) Map5[A, B, C, D, E
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -430,7 +430,7 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -444,7 +444,7 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil &&
@@ -457,7 +457,7 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -480,7 +480,7 @@ func (m *Map5[A, B, C, D, E]) SetRelations(entity Entity, rel ...RelationIndex) 
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
@@ -521,7 +521,7 @@ func NewMap6[A any, B any, C any, D any, E any, F any](world *World) Map6[A, B, 
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -544,7 +544,7 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -559,7 +559,7 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil &&
@@ -573,7 +573,7 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -597,7 +597,7 @@ func (m *Map6[A, B, C, D, E, F]) SetRelations(entity Entity, rel ...RelationInde
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
@@ -641,7 +641,7 @@ func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) Map7
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -665,7 +665,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -681,7 +681,7 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil &&
@@ -696,7 +696,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -721,7 +721,7 @@ func (m *Map7[A, B, C, D, E, F, G]) SetRelations(entity Entity, rel ...RelationI
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
@@ -768,7 +768,7 @@ func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *Worl
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -793,7 +793,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -810,7 +810,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return m.storageA.columns[index.table] != nil &&
 		m.storageB.columns[index.table] != nil &&
 		m.storageC.columns[index.table] != nil &&
@@ -826,7 +826,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -852,6 +852,6 @@ func (m *Map8[A, B, C, D, E, F, G, H]) SetRelations(entity Entity, rel ...Relati
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
 }

@@ -45,7 +45,7 @@ func (q *Filter0) Without(comps ...Comp) *Filter0 {
 // Query creates a [Query0] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter0) Query(rel ...RelationIndex) Query0 {
-	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery0(q.world, q.mask, q.without, q.relations)
 }
 
@@ -94,7 +94,7 @@ func (q *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
 // Query creates a [Query1] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
-	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery1[A](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
@@ -144,7 +144,7 @@ func (q *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
 // Query creates a [Query2] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
-	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery2[A, B](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
@@ -195,7 +195,7 @@ func (q *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
 // Query creates a [Query3] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
-	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery3[A, B, C](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
@@ -247,7 +247,7 @@ func (q *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
 // Query creates a [Query4] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
-	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery4[A, B, C, D](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
@@ -300,7 +300,7 @@ func (q *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] 
 // Query creates a [Query5] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, E] {
-	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery5[A, B, C, D, E](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
@@ -354,7 +354,7 @@ func (q *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, 
 // Query creates a [Query6] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, D, E, F] {
-	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery6[A, B, C, D, E, F](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
@@ -409,7 +409,7 @@ func (q *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, 
 // Query creates a [Query7] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, C, D, E, F, G] {
-	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery7[A, B, C, D, E, F, G](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
@@ -465,6 +465,6 @@ func (q *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, 
 // Query creates a [Query8] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, B, C, D, E, F, G, H] {
-	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery8[A, B, C, D, E, F, G, H](q.world, q.mask, q.without, q.ids, q.relations)
 }

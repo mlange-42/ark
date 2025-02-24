@@ -43,7 +43,7 @@ func NewMap{{.}}{{$generics}}(world *World) Map{{.}}{{$genericsShort}} {
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
@@ -63,7 +63,7 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$return}} {
 // It does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$return}} {
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	return {{range $i, $v := $upper}}{{if $i}},
 		{{end}}(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row)){{end}}
@@ -74,7 +74,7 @@ func (m *Map{{.}}{{$genericsShort}}) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.entities[entity.id]
+	index := m.world.storage.entities[entity.id]
 	return {{range $i, $v := $upper}}{{if $i}} &&
 		{{end}}m.storage{{$v}}.columns[index.table] != nil{{end}}
 }
@@ -84,7 +84,7 @@ func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...Relati
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
@@ -105,7 +105,7 @@ func (m *Map{{.}}{{$genericsShort}}) SetRelations(entity Entity, rel ...Relation
 	if !m.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	m.relations = relations(rel).toRelations(m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 {{end -}}

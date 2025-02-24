@@ -59,7 +59,7 @@ func (q *Filter{{.}}{{$genericsShort}}) Without(comps ...Comp) *Filter{{.}}{{$ge
 // Query creates a [Query{{.}}] from this filter.
 // This must be used each time before iterating a query.
 func (q *Filter{{.}}{{$genericsShort}}) Query(rel ...RelationIndex) Query{{.}}{{$genericsShort}} {
-	q.relations = relations(rel).toRelations(q.ids, q.relations)
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery{{.}}{{$genericsShort}}(q.world, q.mask, q.without{{if .}}, q.ids{{end}}, q.relations)
 }
 {{end -}}
