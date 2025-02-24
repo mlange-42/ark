@@ -19,6 +19,10 @@ type relationID struct {
 }
 
 // RelationIndex specifies an entity relation target by component index.
+//
+// Note that the index refers to the position of the component in the generics
+// of e.g. a [Map2] or [Filter2].
+// This should not be confused with component IDs as obtained by [ComponentID]!
 type RelationIndex struct {
 	index  uint8
 	target Entity

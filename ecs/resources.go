@@ -5,9 +5,9 @@ import (
 	"reflect"
 )
 
-// Resources manage a world's resources.
+// Resources manage a world's resources. Access it using [World.Resources].
 //
-// Access it using [World.Resources].
+// Although this type provides an ID-based API, the recommended usage is via [Resource].
 type Resources struct {
 	resources []any
 	registry  registry

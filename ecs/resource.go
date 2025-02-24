@@ -1,6 +1,6 @@
 package ecs
 
-// Resource provides access to world resources.
+// Resource provides access to a world resource.
 //
 // Create one with [NewResource].
 type Resource[T any] struct {
