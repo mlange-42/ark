@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestQuery2(t *testing.T) {
+func TestQuery2Old(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
