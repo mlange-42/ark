@@ -124,6 +124,7 @@ func TestQuery1Relations(t *testing.T) {
 	}
 	assert.Equal(t, cnt, 3*n)
 }
+
 func TestQuery2(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -240,6 +241,7 @@ func TestQuery2Relations(t *testing.T) {
 	}
 	assert.Equal(t, cnt, 3*n)
 }
+
 func TestQuery3(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -356,6 +358,7 @@ func TestQuery3Relations(t *testing.T) {
 	}
 	assert.Equal(t, cnt, 3*n)
 }
+
 func TestQuery4(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -472,6 +475,7 @@ func TestQuery4Relations(t *testing.T) {
 	}
 	assert.Equal(t, cnt, 3*n)
 }
+
 func TestQuery5(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -588,6 +592,7 @@ func TestQuery5Relations(t *testing.T) {
 	}
 	assert.Equal(t, cnt, 3*n)
 }
+
 func TestQuery6(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -704,6 +709,7 @@ func TestQuery6Relations(t *testing.T) {
 	}
 	assert.Equal(t, cnt, 3*n)
 }
+
 func TestQuery7(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -820,6 +826,7 @@ func TestQuery7Relations(t *testing.T) {
 	}
 	assert.Equal(t, cnt, 3*n)
 }
+
 func TestQuery8(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -935,4 +942,112 @@ func TestQuery8Relations(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, 3*n)
+}
+
+func TestQuery0(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](&w)
+
+	for range n {
+		_ = w.NewEntity()
+		e := w.NewEntity()
+		posMapper.Add(e, &Position{})
+	}
+
+	// normal filter
+	filter := NewFilter0(&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 2*n)
+
+	// filter without
+	filter = NewFilter0(&w).Without(C[Position]())
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	// filter exclusive
+	filter = NewFilter0(&w).Exclusive()
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+}
+
+func TestQuery0Empty(t *testing.T) {
+	w := NewWorld(4)
+
+	posMap := NewMap[Position](&w)
+
+	for range 10 {
+		e1 := w.NewEntity()
+		posMap.Add(e1, &Position{})
+	}
+
+	filter := NewFilter0(&w).Without(C[Position]())
+	query := filter.Query()
+
+	assert.Panics(t, func() { query.Entity() })
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	assert.Panics(t, func() { query.Entity() })
+	assert.Panics(t, func() { query.Next() })
+}
+
+func TestQuery0Relations(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	childMapper := NewMap[ChildOf](&w)
+
+	for range n {
+		e := w.NewEntity()
+		childMapper.Add(e, &ChildOf{}, parent1)
+
+		e = w.NewEntity()
+		childMapper.Add(e, &ChildOf{}, parent2)
+
+		e = w.NewEntity()
+		childMapper.Add(e, &ChildOf{}, parent3)
+	}
+
+	// normal filter
+	filter := NewFilter0(&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n+3)
 }
