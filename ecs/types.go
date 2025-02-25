@@ -19,3 +19,11 @@ func id8(id uint8) ID {
 type ResID struct {
 	id uint8
 }
+
+// Batch is like a filter for batch processing of entities.
+// Create it using [Filter2.Batch] etc.
+type Batch struct {
+	mask      Mask
+	without   Mask
+	relations []relationID
+}
