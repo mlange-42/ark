@@ -46,6 +46,19 @@ func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, rel
 	w.storage.registerTargets(relations)
 }
 
+func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableID, int) {
+	w.checkLocked()
+
+	mask := All(ids...)
+	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], &mask, relations)
+
+	startIdx := newTable.Len()
+	w.storage.createEntities(newTable, count)
+	w.storage.registerTargets(relations)
+
+	return newTable.id, startIdx
+}
+
 func (w *World) get(entity Entity, component ID) unsafe.Pointer {
 	if !w.storage.entityPool.Alive(entity) {
 		panic("can't get component of a dead entity")
