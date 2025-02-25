@@ -71,6 +71,20 @@ func TestQuery{{.}}(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+	
+	// filter with
+	filter = NewFilter{{.}}{{$generics}}(&w).With(C[Position]())
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		{{blanks .}} = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	_ = filter.Batch()
 }
 
 func TestQuery{{.}}Empty(t *testing.T) {
@@ -175,6 +189,18 @@ func TestQuery0(t *testing.T) {
 
 	// filter exclusive
 	filter = NewFilter0(&w).Exclusive()
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+	
+	// filter with
+	filter = NewFilter0(&w).With(C[Position]())
 	query = filter.Query()
 
 	cnt = 0
