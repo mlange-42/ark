@@ -37,7 +37,7 @@ Ark closely resembles Arche's generic API, and most information about Arche also
 package main
 
 import (
-	"math/rand"
+	"math/rand/v2"
 
 	"github.com/mlange-42/ark/ecs"
 )
