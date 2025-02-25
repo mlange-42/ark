@@ -49,6 +49,30 @@ type CompB struct {
 	X, Y float64
 }
 
+type CompC struct {
+	X, Y float64
+}
+
+type CompD struct {
+	X, Y float64
+}
+
+type CompE struct {
+	X, Y float64
+}
+
+type CompF struct {
+	X, Y float64
+}
+
+type CompG struct {
+	X, Y float64
+}
+
+type CompH struct {
+	X, Y float64
+}
+
 func TestTypeSizes(t *testing.T) {
 	printTypeSize[Entity]()
 	printTypeSize[entityIndex]()

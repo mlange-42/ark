@@ -135,9 +135,6 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.cursor.archetype < -1 {
-		panic("query is already closed. Create a new one to iterate again")
-	}
 	q.Close()
 	return false
 }

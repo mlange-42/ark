@@ -12,7 +12,7 @@ import "unsafe"
 {{- $generics := join "[" " any, " " any]" $upper -}}
 {{- $genericsShort := join "[" ", " "]" $upper -}}
 {{- $return := join "(*" ", *" ")" $upper -}}
-{{- $args := arguments $lower $upper -}}
+{{- $args := arguments $lower $upper "" -}}
 {{- $mask := join "id" ", id" "" $upper -}}
 
 // Map{{.}} is a mapper to access {{.}} components of an entity.

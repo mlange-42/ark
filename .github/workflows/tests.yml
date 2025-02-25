@@ -25,6 +25,10 @@ jobs:
       run: |
         go test -v -covermode atomic -coverprofile="coverage.out" ./...
         go tool cover -func="coverage.out"
+    - name: Coveralls
+      uses: coverallsapp/github-action@v2
+      with:
+        path-to-lcov: coverage.out
 
   lint:
     name: Run linters

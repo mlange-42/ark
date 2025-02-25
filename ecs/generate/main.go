@@ -16,6 +16,7 @@ type genFile struct {
 var files = []genFile{
 	{"./filter.go.template", "../filter_gen.go"},
 	{"./query.go.template", "../query_gen.go"},
+	{"./query_test.go.template", "../query_gen_test.go"},
 	{"./maps.go.template", "../maps_gen.go"},
 	{"./exchange.go.template", "../exchange_gen.go"},
 }
@@ -28,6 +29,7 @@ func main() {
 		"concat":       concat,
 		"join":         join,
 		"arguments":    arguments,
+		"blanks":       blanks,
 	}
 
 	for _, file := range files {
@@ -81,10 +83,21 @@ func join(before, sep, after string, args []string) string {
 	return fmt.Sprintf("%s%s%s", before, strings.Join(args, sep), after)
 }
 
-func arguments(names []string, types []string) string {
+func arguments(names []string, types []string, prefix string) string {
 	str := make([]string, len(names))
 	for i, name := range names {
-		str[i] = fmt.Sprintf("%s *%s", name, types[i])
+		str[i] = fmt.Sprintf("%s *%s%s", name, prefix, types[i])
 	}
 	return strings.Join(str, ", ")
+}
+
+func blanks(count int) string {
+	b := strings.Builder{}
+	for i := range count {
+		if i > 0 {
+			b.WriteString(", ")
+		}
+		b.WriteString("_")
+	}
+	return b.String()
 }
