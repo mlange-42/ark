@@ -78,3 +78,18 @@ jobs:
         id: latest-tag
       - name: Run gorelease
         run: gorelease -base=${{ steps.latest-tag.outputs.tag }}
+
+  examples:
+    name: Run Examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.24.x'
+      - name: Install dependencies
+        run: go get .
+      - name: Run examples
+        run: |
+          go run ./_examples/readme

@@ -17,9 +17,77 @@ The primary aims are:
 - A more structured design due to better planning of features
 - More focus on the generic API
 
+## Installation
+
+To use Ark in a Go project, run:
+
+```shell
+go get github.com/mlange-42/ark
+```
+
+## Usage
+
+Below is the classical Position/Velocity example that every ECS shows in the docs.
+
 For documentation besides the [API docs](https://pkg.go.dev/github.com/mlange-42/ark),
 see Arche and its [user guide](https://mlange-42.github.io/arche/) for now.
 Ark closely resembles Arche's generic API, and most information about Arche also applies to Ark.
+
+```go
+package main
+
+import (
+	"math/rand"
+
+	"github.com/mlange-42/ark/ecs"
+)
+
+// Position component
+type Position struct {
+	X float64
+	Y float64
+}
+
+// Velocity component
+type Velocity struct {
+	X float64
+	Y float64
+}
+
+func main() {
+	// Create a World with given initial capacity.
+	world := ecs.NewWorld(1024)
+
+	// Create a component mapper.
+	mapper := ecs.NewMap2[Position, Velocity](&world)
+
+	// Create entities.
+	for i := 0; i < 1000; i++ {
+		// Create a new Entity with components.
+		_ = mapper.NewEntity(
+			&Position{X: rand.Float64() * 100, Y: rand.Float64() * 100},
+			&Velocity{X: rand.NormFloat64(), Y: rand.NormFloat64()},
+		)
+	}
+
+	// Create a generic filter.
+	filter := ecs.NewFilter2[Position, Velocity](&world)
+
+	// Time loop.
+	for t := 0; t < 1000; t++ {
+		// Get a fresh query.
+		query := filter.Query()
+		// Iterate it
+		for query.Next() {
+			// Component access through the Query.
+			pos, vel := query.Get()
+			// Update component fields.
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
+	}
+}
+```
 
 ## Feature road map
 
