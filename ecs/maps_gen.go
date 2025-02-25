@@ -41,9 +41,13 @@ func (m *Map1[A]) NewBatch(count int, a *A, rel ...RelationIndex) {
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
 func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...RelationIndex) {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
 
 	table := &m.world.storage.tables[tableID]
 	columnA := m.storageA.columns[tableID]
@@ -155,9 +159,13 @@ func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...RelationIndex) {
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
 func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), rel ...RelationIndex) {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
 
 	table := &m.world.storage.tables[tableID]
 	columnA := m.storageA.columns[tableID]
@@ -280,9 +288,13 @@ func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...RelationInd
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
 func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C), rel ...RelationIndex) {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
 
 	table := &m.world.storage.tables[tableID]
 	columnA := m.storageA.columns[tableID]
@@ -416,9 +428,13 @@ func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Re
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
 func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...RelationIndex) {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
 
 	table := &m.world.storage.tables[tableID]
 	columnA := m.storageA.columns[tableID]
@@ -563,9 +579,13 @@ func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, 
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
 func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...RelationIndex) {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
 
 	table := &m.world.storage.tables[tableID]
 	columnA := m.storageA.columns[tableID]
@@ -721,9 +741,13 @@ func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
 func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...RelationIndex) {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
 
 	table := &m.world.storage.tables[tableID]
 	columnA := m.storageA.columns[tableID]
@@ -890,9 +914,13 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, 
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
 func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...RelationIndex) {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
 
 	table := &m.world.storage.tables[tableID]
 	columnA := m.storageA.columns[tableID]
@@ -1070,9 +1098,13 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...RelationIndex) {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
 
 	table := &m.world.storage.tables[tableID]
 	columnA := m.storageA.columns[tableID]
