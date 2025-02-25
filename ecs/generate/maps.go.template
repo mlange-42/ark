@@ -51,6 +51,41 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...RelationIndex) 
 	}, m.relations)
 }
 
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		{{- range $lower}}
+		unsafe.Pointer({{.}}),
+		{{- end}}
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity, {{$args}}), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	{{- range $upper}}
+	column{{.}} := m.storage{{.}}.columns[tableID]
+	{{- end}}
+
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			{{- range $upper}}
+			(*{{.}})(column{{.}}.Get(index)),
+			{{- end}}
+		)
+	}
+}
+
 // Get returns the mapped components for the given entity.
 func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$return}} {
 	if !m.world.Alive(entity) {

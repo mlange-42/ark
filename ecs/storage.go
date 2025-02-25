@@ -122,6 +122,26 @@ func (s *storage) createEntity(table tableID) (Entity, uint32) {
 	return entity, idx
 }
 
+func (s *storage) createEntities(table *table, count int) {
+	startIdx := table.Len()
+	table.Alloc(uint32(count))
+
+	len := len(s.entities)
+	for i := range count {
+		index := uint32(startIdx + i)
+		entity := s.entityPool.Get()
+		table.SetEntity(index, entity)
+
+		if int(entity.id) == len {
+			s.entities = append(s.entities, entityIndex{table: table.id, row: index})
+			s.isTarget = append(s.isTarget, false)
+			len++
+		} else {
+			s.entities[entity.id] = entityIndex{table: table.id, row: index}
+		}
+	}
+}
+
 func (s *storage) createArchetype(mask *Mask) *archetype {
 	comps := mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)

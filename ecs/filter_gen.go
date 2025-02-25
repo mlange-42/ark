@@ -56,6 +56,16 @@ func (q *Filter0) Query(rel ...RelationIndex) Query0 {
 	return newQuery0(q.world, q.mask, q.without, q.relations)
 }
 
+// Batch creates a [Batch] from this filter.
+func (q *Filter0) Batch(rel ...RelationIndex) Batch {
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+	return Batch{
+		mask:      q.mask,
+		without:   q.without,
+		relations: q.relations,
+	}
+}
+
 // Filter1 is a filter for 1 components.
 type Filter1[A any] struct {
 	world     *World
@@ -110,6 +120,16 @@ func (q *Filter1[A]) Exclusive() *Filter1[A] {
 func (q *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
 	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery1[A](q.world, q.mask, q.without, q.ids, q.relations)
+}
+
+// Batch creates a [Batch] from this filter.
+func (q *Filter1[A]) Batch(rel ...RelationIndex) Batch {
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+	return Batch{
+		mask:      q.mask,
+		without:   q.without,
+		relations: q.relations,
+	}
 }
 
 // Filter2 is a filter for 2 components.
@@ -167,6 +187,16 @@ func (q *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 func (q *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
 	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery2[A, B](q.world, q.mask, q.without, q.ids, q.relations)
+}
+
+// Batch creates a [Batch] from this filter.
+func (q *Filter2[A, B]) Batch(rel ...RelationIndex) Batch {
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+	return Batch{
+		mask:      q.mask,
+		without:   q.without,
+		relations: q.relations,
+	}
 }
 
 // Filter3 is a filter for 3 components.
@@ -227,6 +257,16 @@ func (q *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
 	return newQuery3[A, B, C](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
+// Batch creates a [Batch] from this filter.
+func (q *Filter3[A, B, C]) Batch(rel ...RelationIndex) Batch {
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+	return Batch{
+		mask:      q.mask,
+		without:   q.without,
+		relations: q.relations,
+	}
+}
+
 // Filter4 is a filter for 4 components.
 type Filter4[A any, B any, C any, D any] struct {
 	world     *World
@@ -284,6 +324,16 @@ func (q *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 func (q *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
 	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery4[A, B, C, D](q.world, q.mask, q.without, q.ids, q.relations)
+}
+
+// Batch creates a [Batch] from this filter.
+func (q *Filter4[A, B, C, D]) Batch(rel ...RelationIndex) Batch {
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+	return Batch{
+		mask:      q.mask,
+		without:   q.without,
+		relations: q.relations,
+	}
 }
 
 // Filter5 is a filter for 5 components.
@@ -346,6 +396,16 @@ func (q *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, 
 	return newQuery5[A, B, C, D, E](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
+// Batch creates a [Batch] from this filter.
+func (q *Filter5[A, B, C, D, E]) Batch(rel ...RelationIndex) Batch {
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+	return Batch{
+		mask:      q.mask,
+		without:   q.without,
+		relations: q.relations,
+	}
+}
+
 // Filter6 is a filter for 6 components.
 type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	world     *World
@@ -405,6 +465,16 @@ func (q *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 func (q *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, D, E, F] {
 	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery6[A, B, C, D, E, F](q.world, q.mask, q.without, q.ids, q.relations)
+}
+
+// Batch creates a [Batch] from this filter.
+func (q *Filter6[A, B, C, D, E, F]) Batch(rel ...RelationIndex) Batch {
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+	return Batch{
+		mask:      q.mask,
+		without:   q.without,
+		relations: q.relations,
+	}
 }
 
 // Filter7 is a filter for 7 components.
@@ -469,6 +539,16 @@ func (q *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, 
 	return newQuery7[A, B, C, D, E, F, G](q.world, q.mask, q.without, q.ids, q.relations)
 }
 
+// Batch creates a [Batch] from this filter.
+func (q *Filter7[A, B, C, D, E, F, G]) Batch(rel ...RelationIndex) Batch {
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+	return Batch{
+		mask:      q.mask,
+		without:   q.without,
+		relations: q.relations,
+	}
+}
+
 // Filter8 is a filter for 8 components.
 type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world     *World
@@ -530,4 +610,14 @@ func (q *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 func (q *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, B, C, D, E, F, G, H] {
 	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery8[A, B, C, D, E, F, G, H](q.world, q.mask, q.without, q.ids, q.relations)
+}
+
+// Batch creates a [Batch] from this filter.
+func (q *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...RelationIndex) Batch {
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+	return Batch{
+		mask:      q.mask,
+		without:   q.without,
+		relations: q.relations,
+	}
 }

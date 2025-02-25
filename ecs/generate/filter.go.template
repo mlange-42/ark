@@ -69,5 +69,15 @@ func (q *Filter{{.}}{{$genericsShort}}) Query(rel ...RelationIndex) Query{{.}}{{
 	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
 	return newQuery{{.}}{{$genericsShort}}(q.world, q.mask, q.without{{if .}}, q.ids{{end}}, q.relations)
 }
+
+// Batch creates a [Batch] from this filter.
+func (q *Filter{{.}}{{$genericsShort}}) Batch(rel ...RelationIndex) Batch {
+	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+	return Batch {
+		mask:      q.mask,
+		without:   q.without,
+		relations: q.relations,
+	}
+}
 {{end -}}
 {{end -}}

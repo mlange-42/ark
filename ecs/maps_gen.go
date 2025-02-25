@@ -32,6 +32,35 @@ func (m *Map1[A]) NewEntity(a *A, rel ...RelationIndex) Entity {
 	}, m.relations)
 }
 
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map1[A]) NewBatch(count int, a *A, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+		)
+	}
+}
+
 // Get returns the mapped components for the given entity.
 func (m *Map1[A]) Get(entity Entity) *A {
 	if !m.world.Alive(entity) {
@@ -118,6 +147,38 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...RelationIndex) Entity {
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+		)
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -214,6 +275,41 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...RelationIndex) Entity
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
 	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+	columnC := m.storageC.columns[tableID]
+
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+			(*C)(columnC.Get(index)),
+		)
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -318,6 +414,44 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...RelationInde
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
 	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+	columnC := m.storageC.columns[tableID]
+	columnD := m.storageD.columns[tableID]
+
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+			(*C)(columnC.Get(index)),
+			(*D)(columnD.Get(index)),
+		)
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -430,6 +564,47 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
 	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+	columnC := m.storageC.columns[tableID]
+	columnD := m.storageD.columns[tableID]
+	columnE := m.storageE.columns[tableID]
+
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+			(*C)(columnC.Get(index)),
+			(*D)(columnD.Get(index)),
+			(*E)(columnE.Get(index)),
+		)
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -550,6 +725,50 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
 	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+	columnC := m.storageC.columns[tableID]
+	columnD := m.storageD.columns[tableID]
+	columnE := m.storageE.columns[tableID]
+	columnF := m.storageF.columns[tableID]
+
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+			(*C)(columnC.Get(index)),
+			(*D)(columnD.Get(index)),
+			(*E)(columnE.Get(index)),
+			(*F)(columnF.Get(index)),
+		)
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -678,6 +897,53 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
 	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+	columnC := m.storageC.columns[tableID]
+	columnD := m.storageD.columns[tableID]
+	columnE := m.storageE.columns[tableID]
+	columnF := m.storageF.columns[tableID]
+	columnG := m.storageG.columns[tableID]
+
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+			(*C)(columnC.Get(index)),
+			(*D)(columnD.Get(index)),
+			(*E)(columnE.Get(index)),
+			(*F)(columnF.Get(index)),
+			(*G)(columnG.Get(index)),
+		)
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -814,6 +1080,56 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 		unsafe.Pointer(g),
 		unsafe.Pointer(h),
 	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+	columnC := m.storageC.columns[tableID]
+	columnD := m.storageD.columns[tableID]
+	columnE := m.storageE.columns[tableID]
+	columnF := m.storageF.columns[tableID]
+	columnG := m.storageG.columns[tableID]
+	columnH := m.storageH.columns[tableID]
+
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+			(*C)(columnC.Get(index)),
+			(*D)(columnD.Get(index)),
+			(*E)(columnE.Get(index)),
+			(*F)(columnF.Get(index)),
+			(*G)(columnG.Get(index)),
+			(*H)(columnH.Get(index)),
+		)
+	}
 }
 
 // Get returns the mapped components for the given entity.
