@@ -72,5 +72,36 @@ func TestQuery{{.}}(t *testing.T) {
 	}
 	assert.Equal(t, cnt, n)
 }
+
+func TestQuery{{.}}Empty(t *testing.T) {
+	w := NewWorld(4)
+
+	posMap := NewMap[Position](&w)
+
+	for range 10 {
+		e1 := w.NewEntity()
+		posMap.Add(e1, &Position{})
+	}
+
+	filter := NewFilter{{.}}{{$generics}}(&w)
+	query := filter.Query()
+	
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+	assert.Panics(t, func() { query.Next() })
+}
+
+func TestQuery{{.}}Relations(t *testing.T) {
+
+}
 {{end -}}
 {{end -}}

@@ -62,6 +62,37 @@ func TestQuery1(t *testing.T) {
 	}
 	assert.Equal(t, cnt, n)
 }
+
+func TestQuery1Empty(t *testing.T) {
+	w := NewWorld(4)
+
+	posMap := NewMap[Position](&w)
+
+	for range 10 {
+		e1 := w.NewEntity()
+		posMap.Add(e1, &Position{})
+	}
+
+	filter := NewFilter1[CompA](&w)
+	query := filter.Query()
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+	assert.Panics(t, func() { query.Next() })
+}
+
+func TestQuery1Relations(t *testing.T) {
+
+}
 func TestQuery2(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -115,6 +146,37 @@ func TestQuery2(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+}
+
+func TestQuery2Empty(t *testing.T) {
+	w := NewWorld(4)
+
+	posMap := NewMap[Position](&w)
+
+	for range 10 {
+		e1 := w.NewEntity()
+		posMap.Add(e1, &Position{})
+	}
+
+	filter := NewFilter2[CompA, CompB](&w)
+	query := filter.Query()
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+	assert.Panics(t, func() { query.Next() })
+}
+
+func TestQuery2Relations(t *testing.T) {
+
 }
 func TestQuery3(t *testing.T) {
 	n := 10
@@ -170,6 +232,37 @@ func TestQuery3(t *testing.T) {
 	}
 	assert.Equal(t, cnt, n)
 }
+
+func TestQuery3Empty(t *testing.T) {
+	w := NewWorld(4)
+
+	posMap := NewMap[Position](&w)
+
+	for range 10 {
+		e1 := w.NewEntity()
+		posMap.Add(e1, &Position{})
+	}
+
+	filter := NewFilter3[CompA, CompB, CompC](&w)
+	query := filter.Query()
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+	assert.Panics(t, func() { query.Next() })
+}
+
+func TestQuery3Relations(t *testing.T) {
+
+}
 func TestQuery4(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -223,6 +316,37 @@ func TestQuery4(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+}
+
+func TestQuery4Empty(t *testing.T) {
+	w := NewWorld(4)
+
+	posMap := NewMap[Position](&w)
+
+	for range 10 {
+		e1 := w.NewEntity()
+		posMap.Add(e1, &Position{})
+	}
+
+	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
+	query := filter.Query()
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+	assert.Panics(t, func() { query.Next() })
+}
+
+func TestQuery4Relations(t *testing.T) {
+
 }
 func TestQuery5(t *testing.T) {
 	n := 10
@@ -278,6 +402,37 @@ func TestQuery5(t *testing.T) {
 	}
 	assert.Equal(t, cnt, n)
 }
+
+func TestQuery5Empty(t *testing.T) {
+	w := NewWorld(4)
+
+	posMap := NewMap[Position](&w)
+
+	for range 10 {
+		e1 := w.NewEntity()
+		posMap.Add(e1, &Position{})
+	}
+
+	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
+	query := filter.Query()
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+	assert.Panics(t, func() { query.Next() })
+}
+
+func TestQuery5Relations(t *testing.T) {
+
+}
 func TestQuery6(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -331,6 +486,37 @@ func TestQuery6(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+}
+
+func TestQuery6Empty(t *testing.T) {
+	w := NewWorld(4)
+
+	posMap := NewMap[Position](&w)
+
+	for range 10 {
+		e1 := w.NewEntity()
+		posMap.Add(e1, &Position{})
+	}
+
+	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
+	query := filter.Query()
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+	assert.Panics(t, func() { query.Next() })
+}
+
+func TestQuery6Relations(t *testing.T) {
+
 }
 func TestQuery7(t *testing.T) {
 	n := 10
@@ -386,6 +572,37 @@ func TestQuery7(t *testing.T) {
 	}
 	assert.Equal(t, cnt, n)
 }
+
+func TestQuery7Empty(t *testing.T) {
+	w := NewWorld(4)
+
+	posMap := NewMap[Position](&w)
+
+	for range 10 {
+		e1 := w.NewEntity()
+		posMap.Add(e1, &Position{})
+	}
+
+	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+	query := filter.Query()
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+	assert.Panics(t, func() { query.Next() })
+}
+
+func TestQuery7Relations(t *testing.T) {
+
+}
 func TestQuery8(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -439,4 +656,35 @@ func TestQuery8(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+}
+
+func TestQuery8Empty(t *testing.T) {
+	w := NewWorld(4)
+
+	posMap := NewMap[Position](&w)
+
+	for range 10 {
+		e1 := w.NewEntity()
+		posMap.Add(e1, &Position{})
+	}
+
+	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query := filter.Query()
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	assert.Panics(t, func() { query.Get() })
+	assert.Panics(t, func() { query.Entity() })
+	assert.Panics(t, func() { query.Next() })
+}
+
+func TestQuery8Relations(t *testing.T) {
+
 }

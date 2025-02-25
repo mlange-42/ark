@@ -58,7 +58,7 @@ func TestQuery2Old(t *testing.T) {
 	}
 }
 
-func TestQuery2Empty(t *testing.T) {
+func TestQuery2EmptyOld(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
