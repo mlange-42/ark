@@ -18,6 +18,7 @@ var files = []genFile{
 	{"./query.go.template", "../query_gen.go"},
 	{"./query_test.go.template", "../query_gen_test.go"},
 	{"./maps.go.template", "../maps_gen.go"},
+	{"./maps_test.go.template", "../maps_gen_test.go"},
 	{"./exchange.go.template", "../exchange_gen.go"},
 }
 

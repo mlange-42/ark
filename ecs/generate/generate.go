@@ -7,4 +7,5 @@ package main
 //go:generate go fmt ../query_gen.go
 //go:generate go fmt ../query_gen_test.go
 //go:generate go fmt ../maps_gen.go
+//go:generate go fmt ../maps_gen_test.go
 //go:generate go fmt ../exchange_gen.go
