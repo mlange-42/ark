@@ -23,7 +23,7 @@ jobs:
         go get .
     - name: Run Unit tests
       run: |
-        go test -v -covermode atomic -coverprofile="coverage.out" ./...
+        go test -v -covermode atomic -coverprofile="coverage.out" -coverpkg=./ecs ./...
         go tool cover -func="coverage.out"
     - name: Coveralls
       uses: coverallsapp/github-action@v2
