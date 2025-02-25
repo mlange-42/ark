@@ -86,3 +86,10 @@ func (m *Map[T]) SetRelation(entity Entity, target Entity) {
 func (m *Map[T]) GetRelation(entity Entity) Entity {
 	return m.world.storage.getRelation(entity, m.id)
 }
+
+// GetRelationUnchecked returns the relation target for the entity and the mapped component.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map[T]) GetRelationUnchecked(entity Entity) Entity {
+	return m.world.storage.getRelationUnchecked(entity, m.id)
+}

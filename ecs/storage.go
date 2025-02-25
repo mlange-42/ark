@@ -102,6 +102,10 @@ func (s *storage) getRelation(entity Entity, comp ID) Entity {
 	return s.tables[s.entities[entity.id].table].GetRelation(comp)
 }
 
+func (s *storage) getRelationUnchecked(entity Entity, comp ID) Entity {
+	return s.tables[s.entities[entity.id].table].GetRelation(comp)
+}
+
 func (s *storage) registerTargets(relations []relationID) {
 	for _, rel := range relations {
 		s.isTarget[rel.target.id] = true
