@@ -91,7 +91,38 @@ func TestQuery1Empty(t *testing.T) {
 }
 
 func TestQuery1Relations(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
 
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap1[CompA](&w)
+	childMapper := NewMap[ChildOf](&w)
+
+	for range n {
+		e := mapper.NewEntity(&CompA{})
+		childMapper.Add(e, &ChildOf{}, parent1)
+
+		e = mapper.NewEntity(&CompA{})
+		childMapper.Add(e, &ChildOf{}, parent2)
+
+		e = mapper.NewEntity(&CompA{})
+		childMapper.Add(e, &ChildOf{}, parent3)
+	}
+
+	// normal filter
+	filter := NewFilter1[CompA](&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		_ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
 }
 func TestQuery2(t *testing.T) {
 	n := 10
@@ -176,7 +207,38 @@ func TestQuery2Empty(t *testing.T) {
 }
 
 func TestQuery2Relations(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
 
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap2[CompA, CompB](&w)
+	childMapper := NewMap[ChildOf](&w)
+
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{})
+		childMapper.Add(e, &ChildOf{}, parent1)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{})
+		childMapper.Add(e, &ChildOf{}, parent2)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{})
+		childMapper.Add(e, &ChildOf{}, parent3)
+	}
+
+	// normal filter
+	filter := NewFilter2[CompA, CompB](&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
 }
 func TestQuery3(t *testing.T) {
 	n := 10
@@ -261,7 +323,38 @@ func TestQuery3Empty(t *testing.T) {
 }
 
 func TestQuery3Relations(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
 
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap3[CompA, CompB, CompC](&w)
+	childMapper := NewMap[ChildOf](&w)
+
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
+		childMapper.Add(e, &ChildOf{}, parent1)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
+		childMapper.Add(e, &ChildOf{}, parent2)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
+		childMapper.Add(e, &ChildOf{}, parent3)
+	}
+
+	// normal filter
+	filter := NewFilter3[CompA, CompB, CompC](&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
 }
 func TestQuery4(t *testing.T) {
 	n := 10
@@ -346,7 +439,38 @@ func TestQuery4Empty(t *testing.T) {
 }
 
 func TestQuery4Relations(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
 
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+	childMapper := NewMap[ChildOf](&w)
+
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
+		childMapper.Add(e, &ChildOf{}, parent1)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
+		childMapper.Add(e, &ChildOf{}, parent2)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
+		childMapper.Add(e, &ChildOf{}, parent3)
+	}
+
+	// normal filter
+	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
 }
 func TestQuery5(t *testing.T) {
 	n := 10
@@ -431,7 +555,38 @@ func TestQuery5Empty(t *testing.T) {
 }
 
 func TestQuery5Relations(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
 
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
+	childMapper := NewMap[ChildOf](&w)
+
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+		childMapper.Add(e, &ChildOf{}, parent1)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+		childMapper.Add(e, &ChildOf{}, parent2)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+		childMapper.Add(e, &ChildOf{}, parent3)
+	}
+
+	// normal filter
+	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
 }
 func TestQuery6(t *testing.T) {
 	n := 10
@@ -516,7 +671,38 @@ func TestQuery6Empty(t *testing.T) {
 }
 
 func TestQuery6Relations(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
 
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
+	childMapper := NewMap[ChildOf](&w)
+
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+		childMapper.Add(e, &ChildOf{}, parent1)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+		childMapper.Add(e, &ChildOf{}, parent2)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+		childMapper.Add(e, &ChildOf{}, parent3)
+	}
+
+	// normal filter
+	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
 }
 func TestQuery7(t *testing.T) {
 	n := 10
@@ -601,7 +787,38 @@ func TestQuery7Empty(t *testing.T) {
 }
 
 func TestQuery7Relations(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
 
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+	childMapper := NewMap[ChildOf](&w)
+
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+		childMapper.Add(e, &ChildOf{}, parent1)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+		childMapper.Add(e, &ChildOf{}, parent2)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+		childMapper.Add(e, &ChildOf{}, parent3)
+	}
+
+	// normal filter
+	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
 }
 func TestQuery8(t *testing.T) {
 	n := 10
@@ -686,5 +903,36 @@ func TestQuery8Empty(t *testing.T) {
 }
 
 func TestQuery8Relations(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
 
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	childMapper := NewMap[ChildOf](&w)
+
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+		childMapper.Add(e, &ChildOf{}, parent1)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+		childMapper.Add(e, &ChildOf{}, parent2)
+
+		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+		childMapper.Add(e, &ChildOf{}, parent3)
+	}
+
+	// normal filter
+	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
 }

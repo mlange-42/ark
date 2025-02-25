@@ -110,9 +110,6 @@ func (q *Query0) nextArchetype() bool {
 			return true
 		}
 	}
-	if q.cursor.archetype < -1 {
-		panic("query is already closed. Create a new one to iterate again")
-	}
 	q.Close()
 	return false
 }
@@ -246,9 +243,6 @@ func (q *Query1[A]) nextArchetype() bool {
 		if q.nextTable() {
 			return true
 		}
-	}
-	if q.cursor.archetype < -1 {
-		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.Close()
 	return false
@@ -387,9 +381,6 @@ func (q *Query2[A, B]) nextArchetype() bool {
 		if q.nextTable() {
 			return true
 		}
-	}
-	if q.cursor.archetype < -1 {
-		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.Close()
 	return false
@@ -532,9 +523,6 @@ func (q *Query3[A, B, C]) nextArchetype() bool {
 		if q.nextTable() {
 			return true
 		}
-	}
-	if q.cursor.archetype < -1 {
-		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.Close()
 	return false
@@ -681,9 +669,6 @@ func (q *Query4[A, B, C, D]) nextArchetype() bool {
 		if q.nextTable() {
 			return true
 		}
-	}
-	if q.cursor.archetype < -1 {
-		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.Close()
 	return false
@@ -834,9 +819,6 @@ func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 		if q.nextTable() {
 			return true
 		}
-	}
-	if q.cursor.archetype < -1 {
-		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.Close()
 	return false
@@ -991,9 +973,6 @@ func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 		if q.nextTable() {
 			return true
 		}
-	}
-	if q.cursor.archetype < -1 {
-		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.Close()
 	return false
@@ -1152,9 +1131,6 @@ func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 		if q.nextTable() {
 			return true
 		}
-	}
-	if q.cursor.archetype < -1 {
-		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.Close()
 	return false
@@ -1317,9 +1293,6 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 		if q.nextTable() {
 			return true
 		}
-	}
-	if q.cursor.archetype < -1 {
-		panic("query is already closed. Create a new one to iterate again")
 	}
 	q.Close()
 	return false

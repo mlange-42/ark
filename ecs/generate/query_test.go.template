@@ -101,7 +101,38 @@ func TestQuery{{.}}Empty(t *testing.T) {
 }
 
 func TestQuery{{.}}Relations(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
 
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap{{.}}{{$generics}}(&w)
+	childMapper := NewMap[ChildOf](&w)
+
+	for range n {
+		e := mapper.NewEntity({{$mapArgs}})
+		childMapper.Add(e, &ChildOf{}, parent1)
+		
+		e = mapper.NewEntity({{$mapArgs}})
+		childMapper.Add(e, &ChildOf{}, parent2)
+		
+		e = mapper.NewEntity({{$mapArgs}})
+		childMapper.Add(e, &ChildOf{}, parent3)
+	}
+
+	// normal filter
+	filter := NewFilter{{.}}{{$generics}}(&w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		{{blanks .}} = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
 }
 {{end -}}
 {{end -}}
