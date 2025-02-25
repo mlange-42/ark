@@ -32,6 +32,14 @@ func (m *Map1[A]) NewEntity(a *A, rel ...RelationIndex) Entity {
 	}, m.relations)
 }
 
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map1[A]) NewBatch(count int, a *A, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+	}, m.relations)
+}
+
 // Get returns the mapped components for the given entity.
 func (m *Map1[A]) Get(entity Entity) *A {
 	if !m.world.Alive(entity) {
@@ -115,6 +123,15 @@ func NewMap2[A any, B any](world *World) Map2[A, B] {
 func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...RelationIndex) Entity {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 	}, m.relations)
@@ -210,6 +227,16 @@ func NewMap3[A any, B any, C any](world *World) Map3[A, B, C] {
 func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...RelationIndex) Entity {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
@@ -313,6 +340,17 @@ func NewMap4[A any, B any, C any, D any](world *World) Map4[A, B, C, D] {
 func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...RelationIndex) Entity {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
@@ -432,6 +470,18 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 	}, m.relations)
 }
 
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+	}, m.relations)
+}
+
 // Get returns the mapped components for the given entity.
 func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 	if !m.world.Alive(entity) {
@@ -543,6 +593,19 @@ func NewMap6[A any, B any, C any, D any, E any, F any](world *World) Map6[A, B, 
 func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) Entity {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
@@ -680,6 +743,20 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 	}, m.relations)
 }
 
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+	}, m.relations)
+}
+
 // Get returns the mapped components for the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	if !m.world.Alive(entity) {
@@ -805,6 +882,21 @@ func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *Worl
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) Entity {
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+	}, m.relations)
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),

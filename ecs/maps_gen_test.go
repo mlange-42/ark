@@ -37,6 +37,36 @@ func TestMap2(t *testing.T) {
 	assert.Equal(t, Velocity{103, 104}, *vel)
 }
 
+func TestMap2NewBatch(t *testing.T) {
+	w := NewWorld(16)
+
+	mapper := NewMap2[Position, Velocity](&w)
+
+	for range 12 {
+		_ = mapper.NewEntity(&Position{1, 2}, &Velocity{3, 4})
+	}
+	mapper.NewBatch(24, &Position{5, 6}, &Velocity{7, 8})
+
+	filter := NewFilter2[Position, Velocity](&w)
+	query := filter.Query()
+	cnt := 0
+	var lastEntity Entity
+	for query.Next() {
+		pos, vel := query.Get()
+		if cnt < 12 {
+			assert.Equal(t, Position{1, 2}, *pos)
+			assert.Equal(t, Velocity{3, 4}, *vel)
+		} else {
+			assert.Equal(t, Position{5, 6}, *pos)
+			assert.Equal(t, Velocity{7, 8}, *vel)
+		}
+		lastEntity = query.Entity()
+		cnt++
+	}
+	assert.True(t, mapper.HasAll(lastEntity))
+	assert.Equal(t, 36, cnt)
+}
+
 func BenchmarkMapPosVel_1000(b *testing.B) {
 	n := 1000
 	world := NewWorld(1024)

@@ -103,6 +103,18 @@ func (t *table) Set(component ID, index uint32, comp unsafe.Pointer) {
 	t.columns[t.components[component.id]].Set(index, comp)
 }
 
+func (t *table) SetEntity(index uint32, entity Entity) {
+	t.entities.Set(index, unsafe.Pointer(&entity))
+}
+
+// Alloc allocates memory for the given number of entities.
+func (t *table) Alloc(n uint32) {
+	t.entities.Alloc(n)
+	for i := range t.columns {
+		t.columns[i].Alloc(n)
+	}
+}
+
 func (t *table) Remove(index uint32) bool {
 	swapped := t.entities.Remove(index, nil)
 	for i := range t.columns {

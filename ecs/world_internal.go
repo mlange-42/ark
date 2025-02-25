@@ -24,6 +24,28 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []rela
 	return entity
 }
 
+func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, relations []relationID) {
+	w.checkLocked()
+
+	mask := All(ids...)
+	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], &mask, relations)
+
+	startIdx := newTable.Len()
+	w.storage.createEntities(newTable, count)
+
+	if comps != nil {
+		if len(ids) != len(comps) {
+			panic("lengths of IDs and components to add do not match")
+		}
+		for i := range count {
+			for j, id := range ids {
+				newTable.Set(id, uint32(startIdx+i), comps[j])
+			}
+		}
+	}
+	w.storage.registerTargets(relations)
+}
+
 func (w *World) get(entity Entity, component ID) unsafe.Pointer {
 	if !w.storage.entityPool.Alive(entity) {
 		panic("can't get component of a dead entity")
