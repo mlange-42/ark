@@ -61,6 +61,20 @@ func TestQuery1(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+
+	// filter with
+	filter = NewFilter1[CompA](&w).With(C[Position]())
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	_ = filter.Batch()
 }
 
 func TestQuery1Empty(t *testing.T) {
@@ -178,6 +192,20 @@ func TestQuery2(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+
+	// filter with
+	filter = NewFilter2[CompA, CompB](&w).With(C[Position]())
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	_ = filter.Batch()
 }
 
 func TestQuery2Empty(t *testing.T) {
@@ -295,6 +323,20 @@ func TestQuery3(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+
+	// filter with
+	filter = NewFilter3[CompA, CompB, CompC](&w).With(C[Position]())
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	_ = filter.Batch()
 }
 
 func TestQuery3Empty(t *testing.T) {
@@ -412,6 +454,20 @@ func TestQuery4(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+
+	// filter with
+	filter = NewFilter4[CompA, CompB, CompC, CompD](&w).With(C[Position]())
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	_ = filter.Batch()
 }
 
 func TestQuery4Empty(t *testing.T) {
@@ -529,6 +585,20 @@ func TestQuery5(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+
+	// filter with
+	filter = NewFilter5[CompA, CompB, CompC, CompD, CompE](&w).With(C[Position]())
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	_ = filter.Batch()
 }
 
 func TestQuery5Empty(t *testing.T) {
@@ -646,6 +716,20 @@ func TestQuery6(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+
+	// filter with
+	filter = NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w).With(C[Position]())
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	_ = filter.Batch()
 }
 
 func TestQuery6Empty(t *testing.T) {
@@ -763,6 +847,20 @@ func TestQuery7(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+
+	// filter with
+	filter = NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).With(C[Position]())
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	_ = filter.Batch()
 }
 
 func TestQuery7Empty(t *testing.T) {
@@ -880,6 +978,20 @@ func TestQuery8(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
+
+	// filter with
+	filter = NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).With(C[Position]())
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	_ = filter.Batch()
 }
 
 func TestQuery8Empty(t *testing.T) {
@@ -982,6 +1094,18 @@ func TestQuery0(t *testing.T) {
 
 	// filter exclusive
 	filter = NewFilter0(&w).Exclusive()
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
+
+	// filter with
+	filter = NewFilter0(&w).With(C[Position]())
 	query = filter.Query()
 
 	cnt = 0
