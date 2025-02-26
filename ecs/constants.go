@@ -4,5 +4,3 @@ package ecs
 // Add this to initial capacities of entity pool and lists,
 // to avoid unexpected allocations.
 const reservedEntities = 2
-
-const wordSize = 64
