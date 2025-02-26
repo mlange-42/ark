@@ -7,6 +7,7 @@
 - Adds `MapX.NewBatch` and `MapX.NewBatchFn` for fast batch-creation of entities (#65)
 - Adds `ExchangeX.Add` and `ExchangeX.Remove` (#70)
 - Adds `Map.GetRelationUnchecked` (#75)
+- Adds build tag `tiny` for 64 bit masks (#77)
 
 ## [[v0.1.0]](https://github.com/mlange-42/ark/tree/v0.1.0)
 
