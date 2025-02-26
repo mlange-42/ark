@@ -9,7 +9,7 @@ import (
 const MaskTotalBits = 256
 const wordSize = 64
 
-// Mask is a 256 bit bitmask.
+// Mask is a 256 bit bit-mask.
 // It is also a [Filter] for including certain components.
 //
 // Use [All] to create a mask for a list of component IDs.
