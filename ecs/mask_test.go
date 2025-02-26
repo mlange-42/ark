@@ -119,7 +119,7 @@ func TestMaskToTypes(t *testing.T) {
 	assert.Equal(t, []ID{id1, id2}, comps)
 }
 
-func BenchmarkBitmaskGet(b *testing.B) {
+func BenchmarkMaskGet(b *testing.B) {
 	mask := All()
 	for i := 0; i < MaskTotalBits; i++ {
 		if rand.Float64() < 0.5 {
@@ -135,7 +135,7 @@ func BenchmarkBitmaskGet(b *testing.B) {
 	_ = v
 }
 
-func BenchmarkBitmaskContains(b *testing.B) {
+func BenchmarkMaskContains(b *testing.B) {
 	mask := All()
 	for i := 0; i < MaskTotalBits; i++ {
 		if rand.Float64() < 0.5 {
@@ -151,7 +151,7 @@ func BenchmarkBitmaskContains(b *testing.B) {
 	_ = v
 }
 
-func BenchmarkBitmaskContainsAny(b *testing.B) {
+func BenchmarkMaskContainsAny(b *testing.B) {
 	mask := All()
 	for i := 0; i < MaskTotalBits; i++ {
 		if rand.Float64() < 0.5 {

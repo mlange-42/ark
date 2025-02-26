@@ -6,18 +6,13 @@ import (
 
 // MaskTotalBits is the size of a [Mask] in bits.
 // It is the maximum number of component types that may exist in any [World].
-//
-// Use build tag `tiny` to reduce all masks to 64 bits.
 const MaskTotalBits = 256
 const wordSize = 64
 
-// Mask is a 256 bit bitmask.
+// Mask is a 256 bit bit-mask.
 // It is also a [Filter] for including certain components.
 //
 // Use [All] to create a mask for a list of component IDs.
-// A mask can be further specified using [Mask.Without] or [Mask.Exclusive].
-//
-// Use build tag `tiny` to reduce all masks to 64 bits.
 type Mask struct {
 	bits [4]uint64 // 4x 64 bits of the mask
 }
@@ -29,8 +24,6 @@ func (b Mask) Matches(bits *Mask) bool {
 
 // All creates a new Mask from a list of IDs.
 // Matches all entities that have the respective components, and potentially further components.
-//
-// See also [Mask.Without] and [Mask.Exclusive]
 func All(ids ...ID) Mask {
 	var mask Mask
 	for _, id := range ids {
