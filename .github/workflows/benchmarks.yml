@@ -23,6 +23,3 @@ jobs:
       - name: Run benchmarks
         run: |
           go test -benchmem -run=^$ -bench ^.*$ ./...
-      - name: Run benchmarks w/o bound checks
-        run: |
-          go test -benchmem -run=^$ -bench ^.*$ -gcflags="-B" ./...
