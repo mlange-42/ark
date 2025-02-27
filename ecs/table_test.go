@@ -18,7 +18,6 @@ func TestNewTable(t *testing.T) {
 	table := newTable(0, 0, 8, &w.storage.registry, []ID{posID, velID}, compMap, make([]bool, 2), make([]Entity, 2), []relationID{})
 
 	assert.Equal(t, 2, len(table.columns))
-	assert.Equal(t, 2, len(table.relations))
 	assert.EqualValues(t, 0, table.components[posID.id])
 	assert.EqualValues(t, 1, table.components[velID.id])
 }

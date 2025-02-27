@@ -7,23 +7,27 @@ import (
 
 // column storage for components in an archetype.
 type column struct {
-	data     reflect.Value
-	pointer  unsafe.Pointer
-	itemSize uintptr
-	len      uint32
+	data       reflect.Value
+	pointer    unsafe.Pointer
+	isRelation bool
+	target     Entity
+	itemSize   uintptr
+	len        uint32
 }
 
 // newColumn creates a new column for a given type and capacity.
-func newColumn(tp reflect.Type, capacity uint32) column {
+func newColumn(tp reflect.Type, isRelation bool, target Entity, capacity uint32) column {
 	// TODO: should be use a slice instead of an array here?
 	data := reflect.New(reflect.ArrayOf(int(capacity), tp)).Elem()
 	pointer := data.Addr().UnsafePointer()
 
 	return column{
-		data:     data,
-		pointer:  pointer,
-		itemSize: sizeOf(tp),
-		len:      0,
+		data:       data,
+		pointer:    pointer,
+		itemSize:   sizeOf(tp),
+		isRelation: isRelation,
+		target:     target,
+		len:        0,
 	}
 }
 

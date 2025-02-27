@@ -38,7 +38,7 @@ func (c *sliceColumn[T]) Add(value any) {
 func BenchmarkColumnGet(b *testing.B) {
 	n := 1000
 	posType := reflect.TypeOf(Position{})
-	column := newColumn(posType, 1000)
+	column := newColumn(posType, false, Entity{}, 1000)
 
 	indices := make([]uint32, n)
 	for i := 0; i < n; i++ {
