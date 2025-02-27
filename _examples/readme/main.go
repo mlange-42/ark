@@ -28,7 +28,7 @@ func main() {
 	mapper := ecs.NewMap2[Position, Velocity](&world)
 
 	// Create entities.
-	for i := 0; i < 1000; i++ {
+	for range 1000 {
 		// Create a new Entity with components.
 		_ = mapper.NewEntity(
 			&Position{X: rand.Float64() * 100, Y: rand.Float64() * 100},
@@ -40,7 +40,7 @@ func main() {
 	filter := ecs.NewFilter2[Position, Velocity](&world)
 
 	// Time loop.
-	for t := 0; t < 1000; t++ {
+	for range 5000 {
 		// Get a fresh query.
 		query := filter.Query()
 		// Iterate it
