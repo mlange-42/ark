@@ -102,7 +102,7 @@ func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$return}} {
 	row := uintptr(index.row)
 
 	{{- range $upper}}
-	checkMapHasComponent(m.storage{{.}}, index.table)
+	m.world.checkMapHasComponent(m.storage{{.}}, index.table)
 	{{- end}}
 
 	return {{range $i, $v := $upper}}{{if $i}},

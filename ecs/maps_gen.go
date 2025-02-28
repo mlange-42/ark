@@ -75,7 +75,7 @@ func (m *Map1[A]) Get(entity Entity) *A {
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
+	m.world.checkMapHasComponent(m.storageA, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row))
 }
@@ -210,8 +210,8 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
+	m.world.checkMapHasComponent(m.storageA, index.table)
+	m.world.checkMapHasComponent(m.storageB, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row))
@@ -356,9 +356,9 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
+	m.world.checkMapHasComponent(m.storageA, index.table)
+	m.world.checkMapHasComponent(m.storageB, index.table)
+	m.world.checkMapHasComponent(m.storageC, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -513,10 +513,10 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
-	checkMapHasComponent(m.storageD, index.table)
+	m.world.checkMapHasComponent(m.storageA, index.table)
+	m.world.checkMapHasComponent(m.storageB, index.table)
+	m.world.checkMapHasComponent(m.storageC, index.table)
+	m.world.checkMapHasComponent(m.storageD, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -681,11 +681,11 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
-	checkMapHasComponent(m.storageD, index.table)
-	checkMapHasComponent(m.storageE, index.table)
+	m.world.checkMapHasComponent(m.storageA, index.table)
+	m.world.checkMapHasComponent(m.storageB, index.table)
+	m.world.checkMapHasComponent(m.storageC, index.table)
+	m.world.checkMapHasComponent(m.storageD, index.table)
+	m.world.checkMapHasComponent(m.storageE, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -860,12 +860,12 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
-	checkMapHasComponent(m.storageD, index.table)
-	checkMapHasComponent(m.storageE, index.table)
-	checkMapHasComponent(m.storageF, index.table)
+	m.world.checkMapHasComponent(m.storageA, index.table)
+	m.world.checkMapHasComponent(m.storageB, index.table)
+	m.world.checkMapHasComponent(m.storageC, index.table)
+	m.world.checkMapHasComponent(m.storageD, index.table)
+	m.world.checkMapHasComponent(m.storageE, index.table)
+	m.world.checkMapHasComponent(m.storageF, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -1050,13 +1050,13 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
-	checkMapHasComponent(m.storageD, index.table)
-	checkMapHasComponent(m.storageE, index.table)
-	checkMapHasComponent(m.storageF, index.table)
-	checkMapHasComponent(m.storageG, index.table)
+	m.world.checkMapHasComponent(m.storageA, index.table)
+	m.world.checkMapHasComponent(m.storageB, index.table)
+	m.world.checkMapHasComponent(m.storageC, index.table)
+	m.world.checkMapHasComponent(m.storageD, index.table)
+	m.world.checkMapHasComponent(m.storageE, index.table)
+	m.world.checkMapHasComponent(m.storageF, index.table)
+	m.world.checkMapHasComponent(m.storageG, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -1251,14 +1251,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
-	checkMapHasComponent(m.storageD, index.table)
-	checkMapHasComponent(m.storageE, index.table)
-	checkMapHasComponent(m.storageF, index.table)
-	checkMapHasComponent(m.storageG, index.table)
-	checkMapHasComponent(m.storageH, index.table)
+	m.world.checkMapHasComponent(m.storageA, index.table)
+	m.world.checkMapHasComponent(m.storageB, index.table)
+	m.world.checkMapHasComponent(m.storageC, index.table)
+	m.world.checkMapHasComponent(m.storageD, index.table)
+	m.world.checkMapHasComponent(m.storageE, index.table)
+	m.world.checkMapHasComponent(m.storageF, index.table)
+	m.world.checkMapHasComponent(m.storageG, index.table)
+	m.world.checkMapHasComponent(m.storageH, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
