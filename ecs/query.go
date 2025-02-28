@@ -45,14 +45,14 @@ func (q *Query) Entity() Entity {
 }
 
 // Get returns the queried components of the current entity.
-func (q *Query) Get(id ID) unsafe.Pointer {
+func (q *Query) Get(comp ID) unsafe.Pointer {
 	q.world.checkQueryGet(&q.cursor)
-	return q.table.Get(id, uintptr(q.cursor.index))
+	return q.table.Get(comp, uintptr(q.cursor.index))
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
-func (q *Query) GetRelation(index int) Entity {
-	return q.table.GetEntity(uintptr(q.cursor.index))
+func (q *Query) GetRelation(comp ID) Entity {
+	return q.table.GetRelation(comp)
 }
 
 // Close closes the Query and unlocks the world.

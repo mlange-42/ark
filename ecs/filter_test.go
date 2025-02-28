@@ -32,3 +32,13 @@ func TestFilter(t *testing.T) {
 		assert.Equal(t, test.matches, test.filter.matches(&test.mask))
 	}
 }
+
+func BenchmarkFilterCopy(b *testing.B) {
+	f := NewFilter(id(1))
+
+	var ff Filter
+	for b.Loop() {
+		ff = f
+	}
+	_ = ff
+}
