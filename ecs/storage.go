@@ -126,7 +126,8 @@ func (s *storage) getRelation(entity Entity, comp ID) Entity {
 	if !s.entityPool.Alive(entity) {
 		panic("can't get relation for a dead entity")
 	}
-	return s.tables[s.entities[entity.id].table].GetRelation(comp)
+	index := s.entities[entity.id]
+	return s.tables[index.table].GetRelation(comp)
 }
 
 func (s *storage) getRelationUnchecked(entity Entity, comp ID) Entity {

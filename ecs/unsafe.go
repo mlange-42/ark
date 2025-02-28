@@ -70,10 +70,36 @@ func (u Unsafe) SetRelations(entity Entity, relations ...RelationID) {
 	u.world.setRelations(entity, relations)
 }
 
-// TODO: Unsafe.NewEntity
-// TODO: Unsafe.Add
-// TODO: Unsafe.Remove
-// TODO: Unsafe.Exchange
-// TODO: Unsafe.GetRelation
-// TODO: Unsafe.SetRelation
+// Add the given components to an entity.
+func (u Unsafe) Add(entity Entity, comp ...ID) {
+	if !u.world.Alive(entity) {
+		panic("can't add components to a dead entity")
+	}
+	u.world.exchange(entity, comp, nil, nil, nil)
+}
+
+// AddRel adds the given components and relation targets to an entity.
+func (u Unsafe) AddRel(entity Entity, comps []ID, relations ...RelationID) {
+	if !u.world.Alive(entity) {
+		panic("can't add components to a dead entity")
+	}
+	u.world.exchange(entity, comps, nil, nil, relations)
+}
+
+// Remove the given components from an entity.
+func (u Unsafe) Remove(entity Entity, comp ...ID) {
+	if !u.world.Alive(entity) {
+		panic("can't remove components from a dead entity")
+	}
+	u.world.exchange(entity, nil, comp, nil, nil)
+}
+
+// Exchange the given components to on entity.
+func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...RelationID) {
+	if !u.world.Alive(entity) {
+		panic("can't exchange components on a dead entity")
+	}
+	u.world.exchange(entity, add, remove, nil, relations)
+}
+
 // TODO: Queries

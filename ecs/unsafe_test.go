@@ -48,6 +48,7 @@ func TestUnsafeGet(t *testing.T) {
 
 	assert.Equal(t, pos, pos2)
 }
+
 func TestUnsafeRelations(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
@@ -67,4 +68,43 @@ func TestUnsafeRelations(t *testing.T) {
 	u.SetRelations(e, RelID(childID, parent2), RelID(child2ID, parent1))
 	assert.Equal(t, parent2, u.GetRelation(e, childID))
 	assert.Equal(t, parent1, u.GetRelationUnchecked(e, child2ID))
+}
+
+func TestUnsafeAdd(t *testing.T) {
+	w := NewWorld(16)
+	u := w.Unsafe()
+
+	posID := ComponentID[Position](&w)
+	childID := ComponentID[ChildOf](&w)
+
+	e1 := w.NewEntity()
+	u.Add(e1, posID)
+
+	assert.True(t, u.Has(e1, posID))
+
+	e2 := w.NewEntity()
+	u.AddRel(e2, []ID{posID, childID}, RelID(childID, e1))
+
+	assert.True(t, u.Has(e2, posID))
+	assert.True(t, u.Has(e2, childID))
+	assert.Equal(t, e1, u.GetRelation(e2, childID))
+}
+
+func TestUnsafeExchange(t *testing.T) {
+	w := NewWorld(16)
+	u := w.Unsafe()
+
+	posID := ComponentID[Position](&w)
+	childID := ComponentID[ChildOf](&w)
+
+	parent := u.NewEntity()
+	e := u.NewEntity(posID)
+
+	u.Exchange(e, []ID{childID}, []ID{posID}, RelID(childID, parent))
+	assert.False(t, u.Has(e, posID))
+	assert.True(t, u.Has(e, childID))
+
+	child := (*ChildOf)(u.Get(e, childID))
+	assert.NotNil(t, child)
+	assert.Equal(t, e, u.GetRelation(e, childID))
 }
