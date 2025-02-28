@@ -60,17 +60,6 @@ func (q *Query0) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
-// Get returns the queried components of the current entity.
-func (q *Query0) Get() {
-	checkQueryGet(&q.cursor)
-	return
-}
-
-// GetRelation returns the entity relation target of the component at the given index.
-func (q *Query0) GetRelation(index int) Entity {
-	return q.components[index].columns[q.table.id].target
-}
-
 // Close closes the Query and unlocks the world.
 //
 // Automatically called when iteration finishes.

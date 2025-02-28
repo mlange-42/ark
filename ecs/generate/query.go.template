@@ -81,6 +81,7 @@ func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+{{if . -}}
 // Get returns the queried components of the current entity.
 func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 	checkQueryGet(&q.cursor)
@@ -92,6 +93,7 @@ func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 func (q *Query{{.}}{{$genericsShort}}) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
+{{- end}}
 
 // Close closes the Query and unlocks the world.
 //
