@@ -1,6 +1,9 @@
 package ecs
 
-import "fmt"
+import (
+	"fmt"
+	"unsafe"
+)
 
 type storage struct {
 	registry   componentRegistry
@@ -93,6 +96,30 @@ func (s *storage) RemoveEntity(entity Entity) {
 		s.cleanupArchetypes(entity)
 		s.isTarget[entity.id] = false
 	}
+}
+
+func (s *storage) get(entity Entity, component ID) unsafe.Pointer {
+	if !s.entityPool.Alive(entity) {
+		panic("can't get component of a dead entity")
+	}
+	return s.getUnchecked(entity, component)
+}
+
+func (s *storage) getUnchecked(entity Entity, component ID) unsafe.Pointer {
+	index := s.entities[entity.id]
+	return s.tables[index.table].Get(component, uintptr(index.row))
+}
+
+func (s *storage) has(entity Entity, component ID) bool {
+	if !s.entityPool.Alive(entity) {
+		panic("can't get component of a dead entity")
+	}
+	return s.hasUnchecked(entity, component)
+}
+
+func (s *storage) hasUnchecked(entity Entity, component ID) bool {
+	index := s.entities[entity.id]
+	return s.tables[index.table].Has(component)
 }
 
 func (s *storage) getRelation(entity Entity, comp ID) Entity {

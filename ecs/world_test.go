@@ -48,21 +48,21 @@ func TestWorldExchange(t *testing.T) {
 	w.exchange(e2, []ID{posID, velID}, nil, nil, nil)
 	w.exchange(e3, []ID{posID, velID}, nil, nil, nil)
 
-	assert.True(t, w.has(e1, posID))
-	assert.False(t, w.has(e1, velID))
+	assert.True(t, w.storage.has(e1, posID))
+	assert.False(t, w.storage.has(e1, velID))
 
-	assert.True(t, w.has(e2, posID))
-	assert.True(t, w.has(e2, velID))
+	assert.True(t, w.storage.has(e2, posID))
+	assert.True(t, w.storage.has(e2, velID))
 
-	pos := (*Position)(w.get(e1, posID))
+	pos := (*Position)(w.storage.get(e1, posID))
 	pos.X = 100
 
-	pos = (*Position)(w.get(e1, posID))
+	pos = (*Position)(w.storage.get(e1, posID))
 	assert.Equal(t, pos.X, 100.0)
 
 	w.exchange(e2, nil, []ID{posID}, nil, nil)
-	assert.False(t, w.has(e2, posID))
-	assert.True(t, w.has(e2, velID))
+	assert.False(t, w.storage.has(e2, posID))
+	assert.True(t, w.storage.has(e2, velID))
 }
 
 func TestWorldRemoveEntity(t *testing.T) {

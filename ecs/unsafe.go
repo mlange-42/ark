@@ -25,7 +25,7 @@ func (u Unsafe) NewEntityRel(ids []ID, relations ...RelationID) Entity {
 // Panics if the entity does not have the given component.
 // Panics when called for a removed (and potentially recycled) entity.
 func (u Unsafe) Get(entity Entity, comp ID) unsafe.Pointer {
-	return u.world.get(entity, comp)
+	return u.world.storage.get(entity, comp)
 }
 
 // GetUnchecked returns a pointer to the given component of an [Entity].
@@ -35,14 +35,14 @@ func (u Unsafe) Get(entity Entity, comp ID) unsafe.Pointer {
 //
 // Panics if the entity does not have the given component.
 func (u Unsafe) GetUnchecked(entity Entity, comp ID) unsafe.Pointer {
-	return u.world.getUnchecked(entity, comp)
+	return u.world.storage.getUnchecked(entity, comp)
 }
 
 // Has returns whether an [Entity] has the given component.
 //
 // Panics when called for a removed (and potentially recycled) entity.
 func (u Unsafe) Has(entity Entity, comp ID) bool {
-	return u.world.has(entity, comp)
+	return u.world.storage.has(entity, comp)
 }
 
 // HasUnchecked returns whether an [Entity] has the given component.
@@ -50,7 +50,7 @@ func (u Unsafe) Has(entity Entity, comp ID) bool {
 //
 // Panics when called for a removed (and potentially recycled) entity.
 func (u Unsafe) HasUnchecked(entity Entity, comp ID) bool {
-	return u.world.hasUnchecked(entity, comp)
+	return u.world.storage.hasUnchecked(entity, comp)
 }
 
 // TODO: Unsafe.NewEntity
