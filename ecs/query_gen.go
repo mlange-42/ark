@@ -20,7 +20,6 @@ type Query0 struct {
 	tables     []tableID
 	table      *table
 	components []*componentStorage
-	hasWithout bool
 }
 
 func newQuery0(world *World, filter Filter, relations []RelationID) Query0 {
@@ -140,7 +139,6 @@ type Query1[A any] struct {
 	table      *table
 	components []*componentStorage
 	columnA    *column
-	hasWithout bool
 }
 
 func newQuery1[A any](world *World, filter Filter, ids []ID, relations []RelationID) Query1[A] {
@@ -277,7 +275,6 @@ type Query2[A any, B any] struct {
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
-	hasWithout bool
 }
 
 func newQuery2[A any, B any](world *World, filter Filter, ids []ID, relations []RelationID) Query2[A, B] {
@@ -418,7 +415,6 @@ type Query3[A any, B any, C any] struct {
 	columnA    *column
 	columnB    *column
 	columnC    *column
-	hasWithout bool
 }
 
 func newQuery3[A any, B any, C any](world *World, filter Filter, ids []ID, relations []RelationID) Query3[A, B, C] {
@@ -563,7 +559,6 @@ type Query4[A any, B any, C any, D any] struct {
 	columnB    *column
 	columnC    *column
 	columnD    *column
-	hasWithout bool
 }
 
 func newQuery4[A any, B any, C any, D any](world *World, filter Filter, ids []ID, relations []RelationID) Query4[A, B, C, D] {
@@ -712,7 +707,6 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnC    *column
 	columnD    *column
 	columnE    *column
-	hasWithout bool
 }
 
 func newQuery5[A any, B any, C any, D any, E any](world *World, filter Filter, ids []ID, relations []RelationID) Query5[A, B, C, D, E] {
@@ -865,7 +859,6 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnD    *column
 	columnE    *column
 	columnF    *column
-	hasWithout bool
 }
 
 func newQuery6[A any, B any, C any, D any, E any, F any](world *World, filter Filter, ids []ID, relations []RelationID) Query6[A, B, C, D, E, F] {
@@ -1022,7 +1015,6 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnE    *column
 	columnF    *column
 	columnG    *column
-	hasWithout bool
 }
 
 func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, filter Filter, ids []ID, relations []RelationID) Query7[A, B, C, D, E, F, G] {
@@ -1183,7 +1175,6 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnF    *column
 	columnG    *column
 	columnH    *column
-	hasWithout bool
 }
 
 func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, filter Filter, ids []ID, relations []RelationID) Query8[A, B, C, D, E, F, G, H] {

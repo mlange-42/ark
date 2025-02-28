@@ -38,7 +38,6 @@ type Query{{.}}{{$generics}} struct {
 	{{- range $upper}}
 	column{{.}}    *column
 	{{- end}}
-	hasWithout bool
 }
 
 func newQuery{{.}}{{$generics}}(world *World, filter Filter{{if .}}, ids []ID{{end}}, relations []RelationID) Query{{.}}{{$genericsShort}} {
