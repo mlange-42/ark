@@ -5,3 +5,12 @@ package ecs
 type Unsafe struct {
 	world *World
 }
+
+// TODO: queries
+// TODO: Unsafe.Get
+// TODO: Unsafe.NewEntity
+// TODO: Unsafe.Add
+// TODO: Unsafe.Remove
+// TODO: Unsafe.Exchange
+// TODO: Unsafe.GetRelation
+// TODO: Unsafe.SetRelation

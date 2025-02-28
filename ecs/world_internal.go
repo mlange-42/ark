@@ -5,7 +5,7 @@ import (
 	"unsafe"
 )
 
-func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []relationID) Entity {
+func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []RelationID) Entity {
 	w.checkLocked()
 
 	mask := All(ids...)
@@ -24,7 +24,7 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []rela
 	return entity
 }
 
-func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, relations []relationID) {
+func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, relations []RelationID) {
 	w.checkLocked()
 
 	mask := All(ids...)
@@ -46,7 +46,7 @@ func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, rel
 	w.storage.registerTargets(relations)
 }
 
-func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableID, int) {
+func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableID, int) {
 	w.checkLocked()
 
 	mask := All(ids...)
@@ -75,7 +75,7 @@ func (w *World) has(entity Entity, component ID) bool {
 	return w.storage.tables[index.table].Has(component)
 }
 
-func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer, relations []relationID) {
+func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) {
 	w.checkLocked()
 
 	if !w.Alive(entity) {
@@ -124,7 +124,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 }
 
 // setRelations sets the target entities for an entity relations.
-func (w *World) setRelations(entity Entity, relations []relationID) {
+func (w *World) setRelations(entity Entity, relations []RelationID) {
 	w.checkLocked()
 
 	if !w.storage.entityPool.Alive(entity) {

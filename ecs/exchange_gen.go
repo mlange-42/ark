@@ -11,7 +11,7 @@ type Exchange1[A any] struct {
 	world     *World
 	ids       []ID
 	remove    []ID
-	relations []relationID
+	relations []RelationID
 }
 
 // NewExchange1 creates an [Exchange1].
@@ -64,7 +64,7 @@ type Exchange2[A any, B any] struct {
 	world     *World
 	ids       []ID
 	remove    []ID
-	relations []relationID
+	relations []RelationID
 }
 
 // NewExchange2 creates an [Exchange2].
@@ -120,7 +120,7 @@ type Exchange3[A any, B any, C any] struct {
 	world     *World
 	ids       []ID
 	remove    []ID
-	relations []relationID
+	relations []RelationID
 }
 
 // NewExchange3 creates an [Exchange3].
@@ -179,7 +179,7 @@ type Exchange4[A any, B any, C any, D any] struct {
 	world     *World
 	ids       []ID
 	remove    []ID
-	relations []relationID
+	relations []RelationID
 }
 
 // NewExchange4 creates an [Exchange4].
@@ -241,7 +241,7 @@ type Exchange5[A any, B any, C any, D any, E any] struct {
 	world     *World
 	ids       []ID
 	remove    []ID
-	relations []relationID
+	relations []RelationID
 }
 
 // NewExchange5 creates an [Exchange5].
@@ -306,7 +306,7 @@ type Exchange6[A any, B any, C any, D any, E any, F any] struct {
 	world     *World
 	ids       []ID
 	remove    []ID
-	relations []relationID
+	relations []RelationID
 }
 
 // NewExchange6 creates an [Exchange6].
@@ -374,7 +374,7 @@ type Exchange7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world     *World
 	ids       []ID
 	remove    []ID
-	relations []relationID
+	relations []RelationID
 }
 
 // NewExchange7 creates an [Exchange7].
@@ -445,7 +445,7 @@ type Exchange8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world     *World
 	ids       []ID
 	remove    []ID
-	relations []relationID
+	relations []RelationID
 }
 
 // NewExchange8 creates an [Exchange8].

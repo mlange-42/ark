@@ -18,7 +18,7 @@ type Filter{{.}}{{$generics}} struct {
 	ids       []ID
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }
 
 // NewFilter{{.}} creates a new [Filter{{.}}].

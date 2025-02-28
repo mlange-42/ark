@@ -13,9 +13,20 @@ var relationType = typeOf[Relation]()
 // Currently, each entity can only have a single relation component.
 type Relation struct{}
 
-type relationID struct {
+// RelationID specifies an entity relation target by component [ID].
+//
+// It is used in Ark's unsafe, ID-based API.
+type RelationID struct {
 	component ID
 	target    Entity
+}
+
+// RelID creates a new [RelationID].
+func RelID(id ID, target Entity) RelationID {
+	return RelationID{
+		component: id,
+		target:    target,
+	}
 }
 
 // RelationIndex specifies an entity relation target by component index.
@@ -28,7 +39,7 @@ type RelationIndex struct {
 	target Entity
 }
 
-// Rel creates a new RelationIndex.
+// Rel creates a new [RelationIndex].
 func Rel(index int, target Entity) RelationIndex {
 	return RelationIndex{
 		index:  uint8(index),
@@ -38,14 +49,14 @@ func Rel(index int, target Entity) RelationIndex {
 
 type relations []RelationIndex
 
-func (r relations) toRelations(reg *componentRegistry, ids []ID, out []relationID) []relationID {
+func (r relations) toRelations(reg *componentRegistry, ids []ID, out []RelationID) []RelationID {
 	out = out[:0]
 	for _, rel := range r {
 		id := ids[rel.index]
 		if !reg.IsRelation[id.id] {
 			panic(fmt.Sprintf("component at index %d is not a relation component", rel.index))
 		}
-		out = append(out, relationID{
+		out = append(out, RelationID{
 			component: id,
 			target:    rel.target,
 		})
@@ -55,10 +66,10 @@ func (r relations) toRelations(reg *componentRegistry, ids []ID, out []relationI
 
 type relationEntities []Entity
 
-func (r relationEntities) toRelation(id ID, out []relationID) []relationID {
+func (r relationEntities) toRelation(id ID, out []RelationID) []RelationID {
 	out = out[:0]
 	for _, rel := range r {
-		out = append(out, relationID{
+		out = append(out, RelationID{
 			component: id,
 			target:    rel,
 		})

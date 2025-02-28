@@ -29,7 +29,7 @@ func newStorage(capacity uint32) storage {
 	}
 
 	tables := make([]table, 0, 128)
-	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, make([]int16, MaskTotalBits), []bool{}, []Entity{}, []relationID{}))
+	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, make([]int16, MaskTotalBits), []bool{}, []Entity{}, []RelationID{}))
 	archetypes := make([]archetype, 0, 128)
 	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []tableID{0}, &reg))
 	return storage{
@@ -44,7 +44,7 @@ func newStorage(capacity uint32) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(oldTable *table, mask *Mask, relations []relationID) *table {
+func (s *storage) findOrCreateTable(oldTable *table, mask *Mask, relations []RelationID) *table {
 	// TODO: use archetype graph
 	var arch *archetype
 	for i := range s.archetypes {
@@ -106,7 +106,7 @@ func (s *storage) getRelationUnchecked(entity Entity, comp ID) Entity {
 	return s.tables[s.entities[entity.id].table].GetRelation(comp)
 }
 
-func (s *storage) registerTargets(relations []relationID) {
+func (s *storage) registerTargets(relations []RelationID) {
 	for _, rel := range relations {
 		s.isTarget[rel.target.id] = true
 	}
@@ -157,7 +157,7 @@ func (s *storage) createArchetype(mask *Mask) *archetype {
 	return archetype
 }
 
-func (s *storage) createTable(archetype *archetype, relations []relationID) *table {
+func (s *storage) createTable(archetype *archetype, relations []RelationID) *table {
 	targets := make([]Entity, len(archetype.components))
 	numRelations := uint8(0)
 	for _, rel := range relations {
@@ -212,7 +212,7 @@ func (s *storage) getExchangeMask(mask *Mask, add []ID, rem []ID) {
 
 // Removes empty archetypes that have a target relation to the given entity.
 func (s *storage) cleanupArchetypes(target Entity) {
-	newRelations := []relationID{}
+	newRelations := []RelationID{}
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
 		for _, t := range archetype.tables {
@@ -221,7 +221,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 			foundTarget := false
 			for _, rel := range table.relationIDs {
 				if rel.target.id == target.id {
-					newRelations = append(newRelations, relationID{component: rel.component, target: Entity{}})
+					newRelations = append(newRelations, RelationID{component: rel.component, target: Entity{}})
 					foundTarget = true
 				}
 			}
@@ -257,7 +257,7 @@ func (s *storage) moveEntities(src, dst *table) {
 	src.Reset()
 }
 
-func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relationID) []relationID {
+func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []RelationID) []RelationID {
 	targets := make([]Entity, len(oldTable.columns))
 	for i := range oldTable.columns {
 		targets[i] = oldTable.columns[i].target
@@ -270,19 +270,19 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 		targets[index] = rel.target
 	}
 
-	result := make([]relationID, 0, len(oldTable.relationIDs))
+	result := make([]RelationID, 0, len(oldTable.relationIDs))
 	for i, e := range targets {
 		if !oldTable.columns[i].isRelation {
 			continue
 		}
 		id := oldTable.ids[i]
-		result = append(result, relationID{component: id, target: e})
+		result = append(result, RelationID{component: id, target: e})
 	}
 
 	return result
 }
 
-func (s *storage) getExchangeTargets(oldTable *table, relations []relationID) ([]relationID, bool) {
+func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([]RelationID, bool) {
 	changed := false
 	targets := make([]Entity, len(oldTable.columns))
 	for i := range oldTable.columns {
@@ -306,13 +306,13 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID) ([
 		return nil, false
 	}
 
-	result := make([]relationID, 0, len(oldTable.relationIDs))
+	result := make([]RelationID, 0, len(oldTable.relationIDs))
 	for i, e := range targets {
 		if !oldTable.columns[i].isRelation {
 			continue
 		}
 		id := oldTable.ids[i]
-		result = append(result, relationID{component: id, target: e})
+		result = append(result, RelationID{component: id, target: e})
 	}
 
 	return result, true

@@ -30,7 +30,7 @@ type Query{{.}}{{$generics}} struct {
 	world      *World
 	mask       Mask
 	without    Mask
-	relations  []relationID
+	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
@@ -42,7 +42,7 @@ type Query{{.}}{{$generics}} struct {
 	hasWithout bool
 }
 
-func newQuery{{.}}{{$generics}}(world *World, mask Mask, without Mask{{if .}}, ids []ID{{end}}, relations []relationID) Query{{.}}{{$genericsShort}} {
+func newQuery{{.}}{{$generics}}(world *World, mask Mask, without Mask{{if .}}, ids []ID{{end}}, relations []RelationID) Query{{.}}{{$genericsShort}} {
 	components := make([]*componentStorage, {{.}})
 	{{if .}}for i := range {{.}} {
 		components[i] = &world.storage.components[ids[i].id]

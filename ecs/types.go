@@ -25,5 +25,5 @@ type ResID struct {
 type Batch struct {
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }

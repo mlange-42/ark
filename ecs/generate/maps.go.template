@@ -22,7 +22,7 @@ type Map{{.}}{{$generics}} struct {
 	{{- range $upper}}
 	storage{{.}} *componentStorage
 	{{- end}}
-	relations []relationID
+	relations []RelationID
 }
 
 // NewMap{{.}} creates a new [Map{{.}}].

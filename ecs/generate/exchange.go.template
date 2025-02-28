@@ -22,7 +22,7 @@ type Exchange{{.}}{{$generics}} struct {
 	world     *World
 	ids       []ID
 	remove    []ID
-	relations []relationID
+	relations []RelationID
 }
 
 // NewExchange{{.}} creates an [Exchange{{.}}].
