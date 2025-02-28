@@ -30,7 +30,7 @@ func (f Filter) Exclusive() Filter {
 	return f
 }
 
-// Query returns a new query matching this filter.
+// Query returns a new query matching this filter and the given entity relation targets.
 // This is a synonym for [Unsafe.Query].
 func (f Filter) Query(world *World, relations ...RelationID) Query {
 	return newQuery(world, f, relations)

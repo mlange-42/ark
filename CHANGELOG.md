@@ -9,7 +9,7 @@
 - Adds `Map.GetRelationUnchecked` (#75)
 - Adds build tag `tiny` for 64 bit masks (#77)
 - Adds `QueryX.GetRelation`, `MapX.GerRelation` and `MapX.GetRelationUnchecked` (#79)
-- Adds unsafe, ID-based API (#80, #81)
+- Adds unsafe, ID-based API (#80, #81, #82)
 
 ## [[v0.1.0]](https://github.com/mlange-42/ark/tree/v0.1.0)
 
