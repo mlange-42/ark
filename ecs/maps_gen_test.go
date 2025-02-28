@@ -31,6 +31,19 @@ func TestMap1(t *testing.T) {
 	for _, e := range entities {
 		mapper.Remove(e)
 	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
 }
 
 func TestMap1NewBatch(t *testing.T) {
@@ -98,6 +111,13 @@ func TestMap1Relations(t *testing.T) {
 
 	mapper.SetRelations(e, Rel(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, Rel(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
 }
 
 func TestMap2(t *testing.T) {
@@ -123,6 +143,19 @@ func TestMap2(t *testing.T) {
 	for _, e := range entities {
 		mapper.Remove(e)
 	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
 }
 
 func TestMap2NewBatch(t *testing.T) {
@@ -190,6 +223,13 @@ func TestMap2Relations(t *testing.T) {
 
 	mapper.SetRelations(e, Rel(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, Rel(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
 }
 
 func TestMap3(t *testing.T) {
@@ -215,6 +255,19 @@ func TestMap3(t *testing.T) {
 	for _, e := range entities {
 		mapper.Remove(e)
 	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
 }
 
 func TestMap3NewBatch(t *testing.T) {
@@ -282,6 +335,13 @@ func TestMap3Relations(t *testing.T) {
 
 	mapper.SetRelations(e, Rel(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, Rel(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
 }
 
 func TestMap4(t *testing.T) {
@@ -307,6 +367,19 @@ func TestMap4(t *testing.T) {
 	for _, e := range entities {
 		mapper.Remove(e)
 	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
 }
 
 func TestMap4NewBatch(t *testing.T) {
@@ -374,6 +447,13 @@ func TestMap4Relations(t *testing.T) {
 
 	mapper.SetRelations(e, Rel(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, Rel(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
 }
 
 func TestMap5(t *testing.T) {
@@ -399,6 +479,19 @@ func TestMap5(t *testing.T) {
 	for _, e := range entities {
 		mapper.Remove(e)
 	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
 }
 
 func TestMap5NewBatch(t *testing.T) {
@@ -466,6 +559,13 @@ func TestMap5Relations(t *testing.T) {
 
 	mapper.SetRelations(e, Rel(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, Rel(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
 }
 
 func TestMap6(t *testing.T) {
@@ -491,6 +591,19 @@ func TestMap6(t *testing.T) {
 	for _, e := range entities {
 		mapper.Remove(e)
 	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
 }
 
 func TestMap6NewBatch(t *testing.T) {
@@ -558,6 +671,13 @@ func TestMap6Relations(t *testing.T) {
 
 	mapper.SetRelations(e, Rel(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, Rel(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
 }
 
 func TestMap7(t *testing.T) {
@@ -583,6 +703,19 @@ func TestMap7(t *testing.T) {
 	for _, e := range entities {
 		mapper.Remove(e)
 	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
 }
 
 func TestMap7NewBatch(t *testing.T) {
@@ -650,6 +783,13 @@ func TestMap7Relations(t *testing.T) {
 
 	mapper.SetRelations(e, Rel(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, Rel(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
 }
 
 func TestMap8(t *testing.T) {
@@ -675,6 +815,19 @@ func TestMap8(t *testing.T) {
 	for _, e := range entities {
 		mapper.Remove(e)
 	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
 }
 
 func TestMap8NewBatch(t *testing.T) {
@@ -742,4 +895,11 @@ func TestMap8Relations(t *testing.T) {
 
 	mapper.SetRelations(e, Rel(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, Rel(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
 }

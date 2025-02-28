@@ -45,6 +45,19 @@ func TestMap{{.}}(t *testing.T) {
 	for _, e := range entities {
 		mapper.Remove(e)
 	}
+
+	assert.Panics(t, func(){
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func(){
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func(){
+		mapper.Add(Entity{}, {{$mapArgs}})
+	})
+	assert.Panics(t, func(){
+		mapper.Remove(Entity{})
+	})
 }
 
 func TestMap{{.}}NewBatch(t *testing.T) {
@@ -112,6 +125,13 @@ func TestMap{{.}}Relations(t *testing.T) {
 
 	mapper.SetRelations(e, Rel(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func(){
+		mapper.SetRelations(Entity{}, Rel(0, parent2))
+	})
+	assert.Panics(t, func(){
+		mapper.GetRelation(Entity{}, 0)
+	})
 }
 
 {{end -}}
