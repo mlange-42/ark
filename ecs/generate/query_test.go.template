@@ -140,6 +140,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
+		{{blanks .}} = query.Get()
 		assert.Equal(t, parent1, query.GetRelation(0))
 		cnt++
 	}
