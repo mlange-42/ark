@@ -130,7 +130,8 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	for range n {
 		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent1))
 		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent2))
-		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent3))
+		e := mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent3))
+		w.RemoveEntity(e)
 	}
 
 	// normal filter
@@ -143,7 +144,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n)
+	assert.Equal(t, cnt, 2*n)
 
 	// relation filter
 	filter = NewFilter{{.}}{{$genericsRel}}(&w)

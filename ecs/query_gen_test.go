@@ -117,7 +117,8 @@ func TestQuery1Relations(t *testing.T) {
 	for range n {
 		_ = mapper.NewEntity(&ChildOf{}, Rel(0, parent1))
 		_ = mapper.NewEntity(&ChildOf{}, Rel(0, parent2))
-		_ = mapper.NewEntity(&ChildOf{}, Rel(0, parent3))
+		e := mapper.NewEntity(&ChildOf{}, Rel(0, parent3))
+		w.RemoveEntity(e)
 	}
 
 	// normal filter
@@ -130,7 +131,7 @@ func TestQuery1Relations(t *testing.T) {
 		_ = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n)
+	assert.Equal(t, cnt, 2*n)
 
 	// relation filter
 	filter = NewFilter1[ChildOf](&w)
@@ -255,7 +256,8 @@ func TestQuery2Relations(t *testing.T) {
 	for range n {
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, Rel(0, parent1))
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, Rel(0, parent2))
-		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, Rel(0, parent3))
+		e := mapper.NewEntity(&ChildOf{}, &CompB{}, Rel(0, parent3))
+		w.RemoveEntity(e)
 	}
 
 	// normal filter
@@ -268,7 +270,7 @@ func TestQuery2Relations(t *testing.T) {
 		_, _ = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n)
+	assert.Equal(t, cnt, 2*n)
 
 	// relation filter
 	filter = NewFilter2[ChildOf, CompB](&w)
@@ -393,7 +395,8 @@ func TestQuery3Relations(t *testing.T) {
 	for range n {
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, Rel(0, parent1))
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, Rel(0, parent2))
-		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, Rel(0, parent3))
+		e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, Rel(0, parent3))
+		w.RemoveEntity(e)
 	}
 
 	// normal filter
@@ -406,7 +409,7 @@ func TestQuery3Relations(t *testing.T) {
 		_, _, _ = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n)
+	assert.Equal(t, cnt, 2*n)
 
 	// relation filter
 	filter = NewFilter3[ChildOf, CompB, CompC](&w)
@@ -531,7 +534,8 @@ func TestQuery4Relations(t *testing.T) {
 	for range n {
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, Rel(0, parent1))
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, Rel(0, parent2))
-		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, Rel(0, parent3))
+		e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, Rel(0, parent3))
+		w.RemoveEntity(e)
 	}
 
 	// normal filter
@@ -544,7 +548,7 @@ func TestQuery4Relations(t *testing.T) {
 		_, _, _, _ = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n)
+	assert.Equal(t, cnt, 2*n)
 
 	// relation filter
 	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w)
@@ -669,7 +673,8 @@ func TestQuery5Relations(t *testing.T) {
 	for range n {
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, Rel(0, parent1))
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, Rel(0, parent2))
-		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, Rel(0, parent3))
+		e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, Rel(0, parent3))
+		w.RemoveEntity(e)
 	}
 
 	// normal filter
@@ -682,7 +687,7 @@ func TestQuery5Relations(t *testing.T) {
 		_, _, _, _, _ = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n)
+	assert.Equal(t, cnt, 2*n)
 
 	// relation filter
 	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w)
@@ -807,7 +812,8 @@ func TestQuery6Relations(t *testing.T) {
 	for range n {
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, Rel(0, parent1))
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, Rel(0, parent2))
-		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, Rel(0, parent3))
+		e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, Rel(0, parent3))
+		w.RemoveEntity(e)
 	}
 
 	// normal filter
@@ -820,7 +826,7 @@ func TestQuery6Relations(t *testing.T) {
 		_, _, _, _, _, _ = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n)
+	assert.Equal(t, cnt, 2*n)
 
 	// relation filter
 	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
@@ -945,7 +951,8 @@ func TestQuery7Relations(t *testing.T) {
 	for range n {
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, Rel(0, parent1))
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, Rel(0, parent2))
-		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, Rel(0, parent3))
+		e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, Rel(0, parent3))
+		w.RemoveEntity(e)
 	}
 
 	// normal filter
@@ -958,7 +965,7 @@ func TestQuery7Relations(t *testing.T) {
 		_, _, _, _, _, _, _ = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n)
+	assert.Equal(t, cnt, 2*n)
 
 	// relation filter
 	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
@@ -1083,7 +1090,8 @@ func TestQuery8Relations(t *testing.T) {
 	for range n {
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, Rel(0, parent1))
 		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, Rel(0, parent2))
-		_ = mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, Rel(0, parent3))
+		e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, Rel(0, parent3))
+		w.RemoveEntity(e)
 	}
 
 	// normal filter
@@ -1096,7 +1104,7 @@ func TestQuery8Relations(t *testing.T) {
 		_, _, _, _, _, _, _, _ = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n)
+	assert.Equal(t, cnt, 2*n)
 
 	// relation filter
 	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
