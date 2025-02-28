@@ -106,6 +106,7 @@ func (s *storage) get(entity Entity, component ID) unsafe.Pointer {
 }
 
 func (s *storage) getUnchecked(entity Entity, component ID) unsafe.Pointer {
+	s.checkHasComponent(entity, component)
 	index := s.entities[entity.id]
 	return s.tables[index.table].Get(component, uintptr(index.row))
 }
@@ -118,6 +119,7 @@ func (s *storage) has(entity Entity, component ID) bool {
 }
 
 func (s *storage) hasUnchecked(entity Entity, component ID) bool {
+	s.checkHasComponent(entity, component)
 	index := s.entities[entity.id]
 	return s.tables[index.table].Has(component)
 }
@@ -126,11 +128,11 @@ func (s *storage) getRelation(entity Entity, comp ID) Entity {
 	if !s.entityPool.Alive(entity) {
 		panic("can't get relation for a dead entity")
 	}
-	index := s.entities[entity.id]
-	return s.tables[index.table].GetRelation(comp)
+	return s.getRelationUnchecked(entity, comp)
 }
 
 func (s *storage) getRelationUnchecked(entity Entity, comp ID) Entity {
+	s.checkHasComponent(entity, comp)
 	return s.tables[s.entities[entity.id].table].GetRelation(comp)
 }
 

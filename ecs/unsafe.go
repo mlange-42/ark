@@ -25,7 +25,6 @@ func (u Unsafe) NewEntityRel(ids []ID, relations ...RelationID) Entity {
 // Panics if the entity does not have the given component.
 // Panics when called for a removed (and potentially recycled) entity.
 func (u Unsafe) Get(entity Entity, comp ID) unsafe.Pointer {
-	u.world.checkHasComponent(entity, comp)
 	return u.world.storage.get(entity, comp)
 }
 
@@ -36,7 +35,6 @@ func (u Unsafe) Get(entity Entity, comp ID) unsafe.Pointer {
 //
 // Panics if the entity does not have the given component.
 func (u Unsafe) GetUnchecked(entity Entity, comp ID) unsafe.Pointer {
-	u.world.checkHasComponent(entity, comp)
 	return u.world.storage.getUnchecked(entity, comp)
 }
 
@@ -57,7 +55,6 @@ func (u Unsafe) HasUnchecked(entity Entity, comp ID) bool {
 
 // GetRelation returns the relation target for the entity and the mapped component.
 func (u Unsafe) GetRelation(entity Entity, comp ID) Entity {
-	u.world.checkHasComponent(entity, comp)
 	return u.world.storage.getRelation(entity, comp)
 }
 
@@ -65,7 +62,6 @@ func (u Unsafe) GetRelation(entity Entity, comp ID) Entity {
 // In contrast to [Unsafe.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (u Unsafe) GetRelationUnchecked(entity Entity, comp ID) Entity {
-	u.world.checkHasComponent(entity, comp)
 	return u.world.storage.getRelationUnchecked(entity, comp)
 }
 

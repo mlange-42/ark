@@ -38,7 +38,7 @@ func (m *Map[T]) Get(entity Entity) *T {
 // In contrast to [Map.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) GetUnchecked(entity Entity) *T {
-	m.world.checkHasComponent(entity, m.id)
+	m.world.storage.checkHasComponent(entity, m.id)
 	index := m.world.storage.entities[entity.id]
 	return (*T)(m.storage.columns[index.table].Get(uintptr(index.row)))
 }

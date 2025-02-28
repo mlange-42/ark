@@ -14,9 +14,9 @@ func (w *World) checkQueryGet(cursor *cursor) {
 	}
 }
 
-func (w *World) checkHasComponent(entity Entity, comp ID) {
-	index := w.storage.entities[entity.id]
-	if w.storage.components[comp.id].columns[index.table] == nil {
+func (s *storage) checkHasComponent(entity Entity, comp ID) {
+	index := s.entities[entity.id]
+	if s.components[comp.id].columns[index.table] == nil {
 		panic("entity does not have the requested component")
 	}
 }

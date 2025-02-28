@@ -99,7 +99,7 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$return}} {
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$return}} {
 	{{- range $n}}
-	m.world.checkHasComponent(entity, m.ids[{{.}}])
+	m.world.storage.checkHasComponent(entity, m.ids[{{.}}])
 	{{- end}}
 
 	index := m.world.storage.entities[entity.id]
