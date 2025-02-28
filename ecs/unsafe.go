@@ -94,7 +94,7 @@ func (u Unsafe) Remove(entity Entity, comp ...ID) {
 	u.world.exchange(entity, nil, comp, nil, nil)
 }
 
-// Exchange the given components to on entity.
+// Exchange the given components on entity.
 func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...RelationID) {
 	if !u.world.Alive(entity) {
 		panic("can't exchange components on a dead entity")
