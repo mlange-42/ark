@@ -52,7 +52,7 @@ func TestQuery(t *testing.T) {
 
 	// filter exclusive
 	filter = NewFilter(compA, compB, compC).Exclusive()
-	query = filter.Query(&w)
+	query = u.Query(filter)
 
 	cnt = 0
 	for query.Next() {
