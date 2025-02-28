@@ -2,7 +2,6 @@ package ecs
 
 // Filter is a filter for components.
 type Filter struct {
-	ids        []ID
 	mask       Mask
 	without    Mask
 	hasWithout bool
