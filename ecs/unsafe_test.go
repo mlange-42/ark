@@ -98,6 +98,16 @@ func TestUnsafeAddRemove(t *testing.T) {
 
 	u.Remove(e1, posID)
 	assert.False(t, u.Has(e1, posID))
+
+	assert.Panics(t, func() {
+		u.Add(Entity{}, posID)
+	})
+	assert.Panics(t, func() {
+		u.AddRel(Entity{}, []ID{posID, childID}, RelID(childID, e1))
+	})
+	assert.Panics(t, func() {
+		u.Remove(Entity{}, posID)
+	})
 }
 
 func TestUnsafeExchange(t *testing.T) {
@@ -117,4 +127,8 @@ func TestUnsafeExchange(t *testing.T) {
 	child := (*ChildOf)(u.Get(e, childID))
 	assert.NotNil(t, child)
 	assert.Equal(t, parent, u.GetRelation(e, childID))
+
+	assert.Panics(t, func() {
+		u.Exchange(Entity{}, []ID{childID}, []ID{posID})
+	})
 }
