@@ -47,6 +47,13 @@ func TestUnsafeGet(t *testing.T) {
 	pos2 := (*Position)(u.GetUnchecked(e, posID))
 
 	assert.Equal(t, pos, pos2)
+
+	assert.Panics(t, func() {
+		u.Get(Entity{}, posID)
+	})
+	assert.Panics(t, func() {
+		u.Has(Entity{}, posID)
+	})
 }
 
 func TestUnsafeRelations(t *testing.T) {
