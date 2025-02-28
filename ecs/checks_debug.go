@@ -14,8 +14,9 @@ func (w *World) checkQueryGet(cursor *cursor) {
 	}
 }
 
-func (w *World) checkMapHasComponent(comp *componentStorage, table tableID) {
-	if comp.columns[table] == nil {
+func (w *World) checkHasComponent(entity Entity, comp ID) {
+	index := w.storage.entities[entity.id]
+	if w.storage.components[comp.id].columns[index.table] == nil {
 		panic("entity does not have the requested component")
 	}
 }

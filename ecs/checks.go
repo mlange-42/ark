@@ -6,4 +6,4 @@ func (w *World) checkQueryNext(cursor *cursor) {}
 
 func (w *World) checkQueryGet(cursor *cursor) {}
 
-func (w *World) checkMapHasComponent(comp *componentStorage, table tableID) {}
+func (w *World) checkHasComponent(entity Entity, comp ID) {}

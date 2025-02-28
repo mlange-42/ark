@@ -106,5 +106,5 @@ func TestUnsafeExchange(t *testing.T) {
 
 	child := (*ChildOf)(u.Get(e, childID))
 	assert.NotNil(t, child)
-	assert.Equal(t, e, u.GetRelation(e, childID))
+	assert.Equal(t, parent, u.GetRelation(e, childID))
 }

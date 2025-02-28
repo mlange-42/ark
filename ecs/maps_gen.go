@@ -73,9 +73,10 @@ func (m *Map1[A]) Get(entity Entity) *A {
 // In contrast to [Map1.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
+	m.world.checkHasComponent(entity, m.ids[0])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	m.world.checkMapHasComponent(m.storageA, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row))
 }
@@ -208,10 +209,11 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 // In contrast to [Map2.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
+	m.world.checkHasComponent(entity, m.ids[0])
+	m.world.checkHasComponent(entity, m.ids[1])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	m.world.checkMapHasComponent(m.storageA, index.table)
-	m.world.checkMapHasComponent(m.storageB, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row))
@@ -354,11 +356,12 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 // In contrast to [Map3.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
+	m.world.checkHasComponent(entity, m.ids[0])
+	m.world.checkHasComponent(entity, m.ids[1])
+	m.world.checkHasComponent(entity, m.ids[2])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	m.world.checkMapHasComponent(m.storageA, index.table)
-	m.world.checkMapHasComponent(m.storageB, index.table)
-	m.world.checkMapHasComponent(m.storageC, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -511,12 +514,13 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 // In contrast to [Map4.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
+	m.world.checkHasComponent(entity, m.ids[0])
+	m.world.checkHasComponent(entity, m.ids[1])
+	m.world.checkHasComponent(entity, m.ids[2])
+	m.world.checkHasComponent(entity, m.ids[3])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	m.world.checkMapHasComponent(m.storageA, index.table)
-	m.world.checkMapHasComponent(m.storageB, index.table)
-	m.world.checkMapHasComponent(m.storageC, index.table)
-	m.world.checkMapHasComponent(m.storageD, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -679,13 +683,14 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 // In contrast to [Map5.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
+	m.world.checkHasComponent(entity, m.ids[0])
+	m.world.checkHasComponent(entity, m.ids[1])
+	m.world.checkHasComponent(entity, m.ids[2])
+	m.world.checkHasComponent(entity, m.ids[3])
+	m.world.checkHasComponent(entity, m.ids[4])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	m.world.checkMapHasComponent(m.storageA, index.table)
-	m.world.checkMapHasComponent(m.storageB, index.table)
-	m.world.checkMapHasComponent(m.storageC, index.table)
-	m.world.checkMapHasComponent(m.storageD, index.table)
-	m.world.checkMapHasComponent(m.storageE, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -858,14 +863,15 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 // In contrast to [Map6.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
+	m.world.checkHasComponent(entity, m.ids[0])
+	m.world.checkHasComponent(entity, m.ids[1])
+	m.world.checkHasComponent(entity, m.ids[2])
+	m.world.checkHasComponent(entity, m.ids[3])
+	m.world.checkHasComponent(entity, m.ids[4])
+	m.world.checkHasComponent(entity, m.ids[5])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	m.world.checkMapHasComponent(m.storageA, index.table)
-	m.world.checkMapHasComponent(m.storageB, index.table)
-	m.world.checkMapHasComponent(m.storageC, index.table)
-	m.world.checkMapHasComponent(m.storageD, index.table)
-	m.world.checkMapHasComponent(m.storageE, index.table)
-	m.world.checkMapHasComponent(m.storageF, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -1048,15 +1054,16 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 // In contrast to [Map7.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
+	m.world.checkHasComponent(entity, m.ids[0])
+	m.world.checkHasComponent(entity, m.ids[1])
+	m.world.checkHasComponent(entity, m.ids[2])
+	m.world.checkHasComponent(entity, m.ids[3])
+	m.world.checkHasComponent(entity, m.ids[4])
+	m.world.checkHasComponent(entity, m.ids[5])
+	m.world.checkHasComponent(entity, m.ids[6])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	m.world.checkMapHasComponent(m.storageA, index.table)
-	m.world.checkMapHasComponent(m.storageB, index.table)
-	m.world.checkMapHasComponent(m.storageC, index.table)
-	m.world.checkMapHasComponent(m.storageD, index.table)
-	m.world.checkMapHasComponent(m.storageE, index.table)
-	m.world.checkMapHasComponent(m.storageF, index.table)
-	m.world.checkMapHasComponent(m.storageG, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -1249,16 +1256,17 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 // In contrast to [Map8.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
+	m.world.checkHasComponent(entity, m.ids[0])
+	m.world.checkHasComponent(entity, m.ids[1])
+	m.world.checkHasComponent(entity, m.ids[2])
+	m.world.checkHasComponent(entity, m.ids[3])
+	m.world.checkHasComponent(entity, m.ids[4])
+	m.world.checkHasComponent(entity, m.ids[5])
+	m.world.checkHasComponent(entity, m.ids[6])
+	m.world.checkHasComponent(entity, m.ids[7])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	m.world.checkMapHasComponent(m.storageA, index.table)
-	m.world.checkMapHasComponent(m.storageB, index.table)
-	m.world.checkMapHasComponent(m.storageC, index.table)
-	m.world.checkMapHasComponent(m.storageD, index.table)
-	m.world.checkMapHasComponent(m.storageE, index.table)
-	m.world.checkMapHasComponent(m.storageF, index.table)
-	m.world.checkMapHasComponent(m.storageG, index.table)
-	m.world.checkMapHasComponent(m.storageH, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
