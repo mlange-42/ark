@@ -95,7 +95,7 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$return}} {
 }
 
 // GetUnchecked returns the mapped components for the given entity.
-// It does not check whether the entity is alive.
+// In contrast to [Map{{.}}.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$return}} {
 	index := m.world.storage.entities[entity.id]
@@ -149,7 +149,7 @@ func (m *Map{{.}}{{$genericsShort}}) GetRelation(entity Entity, index int) Entit
 }
 
 // GetRelationUnchecked returns the relation target of an entity for the component at the given index.
-// It does not check whether the entity is alive.
+// In contrast to [Map{{.}}.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map{{.}}{{$genericsShort}}) GetRelationUnchecked(entity Entity, index int) Entity {
 	return m.world.storage.getRelation(entity, m.ids[index])
