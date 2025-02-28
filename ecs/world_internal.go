@@ -59,22 +59,6 @@ func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableI
 	return newTable.id, startIdx
 }
 
-func (w *World) get(entity Entity, component ID) unsafe.Pointer {
-	if !w.storage.entityPool.Alive(entity) {
-		panic("can't get component of a dead entity")
-	}
-	index := w.storage.entities[entity.id]
-	return w.storage.tables[index.table].Get(component, uintptr(index.row))
-}
-
-func (w *World) has(entity Entity, component ID) bool {
-	if !w.storage.entityPool.Alive(entity) {
-		panic("can't get component of a dead entity")
-	}
-	index := w.storage.entities[entity.id]
-	return w.storage.tables[index.table].Has(component)
-}
-
 func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) {
 	w.checkLocked()
 

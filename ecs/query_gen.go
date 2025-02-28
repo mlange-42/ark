@@ -46,7 +46,7 @@ func newQuery0(world *World, mask Mask, without Mask, relations []RelationID) Qu
 
 // Next advances the query's cursor to the next entity.
 func (q *Query0) Next() bool {
-	checkQueryNext(&q.cursor)
+	q.world.checkQueryNext(&q.cursor)
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -56,7 +56,7 @@ func (q *Query0) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query0) Entity() Entity {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return q.table.GetEntity(q.cursor.index)
 }
 
@@ -173,7 +173,7 @@ func newQuery1[A any](world *World, mask Mask, without Mask, ids []ID, relations
 
 // Next advances the query's cursor to the next entity.
 func (q *Query1[A]) Next() bool {
-	checkQueryNext(&q.cursor)
+	q.world.checkQueryNext(&q.cursor)
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -183,13 +183,13 @@ func (q *Query1[A]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query1[A]) Entity() Entity {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return q.table.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
 func (q *Query1[A]) Get() *A {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index))
 }
 
@@ -314,7 +314,7 @@ func newQuery2[A any, B any](world *World, mask Mask, without Mask, ids []ID, re
 
 // Next advances the query's cursor to the next entity.
 func (q *Query2[A, B]) Next() bool {
-	checkQueryNext(&q.cursor)
+	q.world.checkQueryNext(&q.cursor)
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -324,13 +324,13 @@ func (q *Query2[A, B]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query2[A, B]) Entity() Entity {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return q.table.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
 func (q *Query2[A, B]) Get() (*A, *B) {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index))
 }
@@ -459,7 +459,7 @@ func newQuery3[A any, B any, C any](world *World, mask Mask, without Mask, ids [
 
 // Next advances the query's cursor to the next entity.
 func (q *Query3[A, B, C]) Next() bool {
-	checkQueryNext(&q.cursor)
+	q.world.checkQueryNext(&q.cursor)
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -469,13 +469,13 @@ func (q *Query3[A, B, C]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query3[A, B, C]) Entity() Entity {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return q.table.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
 func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index))
@@ -608,7 +608,7 @@ func newQuery4[A any, B any, C any, D any](world *World, mask Mask, without Mask
 
 // Next advances the query's cursor to the next entity.
 func (q *Query4[A, B, C, D]) Next() bool {
-	checkQueryNext(&q.cursor)
+	q.world.checkQueryNext(&q.cursor)
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -618,13 +618,13 @@ func (q *Query4[A, B, C, D]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query4[A, B, C, D]) Entity() Entity {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return q.table.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
 func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index)),
@@ -761,7 +761,7 @@ func newQuery5[A any, B any, C any, D any, E any](world *World, mask Mask, witho
 
 // Next advances the query's cursor to the next entity.
 func (q *Query5[A, B, C, D, E]) Next() bool {
-	checkQueryNext(&q.cursor)
+	q.world.checkQueryNext(&q.cursor)
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -771,13 +771,13 @@ func (q *Query5[A, B, C, D, E]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query5[A, B, C, D, E]) Entity() Entity {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return q.table.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
 func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index)),
@@ -918,7 +918,7 @@ func newQuery6[A any, B any, C any, D any, E any, F any](world *World, mask Mask
 
 // Next advances the query's cursor to the next entity.
 func (q *Query6[A, B, C, D, E, F]) Next() bool {
-	checkQueryNext(&q.cursor)
+	q.world.checkQueryNext(&q.cursor)
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -928,13 +928,13 @@ func (q *Query6[A, B, C, D, E, F]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return q.table.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
 func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index)),
@@ -1079,7 +1079,7 @@ func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, ma
 
 // Next advances the query's cursor to the next entity.
 func (q *Query7[A, B, C, D, E, F, G]) Next() bool {
-	checkQueryNext(&q.cursor)
+	q.world.checkQueryNext(&q.cursor)
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -1089,13 +1089,13 @@ func (q *Query7[A, B, C, D, E, F, G]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return q.table.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
 func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index)),
@@ -1244,7 +1244,7 @@ func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *Wo
 
 // Next advances the query's cursor to the next entity.
 func (q *Query8[A, B, C, D, E, F, G, H]) Next() bool {
-	checkQueryNext(&q.cursor)
+	q.world.checkQueryNext(&q.cursor)
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -1254,13 +1254,13 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return q.table.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
 func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) {
-	checkQueryGet(&q.cursor)
+	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index)),

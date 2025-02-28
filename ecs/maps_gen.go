@@ -70,12 +70,13 @@ func (m *Map1[A]) Get(entity Entity) *A {
 }
 
 // GetUnchecked returns the mapped components for the given entity.
-// It does not check whether the entity is alive.
+// In contrast to [Map1.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row))
 }
@@ -117,7 +118,7 @@ func (m *Map1[A]) GetRelation(entity Entity, index int) Entity {
 }
 
 // GetRelationUnchecked returns the relation target of an entity for the component at the given index.
-// It does not check whether the entity is alive.
+// In contrast to [Map1.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map1[A]) GetRelationUnchecked(entity Entity, index int) Entity {
 	return m.world.storage.getRelation(entity, m.ids[index])
@@ -205,13 +206,14 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 }
 
 // GetUnchecked returns the mapped components for the given entity.
-// It does not check whether the entity is alive.
+// In contrast to [Map2.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row))
@@ -256,7 +258,7 @@ func (m *Map2[A, B]) GetRelation(entity Entity, index int) Entity {
 }
 
 // GetRelationUnchecked returns the relation target of an entity for the component at the given index.
-// It does not check whether the entity is alive.
+// In contrast to [Map2.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map2[A, B]) GetRelationUnchecked(entity Entity, index int) Entity {
 	return m.world.storage.getRelation(entity, m.ids[index])
@@ -351,14 +353,15 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 }
 
 // GetUnchecked returns the mapped components for the given entity.
-// It does not check whether the entity is alive.
+// In contrast to [Map3.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -406,7 +409,7 @@ func (m *Map3[A, B, C]) GetRelation(entity Entity, index int) Entity {
 }
 
 // GetRelationUnchecked returns the relation target of an entity for the component at the given index.
-// It does not check whether the entity is alive.
+// In contrast to [Map3.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map3[A, B, C]) GetRelationUnchecked(entity Entity, index int) Entity {
 	return m.world.storage.getRelation(entity, m.ids[index])
@@ -508,15 +511,16 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 }
 
 // GetUnchecked returns the mapped components for the given entity.
-// It does not check whether the entity is alive.
+// In contrast to [Map4.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
-	checkMapHasComponent(m.storageD, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -567,7 +571,7 @@ func (m *Map4[A, B, C, D]) GetRelation(entity Entity, index int) Entity {
 }
 
 // GetRelationUnchecked returns the relation target of an entity for the component at the given index.
-// It does not check whether the entity is alive.
+// In contrast to [Map4.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map4[A, B, C, D]) GetRelationUnchecked(entity Entity, index int) Entity {
 	return m.world.storage.getRelation(entity, m.ids[index])
@@ -676,16 +680,17 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 }
 
 // GetUnchecked returns the mapped components for the given entity.
-// It does not check whether the entity is alive.
+// In contrast to [Map5.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
-	checkMapHasComponent(m.storageD, index.table)
-	checkMapHasComponent(m.storageE, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -739,7 +744,7 @@ func (m *Map5[A, B, C, D, E]) GetRelation(entity Entity, index int) Entity {
 }
 
 // GetRelationUnchecked returns the relation target of an entity for the component at the given index.
-// It does not check whether the entity is alive.
+// In contrast to [Map5.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map5[A, B, C, D, E]) GetRelationUnchecked(entity Entity, index int) Entity {
 	return m.world.storage.getRelation(entity, m.ids[index])
@@ -855,17 +860,18 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 }
 
 // GetUnchecked returns the mapped components for the given entity.
-// It does not check whether the entity is alive.
+// In contrast to [Map6.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
-	checkMapHasComponent(m.storageD, index.table)
-	checkMapHasComponent(m.storageE, index.table)
-	checkMapHasComponent(m.storageF, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -922,7 +928,7 @@ func (m *Map6[A, B, C, D, E, F]) GetRelation(entity Entity, index int) Entity {
 }
 
 // GetRelationUnchecked returns the relation target of an entity for the component at the given index.
-// It does not check whether the entity is alive.
+// In contrast to [Map6.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map6[A, B, C, D, E, F]) GetRelationUnchecked(entity Entity, index int) Entity {
 	return m.world.storage.getRelation(entity, m.ids[index])
@@ -1045,18 +1051,19 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 }
 
 // GetUnchecked returns the mapped components for the given entity.
-// It does not check whether the entity is alive.
+// In contrast to [Map7.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
-	checkMapHasComponent(m.storageD, index.table)
-	checkMapHasComponent(m.storageE, index.table)
-	checkMapHasComponent(m.storageF, index.table)
-	checkMapHasComponent(m.storageG, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -1116,7 +1123,7 @@ func (m *Map7[A, B, C, D, E, F, G]) GetRelation(entity Entity, index int) Entity
 }
 
 // GetRelationUnchecked returns the relation target of an entity for the component at the given index.
-// It does not check whether the entity is alive.
+// In contrast to [Map7.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map7[A, B, C, D, E, F, G]) GetRelationUnchecked(entity Entity, index int) Entity {
 	return m.world.storage.getRelation(entity, m.ids[index])
@@ -1246,19 +1253,20 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 }
 
 // GetUnchecked returns the mapped components for the given entity.
-// It does not check whether the entity is alive.
+// In contrast to [Map8.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+	m.world.storage.checkHasComponent(entity, m.ids[7])
+
 	index := m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	checkMapHasComponent(m.storageA, index.table)
-	checkMapHasComponent(m.storageB, index.table)
-	checkMapHasComponent(m.storageC, index.table)
-	checkMapHasComponent(m.storageD, index.table)
-	checkMapHasComponent(m.storageE, index.table)
-	checkMapHasComponent(m.storageF, index.table)
-	checkMapHasComponent(m.storageG, index.table)
-	checkMapHasComponent(m.storageH, index.table)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
 		(*B)(m.storageB.columns[index.table].Get(row)),
@@ -1321,7 +1329,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) GetRelation(entity Entity, index int) Ent
 }
 
 // GetRelationUnchecked returns the relation target of an entity for the component at the given index.
-// It does not check whether the entity is alive.
+// In contrast to [Map8.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map8[A, B, C, D, E, F, G, H]) GetRelationUnchecked(entity Entity, index int) Entity {
 	return m.world.storage.getRelation(entity, m.ids[index])

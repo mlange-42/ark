@@ -35,11 +35,11 @@ func (m *Map[T]) Get(entity Entity) *T {
 }
 
 // GetUnchecked returns the mapped component for the given entity.
-// It does not check whether the entity is alive.
+// In contrast to [Map.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) GetUnchecked(entity Entity) *T {
+	m.world.storage.checkHasComponent(entity, m.id)
 	index := m.world.storage.entities[entity.id]
-	checkMapHasComponent(m.storage, index.table)
 	return (*T)(m.storage.columns[index.table].Get(uintptr(index.row)))
 }
 
@@ -52,7 +52,7 @@ func (m *Map[T]) Has(entity Entity) bool {
 }
 
 // HasUnchecked return whether the given entity has the mapped component.
-// It does not check whether the entity is alive.
+// In contrast to [Map.Has], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) HasUnchecked(entity Entity) bool {
 	index := m.world.storage.entities[entity.id]
@@ -76,20 +76,20 @@ func (m *Map[T]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, []ID{m.id}, nil, nil)
 }
 
-// SetRelation sets the relation target for the entity and the mapped component.
-func (m *Map[T]) SetRelation(entity Entity, target Entity) {
-	m.relations = target.toRelation(m.id, m.relations)
-	m.world.setRelations(entity, m.relations)
-}
-
 // GetRelation returns the relation target for the entity and the mapped component.
 func (m *Map[T]) GetRelation(entity Entity) Entity {
 	return m.world.storage.getRelation(entity, m.id)
 }
 
 // GetRelationUnchecked returns the relation target for the entity and the mapped component.
-// It does not check whether the entity is alive.
+// In contrast to [Map.GetRelation], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) GetRelationUnchecked(entity Entity) Entity {
 	return m.world.storage.getRelationUnchecked(entity, m.id)
+}
+
+// SetRelation sets the relation target for the entity and the mapped component.
+func (m *Map[T]) SetRelation(entity Entity, target Entity) {
+	m.relations = target.toRelation(m.id, m.relations)
+	m.world.setRelations(entity, m.relations)
 }

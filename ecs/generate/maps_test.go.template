@@ -44,6 +44,7 @@ func TestMap{{.}}(t *testing.T) {
 
 	for _, e := range entities {
 		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
 	}
 
 	assert.Panics(t, func(){
