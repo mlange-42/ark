@@ -2,6 +2,7 @@ package ecs
 
 // Filter is a filter for components.
 type Filter struct {
+	ids        []ID
 	mask       Mask
 	without    Mask
 	hasWithout bool
@@ -28,6 +29,12 @@ func (f Filter) Exclusive() Filter {
 	f.without = f.mask.Not()
 	f.hasWithout = true
 	return f
+}
+
+// Query returns a new query matching this filter.
+// This is a synonym for [Unsafe.Query].
+func (f Filter) Query(world *World, relations ...RelationID) Query {
+	return newQuery(world, f, relations)
 }
 
 func (f *Filter) matches(mask *Mask) bool {
