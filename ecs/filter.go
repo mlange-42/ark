@@ -18,6 +18,7 @@ func NewFilter(ids ...ID) Filter {
 // Resets previous excludes.
 func (f Filter) Without(ids ...ID) Filter {
 	f.without = All(ids...)
+	f.hasWithout = true
 	return f
 }
 
