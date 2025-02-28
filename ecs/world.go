@@ -46,3 +46,10 @@ func (w *World) IsLocked() bool {
 func (w *World) Resources() *Resources {
 	return &w.resources
 }
+
+// Unsafe provides access to Ark's unsafe, ID-based API.
+func (w *World) Unsafe() Unsafe {
+	return Unsafe{
+		world: w,
+	}
+}
