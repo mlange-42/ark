@@ -53,7 +53,7 @@ func (f *Filter0) Exclusive() *Filter0 {
 // This must be used each time before iterating a query.
 func (f *Filter0) Query(rel ...RelationIndex) Query0 {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery0(f.world, f.filter.mask, f.filter.without, f.relations)
+	return newQuery0(f.world, f.filter, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -118,7 +118,7 @@ func (f *Filter1[A]) Exclusive() *Filter1[A] {
 // This must be used each time before iterating a query.
 func (f *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery1[A](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
+	return newQuery1[A](f.world, f.filter, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -184,7 +184,7 @@ func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 // This must be used each time before iterating a query.
 func (f *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery2[A, B](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
+	return newQuery2[A, B](f.world, f.filter, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -251,7 +251,7 @@ func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
 // This must be used each time before iterating a query.
 func (f *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery3[A, B, C](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
+	return newQuery3[A, B, C](f.world, f.filter, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -319,7 +319,7 @@ func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 // This must be used each time before iterating a query.
 func (f *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery4[A, B, C, D](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
+	return newQuery4[A, B, C, D](f.world, f.filter, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -388,7 +388,7 @@ func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
 // This must be used each time before iterating a query.
 func (f *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, E] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery5[A, B, C, D, E](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
+	return newQuery5[A, B, C, D, E](f.world, f.filter, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -458,7 +458,7 @@ func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 // This must be used each time before iterating a query.
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, D, E, F] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery6[A, B, C, D, E, F](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
+	return newQuery6[A, B, C, D, E, F](f.world, f.filter, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -529,7 +529,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G]
 // This must be used each time before iterating a query.
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, C, D, E, F, G] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery7[A, B, C, D, E, F, G](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
+	return newQuery7[A, B, C, D, E, F, G](f.world, f.filter, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -601,7 +601,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 // This must be used each time before iterating a query.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, B, C, D, E, F, G, H] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery8[A, B, C, D, E, F, G, H](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
+	return newQuery8[A, B, C, D, E, F, G, H](f.world, f.filter, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.

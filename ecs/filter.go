@@ -29,6 +29,6 @@ func (f Filter) Exclusive() Filter {
 	return f
 }
 
-func (f *Filter) matches(mask Mask) bool {
+func (f *Filter) matches(mask *Mask) bool {
 	return mask.Contains(&f.mask) && (!f.hasWithout || !mask.ContainsAny(&f.without))
 }
