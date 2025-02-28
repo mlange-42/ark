@@ -32,6 +32,7 @@ func main() {
 		"join":         join,
 		"arguments":    arguments,
 		"blanks":       blanks,
+		"replace":      strings.ReplaceAll,
 	}
 
 	for _, file := range files {

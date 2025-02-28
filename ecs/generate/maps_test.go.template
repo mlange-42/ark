@@ -19,6 +19,9 @@ import (
 {{- $mapArgs := join "&Comp" "{}, &Comp" "{}" $upper -}}
 {{- $comps := join "" ", " "" $lower -}}
 
+{{- $genericsRel := replace $generics "CompA" "ChildOf" -}}
+{{- $mapArgsRel := replace $mapArgs "CompA" "ChildOf" -}}
+
 func TestMap{{.}}(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
@@ -93,6 +96,22 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+}
+
+func TestMap{{.}}Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap{{.}}{{$genericsRel}}(&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, Rel(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 }
 
 {{end -}}

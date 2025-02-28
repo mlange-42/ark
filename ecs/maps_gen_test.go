@@ -84,6 +84,22 @@ func TestMap1NewBatchFn(t *testing.T) {
 	assert.Equal(t, 3*n, cnt)
 }
 
+func TestMap1Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap1[ChildOf](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, Rel(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, Rel(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+}
+
 func TestMap2(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
@@ -158,6 +174,22 @@ func TestMap2NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+}
+
+func TestMap2Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap2[ChildOf, CompB](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, Rel(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, Rel(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 }
 
 func TestMap3(t *testing.T) {
@@ -236,6 +268,22 @@ func TestMap3NewBatchFn(t *testing.T) {
 	assert.Equal(t, 3*n, cnt)
 }
 
+func TestMap3Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap3[ChildOf, CompB, CompC](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, Rel(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, Rel(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+}
+
 func TestMap4(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
@@ -310,6 +358,22 @@ func TestMap4NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+}
+
+func TestMap4Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap4[ChildOf, CompB, CompC, CompD](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, Rel(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, Rel(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 }
 
 func TestMap5(t *testing.T) {
@@ -388,6 +452,22 @@ func TestMap5NewBatchFn(t *testing.T) {
 	assert.Equal(t, 3*n, cnt)
 }
 
+func TestMap5Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap5[ChildOf, CompB, CompC, CompD, CompE](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, Rel(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, Rel(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+}
+
 func TestMap6(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
@@ -462,6 +542,22 @@ func TestMap6NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+}
+
+func TestMap6Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, Rel(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, Rel(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 }
 
 func TestMap7(t *testing.T) {
@@ -540,6 +636,22 @@ func TestMap7NewBatchFn(t *testing.T) {
 	assert.Equal(t, 3*n, cnt)
 }
 
+func TestMap7Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, Rel(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, Rel(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+}
+
 func TestMap8(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
@@ -614,4 +726,20 @@ func TestMap8NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+}
+
+func TestMap8Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, Rel(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, Rel(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 }
