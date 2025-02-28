@@ -147,13 +147,13 @@ func TestQuery{{.}}Relations(t *testing.T) {
 
 	// relation filter
 	filter = NewFilter{{.}}{{$genericsRel}}(&w)
-	query = filter.Query(Rel(0, parent1))
+	query = filter.Query(Rel(0, parent2))
 
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
-		assert.Equal(t, parent1, query.GetRelation(0))
+		assert.Equal(t, parent2, query.GetRelation(0))
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
