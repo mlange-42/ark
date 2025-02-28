@@ -13,26 +13,22 @@ type cursor struct {
 // Use a [NewFilter0] to create one.
 type Query0 struct {
 	world      *World
-	mask       Mask
-	without    Mask
+	filter     Filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
 	table      *table
 	components []*componentStorage
-	hasWithout bool
 }
 
-func newQuery0(world *World, mask Mask, without Mask, relations []RelationID) Query0 {
+func newQuery0(world *World, filter Filter, relations []RelationID) Query0 {
 	components := make([]*componentStorage, 0)
 
 	return Query0{
 		world:      world,
-		mask:       mask,
-		without:    without,
+		filter:     filter,
 		relations:  relations,
-		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -84,8 +80,7 @@ func (q *Query0) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		if !archetype.mask.Contains(&q.mask) ||
-			archetype.mask.ContainsAny(&q.without) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -136,8 +131,7 @@ func (q *Query0) setTable(index int, table *table) {
 // Use a [NewFilter1] to create one.
 type Query1[A any] struct {
 	world      *World
-	mask       Mask
-	without    Mask
+	filter     Filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -145,10 +139,9 @@ type Query1[A any] struct {
 	table      *table
 	components []*componentStorage
 	columnA    *column
-	hasWithout bool
 }
 
-func newQuery1[A any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query1[A] {
+func newQuery1[A any](world *World, filter Filter, ids []ID, relations []RelationID) Query1[A] {
 	components := make([]*componentStorage, 1)
 	for i := range 1 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -156,10 +149,8 @@ func newQuery1[A any](world *World, mask Mask, without Mask, ids []ID, relations
 
 	return Query1[A]{
 		world:      world,
-		mask:       mask,
-		without:    without,
+		filter:     filter,
 		relations:  relations,
-		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -223,8 +214,7 @@ func (q *Query1[A]) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		if !archetype.mask.Contains(&q.mask) ||
-			archetype.mask.ContainsAny(&q.without) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -276,8 +266,7 @@ func (q *Query1[A]) setTable(index int, table *table) {
 // Use a [NewFilter2] to create one.
 type Query2[A any, B any] struct {
 	world      *World
-	mask       Mask
-	without    Mask
+	filter     Filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -286,10 +275,9 @@ type Query2[A any, B any] struct {
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
-	hasWithout bool
 }
 
-func newQuery2[A any, B any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query2[A, B] {
+func newQuery2[A any, B any](world *World, filter Filter, ids []ID, relations []RelationID) Query2[A, B] {
 	components := make([]*componentStorage, 2)
 	for i := range 2 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -297,10 +285,8 @@ func newQuery2[A any, B any](world *World, mask Mask, without Mask, ids []ID, re
 
 	return Query2[A, B]{
 		world:      world,
-		mask:       mask,
-		without:    without,
+		filter:     filter,
 		relations:  relations,
-		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -366,8 +352,7 @@ func (q *Query2[A, B]) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		if !archetype.mask.Contains(&q.mask) ||
-			archetype.mask.ContainsAny(&q.without) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -420,8 +405,7 @@ func (q *Query2[A, B]) setTable(index int, table *table) {
 // Use a [NewFilter3] to create one.
 type Query3[A any, B any, C any] struct {
 	world      *World
-	mask       Mask
-	without    Mask
+	filter     Filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -431,10 +415,9 @@ type Query3[A any, B any, C any] struct {
 	columnA    *column
 	columnB    *column
 	columnC    *column
-	hasWithout bool
 }
 
-func newQuery3[A any, B any, C any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query3[A, B, C] {
+func newQuery3[A any, B any, C any](world *World, filter Filter, ids []ID, relations []RelationID) Query3[A, B, C] {
 	components := make([]*componentStorage, 3)
 	for i := range 3 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -442,10 +425,8 @@ func newQuery3[A any, B any, C any](world *World, mask Mask, without Mask, ids [
 
 	return Query3[A, B, C]{
 		world:      world,
-		mask:       mask,
-		without:    without,
+		filter:     filter,
 		relations:  relations,
-		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -513,8 +494,7 @@ func (q *Query3[A, B, C]) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		if !archetype.mask.Contains(&q.mask) ||
-			archetype.mask.ContainsAny(&q.without) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -568,8 +548,7 @@ func (q *Query3[A, B, C]) setTable(index int, table *table) {
 // Use a [NewFilter4] to create one.
 type Query4[A any, B any, C any, D any] struct {
 	world      *World
-	mask       Mask
-	without    Mask
+	filter     Filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -580,10 +559,9 @@ type Query4[A any, B any, C any, D any] struct {
 	columnB    *column
 	columnC    *column
 	columnD    *column
-	hasWithout bool
 }
 
-func newQuery4[A any, B any, C any, D any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query4[A, B, C, D] {
+func newQuery4[A any, B any, C any, D any](world *World, filter Filter, ids []ID, relations []RelationID) Query4[A, B, C, D] {
 	components := make([]*componentStorage, 4)
 	for i := range 4 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -591,10 +569,8 @@ func newQuery4[A any, B any, C any, D any](world *World, mask Mask, without Mask
 
 	return Query4[A, B, C, D]{
 		world:      world,
-		mask:       mask,
-		without:    without,
+		filter:     filter,
 		relations:  relations,
-		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -664,8 +640,7 @@ func (q *Query4[A, B, C, D]) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		if !archetype.mask.Contains(&q.mask) ||
-			archetype.mask.ContainsAny(&q.without) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -720,8 +695,7 @@ func (q *Query4[A, B, C, D]) setTable(index int, table *table) {
 // Use a [NewFilter5] to create one.
 type Query5[A any, B any, C any, D any, E any] struct {
 	world      *World
-	mask       Mask
-	without    Mask
+	filter     Filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -733,10 +707,9 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnC    *column
 	columnD    *column
 	columnE    *column
-	hasWithout bool
 }
 
-func newQuery5[A any, B any, C any, D any, E any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query5[A, B, C, D, E] {
+func newQuery5[A any, B any, C any, D any, E any](world *World, filter Filter, ids []ID, relations []RelationID) Query5[A, B, C, D, E] {
 	components := make([]*componentStorage, 5)
 	for i := range 5 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -744,10 +717,8 @@ func newQuery5[A any, B any, C any, D any, E any](world *World, mask Mask, witho
 
 	return Query5[A, B, C, D, E]{
 		world:      world,
-		mask:       mask,
-		without:    without,
+		filter:     filter,
 		relations:  relations,
-		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -819,8 +790,7 @@ func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		if !archetype.mask.Contains(&q.mask) ||
-			archetype.mask.ContainsAny(&q.without) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -876,8 +846,7 @@ func (q *Query5[A, B, C, D, E]) setTable(index int, table *table) {
 // Use a [NewFilter6] to create one.
 type Query6[A any, B any, C any, D any, E any, F any] struct {
 	world      *World
-	mask       Mask
-	without    Mask
+	filter     Filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -890,10 +859,9 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnD    *column
 	columnE    *column
 	columnF    *column
-	hasWithout bool
 }
 
-func newQuery6[A any, B any, C any, D any, E any, F any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query6[A, B, C, D, E, F] {
+func newQuery6[A any, B any, C any, D any, E any, F any](world *World, filter Filter, ids []ID, relations []RelationID) Query6[A, B, C, D, E, F] {
 	components := make([]*componentStorage, 6)
 	for i := range 6 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -901,10 +869,8 @@ func newQuery6[A any, B any, C any, D any, E any, F any](world *World, mask Mask
 
 	return Query6[A, B, C, D, E, F]{
 		world:      world,
-		mask:       mask,
-		without:    without,
+		filter:     filter,
 		relations:  relations,
-		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -978,8 +944,7 @@ func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		if !archetype.mask.Contains(&q.mask) ||
-			archetype.mask.ContainsAny(&q.without) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -1036,8 +1001,7 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int, table *table) {
 // Use a [NewFilter7] to create one.
 type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world      *World
-	mask       Mask
-	without    Mask
+	filter     Filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -1051,10 +1015,9 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnE    *column
 	columnF    *column
 	columnG    *column
-	hasWithout bool
 }
 
-func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query7[A, B, C, D, E, F, G] {
+func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, filter Filter, ids []ID, relations []RelationID) Query7[A, B, C, D, E, F, G] {
 	components := make([]*componentStorage, 7)
 	for i := range 7 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -1062,10 +1025,8 @@ func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, ma
 
 	return Query7[A, B, C, D, E, F, G]{
 		world:      world,
-		mask:       mask,
-		without:    without,
+		filter:     filter,
 		relations:  relations,
-		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -1141,8 +1102,7 @@ func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		if !archetype.mask.Contains(&q.mask) ||
-			archetype.mask.ContainsAny(&q.without) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -1200,8 +1160,7 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int, table *table) {
 // Use a [NewFilter8] to create one.
 type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world      *World
-	mask       Mask
-	without    Mask
+	filter     Filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -1216,10 +1175,9 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnF    *column
 	columnG    *column
 	columnH    *column
-	hasWithout bool
 }
 
-func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query8[A, B, C, D, E, F, G, H] {
+func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, filter Filter, ids []ID, relations []RelationID) Query8[A, B, C, D, E, F, G, H] {
 	components := make([]*componentStorage, 8)
 	for i := range 8 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -1227,10 +1185,8 @@ func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *Wo
 
 	return Query8[A, B, C, D, E, F, G, H]{
 		world:      world,
-		mask:       mask,
-		without:    without,
+		filter:     filter,
 		relations:  relations,
-		hasWithout: !without.IsZero(),
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -1308,8 +1264,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		if !archetype.mask.Contains(&q.mask) ||
-			archetype.mask.ContainsAny(&q.without) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 

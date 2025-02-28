@@ -16,8 +16,7 @@ package ecs
 type Filter{{.}}{{$generics}} struct {
 	world     *World
 	ids       []ID
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
 
@@ -32,51 +31,51 @@ func NewFilter{{.}}{{$generics}}(world *World) *Filter{{.}}{{$genericsShort}} {
 	}
 
 	return &Filter{{.}}{{$genericsShort}}{
-		world: world,
-		ids:   ids,
-		mask:  All(ids...),
+		world:  world,
+		ids:    ids,
+		filter: NewFilter(ids...),
 	}
 }
 
 // With specifies additional components to filter for.
-func (q *Filter{{.}}{{$genericsShort}}) With(comps ...Comp) *Filter{{.}}{{$genericsShort}} {
-	for _,c := range comps {
-		id := q.world.componentID(c.tp)
-		q.mask.Set(id, true)
+func (f *Filter{{.}}{{$genericsShort}}) With(comps ...Comp) *Filter{{.}}{{$genericsShort}} {
+	for _, c := range comps {
+		id := f.world.componentID(c.tp)
+		f.filter.mask.Set(id, true)
 	}
-	return q
+	return f
 }
 
-// With specifies components to exclude.
-func (q *Filter{{.}}{{$genericsShort}}) Without(comps ...Comp) *Filter{{.}}{{$genericsShort}} {
+// Without specifies components to exclude.
+func (f *Filter{{.}}{{$genericsShort}}) Without(comps ...Comp) *Filter{{.}}{{$genericsShort}} {
 	for _,c := range comps {
-		id := q.world.componentID(c.tp)
-		q.without.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.without.Set(id, true)
+		f.filter.hasWithout = true
 	}
-	return q
+	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (q *Filter{{.}}{{$genericsShort}}) Exclusive() *Filter{{.}}{{$genericsShort}} {
-	q.without = q.mask.Not()
-	return q
+func (f *Filter{{.}}{{$genericsShort}}) Exclusive() *Filter{{.}}{{$genericsShort}} {
+	f.filter = f.filter.Exclusive()
+	return f
 }
 
 // Query creates a [Query{{.}}] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter{{.}}{{$genericsShort}}) Query(rel ...RelationIndex) Query{{.}}{{$genericsShort}} {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
-	return newQuery{{.}}{{$genericsShort}}(q.world, q.mask, q.without{{if .}}, q.ids{{end}}, q.relations)
+func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...RelationIndex) Query{{.}}{{$genericsShort}} {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	return newQuery{{.}}{{$genericsShort}}(f.world, f.filter{{if .}}, f.ids{{end}}, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
-func (q *Filter{{.}}{{$genericsShort}}) Batch(rel ...RelationIndex) Batch {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...RelationIndex) Batch {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
 	return Batch {
-		mask:      q.mask,
-		without:   q.without,
-		relations: q.relations,
+		filter:    f.filter,
+		relations: f.relations,
 	}
 }
 {{end -}}

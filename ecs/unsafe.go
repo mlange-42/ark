@@ -102,4 +102,8 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 	u.world.exchange(entity, add, remove, nil, relations)
 }
 
-// TODO: Queries
+// Query returns a new query matching the given filter and entity relation targets.
+// This is a synonym for [Filter.Query].
+func (u Unsafe) Query(f Filter, relations ...RelationID) Query {
+	return newQuery(u.world, f, relations)
+}

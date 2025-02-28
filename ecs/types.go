@@ -23,7 +23,6 @@ type ResID struct {
 // Batch is like a filter for batch processing of entities.
 // Create it using [Filter2.Batch] etc.
 type Batch struct {
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
