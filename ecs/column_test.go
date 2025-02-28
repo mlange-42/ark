@@ -10,7 +10,7 @@ import (
 
 func TestColumnPointer(t *testing.T) {
 	posType := reflect.TypeOf(Position{})
-	column := newColumn(posType, 8)
+	column := newColumn(posType, false, Entity{}, 8)
 
 	assert.Equal(t, uintptr(column.pointer), uintptr(column.data.Addr().UnsafePointer()))
 }
@@ -20,7 +20,7 @@ func TestColumnAddRemove(t *testing.T) {
 	zeroValue := make([]byte, sizeOf(posType))
 	zeroPointer := unsafe.Pointer(&zeroValue[0])
 
-	column := newColumn(posType, 8)
+	column := newColumn(posType, false, Entity{}, 8)
 
 	assert.Equal(t, 8, column.Cap())
 	assert.Equal(t, 0, column.Len())
@@ -58,7 +58,7 @@ func TestColumnAddRemoveLabel(t *testing.T) {
 	labelType := reflect.TypeOf(Label{})
 	var zeroPointer unsafe.Pointer
 
-	column := newColumn(labelType, 8)
+	column := newColumn(labelType, false, Entity{}, 8)
 
 	assert.Equal(t, 8, column.Cap())
 	assert.Equal(t, 0, column.Len())

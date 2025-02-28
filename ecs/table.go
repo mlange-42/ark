@@ -18,8 +18,6 @@ type table struct {
 	entities    column
 	ids         []ID
 	columns     []column
-	isRelation  []bool
-	relations   []Entity
 	relationIDs []relationID
 
 	zeroValue   []byte
@@ -29,12 +27,12 @@ type table struct {
 func newTable(id tableID, archetype archetypeID, capacity uint32, reg *componentRegistry,
 	ids []ID, componentsMap []int16, isRelation []bool, targets []Entity, relationIDs []relationID) table {
 
-	entities := newColumn(entityType, capacity)
+	entities := newColumn(entityType, false, Entity{}, capacity)
 	columns := make([]column, len(ids))
 
 	var maxSize uintptr = entitySize
 	for i, id := range ids {
-		columns[i] = newColumn(reg.Types[id.id], capacity)
+		columns[i] = newColumn(reg.Types[id.id], isRelation[i], targets[i], capacity)
 		if columns[i].itemSize > maxSize {
 			maxSize = columns[i].itemSize
 		}
@@ -53,8 +51,6 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 		entities:    entities,
 		ids:         ids,
 		columns:     columns,
-		isRelation:  isRelation,
-		relations:   targets,
 		zeroValue:   zeroValue,
 		zeroPointer: zeroPointer,
 		relationIDs: relationIDs,
@@ -62,8 +58,10 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 }
 
 func (t *table) recycle(targets []Entity, relationIDs []relationID) {
-	t.relations = targets
 	t.relationIDs = relationIDs
+	for i := range t.columns {
+		t.columns[i].target = targets[i]
+	}
 }
 
 func (t *table) Add(entity Entity) uint32 {
@@ -88,7 +86,7 @@ func (t *table) GetEntity(index uintptr) Entity {
 }
 
 func (t *table) GetRelation(component ID) Entity {
-	return t.relations[t.components[component.id]]
+	return t.columns[t.components[component.id]].target
 }
 
 func (t *table) GetColumn(component ID) *column {
@@ -143,13 +141,13 @@ func (t *table) MatchesExact(relations []relationID) bool {
 	}
 	for _, rel := range relations {
 		index := t.components[rel.component.id]
-		if !t.isRelation[index] {
+		if !t.columns[index].isRelation {
 			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
 		}
 		//if rel.target == wildcard {
 		//	panic("relation targets must be fully specified, no wildcard allowed")
 		//}
-		if rel.target != t.relations[index] {
+		if rel.target != t.columns[index].target {
 			return false
 		}
 	}
@@ -164,7 +162,7 @@ func (t *table) Matches(relations []relationID) bool {
 		if rel.target == wildcard {
 			continue
 		}
-		if rel.target != t.relations[t.components[rel.component.id]] {
+		if rel.target != t.columns[t.components[rel.component.id]].target {
 			return false
 		}
 	}

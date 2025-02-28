@@ -258,7 +258,10 @@ func (s *storage) moveEntities(src, dst *table) {
 }
 
 func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relationID) []relationID {
-	targets := append([]Entity(nil), oldTable.relations...)
+	targets := make([]Entity, len(oldTable.columns))
+	for i := range oldTable.columns {
+		targets[i] = oldTable.columns[i].target
+	}
 	for _, rel := range relations {
 		index := oldTable.components[rel.component.id]
 		if rel.target == targets[index] {
@@ -269,7 +272,7 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 
 	result := make([]relationID, 0, len(oldTable.relationIDs))
 	for i, e := range targets {
-		if !oldTable.isRelation[i] {
+		if !oldTable.columns[i].isRelation {
 			continue
 		}
 		id := oldTable.ids[i]
@@ -281,13 +284,16 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 
 func (s *storage) getExchangeTargets(oldTable *table, relations []relationID) ([]relationID, bool) {
 	changed := false
-	targets := append([]Entity(nil), oldTable.relations...)
+	targets := make([]Entity, len(oldTable.columns))
+	for i := range oldTable.columns {
+		targets[i] = oldTable.columns[i].target
+	}
 	for _, rel := range relations {
 		if !rel.target.IsZero() && !s.entityPool.Alive(rel.target) {
 			panic("can't make a dead entity a relation target")
 		}
 		index := oldTable.components[rel.component.id]
-		if !oldTable.isRelation[index] {
+		if !oldTable.columns[index].isRelation {
 			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
 		}
 		if rel.target == targets[index] {
@@ -302,7 +308,7 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID) ([
 
 	result := make([]relationID, 0, len(oldTable.relationIDs))
 	for i, e := range targets {
-		if !oldTable.isRelation[i] {
+		if !oldTable.columns[i].isRelation {
 			continue
 		}
 		id := oldTable.ids[i]

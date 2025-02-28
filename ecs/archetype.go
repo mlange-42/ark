@@ -120,10 +120,11 @@ func (a *archetype) AddTable(table *table) {
 	}
 
 	for i := range table.ids {
-		if !table.isRelation[i] {
+		column := &table.columns[i]
+		if !column.isRelation {
 			continue
 		}
-		target := table.relations[i]
+		target := column.target
 		relations := a.relationTables[i]
 
 		if tables, ok := relations[target.id]; ok {

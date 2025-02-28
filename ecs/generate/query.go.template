@@ -81,12 +81,19 @@ func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+{{if . -}}
 // Get returns the queried components of the current entity.
 func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 	checkQueryGet(&q.cursor)
 	return {{range $i, $v := $upper}}{{if $i}},
 		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}
 }
+
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query{{.}}{{$genericsShort}}) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
+}
+{{- end}}
 
 // Close closes the Query and unlocks the world.
 //

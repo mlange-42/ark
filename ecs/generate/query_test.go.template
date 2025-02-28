@@ -18,6 +18,9 @@ import (
 {{- $mapArgs := join "&Comp" "{}, &Comp" "{}" $upper -}}
 {{- $comps := join "" ", " "" $lower -}}
 
+{{- $genericsRel := replace $generics "CompA" "ChildOf" -}}
+{{- $mapArgsRel := replace $mapArgs "CompA" "ChildOf" -}}
+
 func TestQuery{{.}}(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -122,22 +125,17 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 
-	mapper := NewMap{{.}}{{$generics}}(&w)
-	childMapper := NewMap[ChildOf](&w)
+	mapper := NewMap{{.}}{{$genericsRel}}(&w)
 
 	for range n {
-		e := mapper.NewEntity({{$mapArgs}})
-		childMapper.Add(e, &ChildOf{}, parent1)
-		
-		e = mapper.NewEntity({{$mapArgs}})
-		childMapper.Add(e, &ChildOf{}, parent2)
-		
-		e = mapper.NewEntity({{$mapArgs}})
-		childMapper.Add(e, &ChildOf{}, parent3)
+		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent1))
+		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent2))
+		e := mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent3))
+		w.RemoveEntity(e)
 	}
 
 	// normal filter
-	filter := NewFilter{{.}}{{$generics}}(&w)
+	filter := NewFilter{{.}}{{$genericsRel}}(&w)
 	query := filter.Query()
 
 	cnt := 0
@@ -146,7 +144,20 @@ func TestQuery{{.}}Relations(t *testing.T) {
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n)
+	assert.Equal(t, cnt, 2*n)
+
+	// relation filter
+	filter = NewFilter{{.}}{{$genericsRel}}(&w)
+	query = filter.Query(Rel(0, parent2))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		{{blanks .}} = query.Get()
+		assert.Equal(t, parent2, query.GetRelation(0))
+		cnt++
+	}
+	assert.Equal(t, cnt, n)
 }
 
 {{end -}}
@@ -170,7 +181,6 @@ func TestQuery0(t *testing.T) {
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
-		query.Get()
 		cnt++
 	}
 	assert.Equal(t, cnt, 2*n)
@@ -182,7 +192,6 @@ func TestQuery0(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
-		query.Get()
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
@@ -194,7 +203,6 @@ func TestQuery0(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
-		query.Get()
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
@@ -206,7 +214,6 @@ func TestQuery0(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
-		query.Get()
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
@@ -265,7 +272,6 @@ func TestQuery0Relations(t *testing.T) {
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
-		query.Get()
 		cnt++
 	}
 	assert.Equal(t, cnt, 3*n+3)
