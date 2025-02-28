@@ -30,6 +30,7 @@ func TestMap1(t *testing.T) {
 
 	for _, e := range entities {
 		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
 	}
 
 	assert.Panics(t, func() {
@@ -142,6 +143,7 @@ func TestMap2(t *testing.T) {
 
 	for _, e := range entities {
 		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
 	}
 
 	assert.Panics(t, func() {
@@ -254,6 +256,7 @@ func TestMap3(t *testing.T) {
 
 	for _, e := range entities {
 		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
 	}
 
 	assert.Panics(t, func() {
@@ -366,6 +369,7 @@ func TestMap4(t *testing.T) {
 
 	for _, e := range entities {
 		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
 	}
 
 	assert.Panics(t, func() {
@@ -478,6 +482,7 @@ func TestMap5(t *testing.T) {
 
 	for _, e := range entities {
 		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
 	}
 
 	assert.Panics(t, func() {
@@ -590,6 +595,7 @@ func TestMap6(t *testing.T) {
 
 	for _, e := range entities {
 		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
 	}
 
 	assert.Panics(t, func() {
@@ -702,6 +708,7 @@ func TestMap7(t *testing.T) {
 
 	for _, e := range entities {
 		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
 	}
 
 	assert.Panics(t, func() {
@@ -814,6 +821,7 @@ func TestMap8(t *testing.T) {
 
 	for _, e := range entities {
 		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
 	}
 
 	assert.Panics(t, func() {

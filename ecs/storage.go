@@ -30,9 +30,13 @@ func newStorage(capacity uint32) storage {
 	for i := range reservedEntities {
 		entities[i] = entityIndex{table: maxTableID, row: 0}
 	}
+	componentsMap := make([]int16, MaskTotalBits)
+	for i := range MaskTotalBits {
+		componentsMap[i] = -1
+	}
 
 	tables := make([]table, 0, 128)
-	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, make([]int16, MaskTotalBits), []bool{}, []Entity{}, []RelationID{}))
+	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, componentsMap, []bool{}, []Entity{}, []RelationID{}))
 	archetypes := make([]archetype, 0, 128)
 	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []tableID{0}, &reg))
 	return storage{

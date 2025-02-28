@@ -77,7 +77,7 @@ func TestUnsafeRelations(t *testing.T) {
 	assert.Equal(t, parent1, u.GetRelationUnchecked(e, child2ID))
 }
 
-func TestUnsafeAdd(t *testing.T) {
+func TestUnsafeAddRemove(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
@@ -95,6 +95,9 @@ func TestUnsafeAdd(t *testing.T) {
 	assert.True(t, u.Has(e2, posID))
 	assert.True(t, u.Has(e2, childID))
 	assert.Equal(t, e1, u.GetRelation(e2, childID))
+
+	u.Remove(e1, posID)
+	assert.False(t, u.Has(e1, posID))
 }
 
 func TestUnsafeExchange(t *testing.T) {
