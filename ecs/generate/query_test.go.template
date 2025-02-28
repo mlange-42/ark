@@ -135,9 +135,21 @@ func TestQuery{{.}}Relations(t *testing.T) {
 
 	// normal filter
 	filter := NewFilter{{.}}{{$genericsRel}}(&w)
-	query := filter.Query(Rel(0, parent1))
+	query := filter.Query()
 
 	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		{{blanks .}} = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
+
+	// relation filter
+	filter = NewFilter{{.}}{{$genericsRel}}(&w)
+	query = filter.Query(Rel(0, parent1))
+
+	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()

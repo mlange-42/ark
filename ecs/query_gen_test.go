@@ -122,11 +122,24 @@ func TestQuery1Relations(t *testing.T) {
 
 	// normal filter
 	filter := NewFilter1[ChildOf](&w)
-	query := filter.Query(Rel(0, parent1))
+	query := filter.Query()
 
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
+		_ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
+
+	// relation filter
+	filter = NewFilter1[ChildOf](&w)
+	query = filter.Query(Rel(0, parent1))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_ = query.Get()
 		assert.Equal(t, parent1, query.GetRelation(0))
 		cnt++
 	}
@@ -247,11 +260,24 @@ func TestQuery2Relations(t *testing.T) {
 
 	// normal filter
 	filter := NewFilter2[ChildOf, CompB](&w)
-	query := filter.Query(Rel(0, parent1))
+	query := filter.Query()
 
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
+		_, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
+
+	// relation filter
+	filter = NewFilter2[ChildOf, CompB](&w)
+	query = filter.Query(Rel(0, parent1))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _ = query.Get()
 		assert.Equal(t, parent1, query.GetRelation(0))
 		cnt++
 	}
@@ -372,11 +398,24 @@ func TestQuery3Relations(t *testing.T) {
 
 	// normal filter
 	filter := NewFilter3[ChildOf, CompB, CompC](&w)
-	query := filter.Query(Rel(0, parent1))
+	query := filter.Query()
 
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
+		_, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
+
+	// relation filter
+	filter = NewFilter3[ChildOf, CompB, CompC](&w)
+	query = filter.Query(Rel(0, parent1))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _ = query.Get()
 		assert.Equal(t, parent1, query.GetRelation(0))
 		cnt++
 	}
@@ -497,11 +536,24 @@ func TestQuery4Relations(t *testing.T) {
 
 	// normal filter
 	filter := NewFilter4[ChildOf, CompB, CompC, CompD](&w)
-	query := filter.Query(Rel(0, parent1))
+	query := filter.Query()
 
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
+		_, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
+
+	// relation filter
+	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w)
+	query = filter.Query(Rel(0, parent1))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _ = query.Get()
 		assert.Equal(t, parent1, query.GetRelation(0))
 		cnt++
 	}
@@ -622,11 +674,24 @@ func TestQuery5Relations(t *testing.T) {
 
 	// normal filter
 	filter := NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w)
-	query := filter.Query(Rel(0, parent1))
+	query := filter.Query()
 
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
+		_, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
+
+	// relation filter
+	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w)
+	query = filter.Query(Rel(0, parent1))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _ = query.Get()
 		assert.Equal(t, parent1, query.GetRelation(0))
 		cnt++
 	}
@@ -747,11 +812,24 @@ func TestQuery6Relations(t *testing.T) {
 
 	// normal filter
 	filter := NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
-	query := filter.Query(Rel(0, parent1))
+	query := filter.Query()
 
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
+		_, _, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
+
+	// relation filter
+	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
+	query = filter.Query(Rel(0, parent1))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _, _ = query.Get()
 		assert.Equal(t, parent1, query.GetRelation(0))
 		cnt++
 	}
@@ -872,11 +950,24 @@ func TestQuery7Relations(t *testing.T) {
 
 	// normal filter
 	filter := NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
-	query := filter.Query(Rel(0, parent1))
+	query := filter.Query()
 
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
+		_, _, _, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
+
+	// relation filter
+	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+	query = filter.Query(Rel(0, parent1))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _, _, _ = query.Get()
 		assert.Equal(t, parent1, query.GetRelation(0))
 		cnt++
 	}
@@ -997,11 +1088,24 @@ func TestQuery8Relations(t *testing.T) {
 
 	// normal filter
 	filter := NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
-	query := filter.Query(Rel(0, parent1))
+	query := filter.Query()
 
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
+		_, _, _, _, _, _, _, _ = query.Get()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n)
+
+	// relation filter
+	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query = filter.Query(Rel(0, parent1))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_, _, _, _, _, _, _, _ = query.Get()
 		assert.Equal(t, parent1, query.GetRelation(0))
 		cnt++
 	}
