@@ -53,6 +53,23 @@ func (u Unsafe) HasUnchecked(entity Entity, comp ID) bool {
 	return u.world.storage.hasUnchecked(entity, comp)
 }
 
+// GetRelation returns the relation target for the entity and the mapped component.
+func (u Unsafe) GetRelation(entity Entity, comp ID) Entity {
+	return u.world.storage.getRelation(entity, comp)
+}
+
+// GetRelationUnchecked returns the relation target for the entity and the mapped component.
+// In contrast to [Unsafe.GetRelation], it does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (u Unsafe) GetRelationUnchecked(entity Entity, comp ID) Entity {
+	return u.world.storage.getRelationUnchecked(entity, comp)
+}
+
+// SetRelations sets relation targets for an entity.
+func (u Unsafe) SetRelations(entity Entity, relations ...RelationID) {
+	u.world.setRelations(entity, relations)
+}
+
 // TODO: Unsafe.NewEntity
 // TODO: Unsafe.Add
 // TODO: Unsafe.Remove

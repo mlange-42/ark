@@ -76,12 +76,6 @@ func (m *Map[T]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, []ID{m.id}, nil, nil)
 }
 
-// SetRelation sets the relation target for the entity and the mapped component.
-func (m *Map[T]) SetRelation(entity Entity, target Entity) {
-	m.relations = target.toRelation(m.id, m.relations)
-	m.world.setRelations(entity, m.relations)
-}
-
 // GetRelation returns the relation target for the entity and the mapped component.
 func (m *Map[T]) GetRelation(entity Entity) Entity {
 	return m.world.storage.getRelation(entity, m.id)
@@ -92,4 +86,10 @@ func (m *Map[T]) GetRelation(entity Entity) Entity {
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) GetRelationUnchecked(entity Entity) Entity {
 	return m.world.storage.getRelationUnchecked(entity, m.id)
+}
+
+// SetRelation sets the relation target for the entity and the mapped component.
+func (m *Map[T]) SetRelation(entity Entity, target Entity) {
+	m.relations = target.toRelation(m.id, m.relations)
+	m.world.setRelations(entity, m.relations)
 }

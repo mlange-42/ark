@@ -48,3 +48,23 @@ func TestUnsafeGet(t *testing.T) {
 
 	assert.Equal(t, pos, pos2)
 }
+func TestUnsafeRelations(t *testing.T) {
+	w := NewWorld(16)
+	u := w.Unsafe()
+
+	posID := ComponentID[Position](&w)
+	childID := ComponentID[ChildOf](&w)
+	child2ID := ComponentID[ChildOf2](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := u.NewEntityRel([]ID{posID, childID, child2ID}, RelID(childID, parent1), RelID(child2ID, parent2))
+
+	assert.Equal(t, parent1, u.GetRelation(e, childID))
+	assert.Equal(t, parent2, u.GetRelationUnchecked(e, child2ID))
+
+	u.SetRelations(e, RelID(childID, parent2), RelID(child2ID, parent1))
+	assert.Equal(t, parent2, u.GetRelation(e, childID))
+	assert.Equal(t, parent1, u.GetRelationUnchecked(e, child2ID))
+}
