@@ -8,7 +8,7 @@ type Filter0 struct {
 	ids       []ID
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }
 
 // NewFilter0 creates a new [Filter0].
@@ -72,7 +72,7 @@ type Filter1[A any] struct {
 	ids       []ID
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }
 
 // NewFilter1 creates a new [Filter1].
@@ -138,7 +138,7 @@ type Filter2[A any, B any] struct {
 	ids       []ID
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }
 
 // NewFilter2 creates a new [Filter2].
@@ -205,7 +205,7 @@ type Filter3[A any, B any, C any] struct {
 	ids       []ID
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }
 
 // NewFilter3 creates a new [Filter3].
@@ -273,7 +273,7 @@ type Filter4[A any, B any, C any, D any] struct {
 	ids       []ID
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }
 
 // NewFilter4 creates a new [Filter4].
@@ -342,7 +342,7 @@ type Filter5[A any, B any, C any, D any, E any] struct {
 	ids       []ID
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }
 
 // NewFilter5 creates a new [Filter5].
@@ -412,7 +412,7 @@ type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	ids       []ID
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }
 
 // NewFilter6 creates a new [Filter6].
@@ -483,7 +483,7 @@ type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	ids       []ID
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }
 
 // NewFilter7 creates a new [Filter7].
@@ -555,7 +555,7 @@ type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	ids       []ID
 	mask      Mask
 	without   Mask
-	relations []relationID
+	relations []RelationID
 }
 
 // NewFilter8 creates a new [Filter8].

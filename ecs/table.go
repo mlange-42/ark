@@ -18,14 +18,14 @@ type table struct {
 	entities    column
 	ids         []ID
 	columns     []column
-	relationIDs []relationID
+	relationIDs []RelationID
 
 	zeroValue   []byte
 	zeroPointer unsafe.Pointer
 }
 
 func newTable(id tableID, archetype archetypeID, capacity uint32, reg *componentRegistry,
-	ids []ID, componentsMap []int16, isRelation []bool, targets []Entity, relationIDs []relationID) table {
+	ids []ID, componentsMap []int16, isRelation []bool, targets []Entity, relationIDs []RelationID) table {
 
 	entities := newColumn(entityType, false, Entity{}, capacity)
 	columns := make([]column, len(ids))
@@ -57,7 +57,7 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 	}
 }
 
-func (t *table) recycle(targets []Entity, relationIDs []relationID) {
+func (t *table) recycle(targets []Entity, relationIDs []RelationID) {
 	t.relationIDs = relationIDs
 	for i := range t.columns {
 		t.columns[i].target = targets[i]
@@ -135,7 +135,7 @@ func (t *table) AddAll(other *table) {
 	}
 }
 
-func (t *table) MatchesExact(relations []relationID) bool {
+func (t *table) MatchesExact(relations []RelationID) bool {
 	if len(relations) != len(t.relationIDs) {
 		panic("relation targets must be fully specified")
 	}
@@ -154,7 +154,7 @@ func (t *table) MatchesExact(relations []relationID) bool {
 	return true
 }
 
-func (t *table) Matches(relations []relationID) bool {
+func (t *table) Matches(relations []RelationID) bool {
 	if len(relations) == 0 {
 		return true
 	}

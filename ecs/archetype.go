@@ -55,7 +55,7 @@ func (a *archetype) HasRelations() bool {
 	return a.numRelations > 0
 }
 
-func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, bool) {
+func (a *archetype) GetTable(storage *storage, relations []RelationID) (*table, bool) {
 	if len(a.tables) == 0 {
 		return nil, false
 	}
@@ -77,7 +77,7 @@ func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, 
 	return nil, false
 }
 
-func (a *archetype) GetTables(relations []relationID) []tableID {
+func (a *archetype) GetTables(relations []RelationID) []tableID {
 	if !a.HasRelations() {
 		return a.tables
 	}

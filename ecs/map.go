@@ -7,7 +7,7 @@ type Map[T any] struct {
 	world     *World
 	id        ID
 	storage   *componentStorage
-	relations []relationID
+	relations []RelationID
 }
 
 // NewMap creates a new [Map].

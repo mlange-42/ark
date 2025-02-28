@@ -9,7 +9,7 @@ type Map1[A any] struct {
 	world     *World
 	ids       []ID
 	storageA  *componentStorage
-	relations []relationID
+	relations []RelationID
 }
 
 // NewMap1 creates a new [Map1].
@@ -138,7 +138,7 @@ type Map2[A any, B any] struct {
 	ids       []ID
 	storageA  *componentStorage
 	storageB  *componentStorage
-	relations []relationID
+	relations []RelationID
 }
 
 // NewMap2 creates a new [Map2].
@@ -278,7 +278,7 @@ type Map3[A any, B any, C any] struct {
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
-	relations []relationID
+	relations []RelationID
 }
 
 // NewMap3 creates a new [Map3].
@@ -429,7 +429,7 @@ type Map4[A any, B any, C any, D any] struct {
 	storageB  *componentStorage
 	storageC  *componentStorage
 	storageD  *componentStorage
-	relations []relationID
+	relations []RelationID
 }
 
 // NewMap4 creates a new [Map4].
@@ -591,7 +591,7 @@ type Map5[A any, B any, C any, D any, E any] struct {
 	storageC  *componentStorage
 	storageD  *componentStorage
 	storageE  *componentStorage
-	relations []relationID
+	relations []RelationID
 }
 
 // NewMap5 creates a new [Map5].
@@ -764,7 +764,7 @@ type Map6[A any, B any, C any, D any, E any, F any] struct {
 	storageD  *componentStorage
 	storageE  *componentStorage
 	storageF  *componentStorage
-	relations []relationID
+	relations []RelationID
 }
 
 // NewMap6 creates a new [Map6].
@@ -948,7 +948,7 @@ type Map7[A any, B any, C any, D any, E any, F any, G any] struct {
 	storageE  *componentStorage
 	storageF  *componentStorage
 	storageG  *componentStorage
-	relations []relationID
+	relations []RelationID
 }
 
 // NewMap7 creates a new [Map7].
@@ -1143,7 +1143,7 @@ type Map8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	storageF  *componentStorage
 	storageG  *componentStorage
 	storageH  *componentStorage
-	relations []relationID
+	relations []RelationID
 }
 
 // NewMap8 creates a new [Map8].

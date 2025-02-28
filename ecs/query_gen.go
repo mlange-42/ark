@@ -15,7 +15,7 @@ type Query0 struct {
 	world      *World
 	mask       Mask
 	without    Mask
-	relations  []relationID
+	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
@@ -24,7 +24,7 @@ type Query0 struct {
 	hasWithout bool
 }
 
-func newQuery0(world *World, mask Mask, without Mask, relations []relationID) Query0 {
+func newQuery0(world *World, mask Mask, without Mask, relations []RelationID) Query0 {
 	components := make([]*componentStorage, 0)
 
 	return Query0{
@@ -138,7 +138,7 @@ type Query1[A any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
-	relations  []relationID
+	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
@@ -148,7 +148,7 @@ type Query1[A any] struct {
 	hasWithout bool
 }
 
-func newQuery1[A any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query1[A] {
+func newQuery1[A any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query1[A] {
 	components := make([]*componentStorage, 1)
 	for i := range 1 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -278,7 +278,7 @@ type Query2[A any, B any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
-	relations  []relationID
+	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
@@ -289,7 +289,7 @@ type Query2[A any, B any] struct {
 	hasWithout bool
 }
 
-func newQuery2[A any, B any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query2[A, B] {
+func newQuery2[A any, B any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query2[A, B] {
 	components := make([]*componentStorage, 2)
 	for i := range 2 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -422,7 +422,7 @@ type Query3[A any, B any, C any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
-	relations  []relationID
+	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
@@ -434,7 +434,7 @@ type Query3[A any, B any, C any] struct {
 	hasWithout bool
 }
 
-func newQuery3[A any, B any, C any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query3[A, B, C] {
+func newQuery3[A any, B any, C any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query3[A, B, C] {
 	components := make([]*componentStorage, 3)
 	for i := range 3 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -570,7 +570,7 @@ type Query4[A any, B any, C any, D any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
-	relations  []relationID
+	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
@@ -583,7 +583,7 @@ type Query4[A any, B any, C any, D any] struct {
 	hasWithout bool
 }
 
-func newQuery4[A any, B any, C any, D any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query4[A, B, C, D] {
+func newQuery4[A any, B any, C any, D any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query4[A, B, C, D] {
 	components := make([]*componentStorage, 4)
 	for i := range 4 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -722,7 +722,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
-	relations  []relationID
+	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
@@ -736,7 +736,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	hasWithout bool
 }
 
-func newQuery5[A any, B any, C any, D any, E any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query5[A, B, C, D, E] {
+func newQuery5[A any, B any, C any, D any, E any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query5[A, B, C, D, E] {
 	components := make([]*componentStorage, 5)
 	for i := range 5 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -878,7 +878,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
-	relations  []relationID
+	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
@@ -893,7 +893,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	hasWithout bool
 }
 
-func newQuery6[A any, B any, C any, D any, E any, F any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query6[A, B, C, D, E, F] {
+func newQuery6[A any, B any, C any, D any, E any, F any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query6[A, B, C, D, E, F] {
 	components := make([]*componentStorage, 6)
 	for i := range 6 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -1038,7 +1038,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
-	relations  []relationID
+	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
@@ -1054,7 +1054,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	hasWithout bool
 }
 
-func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query7[A, B, C, D, E, F, G] {
+func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query7[A, B, C, D, E, F, G] {
 	components := make([]*componentStorage, 7)
 	for i := range 7 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -1202,7 +1202,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world      *World
 	mask       Mask
 	without    Mask
-	relations  []relationID
+	relations  []RelationID
 	lock       uint8
 	cursor     cursor
 	tables     []tableID
@@ -1219,7 +1219,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	hasWithout bool
 }
 
-func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, mask Mask, without Mask, ids []ID, relations []relationID) Query8[A, B, C, D, E, F, G, H] {
+func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, mask Mask, without Mask, ids []ID, relations []RelationID) Query8[A, B, C, D, E, F, G, H] {
 	components := make([]*componentStorage, 8)
 	for i := range 8 {
 		components[i] = &world.storage.components[ids[i].id]
