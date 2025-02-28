@@ -6,8 +6,7 @@ package ecs
 type Filter0 struct {
 	world     *World
 	ids       []ID
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
 
@@ -18,51 +17,51 @@ func NewFilter0(world *World) *Filter0 {
 	ids := []ID{}
 
 	return &Filter0{
-		world: world,
-		ids:   ids,
-		mask:  All(ids...),
+		world:  world,
+		ids:    ids,
+		filter: NewFilter(ids...),
 	}
 }
 
 // With specifies additional components to filter for.
-func (q *Filter0) With(comps ...Comp) *Filter0 {
+func (f *Filter0) With(comps ...Comp) *Filter0 {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.mask.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.mask.Set(id, true)
 	}
-	return q
+	return f
 }
 
-// With specifies components to exclude.
-func (q *Filter0) Without(comps ...Comp) *Filter0 {
+// Without specifies components to exclude.
+func (f *Filter0) Without(comps ...Comp) *Filter0 {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.without.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.without.Set(id, true)
+		f.filter.hasWithout = true
 	}
-	return q
+	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (q *Filter0) Exclusive() *Filter0 {
-	q.without = q.mask.Not()
-	return q
+func (f *Filter0) Exclusive() *Filter0 {
+	f.filter = f.filter.Exclusive()
+	return f
 }
 
 // Query creates a [Query0] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter0) Query(rel ...RelationIndex) Query0 {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
-	return newQuery0(q.world, q.mask, q.without, q.relations)
+func (f *Filter0) Query(rel ...RelationIndex) Query0 {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	return newQuery0(f.world, f.filter.mask, f.filter.without, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
-func (q *Filter0) Batch(rel ...RelationIndex) Batch {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+func (f *Filter0) Batch(rel ...RelationIndex) Batch {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
 	return Batch{
-		mask:      q.mask,
-		without:   q.without,
-		relations: q.relations,
+		filter:    f.filter,
+		relations: f.relations,
 	}
 }
 
@@ -70,8 +69,7 @@ func (q *Filter0) Batch(rel ...RelationIndex) Batch {
 type Filter1[A any] struct {
 	world     *World
 	ids       []ID
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
 
@@ -84,51 +82,51 @@ func NewFilter1[A any](world *World) *Filter1[A] {
 	}
 
 	return &Filter1[A]{
-		world: world,
-		ids:   ids,
-		mask:  All(ids...),
+		world:  world,
+		ids:    ids,
+		filter: NewFilter(ids...),
 	}
 }
 
 // With specifies additional components to filter for.
-func (q *Filter1[A]) With(comps ...Comp) *Filter1[A] {
+func (f *Filter1[A]) With(comps ...Comp) *Filter1[A] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.mask.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.mask.Set(id, true)
 	}
-	return q
+	return f
 }
 
-// With specifies components to exclude.
-func (q *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
+// Without specifies components to exclude.
+func (f *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.without.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.without.Set(id, true)
+		f.filter.hasWithout = true
 	}
-	return q
+	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (q *Filter1[A]) Exclusive() *Filter1[A] {
-	q.without = q.mask.Not()
-	return q
+func (f *Filter1[A]) Exclusive() *Filter1[A] {
+	f.filter = f.filter.Exclusive()
+	return f
 }
 
 // Query creates a [Query1] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
-	return newQuery1[A](q.world, q.mask, q.without, q.ids, q.relations)
+func (f *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	return newQuery1[A](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
-func (q *Filter1[A]) Batch(rel ...RelationIndex) Batch {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+func (f *Filter1[A]) Batch(rel ...RelationIndex) Batch {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
 	return Batch{
-		mask:      q.mask,
-		without:   q.without,
-		relations: q.relations,
+		filter:    f.filter,
+		relations: f.relations,
 	}
 }
 
@@ -136,8 +134,7 @@ func (q *Filter1[A]) Batch(rel ...RelationIndex) Batch {
 type Filter2[A any, B any] struct {
 	world     *World
 	ids       []ID
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
 
@@ -151,51 +148,51 @@ func NewFilter2[A any, B any](world *World) *Filter2[A, B] {
 	}
 
 	return &Filter2[A, B]{
-		world: world,
-		ids:   ids,
-		mask:  All(ids...),
+		world:  world,
+		ids:    ids,
+		filter: NewFilter(ids...),
 	}
 }
 
 // With specifies additional components to filter for.
-func (q *Filter2[A, B]) With(comps ...Comp) *Filter2[A, B] {
+func (f *Filter2[A, B]) With(comps ...Comp) *Filter2[A, B] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.mask.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.mask.Set(id, true)
 	}
-	return q
+	return f
 }
 
-// With specifies components to exclude.
-func (q *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
+// Without specifies components to exclude.
+func (f *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.without.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.without.Set(id, true)
+		f.filter.hasWithout = true
 	}
-	return q
+	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (q *Filter2[A, B]) Exclusive() *Filter2[A, B] {
-	q.without = q.mask.Not()
-	return q
+func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
+	f.filter = f.filter.Exclusive()
+	return f
 }
 
 // Query creates a [Query2] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
-	return newQuery2[A, B](q.world, q.mask, q.without, q.ids, q.relations)
+func (f *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	return newQuery2[A, B](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
-func (q *Filter2[A, B]) Batch(rel ...RelationIndex) Batch {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+func (f *Filter2[A, B]) Batch(rel ...RelationIndex) Batch {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
 	return Batch{
-		mask:      q.mask,
-		without:   q.without,
-		relations: q.relations,
+		filter:    f.filter,
+		relations: f.relations,
 	}
 }
 
@@ -203,8 +200,7 @@ func (q *Filter2[A, B]) Batch(rel ...RelationIndex) Batch {
 type Filter3[A any, B any, C any] struct {
 	world     *World
 	ids       []ID
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
 
@@ -219,51 +215,51 @@ func NewFilter3[A any, B any, C any](world *World) *Filter3[A, B, C] {
 	}
 
 	return &Filter3[A, B, C]{
-		world: world,
-		ids:   ids,
-		mask:  All(ids...),
+		world:  world,
+		ids:    ids,
+		filter: NewFilter(ids...),
 	}
 }
 
 // With specifies additional components to filter for.
-func (q *Filter3[A, B, C]) With(comps ...Comp) *Filter3[A, B, C] {
+func (f *Filter3[A, B, C]) With(comps ...Comp) *Filter3[A, B, C] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.mask.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.mask.Set(id, true)
 	}
-	return q
+	return f
 }
 
-// With specifies components to exclude.
-func (q *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
+// Without specifies components to exclude.
+func (f *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.without.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.without.Set(id, true)
+		f.filter.hasWithout = true
 	}
-	return q
+	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (q *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
-	q.without = q.mask.Not()
-	return q
+func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
+	f.filter = f.filter.Exclusive()
+	return f
 }
 
 // Query creates a [Query3] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
-	return newQuery3[A, B, C](q.world, q.mask, q.without, q.ids, q.relations)
+func (f *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	return newQuery3[A, B, C](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
-func (q *Filter3[A, B, C]) Batch(rel ...RelationIndex) Batch {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+func (f *Filter3[A, B, C]) Batch(rel ...RelationIndex) Batch {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
 	return Batch{
-		mask:      q.mask,
-		without:   q.without,
-		relations: q.relations,
+		filter:    f.filter,
+		relations: f.relations,
 	}
 }
 
@@ -271,8 +267,7 @@ func (q *Filter3[A, B, C]) Batch(rel ...RelationIndex) Batch {
 type Filter4[A any, B any, C any, D any] struct {
 	world     *World
 	ids       []ID
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
 
@@ -288,51 +283,51 @@ func NewFilter4[A any, B any, C any, D any](world *World) *Filter4[A, B, C, D] {
 	}
 
 	return &Filter4[A, B, C, D]{
-		world: world,
-		ids:   ids,
-		mask:  All(ids...),
+		world:  world,
+		ids:    ids,
+		filter: NewFilter(ids...),
 	}
 }
 
 // With specifies additional components to filter for.
-func (q *Filter4[A, B, C, D]) With(comps ...Comp) *Filter4[A, B, C, D] {
+func (f *Filter4[A, B, C, D]) With(comps ...Comp) *Filter4[A, B, C, D] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.mask.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.mask.Set(id, true)
 	}
-	return q
+	return f
 }
 
-// With specifies components to exclude.
-func (q *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
+// Without specifies components to exclude.
+func (f *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.without.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.without.Set(id, true)
+		f.filter.hasWithout = true
 	}
-	return q
+	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (q *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
-	q.without = q.mask.Not()
-	return q
+func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
+	f.filter = f.filter.Exclusive()
+	return f
 }
 
 // Query creates a [Query4] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
-	return newQuery4[A, B, C, D](q.world, q.mask, q.without, q.ids, q.relations)
+func (f *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	return newQuery4[A, B, C, D](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
-func (q *Filter4[A, B, C, D]) Batch(rel ...RelationIndex) Batch {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+func (f *Filter4[A, B, C, D]) Batch(rel ...RelationIndex) Batch {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
 	return Batch{
-		mask:      q.mask,
-		without:   q.without,
-		relations: q.relations,
+		filter:    f.filter,
+		relations: f.relations,
 	}
 }
 
@@ -340,8 +335,7 @@ func (q *Filter4[A, B, C, D]) Batch(rel ...RelationIndex) Batch {
 type Filter5[A any, B any, C any, D any, E any] struct {
 	world     *World
 	ids       []ID
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
 
@@ -358,51 +352,51 @@ func NewFilter5[A any, B any, C any, D any, E any](world *World) *Filter5[A, B, 
 	}
 
 	return &Filter5[A, B, C, D, E]{
-		world: world,
-		ids:   ids,
-		mask:  All(ids...),
+		world:  world,
+		ids:    ids,
+		filter: NewFilter(ids...),
 	}
 }
 
 // With specifies additional components to filter for.
-func (q *Filter5[A, B, C, D, E]) With(comps ...Comp) *Filter5[A, B, C, D, E] {
+func (f *Filter5[A, B, C, D, E]) With(comps ...Comp) *Filter5[A, B, C, D, E] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.mask.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.mask.Set(id, true)
 	}
-	return q
+	return f
 }
 
-// With specifies components to exclude.
-func (q *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] {
+// Without specifies components to exclude.
+func (f *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.without.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.without.Set(id, true)
+		f.filter.hasWithout = true
 	}
-	return q
+	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (q *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
-	q.without = q.mask.Not()
-	return q
+func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
+	f.filter = f.filter.Exclusive()
+	return f
 }
 
 // Query creates a [Query5] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, E] {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
-	return newQuery5[A, B, C, D, E](q.world, q.mask, q.without, q.ids, q.relations)
+func (f *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, E] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	return newQuery5[A, B, C, D, E](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
-func (q *Filter5[A, B, C, D, E]) Batch(rel ...RelationIndex) Batch {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+func (f *Filter5[A, B, C, D, E]) Batch(rel ...RelationIndex) Batch {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
 	return Batch{
-		mask:      q.mask,
-		without:   q.without,
-		relations: q.relations,
+		filter:    f.filter,
+		relations: f.relations,
 	}
 }
 
@@ -410,8 +404,7 @@ func (q *Filter5[A, B, C, D, E]) Batch(rel ...RelationIndex) Batch {
 type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	world     *World
 	ids       []ID
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
 
@@ -429,51 +422,51 @@ func NewFilter6[A any, B any, C any, D any, E any, F any](world *World) *Filter6
 	}
 
 	return &Filter6[A, B, C, D, E, F]{
-		world: world,
-		ids:   ids,
-		mask:  All(ids...),
+		world:  world,
+		ids:    ids,
+		filter: NewFilter(ids...),
 	}
 }
 
 // With specifies additional components to filter for.
-func (q *Filter6[A, B, C, D, E, F]) With(comps ...Comp) *Filter6[A, B, C, D, E, F] {
+func (f *Filter6[A, B, C, D, E, F]) With(comps ...Comp) *Filter6[A, B, C, D, E, F] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.mask.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.mask.Set(id, true)
 	}
-	return q
+	return f
 }
 
-// With specifies components to exclude.
-func (q *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, E, F] {
+// Without specifies components to exclude.
+func (f *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, E, F] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.without.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.without.Set(id, true)
+		f.filter.hasWithout = true
 	}
-	return q
+	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (q *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
-	q.without = q.mask.Not()
-	return q
+func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
+	f.filter = f.filter.Exclusive()
+	return f
 }
 
 // Query creates a [Query6] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, D, E, F] {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
-	return newQuery6[A, B, C, D, E, F](q.world, q.mask, q.without, q.ids, q.relations)
+func (f *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, D, E, F] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	return newQuery6[A, B, C, D, E, F](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
-func (q *Filter6[A, B, C, D, E, F]) Batch(rel ...RelationIndex) Batch {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...RelationIndex) Batch {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
 	return Batch{
-		mask:      q.mask,
-		without:   q.without,
-		relations: q.relations,
+		filter:    f.filter,
+		relations: f.relations,
 	}
 }
 
@@ -481,8 +474,7 @@ func (q *Filter6[A, B, C, D, E, F]) Batch(rel ...RelationIndex) Batch {
 type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world     *World
 	ids       []ID
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
 
@@ -501,51 +493,51 @@ func NewFilter7[A any, B any, C any, D any, E any, F any, G any](world *World) *
 	}
 
 	return &Filter7[A, B, C, D, E, F, G]{
-		world: world,
-		ids:   ids,
-		mask:  All(ids...),
+		world:  world,
+		ids:    ids,
+		filter: NewFilter(ids...),
 	}
 }
 
 // With specifies additional components to filter for.
-func (q *Filter7[A, B, C, D, E, F, G]) With(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
+func (f *Filter7[A, B, C, D, E, F, G]) With(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.mask.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.mask.Set(id, true)
 	}
-	return q
+	return f
 }
 
-// With specifies components to exclude.
-func (q *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
+// Without specifies components to exclude.
+func (f *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.without.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.without.Set(id, true)
+		f.filter.hasWithout = true
 	}
-	return q
+	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (q *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G] {
-	q.without = q.mask.Not()
-	return q
+func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G] {
+	f.filter = f.filter.Exclusive()
+	return f
 }
 
 // Query creates a [Query7] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, C, D, E, F, G] {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
-	return newQuery7[A, B, C, D, E, F, G](q.world, q.mask, q.without, q.ids, q.relations)
+func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, C, D, E, F, G] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	return newQuery7[A, B, C, D, E, F, G](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
-func (q *Filter7[A, B, C, D, E, F, G]) Batch(rel ...RelationIndex) Batch {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...RelationIndex) Batch {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
 	return Batch{
-		mask:      q.mask,
-		without:   q.without,
-		relations: q.relations,
+		filter:    f.filter,
+		relations: f.relations,
 	}
 }
 
@@ -553,8 +545,7 @@ func (q *Filter7[A, B, C, D, E, F, G]) Batch(rel ...RelationIndex) Batch {
 type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world     *World
 	ids       []ID
-	mask      Mask
-	without   Mask
+	filter    Filter
 	relations []RelationID
 }
 
@@ -574,50 +565,50 @@ func NewFilter8[A any, B any, C any, D any, E any, F any, G any, H any](world *W
 	}
 
 	return &Filter8[A, B, C, D, E, F, G, H]{
-		world: world,
-		ids:   ids,
-		mask:  All(ids...),
+		world:  world,
+		ids:    ids,
+		filter: NewFilter(ids...),
 	}
 }
 
 // With specifies additional components to filter for.
-func (q *Filter8[A, B, C, D, E, F, G, H]) With(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
+func (f *Filter8[A, B, C, D, E, F, G, H]) With(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.mask.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.mask.Set(id, true)
 	}
-	return q
+	return f
 }
 
-// With specifies components to exclude.
-func (q *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
+// Without specifies components to exclude.
+func (f *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
 	for _, c := range comps {
-		id := q.world.componentID(c.tp)
-		q.without.Set(id, true)
+		id := f.world.componentID(c.tp)
+		f.filter.without.Set(id, true)
+		f.filter.hasWithout = true
 	}
-	return q
+	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (q *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F, G, H] {
-	q.without = q.mask.Not()
-	return q
+func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F, G, H] {
+	f.filter = f.filter.Exclusive()
+	return f
 }
 
 // Query creates a [Query8] from this filter.
 // This must be used each time before iterating a query.
-func (q *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, B, C, D, E, F, G, H] {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
-	return newQuery8[A, B, C, D, E, F, G, H](q.world, q.mask, q.without, q.ids, q.relations)
+func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, B, C, D, E, F, G, H] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	return newQuery8[A, B, C, D, E, F, G, H](f.world, f.filter.mask, f.filter.without, f.ids, f.relations)
 }
 
 // Batch creates a [Batch] from this filter.
-func (q *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...RelationIndex) Batch {
-	q.relations = relations(rel).toRelations(&q.world.storage.registry, q.ids, q.relations)
+func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...RelationIndex) Batch {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
 	return Batch{
-		mask:      q.mask,
-		without:   q.without,
-		relations: q.relations,
+		filter:    f.filter,
+		relations: f.relations,
 	}
 }
