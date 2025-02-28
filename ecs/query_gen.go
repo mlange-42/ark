@@ -66,6 +66,11 @@ func (q *Query0) Get() {
 	return
 }
 
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query0) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
+}
+
 // Close closes the Query and unlocks the world.
 //
 // Automatically called when iteration finishes.
@@ -197,6 +202,11 @@ func (q *Query1[A]) Entity() Entity {
 func (q *Query1[A]) Get() *A {
 	checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index))
+}
+
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query1[A]) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
 }
 
 // Close closes the Query and unlocks the world.
@@ -334,6 +344,11 @@ func (q *Query2[A, B]) Get() (*A, *B) {
 	checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index))
+}
+
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query2[A, B]) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
 }
 
 // Close closes the Query and unlocks the world.
@@ -475,6 +490,11 @@ func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 	return (*A)(q.columnA.Get(q.cursor.index)),
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index))
+}
+
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query3[A, B, C]) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
 }
 
 // Close closes the Query and unlocks the world.
@@ -620,6 +640,11 @@ func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 		(*B)(q.columnB.Get(q.cursor.index)),
 		(*C)(q.columnC.Get(q.cursor.index)),
 		(*D)(q.columnD.Get(q.cursor.index))
+}
+
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query4[A, B, C, D]) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
 }
 
 // Close closes the Query and unlocks the world.
@@ -769,6 +794,11 @@ func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 		(*C)(q.columnC.Get(q.cursor.index)),
 		(*D)(q.columnD.Get(q.cursor.index)),
 		(*E)(q.columnE.Get(q.cursor.index))
+}
+
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query5[A, B, C, D, E]) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
 }
 
 // Close closes the Query and unlocks the world.
@@ -922,6 +952,11 @@ func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 		(*D)(q.columnD.Get(q.cursor.index)),
 		(*E)(q.columnE.Get(q.cursor.index)),
 		(*F)(q.columnF.Get(q.cursor.index))
+}
+
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query6[A, B, C, D, E, F]) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
 }
 
 // Close closes the Query and unlocks the world.
@@ -1079,6 +1114,11 @@ func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 		(*E)(q.columnE.Get(q.cursor.index)),
 		(*F)(q.columnF.Get(q.cursor.index)),
 		(*G)(q.columnG.Get(q.cursor.index))
+}
+
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query7[A, B, C, D, E, F, G]) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
 }
 
 // Close closes the Query and unlocks the world.
@@ -1240,6 +1280,11 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) 
 		(*F)(q.columnF.Get(q.cursor.index)),
 		(*G)(q.columnG.Get(q.cursor.index)),
 		(*H)(q.columnH.Get(q.cursor.index))
+}
+
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query8[A, B, C, D, E, F, G, H]) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
 }
 
 // Close closes the Query and unlocks the world.

@@ -88,6 +88,11 @@ func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 		{{end}}(*{{$v}})(q.column{{$v}}.Get(q.cursor.index)){{end}}
 }
 
+// GetRelation returns the entity relation target of the component at the given index.
+func (q *Query{{.}}{{$genericsShort}}) GetRelation(index int) Entity {
+	return q.components[index].columns[q.table.id].target
+}
+
 // Close closes the Query and unlocks the world.
 //
 // Automatically called when iteration finishes.

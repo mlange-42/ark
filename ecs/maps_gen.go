@@ -108,10 +108,25 @@ func (m *Map1[A]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
-// Remove the mapped components from the given entity.
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map1[A]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map1[A]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
 func (m *Map1[A]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
+		panic("can't set entity relation targets for a dead entity")
 	}
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
@@ -232,10 +247,25 @@ func (m *Map2[A, B]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
-// Remove the mapped components from the given entity.
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map2[A, B]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map2[A, B]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
 func (m *Map2[A, B]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
+		panic("can't set entity relation targets for a dead entity")
 	}
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
@@ -367,10 +397,25 @@ func (m *Map3[A, B, C]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
-// Remove the mapped components from the given entity.
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map3[A, B, C]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map3[A, B, C]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
 func (m *Map3[A, B, C]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
+		panic("can't set entity relation targets for a dead entity")
 	}
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
@@ -513,10 +558,25 @@ func (m *Map4[A, B, C, D]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
-// Remove the mapped components from the given entity.
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map4[A, B, C, D]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map4[A, B, C, D]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
 func (m *Map4[A, B, C, D]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
+		panic("can't set entity relation targets for a dead entity")
 	}
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
@@ -670,10 +730,25 @@ func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
-// Remove the mapped components from the given entity.
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map5[A, B, C, D, E]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map5[A, B, C, D, E]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
 func (m *Map5[A, B, C, D, E]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
+		panic("can't set entity relation targets for a dead entity")
 	}
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
@@ -838,10 +913,25 @@ func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
-// Remove the mapped components from the given entity.
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map6[A, B, C, D, E, F]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map6[A, B, C, D, E, F]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
 func (m *Map6[A, B, C, D, E, F]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
+		panic("can't set entity relation targets for a dead entity")
 	}
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
@@ -1017,10 +1107,25 @@ func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
-// Remove the mapped components from the given entity.
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map7[A, B, C, D, E, F, G]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map7[A, B, C, D, E, F, G]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
+		panic("can't set entity relation targets for a dead entity")
 	}
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
@@ -1207,10 +1312,25 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
-// Remove the mapped components from the given entity.
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map8[A, B, C, D, E, F, G, H]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// It does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map8[A, B, C, D, E, F, G, H]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
+		panic("can't set entity relation targets for a dead entity")
 	}
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
 	m.world.setRelations(entity, m.relations)
