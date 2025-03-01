@@ -158,4 +158,10 @@ func (a *archetype) Reset(storage *storage) {
 	for i := len(a.tables) - 1; i >= 0; i-- {
 		a.FreeTable(a.tables[i])
 	}
+
+	for _, m := range a.relationTables {
+		for key := range m {
+			delete(m, key)
+		}
+	}
 }
