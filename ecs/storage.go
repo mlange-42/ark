@@ -102,6 +102,16 @@ func (s *storage) RemoveEntity(entity Entity) {
 	}
 }
 
+func (s *storage) Reset() {
+	s.entities = s.entities[:reservedEntities]
+	s.entityPool.Reset()
+	s.isTarget = s.isTarget[:0]
+
+	for i := range s.archetypes {
+		s.archetypes[i].Reset(s)
+	}
+}
+
 func (s *storage) get(entity Entity, component ID) unsafe.Pointer {
 	if !s.entityPool.Alive(entity) {
 		panic("can't get component of a dead entity")

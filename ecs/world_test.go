@@ -223,6 +223,52 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 	assert.Equal(t, 32, cnt)
 }
 
+func TestWorldReset(t *testing.T) {
+	world := NewWorld(16)
+	u := world.Unsafe()
+
+	AddResource(&world, &Heading{100})
+
+	posID := ComponentID[Position](&world)
+	velID := ComponentID[Velocity](&world)
+	relID := ComponentID[ChildOf](&world)
+
+	target1 := world.NewEntity()
+	target2 := world.NewEntity()
+
+	u.NewEntity(velID)
+	u.NewEntity(posID, velID)
+	u.NewEntity(posID, velID)
+	e1 := u.NewEntityRel([]ID{posID, relID}, RelID(relID, target1))
+	_ = u.NewEntityRel([]ID{posID, relID}, RelID(relID, target2))
+
+	world.RemoveEntity(e1)
+	world.RemoveEntity(target1)
+
+	world.Reset()
+
+	assert.Equal(t, 0, int(world.storage.tables[0].Len()))
+	assert.Equal(t, 0, int(world.storage.tables[1].Len()))
+	assert.Equal(t, 0, world.storage.entityPool.Len())
+	assert.Equal(t, 2, len(world.storage.entities))
+
+	query := u.Query(NewFilter())
+	assert.Equal(t, 0, query.Count())
+	query.Close()
+
+	e1 = u.NewEntity(posID)
+	e2 := u.NewEntity(velID)
+	u.NewEntity(posID, velID)
+	u.NewEntity(posID, velID)
+
+	assert.Equal(t, Entity{2, 0}, e1)
+	assert.Equal(t, Entity{3, 0}, e2)
+
+	query = u.Query(NewFilter())
+	assert.Equal(t, 4, query.Count())
+	query.Close()
+}
+
 func TestWorldRemoveGC(t *testing.T) {
 	w := NewWorld(128)
 	mapper := NewMap[SliceComp](&w)
