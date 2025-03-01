@@ -4,7 +4,7 @@
 
 ### Documentation
 
-- Adds a section on tool to the README (#94)
+- Adds a section on tool to the README (#94, #95)
 
 ## [[v0.2.0]](https://github.com/mlange-42/ark/compare/v0.1.0...v0.2.0)
 
