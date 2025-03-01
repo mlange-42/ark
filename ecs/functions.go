@@ -89,3 +89,28 @@ func ResourceIDs(w *World) []ResID {
 func ResourceType(w *World, id ResID) (reflect.Type, bool) {
 	return w.resources.registry.ComponentType(id.id)
 }
+
+// GetResource returns a pointer to the given resource type in the world.
+// Returns nil if there is no such resource.
+//
+// Uses reflection. For more efficient access, use [Resource].
+// This more than 20 times faster than the GetResource function.
+//
+// See also [AddResource].
+func GetResource[T any](w *World) *T {
+	return w.resources.Get(ResourceID[T](w)).(*T)
+}
+
+// AddResource adds a resource to the world.
+// Returns the ID for the added resource.
+//
+// Panics if there is already such a resource.
+//
+// Uses reflection. For more efficient access, use [Resource].
+//
+// The number of resources per [World] is limited to [MaskTotalBits].
+func AddResource[T any](w *World, res *T) ResID {
+	id := ResourceID[T](w)
+	w.resources.Add(id, res)
+	return id
+}
