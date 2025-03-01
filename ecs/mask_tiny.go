@@ -10,22 +10,15 @@ import (
 // It is the maximum number of component types that may exist in any [World].
 const MaskTotalBits = 64
 
-// Mask is a 256 bit bit-mask.
+// Mask is a 64 bit bit-mask.
 // It is also a [Filter] for including certain components.
-//
-// Use [All] to create a mask for a list of component IDs.
 type Mask struct {
 	bits uint64 // 4x 64 bits of the mask
 }
 
-// Matches the mask as filter against another mask.
-func (b Mask) Matches(bits *Mask) bool {
-	return bits.Contains(&b)
-}
-
-// All creates a new Mask from a list of IDs.
+// NewMask creates a new Mask from a list of IDs.
 // Matches all entities that have the respective components, and potentially further components.
-func All(ids ...ID) Mask {
+func NewMask(ids ...ID) Mask {
 	var mask Mask
 	for _, id := range ids {
 		mask.Set(id, true)

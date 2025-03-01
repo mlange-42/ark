@@ -8,7 +8,7 @@ import (
 func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []RelationID) Entity {
 	w.checkLocked()
 
-	mask := All(ids...)
+	mask := NewMask(ids...)
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], &mask, relations)
 	entity, idx := w.storage.createEntity(newTable.id)
 
@@ -27,7 +27,7 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []Rela
 func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, relations []RelationID) {
 	w.checkLocked()
 
-	mask := All(ids...)
+	mask := NewMask(ids...)
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], &mask, relations)
 
 	startIdx := newTable.Len()
@@ -49,7 +49,7 @@ func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, rel
 func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableID, int) {
 	w.checkLocked()
 
-	mask := All(ids...)
+	mask := NewMask(ids...)
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], &mask, relations)
 
 	startIdx := newTable.Len()

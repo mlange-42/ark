@@ -107,3 +107,70 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 func (u Unsafe) Query(f Filter, relations ...RelationID) Query {
 	return newQuery(u.world, f, relations)
 }
+
+// DumpEntities dumps entity information into an [EntityDump] object.
+// This dump can be used with [World.LoadEntities] to set the World's entity state.
+//
+// For world serialization with components and resources, see module [github.com/mlange-42/arche-serde].
+func (u Unsafe) DumpEntities() EntityDump {
+	alive := []uint32{}
+
+	filter := NewFilter()
+	query := u.Query(filter)
+	for query.Next() {
+		alive = append(alive, uint32(query.Entity().id))
+	}
+
+	data := EntityDump{
+		Entities:  append([]Entity{}, u.world.storage.entityPool.entities...),
+		Alive:     alive,
+		Next:      uint32(u.world.storage.entityPool.next),
+		Available: u.world.storage.entityPool.available,
+	}
+
+	return data
+}
+
+// LoadEntities resets all entities to the state saved with [World.DumpEntities].
+//
+// Use this only on an empty world! Can be used after [World.Reset].
+//
+// The resulting world will have the same entities (in terms of ID, generation and alive state)
+// as the original world. This is necessary for proper serialization of entity relations.
+// However, the entities will not have any components.
+//
+// Panics if the world has any dead or alive entities.
+//
+// For world serialization with components and resources, see module [github.com/mlange-42/ark-serde].
+func (u Unsafe) LoadEntities(data *EntityDump) {
+	u.world.checkLocked()
+
+	if len(u.world.storage.entityPool.entities) > 2 || u.world.storage.entityPool.available > 0 {
+		panic("can set entity data only on a fresh or reset world")
+	}
+
+	capacity := len(data.Entities)
+
+	entities := make([]Entity, 0, capacity)
+	entities = append(entities, data.Entities...)
+
+	if len(data.Entities) > 0 {
+		u.world.storage.entityPool = entityPool{
+			entities:  entities,
+			next:      entityID(data.Next),
+			available: data.Available,
+			reserved:  entityID(reservedEntities),
+		}
+		u.world.storage.entityPool.pointer = unsafe.Pointer(&u.world.storage.entityPool.entities[0])
+	}
+
+	u.world.storage.entities = make([]entityIndex, len(data.Entities), capacity)
+	u.world.storage.isTarget = make([]bool, len(data.Entities), capacity)
+
+	table := &u.world.storage.tables[0]
+	for _, idx := range data.Alive {
+		entity := u.world.storage.entityPool.entities[idx]
+		tableIdx := table.Add(entity)
+		u.world.storage.entities[entity.id] = entityIndex{table: table.id, row: tableIdx}
+	}
+}

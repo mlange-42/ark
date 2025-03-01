@@ -10,14 +10,14 @@ type Filter struct {
 // NewFilter creates a new [Filter] matching the given components.
 func NewFilter(ids ...ID) Filter {
 	return Filter{
-		mask: All(ids...),
+		mask: NewMask(ids...),
 	}
 }
 
 // Without specifies components to exclude.
 // Resets previous excludes.
 func (f Filter) Without(ids ...ID) Filter {
-	f.without = All(ids...)
+	f.without = NewMask(ids...)
 	f.hasWithout = true
 	return f
 }
