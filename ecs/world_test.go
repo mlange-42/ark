@@ -251,6 +251,7 @@ func TestWorldReset(t *testing.T) {
 	assert.Equal(t, 0, int(world.storage.tables[1].Len()))
 	assert.Equal(t, 0, world.storage.entityPool.Len())
 	assert.Equal(t, 2, len(world.storage.entities))
+	assert.Equal(t, 2, len(world.storage.isTarget))
 
 	query := u.Query(NewFilter())
 	assert.Equal(t, 0, query.Count())

@@ -105,7 +105,7 @@ func (s *storage) RemoveEntity(entity Entity) {
 func (s *storage) Reset() {
 	s.entities = s.entities[:reservedEntities]
 	s.entityPool.Reset()
-	s.isTarget = s.isTarget[:0]
+	s.isTarget = s.isTarget[:reservedEntities]
 
 	for i := range s.archetypes {
 		s.archetypes[i].Reset(s)
