@@ -70,6 +70,15 @@ func TestCompType(t *testing.T) {
 	assert.Equal(t, typeOf[Position](), c.Type())
 }
 
+func TestResourceShortcuts(t *testing.T) {
+	w := NewWorld(1024)
+	res := Position{1, 2}
+	AddResource(&w, &res)
+
+	res2 := GetResource[Position](&w)
+	assert.Equal(t, res, *res2)
+}
+
 func BenchmarkComponentID(b *testing.B) {
 	b.StopTimer()
 	world := NewWorld(1024)
