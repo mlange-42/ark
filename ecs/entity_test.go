@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -30,4 +31,24 @@ func TestReservedEntities(t *testing.T) {
 	assert.True(t, zero.IsZero())
 	assert.False(t, wildcard.IsZero())
 	assert.True(t, wildcard.isWildcard())
+}
+
+func TestEntityMarshal(t *testing.T) {
+	e := Entity{2, 3}
+
+	jsonData, err := json.Marshal(&e)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	e2 := Entity{}
+	err = json.Unmarshal(jsonData, &e2)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, e2, e)
+
+	err = e2.UnmarshalJSON([]byte("pft"))
+	assert.NotNil(t, err)
 }
