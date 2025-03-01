@@ -1,6 +1,8 @@
 package ecs
 
-import "unsafe"
+import (
+	"unsafe"
+)
 
 // World is the central type holding entity and component data, as well as resources.
 type World struct {
@@ -90,7 +92,7 @@ func (w *World) DumpEntities() EntityDump {
 //
 // Panics if the world has any dead or alive entities.
 //
-// For world serialization with components and resources, see module [github.com/mlange-42/arche-serde].
+// For world serialization with components and resources, see module [github.com/mlange-42/ark-serde].
 func (w *World) LoadEntities(data *EntityDump) {
 	w.checkLocked()
 
@@ -110,9 +112,9 @@ func (w *World) LoadEntities(data *EntityDump) {
 	w.storage.entityPool.reserved = entityID(reservedEntities)
 
 	w.storage.entities = make([]entityIndex, len(data.Entities), capacity)
-	w.storage.isTarget = make([]bool, 0, capacity)
+	w.storage.isTarget = make([]bool, len(data.Entities), capacity)
 
-	table := w.storage.tables[0]
+	table := &w.storage.tables[0]
 	for _, idx := range data.Alive {
 		entity := w.storage.entityPool.entities[idx]
 		tableIdx := table.Add(entity)
