@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -131,4 +132,71 @@ func TestUnsafeExchange(t *testing.T) {
 	assert.Panics(t, func() {
 		u.Exchange(Entity{}, []ID{childID}, []ID{posID})
 	})
+}
+
+func TestUnsafeEntityDump(t *testing.T) {
+	w := NewWorld(1024)
+
+	e1 := w.NewEntity()
+	e2 := w.NewEntity()
+	e3 := w.NewEntity()
+	e4 := w.NewEntity()
+
+	w.RemoveEntity(e2)
+	w.RemoveEntity(e3)
+	e5 := w.NewEntity()
+
+	eData := w.Unsafe().DumpEntities()
+	fmt.Println(eData)
+
+	w2 := NewWorld(1024)
+	w2.Unsafe().LoadEntities(&eData)
+
+	assert.True(t, w2.Alive(e1))
+	assert.True(t, w2.Alive(e4))
+	assert.True(t, w2.Alive(e5))
+
+	assert.False(t, w2.Alive(e2))
+	assert.False(t, w2.Alive(e3))
+
+	//assert.Equal(t, w.Ids(e1), []ID{})
+
+	query := w2.Unsafe().Query(NewFilter())
+	assert.Equal(t, query.Count(), 3)
+	query.Close()
+}
+
+func TestUnsafeEntityDumpEmpty(t *testing.T) {
+	w := NewWorld(1024)
+
+	eData := w.Unsafe().DumpEntities()
+
+	w2 := NewWorld(1024)
+	w2.Unsafe().LoadEntities(&eData)
+
+	e1 := w2.NewEntity()
+	e2 := w2.NewEntity()
+
+	assert.True(t, w2.Alive(e1))
+	assert.True(t, w2.Alive(e2))
+
+	query := w2.Unsafe().Query(NewFilter())
+	assert.Equal(t, query.Count(), 2)
+	query.Close()
+}
+
+func TestUnsafeEntityDumpFail(t *testing.T) {
+	w := NewWorld(1024)
+	_ = w.NewEntity()
+
+	eData := w.Unsafe().DumpEntities()
+
+	w2 := NewWorld(1024)
+	e1 := w2.NewEntity()
+	w2.RemoveEntity(e1)
+
+	assert.PanicsWithValue(t, "can set entity data only on a fresh or reset world",
+		func() {
+			w2.Unsafe().LoadEntities(&eData)
+		})
 }

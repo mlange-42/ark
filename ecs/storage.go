@@ -38,7 +38,7 @@ func newStorage(capacity uint32) storage {
 	tables := make([]table, 0, 128)
 	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, componentsMap, []bool{}, []Entity{}, []RelationID{}))
 	archetypes := make([]archetype, 0, 128)
-	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []tableID{0}, &reg))
+	archetypes = append(archetypes, newArchetype(0, &bitMask{}, []ID{}, []tableID{0}, &reg))
 	return storage{
 		registry:        reg,
 		entities:        entities,
@@ -51,7 +51,7 @@ func newStorage(capacity uint32) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(oldTable *table, mask *Mask, relations []RelationID) *table {
+func (s *storage) findOrCreateTable(oldTable *table, mask *bitMask, relations []RelationID) *table {
 	// TODO: use archetype graph
 	var arch *archetype
 	for i := range s.archetypes {
@@ -180,7 +180,7 @@ func (s *storage) createEntities(table *table, count int) {
 	}
 }
 
-func (s *storage) createArchetype(mask *Mask) *archetype {
+func (s *storage) createArchetype(mask *bitMask) *archetype {
 	comps := mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
 	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), mask, comps, nil, &s.registry))
@@ -229,7 +229,7 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 	return table
 }
 
-func (s *storage) getExchangeMask(mask *Mask, add []ID, rem []ID) {
+func (s *storage) getExchangeMask(mask *bitMask, add []ID, rem []ID) {
 	for _, comp := range rem {
 		if !mask.Get(comp) {
 			panic(fmt.Sprintf("entity does not have a component of type %v, can't remove", s.registry.Types[comp.id]))
