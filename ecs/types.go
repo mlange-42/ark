@@ -1,5 +1,7 @@
 package ecs
 
+import "reflect"
+
 // ID is the component identifier.
 // It is not relevant when using the default generic API.
 type ID struct {
@@ -35,4 +37,12 @@ type EntityDump struct {
 	Alive     []uint32 // IDs of all alive entities in query iteration order.
 	Next      uint32   // The next free entity of the World's entity pool.
 	Available uint32   // The number of allocated and available entities in the World's entity pool.
+}
+
+// CompInfo provides information about a registered component.
+// Returned by [ComponentInfo].
+type CompInfo struct {
+	ID         ID
+	Type       reflect.Type
+	IsRelation bool
 }

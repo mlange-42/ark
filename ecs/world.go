@@ -1,5 +1,7 @@
 package ecs
 
+import "unsafe"
+
 // World is the central type holding entity and component data, as well as resources.
 type World struct {
 	storage   storage
@@ -104,6 +106,8 @@ func (w *World) LoadEntities(data *EntityDump) {
 	w.storage.entityPool.entities = entities
 	w.storage.entityPool.next = entityID(data.Next)
 	w.storage.entityPool.available = data.Available
+	w.storage.entityPool.pointer = unsafe.Pointer(&w.storage.entityPool.entities[0])
+	w.storage.entityPool.reserved = entityID(reservedEntities)
 
 	w.storage.entities = make([]entityIndex, len(data.Entities), capacity)
 	w.storage.isTarget = make([]bool, 0, capacity)
