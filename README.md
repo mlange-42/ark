@@ -8,8 +8,8 @@
 
 Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) (ECS) for [Go](https://go.dev/).
 
-Ark implements the lessons learned from my other Go ECS: [Arche](https://github.com/mlange-42/arche).
-If you are familiar with Arche, you will feel at home.
+Ark implements the lessons learned from my other Go ECS: [Arche](https://github.com/mlange-42/arche).  
+If you are familiar with Arche, you will feel at home.  
 The primary aims are:
 
 - More feature-complete entity relationships.
