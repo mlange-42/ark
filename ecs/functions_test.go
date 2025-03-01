@@ -65,6 +65,11 @@ func TestComponentInfo(t *testing.T) {
 	assert.Equal(t, tp, nil)
 }
 
+func TestCompType(t *testing.T) {
+	c := C[Position]()
+	assert.Equal(t, typeOf[Position](), c.Type())
+}
+
 func BenchmarkComponentID(b *testing.B) {
 	b.StopTimer()
 	world := NewWorld(1024)
