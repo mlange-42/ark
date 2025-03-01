@@ -103,7 +103,7 @@ However, please be aware that the API is still unstable.
 - [x] World component access for specific entities
 - [x] ECS resources
 - [x] Entity relationships
-- [ ] Batch operations
+- [ ] Batch operations (see [#62: Batch operations](https://github.com/mlange-42/ark/issues/62))
 - [x] Unsafe API for runtime types
 - [x] (De)-serialization ([ark-serde](https://github.com/mlange-42/ark-serde))
 - [ ] Event system
