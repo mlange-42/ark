@@ -1,5 +1,7 @@
 package ecs
 
+import "encoding/json"
+
 type entityID uint32
 
 var entityType = typeOf[Entity]()
@@ -25,6 +27,29 @@ func (e Entity) IsZero() bool {
 // isWildcard returns whether this entity is the reserved wildcard entity.
 func (e Entity) isWildcard() bool {
 	return e.id == 1
+}
+
+// MarshalJSON returns a JSON representation of the entity, for serialization purposes.
+//
+// The JSON representation of an entity is a two-element array of entity ID and generation.
+func (e Entity) MarshalJSON() ([]byte, error) {
+	arr := [2]uint32{uint32(e.id), e.gen}
+	jsonValue, _ := json.Marshal(arr) // Ignore the error, as we can be sure this works.
+	return jsonValue, nil
+}
+
+// UnmarshalJSON into an entity.
+//
+// For serialization purposes only. Do not use this to create entities!
+func (e *Entity) UnmarshalJSON(data []byte) error {
+	arr := [2]uint32{}
+	if err := json.Unmarshal(data, &arr); err != nil {
+		return err
+	}
+	e.id = entityID(arr[0])
+	e.gen = arr[1]
+
+	return nil
 }
 
 func (e Entity) toRelation(id ID, out []RelationID) []RelationID {

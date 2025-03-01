@@ -50,9 +50,50 @@ func (q *Query) Get(comp ID) unsafe.Pointer {
 	return q.table.Get(comp, uintptr(q.cursor.index))
 }
 
+// Has returns whether the current entity has the given component.
+func (q *Query) Has(comp ID) bool {
+	return q.table.Has(comp)
+}
+
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query) GetRelation(comp ID) Entity {
 	return q.table.GetRelation(comp)
+}
+
+// Count returns the number of entities matching this query.
+func (q *Query) Count() int {
+	count := 0
+	for i := range q.world.storage.archetypes {
+		archetype := &q.world.storage.archetypes[i]
+		if !q.filter.matches(&archetype.mask) {
+			continue
+		}
+
+		if !archetype.HasRelations() {
+			table := &q.world.storage.tables[archetype.tables[0]]
+			count += table.Len()
+			continue
+		}
+
+		tables := archetype.GetTables(q.relations)
+		for _, tab := range tables {
+			table := &q.world.storage.tables[tab]
+			if !table.Matches(q.relations) {
+				continue
+			}
+			count += table.Len()
+		}
+	}
+	return count
+}
+
+// IDs returns the component IDs for the archetype of the [Entity] at the iterator's current position.
+//
+// Returns a copy of the archetype's component IDs slice, for safety.
+// This means that the result can be manipulated safely,
+// but also that calling the method may incur some significant cost.
+func (q *Query) IDs() []ID {
+	return append([]ID{}, q.table.ids...)
 }
 
 // Close closes the Query and unlocks the world.
