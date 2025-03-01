@@ -240,7 +240,7 @@ func TestWorldReset(t *testing.T) {
 	u.NewEntity(posID, velID)
 	u.NewEntity(posID, velID)
 	e1 := u.NewEntityRel([]ID{posID, relID}, RelID(relID, target1))
-	e2 := u.NewEntityRel([]ID{posID, relID}, RelID(relID, target2))
+	_ = u.NewEntityRel([]ID{posID, relID}, RelID(relID, target2))
 
 	world.RemoveEntity(e1)
 	world.RemoveEntity(target1)
@@ -257,7 +257,7 @@ func TestWorldReset(t *testing.T) {
 	query.Close()
 
 	e1 = u.NewEntity(posID)
-	e2 = u.NewEntity(velID)
+	e2 := u.NewEntity(velID)
 	u.NewEntity(posID, velID)
 	u.NewEntity(posID, velID)
 
