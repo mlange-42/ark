@@ -105,7 +105,7 @@ However, please be aware that the API is still unstable.
 - [x] Entity relationships
 - [ ] Batch operations
 - [x] Unsafe API for runtime types
-- [ ] (De)-serialization (`ark-serde`)
+- [x] (De)-serialization ([ark-serde](https://github.com/mlange-42/ark-serde))
 - [ ] Event system
 - [ ] Comprehensive user guide
 
