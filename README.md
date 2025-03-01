@@ -92,8 +92,7 @@ func main() {
 ## Tools
 
 - [ark-serde](https://github.com/mlange-42/ark-serde) provides JSON serialization and deserialization for Ark's World.
-- [ark-tools](https://github.com/mlange-42/ark-tools) provides a wrapper around Ark, and some common systems and resources.
-its purpose is to get started with prototyping and developing simulation models immediately, focussing on the model logic.
+- [ark-tools](https://github.com/mlange-42/ark-tools) provides systems, a scheduler, and other useful stuff for Ark.
 
 ## Feature road map
 
