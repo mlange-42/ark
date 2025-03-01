@@ -6,7 +6,7 @@ type archetypeID uint32
 
 type archetype struct {
 	id             archetypeID
-	mask           bitMask
+	mask           Mask
 	components     []ID
 	componentsMap  []int16
 	isRelation     []bool
@@ -20,7 +20,7 @@ type tableIDs struct {
 	tables []tableID
 }
 
-func newArchetype(id archetypeID, mask *bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
+func newArchetype(id archetypeID, mask *Mask, components []ID, tables []tableID, reg *componentRegistry) archetype {
 	componentsMap := make([]int16, MaskTotalBits)
 	for i := range MaskTotalBits {
 		componentsMap[i] = -1

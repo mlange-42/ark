@@ -10,7 +10,7 @@ type registry struct {
 	Components map[reflect.Type]uint8 // Mapping from types to IDs.
 	Types      []reflect.Type         // Mapping from IDs to types.
 	IDs        []uint8                // List of IDs.
-	Used       bitMask                // Mapping from IDs tu used status.
+	Used       Mask                   // Mapping from IDs tu used status.
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
@@ -18,7 +18,7 @@ func newRegistry() registry {
 	return registry{
 		Components: map[reflect.Type]uint8{},
 		Types:      make([]reflect.Type, MaskTotalBits),
-		Used:       bitMask{},
+		Used:       Mask{},
 		IDs:        []uint8{},
 	}
 }

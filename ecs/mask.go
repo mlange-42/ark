@@ -11,18 +11,18 @@ import (
 const MaskTotalBits = 256
 const wordSize = 64
 
-// bitMask is a 256 bit bit-mask.
+// Mask is a 256 bit bit-mask.
 // It is also a [Filter] for including certain components.
 //
 // Use [newMask] to create a mask for a list of component IDs.
-type bitMask struct {
+type Mask struct {
 	bits [4]uint64 // 4x 64 bits of the mask
 }
 
-// newMask creates a new Mask from a list of IDs.
+// NewMask creates a new Mask from a list of IDs.
 // Matches all entities that have the respective components, and potentially further components.
-func newMask(ids ...ID) bitMask {
-	var mask bitMask
+func NewMask(ids ...ID) Mask {
+	var mask Mask
 	for _, id := range ids {
 		mask.Set(id, true)
 	}
@@ -30,7 +30,7 @@ func newMask(ids ...ID) bitMask {
 }
 
 // Get reports whether the bit at the given index [ID] is set.
-func (b *bitMask) Get(bit ID) bool {
+func (b *Mask) Get(bit ID) bool {
 	idx := bit.id / 64
 	offset := bit.id - (64 * idx)
 	mask := uint64(1 << offset)
@@ -38,7 +38,7 @@ func (b *bitMask) Get(bit ID) bool {
 }
 
 // Set sets the state of the bit at the given index.
-func (b *bitMask) Set(bit ID, value bool) {
+func (b *Mask) Set(bit ID, value bool) {
 	idx := bit.id / 64
 	offset := bit.id - (64 * idx)
 	if value {
@@ -49,24 +49,24 @@ func (b *bitMask) Set(bit ID, value bool) {
 }
 
 // Not returns the inversion of this mask.
-func (b *bitMask) Not() bitMask {
-	return bitMask{
+func (b *Mask) Not() Mask {
+	return Mask{
 		bits: [4]uint64{^b.bits[0], ^b.bits[1], ^b.bits[2], ^b.bits[3]},
 	}
 }
 
 // IsZero returns whether no bits are set in the mask.
-func (b *bitMask) IsZero() bool {
+func (b *Mask) IsZero() bool {
 	return b.bits[0] == 0 && b.bits[1] == 0 && b.bits[2] == 0 && b.bits[3] == 0
 }
 
 // Reset the mask setting all bits to false.
-func (b *bitMask) Reset() {
+func (b *Mask) Reset() {
 	b.bits = [4]uint64{0, 0, 0, 0}
 }
 
 // Contains reports if the other mask is a subset of this mask.
-func (b *bitMask) Contains(other *bitMask) bool {
+func (b *Mask) Contains(other *Mask) bool {
 	return b.bits[0]&other.bits[0] == other.bits[0] &&
 		b.bits[1]&other.bits[1] == other.bits[1] &&
 		b.bits[2]&other.bits[2] == other.bits[2] &&
@@ -74,7 +74,7 @@ func (b *bitMask) Contains(other *bitMask) bool {
 }
 
 // ContainsAny reports if any bit of the other mask is in this mask.
-func (b *bitMask) ContainsAny(other *bitMask) bool {
+func (b *Mask) ContainsAny(other *Mask) bool {
 	return b.bits[0]&other.bits[0] != 0 ||
 		b.bits[1]&other.bits[1] != 0 ||
 		b.bits[2]&other.bits[2] != 0 ||
@@ -82,8 +82,8 @@ func (b *bitMask) ContainsAny(other *bitMask) bool {
 }
 
 // And returns the bitwise AND of two masks.
-func (b *bitMask) And(other *bitMask) bitMask {
-	return bitMask{
+func (b *Mask) And(other *Mask) Mask {
+	return Mask{
 		bits: [4]uint64{
 			b.bits[0] & other.bits[0],
 			b.bits[1] & other.bits[1],
@@ -94,8 +94,8 @@ func (b *bitMask) And(other *bitMask) bitMask {
 }
 
 // Or returns the bitwise OR of two masks.
-func (b *bitMask) Or(other *bitMask) bitMask {
-	return bitMask{
+func (b *Mask) Or(other *Mask) Mask {
+	return Mask{
 		bits: [4]uint64{
 			b.bits[0] | other.bits[0],
 			b.bits[1] | other.bits[1],
@@ -106,8 +106,8 @@ func (b *bitMask) Or(other *bitMask) bitMask {
 }
 
 // Xor returns the bitwise XOR of two masks.
-func (b *bitMask) Xor(other *bitMask) bitMask {
-	return bitMask{
+func (b *Mask) Xor(other *Mask) Mask {
+	return Mask{
 		bits: [4]uint64{
 			b.bits[0] ^ other.bits[0],
 			b.bits[1] ^ other.bits[1],
@@ -118,16 +118,16 @@ func (b *bitMask) Xor(other *bitMask) bitMask {
 }
 
 // TotalBitsSet returns how many bits are set in this mask.
-func (b *bitMask) TotalBitsSet() int {
+func (b *Mask) TotalBitsSet() int {
 	return bits.OnesCount64(b.bits[0]) + bits.OnesCount64(b.bits[1]) + bits.OnesCount64(b.bits[2]) + bits.OnesCount64(b.bits[3])
 }
 
 // Equals returns whether two masks are equal.
-func (b *bitMask) Equals(other *bitMask) bool {
+func (b *Mask) Equals(other *Mask) bool {
 	return b.bits == other.bits
 }
 
-func (b *bitMask) toTypes(reg *registry) []ID {
+func (b *Mask) toTypes(reg *registry) []ID {
 	count := int(b.TotalBitsSet())
 	types := make([]ID, count)
 

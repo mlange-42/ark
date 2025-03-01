@@ -13,19 +13,19 @@ func TestFilter(t *testing.T) {
 
 	tests := []struct {
 		filter  Filter
-		mask    bitMask
+		mask    Mask
 		matches bool
 	}{
-		{NewFilter(id1, id2), newMask(id1, id2, id3), true},
-		{NewFilter(id1, id2), newMask(id1), false},
+		{NewFilter(id1, id2), NewMask(id1, id2, id3), true},
+		{NewFilter(id1, id2), NewMask(id1), false},
 
-		{NewFilter(id1, id2).Without(id3), newMask(id1, id2), true},
-		{NewFilter(id1, id2).Without(id3), newMask(id1, id2, id3), false},
-		{NewFilter(id1, id2).Without(id3), newMask(id1), false},
+		{NewFilter(id1, id2).Without(id3), NewMask(id1, id2), true},
+		{NewFilter(id1, id2).Without(id3), NewMask(id1, id2, id3), false},
+		{NewFilter(id1, id2).Without(id3), NewMask(id1), false},
 
-		{NewFilter(id1, id2).Exclusive(), newMask(id1, id2), true},
-		{NewFilter(id1, id2).Exclusive(), newMask(id1, id2, id3), false},
-		{NewFilter(id1, id2).Exclusive(), newMask(id1), false},
+		{NewFilter(id1, id2).Exclusive(), NewMask(id1, id2), true},
+		{NewFilter(id1, id2).Exclusive(), NewMask(id1, id2, id3), false},
+		{NewFilter(id1, id2).Exclusive(), NewMask(id1), false},
 	}
 
 	for _, test := range tests {

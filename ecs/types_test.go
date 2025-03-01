@@ -76,7 +76,7 @@ type CompH struct {
 func TestTypeSizes(t *testing.T) {
 	printTypeSize[Entity]()
 	printTypeSize[entityIndex]()
-	printTypeSize[bitMask]()
+	printTypeSize[Mask]()
 	printTypeSize[World]()
 	printTypeSize[column]()
 	printTypeSize[table]()
