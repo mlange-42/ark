@@ -105,11 +105,13 @@ func (w *World) LoadEntities(data *EntityDump) {
 	entities := make([]Entity, 0, capacity)
 	entities = append(entities, data.Entities...)
 
-	w.storage.entityPool.entities = entities
-	w.storage.entityPool.next = entityID(data.Next)
-	w.storage.entityPool.available = data.Available
-	w.storage.entityPool.pointer = unsafe.Pointer(&w.storage.entityPool.entities[0])
-	w.storage.entityPool.reserved = entityID(reservedEntities)
+	if len(data.Entities) > 0 {
+		w.storage.entityPool.entities = entities
+		w.storage.entityPool.next = entityID(data.Next)
+		w.storage.entityPool.available = data.Available
+		w.storage.entityPool.pointer = unsafe.Pointer(&w.storage.entityPool.entities[0])
+		w.storage.entityPool.reserved = entityID(reservedEntities)
+	}
 
 	w.storage.entities = make([]entityIndex, len(data.Entities), capacity)
 	w.storage.isTarget = make([]bool, len(data.Entities), capacity)
