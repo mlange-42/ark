@@ -6,16 +6,16 @@
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/ark)
 [![MIT license](https://img.shields.io/badge/MIT-brightgreen?label=license)](https://github.com/mlange-42/ark/blob/main/LICENSE)
 
-Ark is a work in progress Entity Component System for Go.
+Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) (ECS) for [Go](https://go.dev/).
 
 Ark implements the lessons learned from my other Go ECS: [Arche](https://github.com/mlange-42/arche).
 If you are familiar with Arche, you will feel at home.
 The primary aims are:
 
-- More feature-complete entity relationships
-- Making it even faster than Arche (already achieved)
-- A more structured design due to better planning of features
-- More focus on the generic API
+- More feature-complete entity relationships.
+- More focus on the generic API.
+- Making it even faster than Arche (already achieved).
+- More structured internals due to better planning of features.
 
 ## Installation
 

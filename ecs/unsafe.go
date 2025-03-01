@@ -109,9 +109,9 @@ func (u Unsafe) Query(f Filter, relations ...RelationID) Query {
 }
 
 // DumpEntities dumps entity information into an [EntityDump] object.
-// This dump can be used with [World.LoadEntities] to set the World's entity state.
+// This dump can be used with [Unsafe.LoadEntities] to set the World's entity state.
 //
-// For world serialization with components and resources, see module [github.com/mlange-42/arche-serde].
+// For world serialization with components and resources, see module [github.com/mlange-42/ark-serde].
 func (u Unsafe) DumpEntities() EntityDump {
 	alive := []uint32{}
 
@@ -131,7 +131,7 @@ func (u Unsafe) DumpEntities() EntityDump {
 	return data
 }
 
-// LoadEntities resets all entities to the state saved with [World.DumpEntities].
+// LoadEntities resets all entities to the state saved with [Unsafe.DumpEntities].
 //
 // Use this only on an empty world! Can be used after [World.Reset].
 //
