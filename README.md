@@ -89,6 +89,12 @@ func main() {
 }
 ```
 
+## Tools
+
+- [ark-serde](https://github.com/mlange-42/ark-serde) provides JSON serialization and deserialization for Ark's World.
+- [ark-tools](https://github.com/mlange-42/ark-tools) provides a wrapper around Ark, and some common systems and resources.
+its purpose is to get started with prototyping and developing simulation models immediately, focussing on the model logic.
+
 ## Feature road map
 
 At the moment, Ark supports all basic ECS functionality.
