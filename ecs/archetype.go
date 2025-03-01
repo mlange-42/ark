@@ -144,7 +144,7 @@ func (a *archetype) RemoveTarget(entity Entity) {
 	}
 }
 
-func (a *archetype) Reset(storage *storage, removeTables bool) {
+func (a *archetype) Reset(storage *storage) {
 	if !a.HasRelations() {
 		storage.tables[a.tables[0]].Reset()
 		return
@@ -155,10 +155,8 @@ func (a *archetype) Reset(storage *storage, removeTables bool) {
 		table.Reset()
 	}
 
-	if removeTables {
-		for i := len(a.tables) - 1; i >= 0; i-- {
-			a.FreeTable(a.tables[i])
-		}
+	for i := len(a.tables) - 1; i >= 0; i-- {
+		a.FreeTable(a.tables[i])
 	}
 
 	for _, m := range a.relationTables {

@@ -108,7 +108,7 @@ func (s *storage) Reset() {
 	s.isTarget = s.isTarget[:reservedEntities]
 
 	for i := range s.archetypes {
-		s.archetypes[i].Reset(s, i > 0)
+		s.archetypes[i].Reset(s)
 	}
 }
 
