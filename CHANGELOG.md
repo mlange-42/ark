@@ -8,7 +8,7 @@
 - Adds `ExchangeX.Add` and `ExchangeX.Remove` (#70)
 - Adds `Map.GetRelationUnchecked` (#75)
 - Adds build tag `tiny` for 64 bit masks (#77)
-- Adds `QueryX.GetRelation`, `MapX.GerRelation` and `MapX.GetRelationUnchecked` (#79)
+- Adds `QueryX.GetRelation`, `MapX.GetRelation` and `MapX.GetRelationUnchecked` (#79)
 - Adds unsafe, ID-based API (#80, #81, #82)
 - Adds several functions and methods required for [ark-serde](https://github.com/mlange-42/ark-serde) (#83, #85)
 - Adds resource shortcut functions `GetResource` and `AddResource` (#86)
