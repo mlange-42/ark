@@ -15,6 +15,7 @@ import (
 {{- $lower := lowerLetters . -}}
 
 {{- $generics := join "[Comp" ", Comp" "]" $upper -}}
+{{- $args := arguments $lower $upper "Comp" -}}
 {{- $mapArgs := join "&Comp" "{}, &Comp" "{}" $upper -}}
 {{- $comps := join "" ", " "" $lower -}}
 
@@ -59,5 +60,170 @@ func TestExchange{{.}}Remove(t *testing.T) {
 	assert.False(t, posMap.HasAll(e))
 	assert.False(t, mapper.HasAll(e))
 }
+
+func TestExchange{{.}}AddBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	exchange := NewExchange{{.}}{{$generics}}(&w).Removes(C[CompA]())
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	exchange.AddBatch(filter.Batch(), {{$mapArgs}})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+
+	exchange.RemoveBatch(filter2.Batch(), nil)
+	
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}
+
+func TestExchange{{.}}AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	exchange := NewExchange{{.}}{{$generics}}(&w).Removes(C[CompA]())
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	exchange.AddBatchFn(filter.Batch(), func(entity Entity, {{$args}}){
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+	
+	cnt = 0
+	exchange.RemoveBatch(filter2.Batch(), func(entity Entity){
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+	
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}
+
+func TestExchange{{.}}ExchangeBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	exchange := NewExchange{{.}}{{$generics}}(&w).Removes(C[Position]())
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	exchange.ExchangeBatch(filter.Batch(), {{$mapArgs}})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		assert.False(t, posMap.HasAll(query.Entity()))
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
+func TestExchange{{.}}ExchangeBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	exchange := NewExchange{{.}}{{$generics}}(&w).Removes(C[Position]())
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, {{$args}}){
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		assert.False(t, posMap.HasAll(query.Entity()))
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
 {{end -}}
 {{end -}}

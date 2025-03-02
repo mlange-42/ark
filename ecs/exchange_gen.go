@@ -57,6 +57,81 @@ func (ex *Exchange1[A]) Exchange(entity Entity, a *A, rel ...RelationIndex) {
 	}, ex.relations)
 }
 
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (ex *Exchange1[A]) AddBatch(batch *Batch, a *A, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+	}, ex.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, false, rel...)
+}
+
+// RemoveBatch removes the components previously specified with [Exchange1.Removes]
+// from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange1[A]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+}
+
+// ExchangeBatch performs the exchange on all entities matching the given batch filter.
+func (ex *Exchange1[A]) ExchangeBatch(batch *Batch, a *A, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
+		unsafe.Pointer(a),
+	}, ex.relations, nil)
+}
+
+// ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange1[A]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, true, rel...)
+}
+
+func (ex *Exchange1[A]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A), remove bool, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+			columnA := table.GetColumn(ex.ids[0])
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+				)
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	if remove {
+		ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+	} else {
+		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+	}
+}
+
 // Exchange2 allows to exchange components of entities.
 // It adds the given components. Use [Exchange2.Removes]
 // to set components to be removed.
@@ -111,6 +186,85 @@ func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B, rel ...RelationIn
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 	}, ex.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (ex *Exchange2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+	}, ex.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, false, rel...)
+}
+
+// RemoveBatch removes the components previously specified with [Exchange2.Removes]
+// from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange2[A, B]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+}
+
+// ExchangeBatch performs the exchange on all entities matching the given batch filter.
+func (ex *Exchange2[A, B]) ExchangeBatch(batch *Batch, a *A, b *B, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+	}, ex.relations, nil)
+}
+
+// ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange2[A, B]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, true, rel...)
+}
+
+func (ex *Exchange2[A, B]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), remove bool, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+			columnA := table.GetColumn(ex.ids[0])
+			columnB := table.GetColumn(ex.ids[1])
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+				)
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	if remove {
+		ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+	} else {
+		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+	}
 }
 
 // Exchange3 allows to exchange components of entities.
@@ -170,6 +324,89 @@ func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C, rel ...R
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
 	}, ex.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (ex *Exchange3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+	}, ex.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, false, rel...)
+}
+
+// RemoveBatch removes the components previously specified with [Exchange3.Removes]
+// from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange3[A, B, C]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+}
+
+// ExchangeBatch performs the exchange on all entities matching the given batch filter.
+func (ex *Exchange3[A, B, C]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+	}, ex.relations, nil)
+}
+
+// ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange3[A, B, C]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, true, rel...)
+}
+
+func (ex *Exchange3[A, B, C]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), remove bool, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+			columnA := table.GetColumn(ex.ids[0])
+			columnB := table.GetColumn(ex.ids[1])
+			columnC := table.GetColumn(ex.ids[2])
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+					(*C)(columnC.Get(index)),
+				)
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	if remove {
+		ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+	} else {
+		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+	}
 }
 
 // Exchange4 allows to exchange components of entities.
@@ -232,6 +469,93 @@ func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D,
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
 	}, ex.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (ex *Exchange4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+	}, ex.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, false, rel...)
+}
+
+// RemoveBatch removes the components previously specified with [Exchange4.Removes]
+// from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange4[A, B, C, D]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+}
+
+// ExchangeBatch performs the exchange on all entities matching the given batch filter.
+func (ex *Exchange4[A, B, C, D]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+	}, ex.relations, nil)
+}
+
+// ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange4[A, B, C, D]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, true, rel...)
+}
+
+func (ex *Exchange4[A, B, C, D]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), remove bool, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+			columnA := table.GetColumn(ex.ids[0])
+			columnB := table.GetColumn(ex.ids[1])
+			columnC := table.GetColumn(ex.ids[2])
+			columnD := table.GetColumn(ex.ids[3])
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+					(*C)(columnC.Get(index)),
+					(*D)(columnD.Get(index)),
+				)
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	if remove {
+		ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+	} else {
+		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+	}
 }
 
 // Exchange5 allows to exchange components of entities.
@@ -297,6 +621,97 @@ func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d 
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
 	}, ex.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (ex *Exchange5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+	}, ex.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, false, rel...)
+}
+
+// RemoveBatch removes the components previously specified with [Exchange5.Removes]
+// from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange5[A, B, C, D, E]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+}
+
+// ExchangeBatch performs the exchange on all entities matching the given batch filter.
+func (ex *Exchange5[A, B, C, D, E]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+	}, ex.relations, nil)
+}
+
+// ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange5[A, B, C, D, E]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, true, rel...)
+}
+
+func (ex *Exchange5[A, B, C, D, E]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), remove bool, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+			columnA := table.GetColumn(ex.ids[0])
+			columnB := table.GetColumn(ex.ids[1])
+			columnC := table.GetColumn(ex.ids[2])
+			columnD := table.GetColumn(ex.ids[3])
+			columnE := table.GetColumn(ex.ids[4])
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+					(*C)(columnC.Get(index)),
+					(*D)(columnD.Get(index)),
+					(*E)(columnE.Get(index)),
+				)
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	if remove {
+		ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+	} else {
+		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+	}
 }
 
 // Exchange6 allows to exchange components of entities.
@@ -365,6 +780,101 @@ func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C,
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
 	}, ex.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (ex *Exchange6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+	}, ex.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, false, rel...)
+}
+
+// RemoveBatch removes the components previously specified with [Exchange6.Removes]
+// from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange6[A, B, C, D, E, F]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+}
+
+// ExchangeBatch performs the exchange on all entities matching the given batch filter.
+func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+	}, ex.relations, nil)
+}
+
+// ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, true, rel...)
+}
+
+func (ex *Exchange6[A, B, C, D, E, F]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), remove bool, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+			columnA := table.GetColumn(ex.ids[0])
+			columnB := table.GetColumn(ex.ids[1])
+			columnC := table.GetColumn(ex.ids[2])
+			columnD := table.GetColumn(ex.ids[3])
+			columnE := table.GetColumn(ex.ids[4])
+			columnF := table.GetColumn(ex.ids[5])
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+					(*C)(columnC.Get(index)),
+					(*D)(columnD.Get(index)),
+					(*E)(columnE.Get(index)),
+					(*F)(columnF.Get(index)),
+				)
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	if remove {
+		ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+	} else {
+		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+	}
 }
 
 // Exchange7 allows to exchange components of entities.
@@ -436,6 +946,105 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c 
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
 	}, ex.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+	}, ex.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, false, rel...)
+}
+
+// RemoveBatch removes the components previously specified with [Exchange7.Removes]
+// from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange7[A, B, C, D, E, F, G]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+}
+
+// ExchangeBatch performs the exchange on all entities matching the given batch filter.
+func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+	}, ex.relations, nil)
+}
+
+// ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, true, rel...)
+}
+
+func (ex *Exchange7[A, B, C, D, E, F, G]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), remove bool, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+			columnA := table.GetColumn(ex.ids[0])
+			columnB := table.GetColumn(ex.ids[1])
+			columnC := table.GetColumn(ex.ids[2])
+			columnD := table.GetColumn(ex.ids[3])
+			columnE := table.GetColumn(ex.ids[4])
+			columnF := table.GetColumn(ex.ids[5])
+			columnG := table.GetColumn(ex.ids[6])
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+					(*C)(columnC.Get(index)),
+					(*D)(columnD.Get(index)),
+					(*E)(columnE.Get(index)),
+					(*F)(columnF.Get(index)),
+					(*G)(columnG.Get(index)),
+				)
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	if remove {
+		ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+	} else {
+		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+	}
 }
 
 // Exchange8 allows to exchange components of entities.
@@ -510,4 +1119,107 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B,
 		unsafe.Pointer(g),
 		unsafe.Pointer(h),
 	}, ex.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+	}, ex.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, false, rel...)
+}
+
+// RemoveBatch removes the components previously specified with [Exchange8.Removes]
+// from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+}
+
+// ExchangeBatch performs the exchange on all entities matching the given batch filter.
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+	}, ex.relations, nil)
+}
+
+// ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, true, rel...)
+}
+
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), remove bool, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+			columnA := table.GetColumn(ex.ids[0])
+			columnB := table.GetColumn(ex.ids[1])
+			columnC := table.GetColumn(ex.ids[2])
+			columnD := table.GetColumn(ex.ids[3])
+			columnE := table.GetColumn(ex.ids[4])
+			columnF := table.GetColumn(ex.ids[5])
+			columnG := table.GetColumn(ex.ids[6])
+			columnH := table.GetColumn(ex.ids[7])
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+					(*C)(columnC.Get(index)),
+					(*D)(columnD.Get(index)),
+					(*E)(columnE.Get(index)),
+					(*F)(columnF.Get(index)),
+					(*G)(columnG.Get(index)),
+					(*H)(columnH.Get(index)),
+				)
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	if remove {
+		ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+	} else {
+		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+	}
 }
