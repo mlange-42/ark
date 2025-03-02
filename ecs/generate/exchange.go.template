@@ -87,30 +87,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &ex.world.storage.tables[tableID]
-			{{- range $i, $v := $upper}}
-			column{{$v}} := table.GetColumn(ex.ids[{{$i}}])
-			{{- end}}
-
-			lock := ex.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(
-					table.GetEntity(index),
-					{{- range $upper}}
-					(*{{.}})(column{{.}}.Get(index)),
-					{{- end}}
-				)
-			}
-			ex.world.unlock(lock)
-		}
-	}
-	ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+	ex.exchangeBatchFn(batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange{{.}}.Removes]
@@ -146,6 +123,11 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatch(batch *Batch, {{$args}}
 // ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...RelationIndex) {
+	ex.exchangeBatchFn(batch, fn, true, rel...)
+}
+
+
+func (ex *Exchange{{.}}{{$genericsShort}}) exchangeBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), remove bool, rel ...RelationIndex) {
 	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
 
 	var process func(tableID tableID, start, len int)
@@ -169,7 +151,11 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatchFn(batch *Batch, fn func
 			ex.world.unlock(lock)
 		}
 	}
-	ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+	if remove {
+		ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+	} else {
+		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+	}
 }
 
 {{end -}}
