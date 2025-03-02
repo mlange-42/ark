@@ -153,9 +153,9 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Ent
 	if fn != nil {
 		process = func(tableID tableID, start, len int) {
 			table := &m.world.storage.tables[tableID]
-		{{- range $upper}}
-		column{{.}} := m.storage{{.}}.columns[tableID]
-		{{- end}}
+			{{- range $upper}}
+			column{{.}} := m.storage{{.}}.columns[tableID]
+			{{- end}}
 
 			lock := m.world.lock()
 			for i := range len {
@@ -179,6 +179,30 @@ func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
 		panic("can't remove components from a dead entity")
 	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// RemoveBatch removes the mapped components from all entities matching the given batch filter.
+func (m *Map{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch) {
+	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, nil)
+}
+
+// RemoveBatchFn removes the mapped components from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (m *Map{{.}}{{$genericsShort}}) RemoveBatchFn(batch *Batch, fn func(entity Entity)) {
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &m.world.storage.tables[tableID]
+
+			lock := m.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			m.world.unlock(lock)
+		}
+	}
+	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
