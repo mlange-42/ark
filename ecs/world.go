@@ -45,27 +45,20 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 	for _, table := range tables {
 		len := uintptr(table.Len())
 		var i uintptr
-		if fn == nil {
-			for i = range len {
-				entity := table.GetEntity(i)
-				if w.storage.isTarget[entity.id] {
-					cleanup = append(cleanup, entity)
-				}
-				w.storage.entities[entity.id].table = maxTableID
-				w.storage.entityPool.Recycle(entity)
-			}
-		} else {
+		if fn != nil {
 			l := w.lock()
 			for i = range len {
-				entity := table.GetEntity(i)
-				if w.storage.isTarget[entity.id] {
-					cleanup = append(cleanup, entity)
-				}
-				fn(entity)
-				w.storage.entities[entity.id].table = maxTableID
-				w.storage.entityPool.Recycle(entity)
+				fn(table.GetEntity(i))
 			}
 			w.unlock(l)
+		}
+		for i = range len {
+			entity := table.GetEntity(i)
+			if w.storage.isTarget[entity.id] {
+				cleanup = append(cleanup, entity)
+			}
+			w.storage.entities[entity.id].table = maxTableID
+			w.storage.entityPool.Recycle(entity)
 		}
 		table.Reset()
 	}
