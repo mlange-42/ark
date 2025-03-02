@@ -135,9 +135,9 @@ func (t *table) AddAll(other *table) {
 	}
 }
 
-func (t *table) AddAllEntities(other *table, extendColumns bool) {
+func (t *table) AddAllEntities(other *table, allocColumns bool) {
 	t.entities.AddAll(&other.entities)
-	if extendColumns {
+	if allocColumns {
 		for c := range t.columns {
 			t.columns[c].Alloc(uint32(other.Len()))
 		}
