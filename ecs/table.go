@@ -135,8 +135,13 @@ func (t *table) AddAll(other *table) {
 	}
 }
 
-func (t *table) AddAllEntities(other *table) {
+func (t *table) AddAllEntities(other *table, extendColumns bool) {
 	t.entities.AddAll(&other.entities)
+	if extendColumns {
+		for c := range t.columns {
+			t.columns[c].Alloc(uint32(other.Len()))
+		}
+	}
 }
 
 func (t *table) MatchesExact(relations []RelationID) bool {

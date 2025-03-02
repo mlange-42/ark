@@ -135,5 +135,38 @@ func TestMap{{.}}Relations(t *testing.T) {
 	})
 }
 
+func TestMap{{.}}AddBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap{{.}}{{$generics}}(&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	mapper.AddBatch(filter.Batch(), {{$mapArgs}})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
 {{end -}}
 {{end -}}

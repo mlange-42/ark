@@ -154,7 +154,6 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 	newTable := w.storage.findOrCreateTable(oldTable, &mask, relations)
 	startIdx := uintptr(newTable.Len())
 	count := uintptr(oldLen)
-	newTable.Alloc(uint32(count))
 
 	var i uintptr
 	for i = 0; i < count; i++ {
@@ -165,12 +164,12 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 		index.row = uint32(idx)
 	}
 
-	newTable.AddAllEntities(oldTable)
+	newTable.AddAllEntities(oldTable, true)
 	for _, id := range oldIDs {
 		if mask.Get(id) {
 			oldCol := oldTable.GetColumn(id)
 			newCol := newTable.GetColumn(id)
-			newCol.AddAll(oldCol)
+			newCol.SetLast(oldCol)
 		}
 	}
 	if addComps != nil {
