@@ -103,6 +103,14 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...RelationIndex) {
 	}, m.relations)
 }
 
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+	}, m.relations, nil)
+}
+
 // Remove the mapped components from the given entity.
 func (m *Map1[A]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
@@ -243,6 +251,15 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...RelationIndex) {
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 	}, m.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+	}, m.relations, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -396,6 +413,16 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...RelationInde
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
 	}, m.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+	}, m.relations, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -560,6 +587,17 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
 	}, m.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+	}, m.relations, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -735,6 +773,18 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
 	}, m.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+	}, m.relations, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -921,6 +971,19 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
 	}, m.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+	}, m.relations, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -1118,6 +1181,20 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
 	}, m.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+	}, m.relations, nil)
 }
 
 // Remove the mapped components from the given entity.
@@ -1326,6 +1403,21 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 		unsafe.Pointer(g),
 		unsafe.Pointer(h),
 	}, m.relations)
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+	}, m.relations, nil)
 }
 
 // Remove the mapped components from the given entity.

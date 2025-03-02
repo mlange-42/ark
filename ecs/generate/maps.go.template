@@ -134,6 +134,16 @@ func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...Relati
 	}, m.relations)
 }
 
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (m *Map{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		{{- range $lower}}
+		unsafe.Pointer({{.}}),
+		{{- end}}
+	}, m.relations, nil)
+}
+
 // Remove the mapped components from the given entity.
 func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
