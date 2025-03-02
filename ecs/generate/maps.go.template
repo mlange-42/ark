@@ -181,14 +181,9 @@ func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
-// RemoveBatch removes the mapped components from all entities matching the given batch filter.
-func (m *Map{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch) {
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, nil)
-}
-
-// RemoveBatchFn removes the mapped components from all entities matching the given batch filter,
+// RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map{{.}}{{$genericsShort}}) RemoveBatchFn(batch *Batch, fn func(entity Entity)) {
+func (m *Map{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch, fn func(entity Entity)) {
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
 		process = func(tableID tableID, start, len int) {
