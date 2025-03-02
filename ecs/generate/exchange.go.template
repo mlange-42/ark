@@ -73,5 +73,104 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, re
 		{{- end}}
 	}, ex.relations)
 }
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+func (ex *Exchange{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
+		{{- range $lower}}
+		unsafe.Pointer({{.}}),
+		{{- end}}
+	}, ex.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+			{{- range $i, $v := $upper}}
+			column{{$v}} := table.GetColumn(ex.ids[{{$i}}])
+			{{- end}}
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					{{- range $upper}}
+					(*{{.}})(column{{.}}.Get(index)),
+					{{- end}}
+				)
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
+}
+
+// RemoveBatch removes the components previously specified with [Exchange{{.}}.Removes]
+// from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+}
+
+// ExchangeBatch performs the exchange on all entities matching the given batch filter.
+func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatch(batch *Batch, {{$args}}, rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
+		{{- range $lower}}
+		unsafe.Pointer({{.}}),
+		{{- end}}
+	}, ex.relations, nil)
+}
+
+// ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...RelationIndex) {
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &ex.world.storage.tables[tableID]
+			{{- range $i, $v := $upper}}
+			column{{$v}} := table.GetColumn(ex.ids[{{$i}}])
+			{{- end}}
+
+			lock := ex.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					{{- range $upper}}
+					(*{{.}})(column{{.}}.Get(index)),
+					{{- end}}
+				)
+			}
+			ex.world.unlock(lock)
+		}
+	}
+	ex.world.exchangeBatch(batch, ex.ids, ex.remove, nil, ex.relations, process)
+}
+
 {{end -}}
 {{end -}}
