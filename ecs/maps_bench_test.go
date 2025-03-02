@@ -32,8 +32,7 @@ func BenchmarkMapPosVel_1000_Unchecked(b *testing.B) {
 
 	entities := make([]Entity, 0, n)
 	for range n {
-		e := world.NewEntity()
-		mapper.Add(e, &Position{}, &Velocity{X: 1, Y: 0})
+		e := mapper.NewEntity(&Position{}, &Velocity{X: 1, Y: 0})
 		entities = append(entities, e)
 	}
 

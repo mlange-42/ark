@@ -3,6 +3,8 @@ package ecs
 import "unsafe"
 
 // Query is an unsafe query.
+// It is significantly slower than type-safe generic queries like [Query2],
+// and should only be used when component types are not known at compile time.
 type Query struct {
 	world     *World
 	filter    Filter

@@ -5,6 +5,7 @@
 ### Documentation
 
 - Adds a section on tool to the README (#94, #95)
+- Adds a benchmark for unsafe queries and world access (#98)
 
 ### Bugfixes
 
