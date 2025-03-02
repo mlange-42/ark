@@ -14,13 +14,13 @@ type archetype struct {
 	id             archetypeID
 	node           nodeID
 	mask           Mask
-	components     []ID
-	componentsMap  []int16
-	isRelation     []bool
-	tables         []tableID
-	freeTables     []tableID
-	numRelations   uint8
-	relationTables []map[entityID]*tableIDs
+	components     []ID                     // components IDs of the archetype in arbitrary order
+	componentsMap  []int16                  // mapping from component IDs to column indices; -1 indicates none
+	isRelation     []bool                   // whether columns are relations components, indexed by column index
+	relationTables []map[entityID]*tableIDs // lookup for relation targets of tables, indexed by column index
+	tables         []tableID                // all active tables
+	freeTables     []tableID                // all inactive/free tables
+	numRelations   uint8                    // number of relation components
 }
 
 type tableIDs struct {
