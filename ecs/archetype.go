@@ -1,8 +1,14 @@
 package ecs
 
-import "slices"
+import (
+	"math"
+	"slices"
+)
 
 type archetypeID uint32
+
+// maxTArchetypeID is used as unassigned archetype ID.
+const maxTArchetypeID = math.MaxUint32
 
 type archetype struct {
 	id             archetypeID
