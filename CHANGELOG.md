@@ -10,6 +10,7 @@
 - Adds `ExchangeX.AddBatch` and `ExchangeX.AddBatchFn` batch operations (#101)
 - Adds `ExchangeX.RemoveBatch` batch operation (#100)
 - Adds `ExchangeX.ExchangeBatch` and `ExchangeX.ExchangeBatchFn` batch operations (#101)
+- Adds `Map.SetRelationBatch` and `MapX.SetRelationsBatch` (#102)
 
 ### Documentation
 

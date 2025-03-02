@@ -224,5 +224,25 @@ func (m *Map{{.}}{{$genericsShort}}) SetRelations(entity Entity, rel ...Relation
 	m.world.setRelations(entity, m.relations)
 }
 
+// SetRelationsBatch sets relation targets for all entities matching the given batch filter.
+func (m *Map{{.}}{{$genericsShort}}) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &m.world.storage.tables[tableID]
+
+			lock := m.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(table.GetEntity(index))
+			}
+			m.world.unlock(lock)
+		}
+	}
+	m.world.setRelationsBatch(batch, m.relations, process)
+}
+
 {{end -}}
 {{end -}}
