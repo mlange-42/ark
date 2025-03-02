@@ -278,7 +278,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 			if !ok {
 				newTable = s.createTable(archetype, newRelations)
 			}
-			s.moveEntities(table, newTable)
+			s.moveEntities(table, newTable, uint32(table.Len()))
 			archetype.FreeTable(table.id)
 
 			newRelations = newRelations[:0]
@@ -288,9 +288,9 @@ func (s *storage) cleanupArchetypes(target Entity) {
 }
 
 // moveEntities moves all entities from src to dst.
-func (s *storage) moveEntities(src, dst *table) {
+func (s *storage) moveEntities(src, dst *table, count uint32) {
 	oldLen := dst.Len()
-	dst.AddAll(src)
+	dst.AddAll(src, count)
 
 	newLen := dst.Len()
 	newTable := dst.id

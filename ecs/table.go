@@ -128,18 +128,18 @@ func (t *table) Reset() {
 	}
 }
 
-func (t *table) AddAll(other *table) {
-	t.entities.AddAll(&other.entities)
+func (t *table) AddAll(other *table, count uint32) {
+	t.entities.AddAll(&other.entities, count)
 	for c := range t.columns {
-		t.columns[c].AddAll(&other.columns[c])
+		t.columns[c].AddAll(&other.columns[c], count)
 	}
 }
 
-func (t *table) AddAllEntities(other *table, allocColumns bool) {
-	t.entities.AddAll(&other.entities)
+func (t *table) AddAllEntities(other *table, count uint32, allocColumns bool) {
+	t.entities.AddAll(&other.entities, count)
 	if allocColumns {
 		for c := range t.columns {
-			t.columns[c].Alloc(uint32(other.Len()))
+			t.columns[c].Alloc(uint32(count))
 		}
 	}
 }

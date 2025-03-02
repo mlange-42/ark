@@ -66,6 +66,9 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 		panic("can't exchange components on a dead entity")
 	}
 	if len(add) == 0 && len(rem) == 0 {
+		if len(relations) > 0 {
+			panic("exchange operation has no effect, but relations were specified. Use SetRelation(s) instead")
+		}
 		return
 	}
 
@@ -108,14 +111,14 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 }
 
 func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
-	addComps []unsafe.Pointer, relations []RelationID, fn func(table tableID, start, len int)) int {
+	addComps []unsafe.Pointer, relations []RelationID, fn func(table tableID, start, len int)) {
 	w.checkLocked()
 
 	if len(add) == 0 && len(rem) == 0 {
 		if len(relations) > 0 {
 			panic("exchange operation has no effect, but relations were specified. Use SetRelationBatch instead")
 		}
-		return 0
+		return
 	}
 
 	tables := w.getTables(batch)
@@ -137,13 +140,9 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			fn(t, start, len)
 		}
 	}
-
-	return int(totalEntities)
 }
 
 func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) (tableID, int, int) {
-	w.checkLocked()
-
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
 	mask := oldArchetype.mask
@@ -164,12 +163,12 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 		index.row = uint32(idx)
 	}
 
-	newTable.AddAllEntities(oldTable, true)
+	newTable.AddAllEntities(oldTable, uint32(oldLen), true)
 	for _, id := range oldIDs {
 		if mask.Get(id) {
 			oldCol := oldTable.GetColumn(id)
 			newCol := newTable.GetColumn(id)
-			newCol.SetLast(oldCol)
+			newCol.SetLast(oldCol, uint32(oldLen))
 		}
 	}
 	if addComps != nil {
@@ -195,6 +194,9 @@ func (w *World) setRelations(entity Entity, relations []RelationID) {
 
 	if !w.storage.entityPool.Alive(entity) {
 		panic("can't set relation for a dead entity")
+	}
+	if len(relations) == 0 {
+		panic("ne relations specified")
 	}
 
 	index := &w.storage.entities[entity.id]
@@ -226,6 +228,55 @@ func (w *World) setRelations(entity Entity, relations []RelationID) {
 	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
 
 	w.storage.registerTargets(relations)
+}
+
+func (w *World) setRelationsBatch(batch *Batch, relations []RelationID, fn func(table tableID, start, len int)) {
+	w.checkLocked()
+
+	if len(relations) == 0 {
+		panic("ne relations specified")
+	}
+
+	tables := w.getTables(batch)
+	lengths := make([]uint32, len(tables))
+	var totalEntities uint32 = 0
+	for i, table := range tables {
+		lengths[i] = uint32(table.Len())
+		totalEntities += uint32(table.Len())
+	}
+
+	for i, table := range tables {
+		tableLen := lengths[i]
+
+		if tableLen == 0 {
+			continue
+		}
+		t, start, len := w.setRelationsTable(table, int(tableLen), relations)
+		if fn != nil {
+			fn(t, start, len)
+		}
+	}
+
+	w.storage.registerTargets(relations)
+}
+
+func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []RelationID) (tableID, int, int) {
+	newRelations, changed := w.storage.getExchangeTargets(oldTable, relations)
+
+	if !changed {
+		return oldTable.id, 0, oldLen
+	}
+	oldArch := &w.storage.archetypes[oldTable.archetype]
+	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
+	if !ok {
+		newTable = w.storage.createTable(oldArch, newRelations)
+	}
+	startIdx := newTable.Len()
+	count := oldTable.Len()
+	w.storage.moveEntities(oldTable, newTable, uint32(oldLen))
+
+	return newTable.id, startIdx, count
+
 }
 
 func (w *World) getTables(batch *Batch) []*table {

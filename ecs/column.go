@@ -59,19 +59,19 @@ func (c *column) Alloc(n uint32) {
 	c.len += n
 }
 
-func (c *column) AddAll(other *column) {
+func (c *column) AddAll(other *column, count uint32) {
 	oldLen := c.len
-	c.Alloc(other.len)
+	c.Alloc(count)
 	src := other.Get(0)
 	dst := c.Get(uintptr(oldLen))
-	copyPtr(src, dst, c.itemSize*uintptr(other.len))
+	copyPtr(src, dst, c.itemSize*uintptr(count))
 }
 
-func (c *column) SetLast(other *column) {
-	start := c.len - other.len
+func (c *column) SetLast(other *column, count uint32) {
+	start := c.len - count
 	src := other.Get(0)
 	dst := c.Get(uintptr(start))
-	copyPtr(src, dst, c.itemSize*uintptr(other.len))
+	copyPtr(src, dst, c.itemSize*uintptr(count))
 }
 
 // Set overwrites the component at the given index.
