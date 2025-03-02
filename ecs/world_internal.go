@@ -107,12 +107,13 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 	w.storage.registerTargets(relations)
 }
 
-func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) int {
+func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
+	addComps []unsafe.Pointer, relations []RelationID, fn func(table tableID, start int)) int {
 	w.checkLocked()
 
 	if len(add) == 0 && len(rem) == 0 {
 		if len(relations) > 0 {
-			panic("exchange operation has no effect, but a relation is specified. Use Batch.SetRelation instead")
+			panic("exchange operation has no effect, but relations were specified. Use SetRelationBatch instead")
 		}
 		return 0
 	}
@@ -131,13 +132,16 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID, addComps []unsaf
 		if tableLen == 0 {
 			continue
 		}
-		_, _ = w.exchangeTable(table, int(tableLen), add, rem, addComps, relations)
+		t, start := w.exchangeTable(table, int(tableLen), add, rem, addComps, relations)
+		if fn != nil {
+			fn(t, start)
+		}
 	}
 
 	return int(totalEntities)
 }
 
-func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) (*table, uintptr) {
+func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) (tableID, int) {
 	w.checkLocked()
 
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
@@ -183,7 +187,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 	oldTable.Reset()
 	w.storage.registerTargets(relations)
 
-	return newTable, startIdx
+	return newTable.id, int(startIdx)
 }
 
 func (w *World) getTables(batch *Batch) []*table {
