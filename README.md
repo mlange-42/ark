@@ -7,15 +7,23 @@
 [![MIT license](https://img.shields.io/badge/MIT-brightgreen?label=license)](https://github.com/mlange-42/ark/blob/main/LICENSE)
 
 Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) (ECS) for [Go](https://go.dev/).
+It is the successor of [Arche](https://github.com/mlange-42/arche). 
 
-Ark implements the lessons learned from my other Go ECS: [Arche](https://github.com/mlange-42/arche).
-If you are familiar with Arche, you will feel at home.
-The primary aims are:
+<div align="center" width="100%">
 
-- More feature-complete entity relationships.
-- More focus on the generic API.
-- Making it even faster than Arche (already achieved).
-- More structured internals due to better planning of features.
+&mdash;&mdash;
+
+[Features](#features) &nbsp; &bull; &nbsp; [Installation](#installation) &nbsp; &bull; &nbsp; [Usage](#usage) &nbsp; &bull; &nbsp; [Tools](#tools)
+</div>
+
+## Features
+
+- Designed for performance and highly optimized.
+- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/arche).
+- Entity relationships as first-class feature.
+- Fast batch operations for mass manipulation.
+- No systems. Just queries. Use your own structure (or the [Tools](#tools)).
+- World serialization and deserialization with [ark-serde](https://github.com/mlange-42/ark-serde).
 
 ## Installation
 
@@ -93,26 +101,6 @@ func main() {
 
 - [ark-serde](https://github.com/mlange-42/ark-serde) provides JSON serialization and deserialization for Ark's World.
 - [ark-tools](https://github.com/mlange-42/ark-tools) provides systems, a scheduler, and other useful stuff for Ark.
-
-## Feature road map
-
-At the moment, Ark supports all basic ECS functionality.
-However, please be aware that the API is still unstable.
-
-- [x] Create and remove entities
-- [x] Create entities with components
-- [x] Add and remove components
-- [x] Exchange components (add/remove in one operation)
-- [x] Queries with basic component filters
-- [x] Advanced filters like `With`, `Without` and `Exclusive`
-- [x] World component access for specific entities
-- [x] ECS resources
-- [x] Entity relationships
-- [ ] Batch operations (see [#62: Batch operations](https://github.com/mlange-42/ark/issues/62))
-- [x] Unsafe API for runtime types
-- [x] (De)-serialization ([ark-serde](https://github.com/mlange-42/ark-serde))
-- [ ] Event system
-- [ ] Comprehensive user guide
 
 ## License
 
