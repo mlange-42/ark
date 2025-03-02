@@ -1,3 +1,5 @@
+<div align="center" width="100%">
+
 [![Ark (logo)](https://github.com/user-attachments/assets/4bbe57c6-2e16-43be-ad5e-0cf26c220f21)](https://github.com/mlange-42/ark)
 [![Test status](https://img.shields.io/github/actions/workflow/status/mlange-42/ark/tests.yml?branch=main&label=Tests&logo=github)](https://github.com/mlange-42/ark/actions/workflows/tests.yml)
 [![Coverage Status](https://img.shields.io/coverallsCoverage/github/mlange-42/ark?logo=coveralls)](https://badge.coveralls.io/github/mlange-42/ark?branch=main)
@@ -8,8 +10,6 @@
 
 Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) (ECS) for [Go](https://go.dev/).
 It is the successor of [Arche](https://github.com/mlange-42/arche). 
-
-<div align="center" width="100%">
 
 &mdash;&mdash;
 
