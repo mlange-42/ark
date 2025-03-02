@@ -19,7 +19,7 @@ It is the successor of [Arche](https://github.com/mlange-42/arche).
 ## Features
 
 - Designed for performance and highly optimized.
-- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/arche).
+- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/ark).
 - Entity relationships as first-class feature.
 - Fast batch operations for mass manipulation.
 - No systems. Just queries. Use your own structure (or the [Tools](#tools)).
