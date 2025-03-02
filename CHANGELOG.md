@@ -2,6 +2,15 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.2.0...main)
 
+### Features
+
+- Adds `MapX.AddBatch` and `MapX.AddBatchFn` batch operations (#100)
+- Adds `MapX.RemoveBatch` batch operation (#100)
+- Adds `World.RemoveEntities` batch operation (#100)
+- Adds `ExchangeX.AddBatch` and `ExchangeX.AddBatchFn` batch operations (#101)
+- Adds `ExchangeX.RemoveBatch` batch operation (#100)
+- Adds `ExchangeX.ExchangeBatch` and `ExchangeX.ExchangeBatchFn` batch operations (#101)
+
 ### Documentation
 
 - Adds a section on tool to the README (#94, #95)
