@@ -149,25 +149,3 @@ func TestQueryRelations(t *testing.T) {
 	}
 	assert.Equal(t, cnt, n)
 }
-
-func BenchmarkQueryUnsafePosVel_1000(b *testing.B) {
-	n := 1000
-	world := NewWorld(128)
-
-	posID := ComponentID[Position](&world)
-	velID := ComponentID[Velocity](&world)
-
-	mapper := NewMap2[Position, Velocity](&world)
-	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
-
-	filter := NewFilter(posID, velID)
-	for b.Loop() {
-		query := filter.Query(&world)
-		for query.Next() {
-			pos := (*Position)(query.Get(posID))
-			vel := (*Velocity)(query.Get(velID))
-			pos.X += vel.X
-			pos.Y += vel.Y
-		}
-	}
-}
