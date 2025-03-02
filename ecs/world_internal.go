@@ -108,7 +108,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 }
 
 func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
-	addComps []unsafe.Pointer, relations []RelationID, fn func(table tableID, start int)) int {
+	addComps []unsafe.Pointer, relations []RelationID, fn func(table tableID, start, len int)) int {
 	w.checkLocked()
 
 	if len(add) == 0 && len(rem) == 0 {
@@ -132,16 +132,16 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 		if tableLen == 0 {
 			continue
 		}
-		t, start := w.exchangeTable(table, int(tableLen), add, rem, addComps, relations)
+		t, start, len := w.exchangeTable(table, int(tableLen), add, rem, addComps, relations)
 		if fn != nil {
-			fn(t, start)
+			fn(t, start, len)
 		}
 	}
 
 	return int(totalEntities)
 }
 
-func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) (tableID, int) {
+func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) (tableID, int, int) {
 	w.checkLocked()
 
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
@@ -186,7 +186,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 	oldTable.Reset()
 	w.storage.registerTargets(relations)
 
-	return newTable.id, int(startIdx)
+	return newTable.id, int(startIdx), int(count)
 }
 
 func (w *World) getTables(batch *Batch) []*table {

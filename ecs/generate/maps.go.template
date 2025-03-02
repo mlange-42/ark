@@ -144,6 +144,35 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...Re
 	}, m.relations, nil)
 }
 
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...RelationIndex) {
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &m.world.storage.tables[tableID]
+		{{- range $upper}}
+		column{{.}} := m.storage{{.}}.columns[tableID]
+		{{- end}}
+
+			lock := m.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					{{- range $upper}}
+					(*{{.}})(column{{.}}.Get(index)),
+					{{- end}}
+				)
+			}
+			m.world.unlock(lock)
+		}
+	}
+	m.world.exchangeBatch(batch, m.ids, nil, nil, m.relations, process)
+}
+
 // Remove the mapped components from the given entity.
 func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
