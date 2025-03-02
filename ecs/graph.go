@@ -41,6 +41,9 @@ func (g *graph) Find(start nodeID, startMask *Mask, add []ID, remove []ID) *node
 	mask := *startMask
 
 	for _, id := range remove {
+		if !mask.Get(id) {
+			panic(fmt.Sprintf("entity does not have component with ID %d", id.id))
+		}
 		mask.Set(id, false)
 		if next, ok := curr.neighbors.Get(id.id); ok {
 			curr = &g.nodes[next]
