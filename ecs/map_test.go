@@ -42,7 +42,7 @@ func TestMapNewEntity(t *testing.T) {
 }
 
 func TestMapRelation(t *testing.T) {
-	w := NewWorld(1024)
+	w := NewWorld(32)
 
 	childMap := NewMap[ChildOf](&w)
 
@@ -58,4 +58,38 @@ func TestMapRelation(t *testing.T) {
 	childMap.SetRelation(e, parent2)
 	assert.Equal(t, childMap.GetRelation(e), parent2)
 	assert.Equal(t, childMap.GetRelationUnchecked(e), parent2)
+}
+
+func TestMapRelationBatch(t *testing.T) {
+	n := 24
+	w := NewWorld(16)
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap3[Position, Velocity, ChildOf](&w)
+	childMap := NewMap[ChildOf](&w)
+
+	mapper.NewBatch(n, &Position{}, &Velocity{}, &ChildOf{}, Rel(2, parent1))
+	mapper.NewBatch(n, &Position{}, &Velocity{}, &ChildOf{}, Rel(2, parent2))
+
+	filter := NewFilter1[ChildOf](&w)
+
+	childMap.SetRelationBatch(filter.Batch(Rel(0, parent2)), parent3, func(entity Entity) {
+		assert.Equal(t, parent3, childMap.GetRelation(entity))
+	})
+
+	query := filter.Query(Rel(0, parent2))
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	query = filter.Query(Rel(0, parent3))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, n, cnt)
 }

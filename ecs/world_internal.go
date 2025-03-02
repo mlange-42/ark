@@ -272,10 +272,9 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []Relat
 		newTable = w.storage.createTable(oldArch, newRelations)
 	}
 	startIdx := newTable.Len()
-	count := oldTable.Len()
 	w.storage.moveEntities(oldTable, newTable, uint32(oldLen))
 
-	return newTable.id, startIdx, count
+	return newTable.id, startIdx, oldLen
 
 }
 
