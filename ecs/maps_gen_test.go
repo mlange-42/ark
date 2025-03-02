@@ -154,6 +154,45 @@ func TestMap1AddBatch(t *testing.T) {
 	assert.Equal(t, 2*n, cnt)
 }
 
+func TestMap1AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap1[CompA](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
 func TestMap2(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
@@ -293,6 +332,45 @@ func TestMap2AddBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
+func TestMap2AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap2[CompA, CompB](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
 		pos := posMap.Get(query.Entity())
 		assert.Greater(t, pos.X, 0.0)
 		cnt++
@@ -446,6 +524,45 @@ func TestMap3AddBatch(t *testing.T) {
 	assert.Equal(t, 2*n, cnt)
 }
 
+func TestMap3AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap3[CompA, CompB, CompC](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
 func TestMap4(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
@@ -585,6 +702,45 @@ func TestMap4AddBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
+func TestMap4AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
 		pos := posMap.Get(query.Entity())
 		assert.Greater(t, pos.X, 0.0)
 		cnt++
@@ -738,6 +894,45 @@ func TestMap5AddBatch(t *testing.T) {
 	assert.Equal(t, 2*n, cnt)
 }
 
+func TestMap5AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
 func TestMap6(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
@@ -877,6 +1072,45 @@ func TestMap6AddBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
+func TestMap6AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
 		pos := posMap.Get(query.Entity())
 		assert.Greater(t, pos.X, 0.0)
 		cnt++
@@ -1030,6 +1264,45 @@ func TestMap7AddBatch(t *testing.T) {
 	assert.Equal(t, 2*n, cnt)
 }
 
+func TestMap7AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
 func TestMap8(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
@@ -1169,6 +1442,45 @@ func TestMap8AddBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
+func TestMap8AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
 		pos := posMap.Get(query.Entity())
 		assert.Greater(t, pos.X, 0.0)
 		cnt++
