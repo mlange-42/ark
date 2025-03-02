@@ -48,6 +48,7 @@ func (w *World) Resources() *Resources {
 }
 
 // Unsafe provides access to Ark's unsafe, ID-based API.
+// For details, see [Unsafe].
 func (w *World) Unsafe() Unsafe {
 	return Unsafe{
 		world: w,

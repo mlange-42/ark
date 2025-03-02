@@ -200,3 +200,29 @@ func TestUnsafeEntityDumpFail(t *testing.T) {
 			w2.Unsafe().LoadEntities(&eData)
 		})
 }
+
+func BenchmarkMapUnsafePosVel_1000(b *testing.B) {
+	n := 1000
+	world := NewWorld(1024)
+	u := world.Unsafe()
+
+	posID := ComponentID[Position](&world)
+	velID := ComponentID[Velocity](&world)
+
+	mapper := NewMap2[Position, Velocity](&world)
+
+	entities := make([]Entity, 0, n)
+	for range n {
+		e := mapper.NewEntity(&Position{}, &Velocity{X: 1, Y: 0})
+		entities = append(entities, e)
+	}
+
+	for b.Loop() {
+		for _, e := range entities {
+			pos := (*Position)(u.Get(e, posID))
+			vel := (*Velocity)(u.Get(e, velID))
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
+	}
+}

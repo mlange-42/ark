@@ -4,6 +4,9 @@ import "unsafe"
 
 // Unsafe provides access to Ark's unsafe ID-based API.
 // Get an instance via [World.Unsafe].
+//
+// The unsafe API is significantly slower than the type-safe API,
+// and should only be used when component types are not known at compile time.
 type Unsafe struct {
 	world *World
 }
