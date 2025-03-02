@@ -35,6 +35,47 @@ func (w *World) RemoveEntity(entity Entity) {
 	w.storage.RemoveEntity(entity)
 }
 
+// RemoveEntities removes all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
+	w.checkLocked()
+
+	tables := w.getTables(batch)
+	cleanup := []Entity{}
+	for _, table := range tables {
+		len := uintptr(table.Len())
+		var i uintptr
+		if fn == nil {
+			for i = range len {
+				entity := table.GetEntity(i)
+				if w.storage.isTarget[entity.id] {
+					cleanup = append(cleanup, entity)
+				}
+				w.storage.entities[entity.id].table = maxTableID
+				w.storage.entityPool.Recycle(entity)
+			}
+		} else {
+			l := w.lock()
+			for i = range len {
+				entity := table.GetEntity(i)
+				if w.storage.isTarget[entity.id] {
+					cleanup = append(cleanup, entity)
+				}
+				fn(entity)
+				w.storage.entities[entity.id].table = maxTableID
+				w.storage.entityPool.Recycle(entity)
+			}
+			w.unlock(l)
+		}
+		table.Reset()
+	}
+
+	for _, entity := range cleanup {
+		w.storage.cleanupArchetypes(entity)
+		w.storage.isTarget[entity.id] = false
+	}
+}
+
 // IsLocked returns whether the world is locked by any queries.
 func (w *World) IsLocked() bool {
 	return w.locks.IsLocked()

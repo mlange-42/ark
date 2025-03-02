@@ -189,33 +189,6 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 	return newTable.id, int(startIdx), int(count)
 }
 
-func (w *World) getTables(batch *Batch) []*table {
-	tables := []*table{}
-
-	for i := range w.storage.archetypes {
-		archetype := &w.storage.archetypes[i]
-		if !batch.filter.matches(&archetype.mask) {
-			continue
-		}
-
-		if !archetype.HasRelations() {
-			table := &w.storage.tables[archetype.tables[0]]
-			tables = append(tables, table)
-			continue
-		}
-
-		tableIDs := archetype.GetTables(batch.relations)
-		for _, tab := range tableIDs {
-			table := &w.storage.tables[tab]
-			if !table.Matches(batch.relations) {
-				continue
-			}
-			tables = append(tables, table)
-		}
-	}
-	return tables
-}
-
 // setRelations sets the target entities for an entity relations.
 func (w *World) setRelations(entity Entity, relations []RelationID) {
 	w.checkLocked()
@@ -253,6 +226,33 @@ func (w *World) setRelations(entity Entity, relations []RelationID) {
 	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
 
 	w.storage.registerTargets(relations)
+}
+
+func (w *World) getTables(batch *Batch) []*table {
+	tables := []*table{}
+
+	for i := range w.storage.archetypes {
+		archetype := &w.storage.archetypes[i]
+		if !batch.filter.matches(&archetype.mask) {
+			continue
+		}
+
+		if !archetype.HasRelations() {
+			table := &w.storage.tables[archetype.tables[0]]
+			tables = append(tables, table)
+			continue
+		}
+
+		tableIDs := archetype.GetTables(batch.relations)
+		for _, tab := range tableIDs {
+			table := &w.storage.tables[tab]
+			if !table.Matches(batch.relations) {
+				continue
+			}
+			tables = append(tables, table)
+		}
+	}
+	return tables
 }
 
 func (w *World) componentID(tp reflect.Type) ID {
