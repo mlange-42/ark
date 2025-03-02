@@ -155,5 +155,75 @@ func TestExchange{{.}}AddBatchFn(t *testing.T) {
 	assert.Equal(t, 0, cnt)
 }
 
+func TestExchange{{.}}ExchangeBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	exchange := NewExchange{{.}}{{$generics}}(&w).Removes(C[Position]())
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	exchange.ExchangeBatch(filter.Batch(), {{$mapArgs}})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		assert.False(t, posMap.HasAll(query.Entity()))
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
+func TestExchange{{.}}ExchangeBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	exchange := NewExchange{{.}}{{$generics}}(&w).Removes(C[Position]())
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity){
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, {{$args}}){
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		assert.False(t, posMap.HasAll(query.Entity()))
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
 {{end -}}
 {{end -}}
