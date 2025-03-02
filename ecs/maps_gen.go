@@ -52,6 +52,7 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Rel
 	table := &m.world.storage.tables[tableID]
 	columnA := m.storageA.columns[tableID]
 
+	lock := m.world.lock()
 	for i := range count {
 		index := uintptr(start + i)
 		fn(
@@ -59,6 +60,7 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Rel
 			(*A)(columnA.Get(index)),
 		)
 	}
+	m.world.unlock(lock)
 }
 
 // Get returns the mapped components for the given entity.
@@ -187,6 +189,7 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), r
 	columnA := m.storageA.columns[tableID]
 	columnB := m.storageB.columns[tableID]
 
+	lock := m.world.lock()
 	for i := range count {
 		index := uintptr(start + i)
 		fn(
@@ -195,6 +198,7 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), r
 			(*B)(columnB.Get(index)),
 		)
 	}
+	m.world.unlock(lock)
 }
 
 // Get returns the mapped components for the given entity.
@@ -333,6 +337,7 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B,
 	columnB := m.storageB.columns[tableID]
 	columnC := m.storageC.columns[tableID]
 
+	lock := m.world.lock()
 	for i := range count {
 		index := uintptr(start + i)
 		fn(
@@ -342,6 +347,7 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B,
 			(*C)(columnC.Get(index)),
 		)
 	}
+	m.world.unlock(lock)
 }
 
 // Get returns the mapped components for the given entity.
@@ -490,6 +496,7 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b 
 	columnC := m.storageC.columns[tableID]
 	columnD := m.storageD.columns[tableID]
 
+	lock := m.world.lock()
 	for i := range count {
 		index := uintptr(start + i)
 		fn(
@@ -500,6 +507,7 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b 
 			(*D)(columnD.Get(index)),
 		)
 	}
+	m.world.unlock(lock)
 }
 
 // Get returns the mapped components for the given entity.
@@ -658,6 +666,7 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A,
 	columnD := m.storageD.columns[tableID]
 	columnE := m.storageE.columns[tableID]
 
+	lock := m.world.lock()
 	for i := range count {
 		index := uintptr(start + i)
 		fn(
@@ -669,6 +678,7 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A,
 			(*E)(columnE.Get(index)),
 		)
 	}
+	m.world.unlock(lock)
 }
 
 // Get returns the mapped components for the given entity.
@@ -837,6 +847,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a 
 	columnE := m.storageE.columns[tableID]
 	columnF := m.storageF.columns[tableID]
 
+	lock := m.world.lock()
 	for i := range count {
 		index := uintptr(start + i)
 		fn(
@@ -849,6 +860,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a 
 			(*F)(columnF.Get(index)),
 		)
 	}
+	m.world.unlock(lock)
 }
 
 // Get returns the mapped components for the given entity.
@@ -1027,6 +1039,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity,
 	columnF := m.storageF.columns[tableID]
 	columnG := m.storageG.columns[tableID]
 
+	lock := m.world.lock()
 	for i := range count {
 		index := uintptr(start + i)
 		fn(
@@ -1040,6 +1053,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity,
 			(*G)(columnG.Get(index)),
 		)
 	}
+	m.world.unlock(lock)
 }
 
 // Get returns the mapped components for the given entity.
@@ -1228,6 +1242,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Enti
 	columnG := m.storageG.columns[tableID]
 	columnH := m.storageH.columns[tableID]
 
+	lock := m.world.lock()
 	for i := range count {
 		index := uintptr(start + i)
 		fn(
@@ -1242,6 +1257,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Enti
 			(*H)(columnH.Get(index)),
 		)
 	}
+	m.world.unlock(lock)
 }
 
 // Get returns the mapped components for the given entity.

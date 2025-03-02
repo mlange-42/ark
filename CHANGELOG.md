@@ -6,6 +6,10 @@
 
 - Adds a section on tool to the README (#94, #95)
 
+### Bugfixes
+
+- Locks the world during batch entity creation callback (#97)
+
 ## [[v0.2.0]](https://github.com/mlange-42/ark/compare/v0.1.0...v0.2.0)
 
 ### Features
