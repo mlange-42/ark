@@ -21,7 +21,7 @@ func newNode(id nodeID, archetype archetypeID, mask Mask) node {
 }
 
 func (n *node) GetArchetype() (archetypeID, bool) {
-	return n.archetype, n.archetype != maxTArchetypeID
+	return n.archetype, n.archetype != maxArchetypeID
 }
 
 type graph struct {
@@ -84,6 +84,6 @@ func (g *graph) findOrCreate(mask *Mask) *node {
 		}
 	}
 	idx := len(g.nodes)
-	g.nodes = append(g.nodes, newNode(nodeID(idx), maxTArchetypeID, *mask))
+	g.nodes = append(g.nodes, newNode(nodeID(idx), maxArchetypeID, *mask))
 	return &g.nodes[idx]
 }

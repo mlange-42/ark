@@ -7,8 +7,8 @@ import (
 
 type archetypeID uint32
 
-// maxTArchetypeID is used as unassigned archetype ID.
-const maxTArchetypeID = math.MaxUint32
+// maxArchetypeID is used as unassigned archetype ID.
+const maxArchetypeID = math.MaxUint32
 
 type archetype struct {
 	id             archetypeID
@@ -112,6 +112,7 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 }
 
 func (a *archetype) FreeTable(table tableID) {
+	// TODO: can we speed this up for large numbers of relation targets?
 	index := slices.Index(a.tables, table)
 	last := len(a.tables) - 1
 

@@ -17,6 +17,10 @@
 - Adds a section on tool to the README (#94, #95)
 - Adds a benchmark for unsafe queries and world access (#98)
 
+### Performance
+
+- Implements archetype graph for faster lookup on transitions (#104)
+
 ### Bugfixes
 
 - Locks the world during batch entity creation callback (#97)
