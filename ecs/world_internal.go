@@ -8,8 +8,7 @@ import (
 func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []RelationID) Entity {
 	w.checkLocked()
 
-	mask := NewMask(ids...)
-	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], &mask, relations)
+	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations)
 	entity, idx := w.storage.createEntity(newTable.id)
 
 	if comps != nil {
@@ -27,8 +26,7 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []Rela
 func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, relations []RelationID) {
 	w.checkLocked()
 
-	mask := NewMask(ids...)
-	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], &mask, relations)
+	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations)
 
 	startIdx := newTable.Len()
 	w.storage.createEntities(newTable, count)
@@ -49,8 +47,7 @@ func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, rel
 func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableID, int) {
 	w.checkLocked()
 
-	mask := NewMask(ids...)
-	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], &mask, relations)
+	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations)
 
 	startIdx := newTable.Len()
 	w.storage.createEntities(newTable, count)
@@ -81,7 +78,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 
 	oldIDs := oldArchetype.components
 
-	newTable := w.storage.findOrCreateTable(oldTable, &mask, relations)
+	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations)
 	newIndex := newTable.Add(entity)
 
 	for _, id := range oldIDs {
@@ -150,7 +147,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 
 	oldIDs := oldArchetype.components
 
-	newTable := w.storage.findOrCreateTable(oldTable, &mask, relations)
+	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations)
 	startIdx := uintptr(newTable.Len())
 	count := uintptr(oldLen)
 

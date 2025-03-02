@@ -1,11 +1,18 @@
 package ecs
 
-import "slices"
+import (
+	"math"
+	"slices"
+)
 
 type archetypeID uint32
 
+// maxArchetypeID is used as unassigned archetype ID.
+const maxArchetypeID = math.MaxUint32
+
 type archetype struct {
 	id             archetypeID
+	node           nodeID
 	mask           Mask
 	components     []ID
 	componentsMap  []int16
@@ -20,7 +27,7 @@ type tableIDs struct {
 	tables []tableID
 }
 
-func newArchetype(id archetypeID, mask *Mask, components []ID, tables []tableID, reg *componentRegistry) archetype {
+func newArchetype(id archetypeID, node nodeID, mask *Mask, components []ID, tables []tableID, reg *componentRegistry) archetype {
 	componentsMap := make([]int16, MaskTotalBits)
 	for i := range MaskTotalBits {
 		componentsMap[i] = -1
@@ -41,6 +48,7 @@ func newArchetype(id archetypeID, mask *Mask, components []ID, tables []tableID,
 	}
 	return archetype{
 		id:             id,
+		node:           node,
 		mask:           *mask,
 		components:     components,
 		componentsMap:  componentsMap,
@@ -104,6 +112,7 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 }
 
 func (a *archetype) FreeTable(table tableID) {
+	// TODO: can we speed this up for large numbers of relation targets?
 	index := slices.Index(a.tables, table)
 	last := len(a.tables) - 1
 
