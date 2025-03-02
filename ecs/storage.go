@@ -10,6 +10,7 @@ type storage struct {
 	entities   entities
 	isTarget   []bool
 	entityPool entityPool
+	graph      graph
 
 	archetypes         []archetype
 	relationArchetypes []archetypeID
@@ -38,12 +39,13 @@ func newStorage(capacity uint32) storage {
 	tables := make([]table, 0, 128)
 	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, componentsMap, []bool{}, []Entity{}, []RelationID{}))
 	archetypes := make([]archetype, 0, 128)
-	archetypes = append(archetypes, newArchetype(0, &Mask{}, []ID{}, []tableID{0}, &reg))
+	archetypes = append(archetypes, newArchetype(0, 0, &Mask{}, []ID{}, []tableID{0}, &reg))
 	return storage{
 		registry:        reg,
 		entities:        entities,
 		isTarget:        isTarget,
 		entityPool:      newEntityPool(capacity, reservedEntities),
+		graph:           newGraph(),
 		archetypes:      archetypes,
 		tables:          tables,
 		initialCapacity: capacity,
@@ -51,18 +53,18 @@ func newStorage(capacity uint32) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(oldTable *table, mask *Mask, relations []RelationID) *table {
-	// TODO: use archetype graph
+func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []RelationID) *table {
+	startNode := s.archetypes[oldTable.archetype].node
+
+	node := s.graph.Find(startNode, add, remove)
 	var arch *archetype
-	for i := range s.archetypes {
-		if s.archetypes[i].mask.Equals(mask) {
-			arch = &s.archetypes[i]
-			break
-		}
+	if archID, ok := node.GetArchetype(); ok {
+		arch = &s.archetypes[archID]
+	} else {
+		arch = s.createArchetype(node)
+		node.archetype = arch.id
 	}
-	if arch == nil {
-		arch = s.createArchetype(mask)
-	}
+
 	allRelation := appendNew(oldTable.relationIDs, relations...)
 	table, ok := arch.GetTable(s, allRelation)
 	if !ok {
@@ -190,10 +192,10 @@ func (s *storage) createEntities(table *table, count int) {
 	}
 }
 
-func (s *storage) createArchetype(mask *Mask) *archetype {
-	comps := mask.toTypes(&s.registry.registry)
+func (s *storage) createArchetype(node *node) *archetype {
+	comps := node.mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
-	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), mask, comps, nil, &s.registry))
+	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, &s.registry))
 	archetype := &s.archetypes[index]
 	if archetype.HasRelations() {
 		s.relationArchetypes = append(s.relationArchetypes, archetype.id)

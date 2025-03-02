@@ -36,9 +36,10 @@ func newGraph() graph {
 	}
 }
 
-func (g *graph) Find(start nodeID, startMask *Mask, add []ID, remove []ID) *node {
-	curr := &g.nodes[start]
-	mask := *startMask
+func (g *graph) Find(start nodeID, add []ID, remove []ID) *node {
+	startNode := &g.nodes[start]
+	curr := startNode
+	mask := startNode.mask
 
 	for _, id := range remove {
 		if !mask.Get(id) {
@@ -59,7 +60,7 @@ func (g *graph) Find(start nodeID, startMask *Mask, add []ID, remove []ID) *node
 		if mask.Get(id) {
 			panic(fmt.Sprintf("entity already has component with ID %d, or it was added twice", id.id))
 		}
-		if startMask.Get(id) {
+		if startNode.mask.Get(id) {
 			panic(fmt.Sprintf("component with ID %d added and removed in the same exchange operation", id.id))
 		}
 
