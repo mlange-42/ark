@@ -152,6 +152,15 @@ func TestMap1AddBatch(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch())
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap1AddBatchFn(t *testing.T) {
@@ -191,6 +200,19 @@ func TestMap1AddBatchFn(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatchFn(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap2(t *testing.T) {
@@ -337,6 +359,15 @@ func TestMap2AddBatch(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch())
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap2AddBatchFn(t *testing.T) {
@@ -376,6 +407,19 @@ func TestMap2AddBatchFn(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatchFn(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap3(t *testing.T) {
@@ -522,6 +566,15 @@ func TestMap3AddBatch(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch())
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap3AddBatchFn(t *testing.T) {
@@ -561,6 +614,19 @@ func TestMap3AddBatchFn(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatchFn(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap4(t *testing.T) {
@@ -707,6 +773,15 @@ func TestMap4AddBatch(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch())
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap4AddBatchFn(t *testing.T) {
@@ -746,6 +821,19 @@ func TestMap4AddBatchFn(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatchFn(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap5(t *testing.T) {
@@ -892,6 +980,15 @@ func TestMap5AddBatch(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch())
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap5AddBatchFn(t *testing.T) {
@@ -931,6 +1028,19 @@ func TestMap5AddBatchFn(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatchFn(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap6(t *testing.T) {
@@ -1077,6 +1187,15 @@ func TestMap6AddBatch(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch())
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap6AddBatchFn(t *testing.T) {
@@ -1116,6 +1235,19 @@ func TestMap6AddBatchFn(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatchFn(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap7(t *testing.T) {
@@ -1262,6 +1394,15 @@ func TestMap7AddBatch(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch())
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap7AddBatchFn(t *testing.T) {
@@ -1301,6 +1442,19 @@ func TestMap7AddBatchFn(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatchFn(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap8(t *testing.T) {
@@ -1447,6 +1601,15 @@ func TestMap8AddBatch(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch())
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
 
 func TestMap8AddBatchFn(t *testing.T) {
@@ -1486,4 +1649,17 @@ func TestMap8AddBatchFn(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatchFn(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
 }
