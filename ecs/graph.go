@@ -24,6 +24,7 @@ func (n *node) GetArchetype() (archetypeID, bool) {
 	return n.archetype, n.archetype != maxArchetypeID
 }
 
+// Archetype graph for faster lookup of transitions.
 type graph struct {
 	nodes []node
 }

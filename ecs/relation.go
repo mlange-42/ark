@@ -47,6 +47,7 @@ func Rel(index int, target Entity) RelationIndex {
 	}
 }
 
+// Helper for converting relations
 type relations []RelationIndex
 
 func (r relations) toRelations(reg *componentRegistry, ids []ID, out []RelationID) []RelationID {
@@ -64,6 +65,7 @@ func (r relations) toRelations(reg *componentRegistry, ids []ID, out []RelationI
 	return out
 }
 
+// Helper for converting relations
 type relationEntities []Entity
 
 func (r relationEntities) toRelation(id ID, out []RelationID) []RelationID {

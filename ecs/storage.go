@@ -7,7 +7,7 @@ import (
 
 type storage struct {
 	registry   componentRegistry
-	entities   entities
+	entities   []entityIndex
 	isTarget   []bool
 	entityPool entityPool
 	graph      graph

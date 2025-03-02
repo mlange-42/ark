@@ -61,9 +61,8 @@ func (e Entity) toRelation(id ID, out []RelationID) []RelationID {
 	return out
 }
 
+// entityIndex denotes an entity's location by table and row index.
 type entityIndex struct {
 	table tableID
 	row   uint32
 }
-
-type entities []entityIndex
