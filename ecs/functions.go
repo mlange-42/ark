@@ -14,8 +14,7 @@ import "reflect"
 //
 // ⚠️ Warning: Using IDs that are outside of the range of registered IDs anywhere in [World] or other places will result in undefined behavior!
 func ComponentID[T any](w *World) ID {
-	tp := reflect.TypeOf((*T)(nil)).Elem()
-	return w.componentID(tp)
+	return w.componentID(typeOf[T]())
 }
 
 // ComponentIDs returns a list of all registered component IDs.
@@ -71,8 +70,7 @@ func (c Comp) Type() reflect.Type {
 //
 // The number of resources per [World] is limited to [MaskTotalBits].
 func ResourceID[T any](w *World) ResID {
-	tp := reflect.TypeOf((*T)(nil)).Elem()
-	return w.resourceID(tp)
+	return w.resourceID(typeOf[T]())
 }
 
 // ResourceIDs returns a list of all registered resource IDs.
