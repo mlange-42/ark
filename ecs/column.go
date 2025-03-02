@@ -67,6 +67,13 @@ func (c *column) AddAll(other *column) {
 	copyPtr(src, dst, c.itemSize*uintptr(other.len))
 }
 
+func (c *column) SetLast(other *column) {
+	start := c.len - other.len
+	src := other.Get(0)
+	dst := c.Get(uintptr(start))
+	copyPtr(src, dst, c.itemSize*uintptr(other.len))
+}
+
 // Set overwrites the component at the given index.
 func (c *column) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
 	dst := c.Get(uintptr(index))

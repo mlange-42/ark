@@ -71,9 +71,9 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...RelationIndex) Query{{.}}{{
 }
 
 // Batch creates a [Batch] from this filter.
-func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...RelationIndex) Batch {
+func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...RelationIndex) *Batch {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return Batch {
+	return &Batch {
 		filter:    f.filter,
 		relations: f.relations,
 	}

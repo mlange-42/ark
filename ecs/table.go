@@ -135,6 +135,15 @@ func (t *table) AddAll(other *table) {
 	}
 }
 
+func (t *table) AddAllEntities(other *table, allocColumns bool) {
+	t.entities.AddAll(&other.entities)
+	if allocColumns {
+		for c := range t.columns {
+			t.columns[c].Alloc(uint32(other.Len()))
+		}
+	}
+}
+
 func (t *table) MatchesExact(relations []RelationID) bool {
 	if len(relations) != len(t.relationIDs) {
 		panic("relation targets must be fully specified")

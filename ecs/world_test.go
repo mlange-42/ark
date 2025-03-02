@@ -103,6 +103,42 @@ func TestWorldRemoveEntity(t *testing.T) {
 	assert.False(t, w.Alive(e))
 }
 
+func TestWorldRemoveEntities(t *testing.T) {
+	n := 12
+	w := NewWorld(16)
+
+	posMap := NewMap1[Position](&w)
+	velMap := NewMap1[Velocity](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 0
+	posMap.NewBatchFn(n, func(entity Entity, _ *Position) {
+		cnt++
+	})
+	velMap.NewBatchFn(n, func(entity Entity, _ *Velocity) {
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, _ *Position, _ *Velocity) {
+		cnt++
+	})
+	assert.Equal(t, n*3, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	w.RemoveEntities(filter.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, n*2, cnt)
+
+	filter2 := NewFilter0(&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, n, cnt)
+}
+
 func TestWorldRelations(t *testing.T) {
 	w := NewWorld(16)
 

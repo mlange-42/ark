@@ -57,9 +57,9 @@ func (f *Filter0) Query(rel ...RelationIndex) Query0 {
 }
 
 // Batch creates a [Batch] from this filter.
-func (f *Filter0) Batch(rel ...RelationIndex) Batch {
+func (f *Filter0) Batch(rel ...RelationIndex) *Batch {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return Batch{
+	return &Batch{
 		filter:    f.filter,
 		relations: f.relations,
 	}
@@ -122,9 +122,9 @@ func (f *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
 }
 
 // Batch creates a [Batch] from this filter.
-func (f *Filter1[A]) Batch(rel ...RelationIndex) Batch {
+func (f *Filter1[A]) Batch(rel ...RelationIndex) *Batch {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return Batch{
+	return &Batch{
 		filter:    f.filter,
 		relations: f.relations,
 	}
@@ -188,9 +188,9 @@ func (f *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
 }
 
 // Batch creates a [Batch] from this filter.
-func (f *Filter2[A, B]) Batch(rel ...RelationIndex) Batch {
+func (f *Filter2[A, B]) Batch(rel ...RelationIndex) *Batch {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return Batch{
+	return &Batch{
 		filter:    f.filter,
 		relations: f.relations,
 	}
@@ -255,9 +255,9 @@ func (f *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
 }
 
 // Batch creates a [Batch] from this filter.
-func (f *Filter3[A, B, C]) Batch(rel ...RelationIndex) Batch {
+func (f *Filter3[A, B, C]) Batch(rel ...RelationIndex) *Batch {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return Batch{
+	return &Batch{
 		filter:    f.filter,
 		relations: f.relations,
 	}
@@ -323,9 +323,9 @@ func (f *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
 }
 
 // Batch creates a [Batch] from this filter.
-func (f *Filter4[A, B, C, D]) Batch(rel ...RelationIndex) Batch {
+func (f *Filter4[A, B, C, D]) Batch(rel ...RelationIndex) *Batch {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return Batch{
+	return &Batch{
 		filter:    f.filter,
 		relations: f.relations,
 	}
@@ -392,9 +392,9 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, 
 }
 
 // Batch creates a [Batch] from this filter.
-func (f *Filter5[A, B, C, D, E]) Batch(rel ...RelationIndex) Batch {
+func (f *Filter5[A, B, C, D, E]) Batch(rel ...RelationIndex) *Batch {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return Batch{
+	return &Batch{
 		filter:    f.filter,
 		relations: f.relations,
 	}
@@ -462,9 +462,9 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, 
 }
 
 // Batch creates a [Batch] from this filter.
-func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...RelationIndex) Batch {
+func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...RelationIndex) *Batch {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return Batch{
+	return &Batch{
 		filter:    f.filter,
 		relations: f.relations,
 	}
@@ -533,9 +533,9 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, 
 }
 
 // Batch creates a [Batch] from this filter.
-func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...RelationIndex) Batch {
+func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...RelationIndex) *Batch {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return Batch{
+	return &Batch{
 		filter:    f.filter,
 		relations: f.relations,
 	}
@@ -605,9 +605,9 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, 
 }
 
 // Batch creates a [Batch] from this filter.
-func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...RelationIndex) Batch {
+func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...RelationIndex) *Batch {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return Batch{
+	return &Batch{
 		filter:    f.filter,
 		relations: f.relations,
 	}
