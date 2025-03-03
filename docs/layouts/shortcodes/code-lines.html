@@ -1,0 +1,20 @@
+{{ $file := .Get 0 }}
+{{ $start := math.Sub (.Get 1) 1 }}
+{{ $end := math.Sub (.Get 2) 1 }}
+{{ $unindent := 0 }}
+{{ if .Get 3 }}{{ $unindent = .Get 3 }}{{ end }}
+{{ $unindentStr := "" }}
+{{ range seq $unindent }}
+{{ $unindentStr = printf "%s%s" $unindentStr "\t" }}
+{{ end }}
+{{ with .Page.Resources.Get $file }}
+{{ $s := .Content }}
+{{ $t := split $s "\n" }}
+{{ $code := "" }}
+{{ range seq $start $end }}
+{{ $trim := strings.TrimPrefix $unindentStr (index $t .) }}
+{{ $code = printf "%s%s\n" $code $trim }}
+{{ end }}
+{{ $code := printf "\n```go\n%s\n```\n" $code | markdownify }}
+{{ $code | safeHTML }}
+{{ end }}

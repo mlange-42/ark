@@ -1,0 +1,11 @@
+{{- $pkg := .Get 0 -}}
+{{- $text := (replace $pkg "/" ".") -}}
+{{- $link := $pkg -}}
+{{- if .Get 1 -}}
+    {{- $mem := .Get 1 -}}
+    {{- $text = printf "%s.%s" $text $mem -}}
+    {{- $link = printf "%s#%s" $link $mem -}}
+    {{- if .Get 2 -}}
+        {{- $text = .Get 2 -}}
+    {{- end -}}
+{{- end -}}<span class="copy-to-clipboard"><a href="{{ .Site.Params.apiURL }}{{ $link }}" target="_blank"><code class="copy-to-clipboard-code" data-code="{{ $text }}">{{ $text }}</code></a></span>
