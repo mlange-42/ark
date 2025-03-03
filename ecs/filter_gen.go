@@ -51,6 +51,8 @@ func (f *Filter0) Exclusive() *Filter0 {
 }
 
 // Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter0.Query] or [Filter0.Batch] are not cached.
 func (f *Filter0) Relations(rel ...RelationIndex) *Filter0 {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
@@ -123,6 +125,8 @@ func (f *Filter1[A]) Exclusive() *Filter1[A] {
 }
 
 // Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter1.Query] or [Filter1.Batch] are not cached.
 func (f *Filter1[A]) Relations(rel ...RelationIndex) *Filter1[A] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
@@ -196,6 +200,8 @@ func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 }
 
 // Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter2.Query] or [Filter2.Batch] are not cached.
 func (f *Filter2[A, B]) Relations(rel ...RelationIndex) *Filter2[A, B] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
@@ -270,6 +276,8 @@ func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
 }
 
 // Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter3.Query] or [Filter3.Batch] are not cached.
 func (f *Filter3[A, B, C]) Relations(rel ...RelationIndex) *Filter3[A, B, C] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
@@ -345,6 +353,8 @@ func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 }
 
 // Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter4.Query] or [Filter4.Batch] are not cached.
 func (f *Filter4[A, B, C, D]) Relations(rel ...RelationIndex) *Filter4[A, B, C, D] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
@@ -421,6 +431,8 @@ func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
 }
 
 // Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter5.Query] or [Filter5.Batch] are not cached.
 func (f *Filter5[A, B, C, D, E]) Relations(rel ...RelationIndex) *Filter5[A, B, C, D, E] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
@@ -498,6 +510,8 @@ func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 }
 
 // Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter6.Query] or [Filter6.Batch] are not cached.
 func (f *Filter6[A, B, C, D, E, F]) Relations(rel ...RelationIndex) *Filter6[A, B, C, D, E, F] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
@@ -576,6 +590,8 @@ func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G]
 }
 
 // Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter7.Query] or [Filter7.Batch] are not cached.
 func (f *Filter7[A, B, C, D, E, F, G]) Relations(rel ...RelationIndex) *Filter7[A, B, C, D, E, F, G] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
@@ -655,6 +671,8 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 }
 
 // Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter8.Query] or [Filter8.Batch] are not cached.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Relations(rel ...RelationIndex) *Filter8[A, B, C, D, E, F, G, H] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f

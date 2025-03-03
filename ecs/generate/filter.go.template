@@ -65,6 +65,8 @@ func (f *Filter{{.}}{{$genericsShort}}) Exclusive() *Filter{{.}}{{$genericsShort
 }
 
 // Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter{{.}}.Query] or [Filter{{.}}.Batch] are not cached.
 func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...RelationIndex) *Filter{{.}}{{$genericsShort}} {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
