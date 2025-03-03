@@ -283,8 +283,9 @@ func (s *storage) cleanupArchetypes(target Entity) {
 	newRelations := []RelationID{}
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
-		for _, t := range archetype.tables {
-			table := &s.tables[t]
+		len := len(archetype.tables)
+		for i := len - 1; i >= 0; i-- {
+			table := &s.tables[archetype.tables[i]]
 
 			foundTarget := false
 			for _, rel := range table.relationIDs {
@@ -297,12 +298,14 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				continue
 			}
 
-			allRelations := s.getExchangeTargetsUnchecked(table, newRelations)
-			newTable, ok := archetype.GetTable(s, allRelations)
-			if !ok {
-				newTable = s.createTable(archetype, newRelations)
+			if table.Len() > 0 {
+				allRelations := s.getExchangeTargetsUnchecked(table, newRelations)
+				newTable, ok := archetype.GetTable(s, allRelations)
+				if !ok {
+					newTable = s.createTable(archetype, newRelations)
+				}
+				s.moveEntities(table, newTable, uint32(table.Len()))
 			}
-			s.moveEntities(table, newTable, uint32(table.Len()))
 			archetype.FreeTable(table.id)
 			s.cache.removeTable(s, table)
 

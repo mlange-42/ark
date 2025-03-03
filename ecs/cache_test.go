@@ -33,63 +33,57 @@ func TestFilterCache(t *testing.T) {
 	assert.PanicsWithValue(t, "filter is not registered, can't unregister", func() { filter2.Unregister() })
 }
 
-/*
 func TestFilterCacheRelation(t *testing.T) {
 	world := NewWorld()
-	posID := ComponentID[Position](&world)
-	rel1ID := ComponentID[testRelationA](&world)
-	rel2ID := ComponentID[testRelationB](&world)
+
+	posMap := NewMap1[Position](&world)
+	childMap := NewMap1[ChildOf](&world)
+	child2Map := NewMap1[ChildOf2](&world)
+	posChildMap := NewMap2[Position, ChildOf](&world)
 
 	target1 := world.NewEntity()
 	target2 := world.NewEntity()
 	target3 := world.NewEntity()
 	target4 := world.NewEntity()
 
-	cache := world.Cache()
+	f1 := NewFilter1[ChildOf](&world).Register()
+	f2 := NewFilter1[ChildOf](&world).Relations(Rel(0, target1)).Register()
+	f3 := NewFilter1[ChildOf](&world).Relations(Rel(0, target2)).Register()
 
-	f1 := All(rel1ID)
-	ff1 := cache.Register(f1)
+	c1 := world.storage.getRegisteredFilter(f1.cache)
+	c2 := world.storage.getRegisteredFilter(f2.cache)
+	c3 := world.storage.getRegisteredFilter(f3.cache)
 
-	f2 := NewRelationFilter(f1, target1)
-	ff2 := cache.Register(&f2)
+	posMap.NewBatch(10, &Position{})
 
-	f3 := NewRelationFilter(f1, target2)
-	ff3 := cache.Register(&f3)
+	assert.Equal(t, 0, len(c1.tables))
+	assert.Equal(t, 0, len(c2.tables))
+	assert.Equal(t, 0, len(c3.tables))
 
-	c1 := world.Cache().get(&ff1)
-	c2 := world.Cache().get(&ff2)
-	c3 := world.Cache().get(&ff3)
+	e1 := childMap.NewEntity(&ChildOf{}, Rel(0, target1))
+	assert.Equal(t, 1, len(c1.tables))
+	assert.Equal(t, 1, len(c2.tables))
 
-	NewBuilder(&world, posID).NewBatch(10)
+	childMap.NewEntity(&ChildOf{}, Rel(0, target3))
+	assert.Equal(t, 2, len(c1.tables))
+	assert.Equal(t, 1, len(c2.tables))
 
-	assert.Equal(t, int32(0), c1.Archetypes.Len())
-	assert.Equal(t, int32(0), c2.Archetypes.Len())
-	assert.Equal(t, int32(0), c3.Archetypes.Len())
-
-	e1 := NewBuilder(&world, rel1ID).WithRelation(rel1ID).New(target1)
-	assert.Equal(t, int32(1), c1.Archetypes.Len())
-	assert.Equal(t, int32(1), c2.Archetypes.Len())
-
-	_ = NewBuilder(&world, rel1ID).WithRelation(rel1ID).New(target3)
-	assert.Equal(t, int32(2), c1.Archetypes.Len())
-	assert.Equal(t, int32(1), c2.Archetypes.Len())
-
-	_ = NewBuilder(&world, rel2ID).WithRelation(rel2ID).New(target2)
+	child2Map.NewEntity(&ChildOf2{}, Rel(0, target2))
 
 	world.RemoveEntity(e1)
 	world.RemoveEntity(target1)
-	assert.Equal(t, int32(1), c1.Archetypes.Len())
-	assert.Equal(t, int32(0), c2.Archetypes.Len())
+	assert.Equal(t, 1, len(c1.tables))
+	assert.Equal(t, 0, len(c2.tables))
 
-	_ = NewBuilder(&world, rel1ID).WithRelation(rel1ID).New(target2)
-	_ = NewBuilder(&world, rel1ID, posID).WithRelation(rel1ID).New(target2)
-	_ = NewBuilder(&world, rel1ID, posID).WithRelation(rel1ID).New(target3)
-	_ = NewBuilder(&world, rel1ID, posID).WithRelation(rel1ID).New(target4)
-	assert.Equal(t, int32(5), c1.Archetypes.Len())
-	assert.Equal(t, int32(2), c3.Archetypes.Len())
+	childMap.NewEntity(&ChildOf{}, Rel(0, target2))
+	posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, target2))
+	posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, target3))
+	posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, target4))
 
-	world.Batch().RemoveEntities(All())
-	assert.Equal(t, int32(0), c1.Archetypes.Len())
-	assert.Equal(t, int32(0), c2.Archetypes.Len())
+	assert.Equal(t, 5, len(c1.tables))
+	assert.Equal(t, 2, len(c3.tables))
+
+	world.RemoveEntities(NewFilter0(&world).Batch(), nil)
+	assert.Equal(t, 0, len(c1.tables))
+	assert.Equal(t, 0, len(c2.tables))
 }
-*/
