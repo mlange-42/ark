@@ -168,7 +168,7 @@ func (t *table) MatchesExact(relations []RelationID) bool {
 }
 
 func (t *table) Matches(relations []RelationID) bool {
-	if len(relations) == 0 {
+	if len(relations) == 0 || !t.HasRelations() {
 		return true
 	}
 	for _, rel := range relations {
