@@ -19,16 +19,18 @@ type Query0 struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 }
 
-func newQuery0(world *World, filter Filter, relations []RelationID) Query0 {
+func newQuery0(world *World, filter Filter, relations []RelationID, cache *cacheEntry) Query0 {
 	components := make([]*componentStorage, 0)
 
 	return Query0{
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -137,11 +139,12 @@ type Query1[A any] struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 	columnA    *column
 }
 
-func newQuery1[A any](world *World, filter Filter, ids []ID, relations []RelationID) Query1[A] {
+func newQuery1[A any](world *World, filter Filter, ids []ID, relations []RelationID, cache *cacheEntry) Query1[A] {
 	components := make([]*componentStorage, 1)
 	for i := range 1 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -151,6 +154,7 @@ func newQuery1[A any](world *World, filter Filter, ids []ID, relations []Relatio
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -272,12 +276,13 @@ type Query2[A any, B any] struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
 }
 
-func newQuery2[A any, B any](world *World, filter Filter, ids []ID, relations []RelationID) Query2[A, B] {
+func newQuery2[A any, B any](world *World, filter Filter, ids []ID, relations []RelationID, cache *cacheEntry) Query2[A, B] {
 	components := make([]*componentStorage, 2)
 	for i := range 2 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -287,6 +292,7 @@ func newQuery2[A any, B any](world *World, filter Filter, ids []ID, relations []
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -411,13 +417,14 @@ type Query3[A any, B any, C any] struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
 }
 
-func newQuery3[A any, B any, C any](world *World, filter Filter, ids []ID, relations []RelationID) Query3[A, B, C] {
+func newQuery3[A any, B any, C any](world *World, filter Filter, ids []ID, relations []RelationID, cache *cacheEntry) Query3[A, B, C] {
 	components := make([]*componentStorage, 3)
 	for i := range 3 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -427,6 +434,7 @@ func newQuery3[A any, B any, C any](world *World, filter Filter, ids []ID, relat
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -554,6 +562,7 @@ type Query4[A any, B any, C any, D any] struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
@@ -561,7 +570,7 @@ type Query4[A any, B any, C any, D any] struct {
 	columnD    *column
 }
 
-func newQuery4[A any, B any, C any, D any](world *World, filter Filter, ids []ID, relations []RelationID) Query4[A, B, C, D] {
+func newQuery4[A any, B any, C any, D any](world *World, filter Filter, ids []ID, relations []RelationID, cache *cacheEntry) Query4[A, B, C, D] {
 	components := make([]*componentStorage, 4)
 	for i := range 4 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -571,6 +580,7 @@ func newQuery4[A any, B any, C any, D any](world *World, filter Filter, ids []ID
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -701,6 +711,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
@@ -709,7 +720,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnE    *column
 }
 
-func newQuery5[A any, B any, C any, D any, E any](world *World, filter Filter, ids []ID, relations []RelationID) Query5[A, B, C, D, E] {
+func newQuery5[A any, B any, C any, D any, E any](world *World, filter Filter, ids []ID, relations []RelationID, cache *cacheEntry) Query5[A, B, C, D, E] {
 	components := make([]*componentStorage, 5)
 	for i := range 5 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -719,6 +730,7 @@ func newQuery5[A any, B any, C any, D any, E any](world *World, filter Filter, i
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -852,6 +864,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
@@ -861,7 +874,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnF    *column
 }
 
-func newQuery6[A any, B any, C any, D any, E any, F any](world *World, filter Filter, ids []ID, relations []RelationID) Query6[A, B, C, D, E, F] {
+func newQuery6[A any, B any, C any, D any, E any, F any](world *World, filter Filter, ids []ID, relations []RelationID, cache *cacheEntry) Query6[A, B, C, D, E, F] {
 	components := make([]*componentStorage, 6)
 	for i := range 6 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -871,6 +884,7 @@ func newQuery6[A any, B any, C any, D any, E any, F any](world *World, filter Fi
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -1007,6 +1021,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
@@ -1017,7 +1032,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnG    *column
 }
 
-func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, filter Filter, ids []ID, relations []RelationID) Query7[A, B, C, D, E, F, G] {
+func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, filter Filter, ids []ID, relations []RelationID, cache *cacheEntry) Query7[A, B, C, D, E, F, G] {
 	components := make([]*componentStorage, 7)
 	for i := range 7 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -1027,6 +1042,7 @@ func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, fi
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -1166,6 +1182,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
@@ -1177,7 +1194,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnH    *column
 }
 
-func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, filter Filter, ids []ID, relations []RelationID) Query8[A, B, C, D, E, F, G, H] {
+func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, filter Filter, ids []ID, relations []RelationID, cache *cacheEntry) Query8[A, B, C, D, E, F, G, H] {
 	components := make([]*componentStorage, 8)
 	for i := range 8 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -1187,6 +1204,7 @@ func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *Wo
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{

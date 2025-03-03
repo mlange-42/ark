@@ -94,12 +94,17 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // Query creates a [Query{{.}}] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...RelationIndex) Query{{.}}{{$genericsShort}} {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
-	return newQuery{{.}}{{$genericsShort}}(f.world, f.filter{{if .}}, f.ids{{end}}, f.tempRelations)
+	if f.cache == nil {
+		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.tempRelations)
+	}
+	return newQuery{{.}}{{$genericsShort}}(f.world, f.filter{{if .}}, f.ids{{end}}, f.tempRelations, f.cache)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...RelationIndex) *Batch {
+	// TODO: use cache?
 	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch {
 		filter:    f.filter,

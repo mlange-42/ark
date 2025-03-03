@@ -34,13 +34,14 @@ type Query{{.}}{{$generics}} struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 	{{- range $upper}}
 	column{{.}}    *column
 	{{- end}}
 }
 
-func newQuery{{.}}{{$generics}}(world *World, filter Filter{{if .}}, ids []ID{{end}}, relations []RelationID) Query{{.}}{{$genericsShort}} {
+func newQuery{{.}}{{$generics}}(world *World, filter Filter{{if .}}, ids []ID{{end}}, relations []RelationID, cache *cacheEntry) Query{{.}}{{$genericsShort}} {
 	components := make([]*componentStorage, {{.}})
 	{{if .}}for i := range {{.}} {
 		components[i] = &world.storage.components[ids[i].id]
@@ -50,6 +51,7 @@ func newQuery{{.}}{{$generics}}(world *World, filter Filter{{if .}}, ids []ID{{e
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
