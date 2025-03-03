@@ -97,10 +97,6 @@ func (t *table) GetColumn(component ID) *column {
 	return &t.columns[t.components[component.id]]
 }
 
-func (t *table) GetEntities(component ID) *column {
-	return &t.entities
-}
-
 func (t *table) Set(component ID, index uint32, comp unsafe.Pointer) {
 	t.columns[t.components[component.id]].Set(index, comp)
 }
@@ -172,9 +168,9 @@ func (t *table) Matches(relations []RelationID) bool {
 		return true
 	}
 	for _, rel := range relations {
-		if rel.target == wildcard {
-			continue
-		}
+		//if rel.target == wildcard {
+		//	continue
+		//}
 		if rel.target != t.columns[t.components[rel.component.id]].target {
 			return false
 		}

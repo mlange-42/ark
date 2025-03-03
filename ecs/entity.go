@@ -7,7 +7,7 @@ type entityID uint32
 var entityType = typeOf[Entity]()
 var entitySize = sizeOf(entityType)
 
-var wildcard = Entity{1, 0}
+//var wildcard = Entity{1, 0}
 
 // Entity identifier.
 type Entity struct {
