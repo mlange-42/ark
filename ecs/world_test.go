@@ -306,6 +306,23 @@ func TestWorldReset(t *testing.T) {
 	query.Close()
 }
 
+func TestWorldLock(t *testing.T) {
+	w := NewWorld()
+
+	l1 := w.lock()
+	assert.True(t, w.IsLocked())
+	assert.Panics(t, func() {
+		w.checkLocked()
+	})
+
+	l2 := w.lock()
+	assert.True(t, w.IsLocked())
+	w.unlock(l1)
+	assert.True(t, w.IsLocked())
+	w.unlock(l2)
+	assert.False(t, w.IsLocked())
+}
+
 func TestWorldRemoveGC(t *testing.T) {
 	w := NewWorld(128)
 	mapper := NewMap[SliceComp](&w)

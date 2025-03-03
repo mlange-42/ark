@@ -28,6 +28,19 @@ func TestMap(t *testing.T) {
 
 	posMap.Remove(e1)
 	assert.False(t, posMap.Has(e1))
+
+	assert.Panics(t, func() {
+		posMap.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		posMap.Has(Entity{})
+	})
+	assert.Panics(t, func() {
+		posMap.Add(Entity{}, &Position{})
+	})
+	assert.Panics(t, func() {
+		posMap.Remove(Entity{})
+	})
 }
 
 func TestMapNewEntity(t *testing.T) {
@@ -58,6 +71,10 @@ func TestMapRelation(t *testing.T) {
 	childMap.SetRelation(e, parent2)
 	assert.Equal(t, childMap.GetRelation(e), parent2)
 	assert.Equal(t, childMap.GetRelationUnchecked(e), parent2)
+
+	assert.Panics(t, func() {
+		childMap.GetRelation(Entity{})
+	})
 }
 
 func TestMapRelationBatch(t *testing.T) {

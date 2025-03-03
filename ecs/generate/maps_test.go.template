@@ -110,6 +110,8 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap{{.}}Relations(t *testing.T) {
