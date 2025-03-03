@@ -131,6 +131,9 @@ func TestMap{{.}}Relations(t *testing.T) {
 		mapper.SetRelations(Entity{}, Rel(0, parent2))
 	})
 	assert.Panics(t, func(){
+		mapper.SetRelations(e)
+	})
+	assert.Panics(t, func(){
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -261,6 +264,12 @@ func TestMap{{.}}SetRelationsBatch(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	assert.Panics(t, func(){
+		mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+			assert.Equal(t, parent3, childMap.GetRelation(entity))
+		})
+	})
 }
 {{end -}}
 {{end -}}

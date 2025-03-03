@@ -116,7 +116,9 @@ func (a *archetype) FreeTable(table tableID) {
 	index := slices.Index(a.tables, table)
 	last := len(a.tables) - 1
 
-	a.tables[index], a.tables[last] = a.tables[last], a.tables[index]
+	if index != last {
+		a.tables[index], a.tables[last] = a.tables[last], a.tables[index]
+	}
 	a.tables = a.tables[:last]
 
 	a.freeTables = append(a.freeTables, table)
@@ -165,6 +167,7 @@ func (a *archetype) Reset(storage *storage) {
 	}
 
 	for i := len(a.tables) - 1; i >= 0; i-- {
+		storage.cache.removeTable(storage, &storage.tables[a.tables[i]])
 		a.FreeTable(a.tables[i])
 	}
 

@@ -12,6 +12,7 @@ type storage struct {
 	isTarget   []bool
 	entityPool entityPool
 	graph      graph
+	cache      cache
 
 	archetypes         []archetype
 	relationArchetypes []archetypeID
@@ -45,6 +46,7 @@ func newStorage(capacity ...int) storage {
 	return storage{
 		config:     config,
 		registry:   reg,
+		cache:      newCache(),
 		entities:   entities,
 		isTarget:   isTarget,
 		entityPool: newEntityPool(uint32(config.initialCapacity), reservedEntities),
@@ -160,6 +162,18 @@ func (s *storage) registerTargets(relations []RelationID) {
 	}
 }
 
+func (s *storage) registerFilter(batch *Batch) cacheID {
+	return s.cache.register(s, batch)
+}
+
+func (s *storage) unregisterFilter(entry cacheID) {
+	s.cache.unregister(entry)
+}
+
+func (s *storage) getRegisteredFilter(id cacheID) *cacheEntry {
+	return s.cache.getEntry(id)
+}
+
 func (s *storage) createEntity(table tableID) (Entity, uint32) {
 	entity := s.entityPool.Get()
 
@@ -244,6 +258,8 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 			comps.columns = append(comps.columns, nil)
 		}
 	}
+
+	s.cache.addTable(s, table)
 	return table
 }
 
@@ -267,8 +283,9 @@ func (s *storage) cleanupArchetypes(target Entity) {
 	newRelations := []RelationID{}
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
-		for _, t := range archetype.tables {
-			table := &s.tables[t]
+		len := len(archetype.tables)
+		for i := len - 1; i >= 0; i-- {
+			table := &s.tables[archetype.tables[i]]
 
 			foundTarget := false
 			for _, rel := range table.relationIDs {
@@ -281,13 +298,16 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				continue
 			}
 
-			allRelations := s.getExchangeTargetsUnchecked(table, newRelations)
-			newTable, ok := archetype.GetTable(s, allRelations)
-			if !ok {
-				newTable = s.createTable(archetype, newRelations)
+			if table.Len() > 0 {
+				allRelations := s.getExchangeTargetsUnchecked(table, newRelations)
+				newTable, ok := archetype.GetTable(s, allRelations)
+				if !ok {
+					newTable = s.createTable(archetype, newRelations)
+				}
+				s.moveEntities(table, newTable, uint32(table.Len()))
 			}
-			s.moveEntities(table, newTable, uint32(table.Len()))
 			archetype.FreeTable(table.id)
+			s.cache.removeTable(s, table)
 
 			newRelations = newRelations[:0]
 		}
@@ -368,4 +388,57 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([
 	}
 
 	return result, true
+}
+
+func (s *storage) getTables(batch *Batch) []*table {
+	tables := []*table{}
+
+	for i := range s.archetypes {
+		archetype := &s.archetypes[i]
+		if !batch.filter.matches(&archetype.mask) {
+			continue
+		}
+
+		if !archetype.HasRelations() {
+			table := &s.tables[archetype.tables[0]]
+			tables = append(tables, table)
+			continue
+		}
+
+		tableIDs := archetype.GetTables(batch.relations)
+		for _, tab := range tableIDs {
+			table := &s.tables[tab]
+			if !table.Matches(batch.relations) {
+				continue
+			}
+			tables = append(tables, table)
+		}
+	}
+	return tables
+}
+
+func (s *storage) getTableIDs(batch *Batch) []tableID {
+	tables := []tableID{}
+
+	for i := range s.archetypes {
+		archetype := &s.archetypes[i]
+		if !batch.filter.matches(&archetype.mask) {
+			continue
+		}
+
+		if !archetype.HasRelations() {
+			tables = append(tables, archetype.tables[0])
+			continue
+		}
+
+		tableIDs := archetype.GetTables(batch.relations)
+		for _, tab := range tableIDs {
+			table := &s.tables[tab]
+			if !table.Matches(batch.relations) {
+				continue
+			}
+			tables = append(tables, tab)
+		}
+	}
+	return tables
 }

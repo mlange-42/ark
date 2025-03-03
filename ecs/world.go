@@ -46,7 +46,7 @@ func (w *World) RemoveEntity(entity Entity) {
 func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 	w.checkLocked()
 
-	tables := w.getTables(batch)
+	tables := w.storage.getTables(batch)
 	cleanup := []Entity{}
 	for _, table := range tables {
 		len := uintptr(table.Len())

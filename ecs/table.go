@@ -64,6 +64,10 @@ func (t *table) recycle(targets []Entity, relationIDs []RelationID) {
 	}
 }
 
+func (t *table) HasRelations() bool {
+	return len(t.relationIDs) > 0
+}
+
 func (t *table) Add(entity Entity) uint32 {
 	_, idx := t.entities.Add(unsafe.Pointer(&entity))
 

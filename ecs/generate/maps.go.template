@@ -217,9 +217,7 @@ func (m *Map{{.}}{{$genericsShort}}) GetRelationUnchecked(entity Entity, index i
 
 // SetRelations sets relation targets for the given entity.
 func (m *Map{{.}}{{$genericsShort}}) SetRelations(entity Entity, rel ...RelationIndex) {
-	if !m.world.Alive(entity) {
-		panic("can't set entity relation targets for a dead entity")
-	}
+	// alive check is done in World.setRelations
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }

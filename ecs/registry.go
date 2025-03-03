@@ -42,18 +42,6 @@ func (r *registry) Count() int {
 	return len(r.Components)
 }
 
-// Reset clears the registry.
-func (r *registry) Reset() {
-	for t := range r.Components {
-		delete(r.Components, t)
-	}
-	for i := range r.Types {
-		r.Types[i] = nil
-	}
-	r.Used.Reset()
-	r.IDs = r.IDs[:0]
-}
-
 // registerComponent registers a components and assigns an ID for it.
 func (r *registry) registerComponent(tp reflect.Type, totalBits int) uint8 {
 	val := len(r.Components)
@@ -101,12 +89,6 @@ func (r *componentRegistry) ComponentID(tp reflect.Type) (uint8, bool) {
 		return id, false
 	}
 	return r.registerComponent(tp, MaskTotalBits), true
-}
-
-// Reset clears the registry.
-func (r *componentRegistry) Reset() {
-	r.registry.Reset()
-	r.IsRelation = make([]bool, MaskTotalBits)
 }
 
 // registerComponent registers a components and assigns an ID for it.

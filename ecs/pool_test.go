@@ -138,6 +138,25 @@ func TestBitPool(t *testing.T) {
 	}
 }
 
+func TestIntPool(t *testing.T) {
+	p := newIntPool[int](16)
+
+	for n := 0; n < 3; n++ {
+		for i := 0; i < 32; i++ {
+			assert.Equal(t, i, p.Get())
+		}
+
+		assert.Equal(t, 32, len(p.pool))
+
+		p.Recycle(3)
+		p.Recycle(4)
+		assert.Equal(t, 4, p.Get())
+		assert.Equal(t, 3, p.Get())
+
+		p.Reset()
+	}
+}
+
 func BenchmarkPoolAlive(b *testing.B) {
 	pool := newEntityPool(1024, reservedEntities)
 

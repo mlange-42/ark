@@ -34,22 +34,28 @@ type Query{{.}}{{$generics}} struct {
 	cursor     cursor
 	tables     []tableID
 	table      *table
+	cache      *cacheEntry
 	components []*componentStorage
 	{{- range $upper}}
 	column{{.}}    *column
 	{{- end}}
 }
 
-func newQuery{{.}}{{$generics}}(world *World, filter Filter{{if .}}, ids []ID{{end}}, relations []RelationID) Query{{.}}{{$genericsShort}} {
+func newQuery{{.}}{{$generics}}(world *World, filter Filter{{if .}}, ids []ID{{end}}, relations []RelationID, cacheID cacheID) Query{{.}}{{$genericsShort}} {
 	components := make([]*componentStorage, {{.}})
 	{{if .}}for i := range {{.}} {
 		components[i] = &world.storage.components[ids[i].id]
 	}{{end}}
+	var cache *cacheEntry
+	if cacheID != maxCacheID {
+		cache = world.storage.getRegisteredFilter(cacheID)
+	}
 	
 	return Query{{.}}{{$genericsShort}}{
 		world:      world,
 		filter:     filter,
 		relations:  relations,
+		cache:      cache,
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
@@ -107,7 +113,10 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 }
 
 func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {
-	if q.cursor.archetype >= 0 && q.nextTable() {
+	if q.cache != nil {
+		return q.nextTable(q.cache.tables)
+	}
+	if q.cursor.archetype >= 0 && q.nextTable(q.tables) {
 		return true
 	}
 	return q.nextArchetype()
@@ -133,7 +142,7 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 
 		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
-		if q.nextTable() {
+		if q.nextTable(q.tables) {
 			return true
 		}
 	}
@@ -141,11 +150,11 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 	return false
 }
 
-func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
-	maxTableIndex := len(q.tables) - 1
+func (q *Query{{.}}{{$genericsShort}}) nextTable(tables []tableID) bool {
+	maxTableIndex := len(tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := &q.world.storage.tables[q.tables[q.cursor.table]]
+		table := &q.world.storage.tables[tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}

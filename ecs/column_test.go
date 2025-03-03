@@ -91,3 +91,40 @@ func TestColumnAddRemoveLabel(t *testing.T) {
 	assert.Equal(t, 16, column.Cap())
 	assert.Equal(t, 9, column.Len())
 }
+
+func TestColumnReset(t *testing.T) {
+	posType := reflect.TypeOf(Position{})
+	posZeroValue := make([]byte, sizeOf(posType))
+	posZeroPointer := unsafe.Pointer(&posZeroValue[0])
+
+	labelType := reflect.TypeOf(Label{})
+	var labelZeroPointer unsafe.Pointer
+
+	labelColumn := newColumn(labelType, false, Entity{}, 8)
+	posColumn := newColumn(posType, false, Entity{}, 8)
+
+	labelColumn.Reset(labelZeroPointer)
+	posColumn.Reset(posZeroPointer)
+
+	for range 12 {
+		labelColumn.Add(unsafe.Pointer(&Label{}))
+		posColumn.Add(unsafe.Pointer(&Position{}))
+	}
+
+	labelColumn.Reset(labelZeroPointer)
+	posColumn.Reset(posZeroPointer)
+
+	assert.EqualValues(t, 0, labelColumn.len)
+	assert.EqualValues(t, 0, posColumn.len)
+
+	for range 123 {
+		labelColumn.Add(unsafe.Pointer(&Label{}))
+		posColumn.Add(unsafe.Pointer(&Position{}))
+	}
+
+	labelColumn.Reset(labelZeroPointer)
+	posColumn.Reset(posZeroPointer)
+
+	assert.EqualValues(t, 0, labelColumn.len)
+	assert.EqualValues(t, 0, posColumn.len)
+}
