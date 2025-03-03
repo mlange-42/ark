@@ -358,5 +358,28 @@ func TestQuery0Relations(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, 3*n+3)
+	
+	// registered filter
+	filter = NewFilter0(&w).Register()
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		cnt++
+	}
+	assert.Equal(t, cnt, 3*n+3)
+
+	assert.Panics(t, func(){
+		filter.Exclusive()
+	})
+	assert.Panics(t, func(){
+		filter.Register()
+	})
+	
+	filter.Unregister()
+	assert.Panics(t, func(){
+		filter.Unregister()
+	})
 }
 {{end -}}
