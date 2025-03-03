@@ -1,0 +1,59 @@
+baseURL: https://mlange-42.github.io/ark/
+languageCode: en-us
+title: Ark
+description: Ark is an archetype-based Entity Component System (ECS) for Go.
+
+module:
+  imports:
+    path: github.com/imfing/hextra
+
+menu:
+  main:
+    - name: API reference
+      url: "https://pkg.go.dev/github.com/mlange-42/ark"
+      weight: 1
+    - name: Search
+      weight: 3
+      params:
+        type: search
+    - name: GitHub
+      weight: 4
+      url: "https://github.com/mlange-42/ark"
+      params:
+        icon: github
+
+params:
+  theme:
+    default: system
+    displayToggle: true
+  footer:
+    displayPoweredBy: false
+    displayCopyright: false
+  
+  apiURL: https://pkg.go.dev/github.com/mlange-42/ark/
+  images:
+    - https://mlange-42.github.io/ark/images/social.png
+
+  search:
+    enable: true
+    type: flexsearch
+    flexsearch:
+      # index page by: content | summary | heading | title
+      index: content
+  navbar:
+    displayTitle: false
+    displayLogo: true
+    logo:
+      path: images/logo-light.svg
+      dark: images/logo-dark.svg
+      link: /ark
+      width: 140
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    lineNumbersInTable: false
+    lineNos: true
+    noClasses: false

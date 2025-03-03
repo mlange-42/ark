@@ -1,0 +1,9 @@
+{{- $_hugo_config := `{ "version": 1 }` }}
+<a title="Not yet released. Planned for {{ .Get 0 }}">{{- partial "shortcodes/badge.html" (dict
+  "page"    .Page
+  "color"   ""
+  "content" (.Get 0)
+  "icon"    "rocket"
+  "style"   "info"
+  "title"   "dev"
+) }}</a>

@@ -1,0 +1,21 @@
+{{ $file := .Get 0 }}
+{{ $main := "TestMain" }}
+{{ if .Get 1 }}
+{{ $main = .Get 1 }}
+{{ end }}
+{{ with .Page.Resources.Get $file }}
+{{ $s := .Content }}
+{{ $s = replace $s "(\r\n\t\"testing\"\r\n\r\n" "(\r\n" }}
+{{ $s = replace $s "\t\"testing\"\r\n" "" }}
+
+{{ $s = replace $s "(\n\t\"testing\"\n\n" "(\n" }}
+{{ $s = replace $s "\t\"testing\"\n" "" }}
+
+{{ $s = replace $s "\r\n\r\nimport \"testing\"" "" }}
+{{ $s = replace $s "\n\nimport \"testing\"" "" }}
+
+{{ $func := printf "func %s(t *testing.T) {" $main }}
+{{ $s = replace $s $func "func main() {" }}
+{{ $code := printf "\n```go\n%s\n```\n" $s | markdownify }}
+{{ $code | safeHTML }}
+{{ end }}

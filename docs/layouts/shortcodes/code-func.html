@@ -1,0 +1,24 @@
+{{ $file := .Get 0 }}
+{{ $func := .Get 1 }}
+{{ $startPrefix := printf "func %s(" $func }}
+{{ $endPrefix := "}" }}
+{{ with .Page.Resources.Get $file }}
+  {{ $s := .Content }}
+  {{ $t := split $s "\n" }}
+  {{ $code := "" }}
+  {{ $started := false }}
+  {{ range $t }}
+    {{ if and ($started) (strings.HasPrefix . $endPrefix) }}
+      {{ break }}
+    {{ end }}
+    {{ if $started }}
+      {{ $trim := strings.TrimPrefix "\t" . }}
+      {{ $code = printf "%s%s\n" $code $trim }}
+    {{end}}
+    {{ if and (not $started) (strings.HasPrefix . $startPrefix) }}
+      {{ $started = true }}
+    {{ end }}
+  {{ end }}
+  {{ $code := printf "\n```go\n%s\n```\n" $code | markdownify }}
+  {{ $code | safeHTML }}
+{{ end }}

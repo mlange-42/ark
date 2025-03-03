@@ -1,0 +1,3 @@
+{{- $text := .Get 0 -}}
+{{- if .Get 1 -}}{{- $text = .Get 1 -}}{{- end -}}
+<a href="{{ .Site.Params.repoURL }}{{ .Get 0 }}">{{ $text }}</a>
