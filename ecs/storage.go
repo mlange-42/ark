@@ -12,6 +12,7 @@ type storage struct {
 	isTarget   []bool
 	entityPool entityPool
 	graph      graph
+	cache      cache
 
 	archetypes         []archetype
 	relationArchetypes []archetypeID
@@ -45,6 +46,7 @@ func newStorage(capacity ...int) storage {
 	return storage{
 		config:     config,
 		registry:   reg,
+		cache:      newCache(),
 		entities:   entities,
 		isTarget:   isTarget,
 		entityPool: newEntityPool(uint32(config.initialCapacity), reservedEntities),
@@ -244,6 +246,8 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 			comps.columns = append(comps.columns, nil)
 		}
 	}
+
+	s.cache.addTable(s, table)
 	return table
 }
 
@@ -288,6 +292,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 			}
 			s.moveEntities(table, newTable, uint32(table.Len()))
 			archetype.FreeTable(table.id)
+			s.cache.removeTable(s, table)
 
 			newRelations = newRelations[:0]
 		}

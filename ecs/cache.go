@@ -19,16 +19,14 @@ type cacheEntry struct {
 //
 // The overhead of tracking cached filters internally is very low, as updates are required only when new archetypes are created.
 type cache struct {
-	storage *storage
 	indices map[uint32]int  // Mapping from filter IDs to indices in filters
 	filters []cacheEntry    // The cached filters, indexed by indices
 	intPool intPool[uint32] // Pool for filter IDs
 }
 
 // newCache creates a new [cache].
-func newCache(storage *storage) cache {
+func newCache() cache {
 	return cache{
-		storage: storage,
 		intPool: newIntPool[uint32](128),
 		indices: map[uint32]int{},
 		filters: []cacheEntry{},
@@ -36,14 +34,14 @@ func newCache(storage *storage) cache {
 }
 
 // Register a [Filter].
-func (c *cache) register(batch *Batch) *cacheEntry {
+func (c *cache) register(storage *storage, batch *Batch) *cacheEntry {
 	// TODO: prevent duplicate registration
 	id := c.intPool.Get()
 	c.filters = append(c.filters,
 		cacheEntry{
 			id:      id,
 			filter:  *batch,
-			tables:  c.storage.getTableIDs(batch),
+			tables:  storage.getTableIDs(batch),
 			indices: nil,
 		})
 	c.indices[id] = len(c.filters) - 1
@@ -69,8 +67,8 @@ func (c *cache) unregister(f *cacheEntry) {
 // Adds a table.
 //
 // Iterates over all filters and adds the node to the resp. entry where the filter matches.
-func (c *cache) addTable(table *table) {
-	arch := &c.storage.archetypes[table.archetype]
+func (c *cache) addTable(storage *storage, table *table) {
+	arch := &storage.archetypes[table.archetype]
 	if !table.HasRelations() {
 		for i := range c.filters {
 			e := &c.filters[i]
@@ -101,16 +99,16 @@ func (c *cache) addTable(table *table) {
 //
 // Can only be used for tables that have a relation target.
 // Tables without a relation are never removed.
-func (c *cache) removeTable(table *table) {
+func (c *cache) removeTable(storage *storage, table *table) {
 	if !table.HasRelations() {
 		return
 	}
-	arch := &c.storage.archetypes[table.archetype]
+	arch := &storage.archetypes[table.archetype]
 	for i := range c.filters {
 		e := &c.filters[i]
 
 		if e.indices == nil && e.filter.filter.matches(&arch.mask) {
-			c.mapTables(e)
+			c.mapTables(storage, e)
 		}
 
 		if idx, ok := e.indices[table.id]; ok {
@@ -128,10 +126,10 @@ func (c *cache) removeTable(table *table) {
 	}
 }
 
-func (c *cache) mapTables(e *cacheEntry) {
+func (c *cache) mapTables(storage *storage, e *cacheEntry) {
 	e.indices = map[tableID]int{}
 	for i, tableID := range e.tables {
-		table := &c.storage.tables[tableID]
+		table := &storage.tables[tableID]
 		if table.HasRelations() {
 			e.indices[tableID] = i
 		}
