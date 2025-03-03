@@ -19,7 +19,7 @@ type Filter{{.}}{{$generics}} struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
-	cache         *cacheEntry
+	cache         cacheID
 }
 
 // NewFilter{{.}} creates a new [Filter{{.}}].
@@ -36,6 +36,7 @@ func NewFilter{{.}}{{$generics}}(world *World) *Filter{{.}}{{$genericsShort}} {
 		world:  world,
 		ids:    ids,
 		filter: NewFilter(ids...),
+		cache:  maxCacheID,
 	}
 }
 
@@ -81,7 +82,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...RelationIndex) *Filter{
 
 // Register this filter to the world's filter cache.
 func (f *Filter{{.}}{{$genericsShort}}) Register() *Filter{{.}}{{$genericsShort}} {
-	if f.cache != nil {
+	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
 	f.cache = f.world.storage.registerFilter(f.Batch())
@@ -90,17 +91,17 @@ func (f *Filter{{.}}{{$genericsShort}}) Register() *Filter{{.}}{{$genericsShort}
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
-	if f.cache == nil {
+	if f.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
 	f.world.storage.unregisterFilter(f.cache)
-	f.cache = nil
+	f.cache = maxCacheID
 }
 
 // Query creates a [Query{{.}}] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...RelationIndex) Query{{.}}{{$genericsShort}} {
-	if f.cache == nil {
+	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	} else {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.tempRelations)
@@ -119,7 +120,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...RelationIndex) *Batch {
 }
 
 func (f *Filter{{.}}{{$genericsShort}}) checkCached() {
-	if f.cache != nil {
+	if f.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 }

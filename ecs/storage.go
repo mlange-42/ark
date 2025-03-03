@@ -162,12 +162,16 @@ func (s *storage) registerTargets(relations []RelationID) {
 	}
 }
 
-func (s *storage) registerFilter(batch *Batch) *cacheEntry {
+func (s *storage) registerFilter(batch *Batch) cacheID {
 	return s.cache.register(s, batch)
 }
 
-func (s *storage) unregisterFilter(entry *cacheEntry) {
+func (s *storage) unregisterFilter(entry cacheID) {
 	s.cache.unregister(entry)
+}
+
+func (s *storage) getRegisteredFilter(id cacheID) *cacheEntry {
+	return s.cache.getEntry(id)
 }
 
 func (s *storage) createEntity(table tableID) (Entity, uint32) {

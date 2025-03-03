@@ -1,8 +1,14 @@
 package ecs
 
+import "math"
+
+type cacheID uint32
+
+const maxCacheID = math.MaxUint32
+
 // Cache entry for a [Filter].
 type cacheEntry struct {
-	id      uint32          // Entry ID.
+	id      cacheID         // Entry ID.
 	filter  Batch           // The underlying filter.
 	indices map[tableID]int // Map of table indices for removal.
 	tables  []tableID       // Tables matching the filter.
@@ -19,22 +25,26 @@ type cacheEntry struct {
 //
 // The overhead of tracking cached filters internally is very low, as updates are required only when new archetypes are created.
 type cache struct {
-	indices map[uint32]int  // Mapping from filter IDs to indices in filters
-	filters []cacheEntry    // The cached filters, indexed by indices
-	intPool intPool[uint32] // Pool for filter IDs
+	indices map[cacheID]int  // Mapping from filter IDs to indices in filters
+	filters []cacheEntry     // The cached filters, indexed by indices
+	intPool intPool[cacheID] // Pool for filter IDs
 }
 
 // newCache creates a new [cache].
 func newCache() cache {
 	return cache{
-		intPool: newIntPool[uint32](128),
-		indices: map[uint32]int{},
+		intPool: newIntPool[cacheID](128),
+		indices: map[cacheID]int{},
 		filters: []cacheEntry{},
 	}
 }
 
+func (c *cache) getEntry(id cacheID) *cacheEntry {
+	return &c.filters[c.indices[id]]
+}
+
 // Register a [Filter].
-func (c *cache) register(storage *storage, batch *Batch) *cacheEntry {
+func (c *cache) register(storage *storage, batch *Batch) cacheID {
 	// TODO: prevent duplicate registration
 	id := c.intPool.Get()
 	index := len(c.filters)
@@ -46,15 +56,15 @@ func (c *cache) register(storage *storage, batch *Batch) *cacheEntry {
 			indices: nil,
 		})
 	c.indices[id] = index
-	return &c.filters[index]
+	return id
 }
 
-func (c *cache) unregister(f *cacheEntry) {
-	idx, ok := c.indices[f.id]
+func (c *cache) unregister(id cacheID) {
+	idx, ok := c.indices[id]
 	if !ok {
 		panic("no filter for id found to unregister")
 	}
-	delete(c.indices, f.id)
+	delete(c.indices, id)
 
 	last := len(c.filters) - 1
 	if idx != last {

@@ -19,8 +19,8 @@ func TestFilterCache(t *testing.T) {
 	filter2 := NewFilter2[Position, Velocity](&world).Register()
 	filter3 := NewFilter3[Position, Velocity, Heading](&world).Register()
 
-	assert.Equal(t, 0, int(filter2.cache.id))
-	assert.Equal(t, 1, int(filter3.cache.id))
+	assert.Equal(t, 0, int(filter2.cache))
+	assert.Equal(t, 1, int(filter3.cache))
 
 	assert.Equal(t, 2, len(world.storage.getTableIDs(filter2.Batch())))
 	assert.Equal(t, 1, len(world.storage.getTableIDs(filter3.Batch())))
@@ -30,7 +30,7 @@ func TestFilterCache(t *testing.T) {
 	filter2.Unregister()
 	filter3.Unregister()
 
-	assert.PanicsWithValue(t, "no filter for id found to unregister", func() { filter2.Unregister() })
+	assert.PanicsWithValue(t, "filter is not registered, can't unregister", func() { filter2.Unregister() })
 }
 
 /*

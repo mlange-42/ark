@@ -41,7 +41,7 @@ type Query{{.}}{{$generics}} struct {
 	{{- end}}
 }
 
-func newQuery{{.}}{{$generics}}(world *World, filter Filter{{if .}}, ids []ID{{end}}, relations []RelationID, cache *cacheEntry) Query{{.}}{{$genericsShort}} {
+func newQuery{{.}}{{$generics}}(world *World, filter Filter{{if .}}, ids []ID{{end}}, relations []RelationID, cache cacheID) Query{{.}}{{$genericsShort}} {
 	components := make([]*componentStorage, {{.}})
 	{{if .}}for i := range {{.}} {
 		components[i] = &world.storage.components[ids[i].id]
@@ -51,7 +51,7 @@ func newQuery{{.}}{{$generics}}(world *World, filter Filter{{if .}}, ids []ID{{e
 		world:      world,
 		filter:     filter,
 		relations:  relations,
-		cache:      cache,
+		cache:      world.storage.getRegisteredFilter(cache),
 		lock:       world.lock(),
 		components: components,
 		cursor: cursor{
