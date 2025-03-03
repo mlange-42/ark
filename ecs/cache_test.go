@@ -31,6 +31,7 @@ func TestFilterCache(t *testing.T) {
 	filter3.Unregister()
 
 	assert.PanicsWithValue(t, "filter is not registered, can't unregister", func() { filter2.Unregister() })
+	assert.PanicsWithValue(t, "no filter for id found to unregister", func() { world.storage.unregisterFilter(100) })
 }
 
 func TestFilterCacheRelation(t *testing.T) {

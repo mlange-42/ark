@@ -39,6 +39,11 @@ func TestRegisterComponents(t *testing.T) {
 
 	assert.Equal(t, id(0), ComponentID[Position](&world))
 	assert.Equal(t, id(1), ComponentID[Velocity](&world))
+
+	world.lock()
+	assert.Panics(t, func() {
+		ComponentID[Heading](&world)
+	})
 }
 
 func TestComponentInfo(t *testing.T) {
