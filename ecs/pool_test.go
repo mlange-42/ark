@@ -45,6 +45,9 @@ func TestEntityPool(t *testing.T) {
 		expectedAll[i+1].gen++
 	}
 
+	assert.Equal(t, 5, p.Cap())
+	assert.Equal(t, 130, p.TotalCap())
+
 	assert.False(t, p.Alive(e0Old), "Recycled entity of old generation should not be alive")
 
 	for i := 0; i < 5; i++ {
