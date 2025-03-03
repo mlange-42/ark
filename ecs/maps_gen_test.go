@@ -305,11 +305,11 @@ func TestMap2NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap2[CompA, CompB](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{})
 
 	filter := NewFilter2[CompA, CompB](&w)
@@ -330,11 +330,11 @@ func TestMap2NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap2[CompA, CompB](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB) {
 		a.X = 5
 		a.Y = 6
