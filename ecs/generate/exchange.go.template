@@ -50,7 +50,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Removes(components ...Comp) *Exchange
 
 // Add the mapped components to the given entity.
 func (ex *Exchange{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
@@ -66,7 +66,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Remove(entity Entity) {
 // Exchange performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange{{.}}.Removes].
 func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
@@ -76,7 +76,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, re
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 func (ex *Exchange{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, nil, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
@@ -112,7 +112,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch, fn func(ent
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatch(batch *Batch, {{$args}}, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, nil, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
 		{{- range $lower}}
 		unsafe.Pointer({{.}}),
@@ -128,7 +128,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatchFn(batch *Batch, fn func
 
 
 func (ex *Exchange{{.}}{{$genericsShort}}) exchangeBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), remove bool, rel ...RelationIndex) {
-	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, ex.relations)
+	ex.relations = relations(rel).toRelations(&ex.world.storage.registry, ex.ids, nil, ex.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {

@@ -4,10 +4,11 @@ package ecs
 
 // Filter0 is a filter for 0 components.
 type Filter0 struct {
-	world     *World
-	ids       []ID
-	filter    Filter
-	relations []RelationID
+	world         *World
+	ids           []ID
+	filter        Filter
+	relations     []RelationID
+	tempRelations []RelationID
 }
 
 // NewFilter0 creates a new [Filter0].
@@ -49,28 +50,37 @@ func (f *Filter0) Exclusive() *Filter0 {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter0.Query] or [Filter0.Batch] are not cached.
+func (f *Filter0) Relations(rel ...RelationIndex) *Filter0 {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query0] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter0) Query(rel ...RelationIndex) Query0 {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery0(f.world, f.filter, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
+	return newQuery0(f.world, f.filter, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter0) Batch(rel ...RelationIndex) *Batch {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
-		relations: f.relations,
+		relations: f.tempRelations,
 	}
 }
 
 // Filter1 is a filter for 1 components.
 type Filter1[A any] struct {
-	world     *World
-	ids       []ID
-	filter    Filter
-	relations []RelationID
+	world         *World
+	ids           []ID
+	filter        Filter
+	relations     []RelationID
+	tempRelations []RelationID
 }
 
 // NewFilter1 creates a new [Filter1].
@@ -114,28 +124,37 @@ func (f *Filter1[A]) Exclusive() *Filter1[A] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter1.Query] or [Filter1.Batch] are not cached.
+func (f *Filter1[A]) Relations(rel ...RelationIndex) *Filter1[A] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query1] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery1[A](f.world, f.filter, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
+	return newQuery1[A](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter1[A]) Batch(rel ...RelationIndex) *Batch {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
-		relations: f.relations,
+		relations: f.tempRelations,
 	}
 }
 
 // Filter2 is a filter for 2 components.
 type Filter2[A any, B any] struct {
-	world     *World
-	ids       []ID
-	filter    Filter
-	relations []RelationID
+	world         *World
+	ids           []ID
+	filter        Filter
+	relations     []RelationID
+	tempRelations []RelationID
 }
 
 // NewFilter2 creates a new [Filter2].
@@ -180,28 +199,37 @@ func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter2.Query] or [Filter2.Batch] are not cached.
+func (f *Filter2[A, B]) Relations(rel ...RelationIndex) *Filter2[A, B] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query2] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery2[A, B](f.world, f.filter, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
+	return newQuery2[A, B](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter2[A, B]) Batch(rel ...RelationIndex) *Batch {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
-		relations: f.relations,
+		relations: f.tempRelations,
 	}
 }
 
 // Filter3 is a filter for 3 components.
 type Filter3[A any, B any, C any] struct {
-	world     *World
-	ids       []ID
-	filter    Filter
-	relations []RelationID
+	world         *World
+	ids           []ID
+	filter        Filter
+	relations     []RelationID
+	tempRelations []RelationID
 }
 
 // NewFilter3 creates a new [Filter3].
@@ -247,28 +275,37 @@ func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter3.Query] or [Filter3.Batch] are not cached.
+func (f *Filter3[A, B, C]) Relations(rel ...RelationIndex) *Filter3[A, B, C] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query3] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery3[A, B, C](f.world, f.filter, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
+	return newQuery3[A, B, C](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter3[A, B, C]) Batch(rel ...RelationIndex) *Batch {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
-		relations: f.relations,
+		relations: f.tempRelations,
 	}
 }
 
 // Filter4 is a filter for 4 components.
 type Filter4[A any, B any, C any, D any] struct {
-	world     *World
-	ids       []ID
-	filter    Filter
-	relations []RelationID
+	world         *World
+	ids           []ID
+	filter        Filter
+	relations     []RelationID
+	tempRelations []RelationID
 }
 
 // NewFilter4 creates a new [Filter4].
@@ -315,28 +352,37 @@ func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter4.Query] or [Filter4.Batch] are not cached.
+func (f *Filter4[A, B, C, D]) Relations(rel ...RelationIndex) *Filter4[A, B, C, D] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query4] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery4[A, B, C, D](f.world, f.filter, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
+	return newQuery4[A, B, C, D](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter4[A, B, C, D]) Batch(rel ...RelationIndex) *Batch {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
-		relations: f.relations,
+		relations: f.tempRelations,
 	}
 }
 
 // Filter5 is a filter for 5 components.
 type Filter5[A any, B any, C any, D any, E any] struct {
-	world     *World
-	ids       []ID
-	filter    Filter
-	relations []RelationID
+	world         *World
+	ids           []ID
+	filter        Filter
+	relations     []RelationID
+	tempRelations []RelationID
 }
 
 // NewFilter5 creates a new [Filter5].
@@ -384,28 +430,37 @@ func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter5.Query] or [Filter5.Batch] are not cached.
+func (f *Filter5[A, B, C, D, E]) Relations(rel ...RelationIndex) *Filter5[A, B, C, D, E] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query5] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, E] {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery5[A, B, C, D, E](f.world, f.filter, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
+	return newQuery5[A, B, C, D, E](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter5[A, B, C, D, E]) Batch(rel ...RelationIndex) *Batch {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
-		relations: f.relations,
+		relations: f.tempRelations,
 	}
 }
 
 // Filter6 is a filter for 6 components.
 type Filter6[A any, B any, C any, D any, E any, F any] struct {
-	world     *World
-	ids       []ID
-	filter    Filter
-	relations []RelationID
+	world         *World
+	ids           []ID
+	filter        Filter
+	relations     []RelationID
+	tempRelations []RelationID
 }
 
 // NewFilter6 creates a new [Filter6].
@@ -454,28 +509,37 @@ func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter6.Query] or [Filter6.Batch] are not cached.
+func (f *Filter6[A, B, C, D, E, F]) Relations(rel ...RelationIndex) *Filter6[A, B, C, D, E, F] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query6] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, D, E, F] {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery6[A, B, C, D, E, F](f.world, f.filter, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
+	return newQuery6[A, B, C, D, E, F](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...RelationIndex) *Batch {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
-		relations: f.relations,
+		relations: f.tempRelations,
 	}
 }
 
 // Filter7 is a filter for 7 components.
 type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
-	world     *World
-	ids       []ID
-	filter    Filter
-	relations []RelationID
+	world         *World
+	ids           []ID
+	filter        Filter
+	relations     []RelationID
+	tempRelations []RelationID
 }
 
 // NewFilter7 creates a new [Filter7].
@@ -525,28 +589,37 @@ func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G]
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter7.Query] or [Filter7.Batch] are not cached.
+func (f *Filter7[A, B, C, D, E, F, G]) Relations(rel ...RelationIndex) *Filter7[A, B, C, D, E, F, G] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query7] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, C, D, E, F, G] {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery7[A, B, C, D, E, F, G](f.world, f.filter, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
+	return newQuery7[A, B, C, D, E, F, G](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...RelationIndex) *Batch {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
-		relations: f.relations,
+		relations: f.tempRelations,
 	}
 }
 
 // Filter8 is a filter for 8 components.
 type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
-	world     *World
-	ids       []ID
-	filter    Filter
-	relations []RelationID
+	world         *World
+	ids           []ID
+	filter        Filter
+	relations     []RelationID
+	tempRelations []RelationID
 }
 
 // NewFilter8 creates a new [Filter8].
@@ -597,18 +670,26 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter8.Query] or [Filter8.Batch] are not cached.
+func (f *Filter8[A, B, C, D, E, F, G, H]) Relations(rel ...RelationIndex) *Filter8[A, B, C, D, E, F, G, H] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query8] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, B, C, D, E, F, G, H] {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
-	return newQuery8[A, B, C, D, E, F, G, H](f.world, f.filter, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
+	return newQuery8[A, B, C, D, E, F, G, H](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...RelationIndex) *Batch {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
-		relations: f.relations,
+		relations: f.tempRelations,
 	}
 }
