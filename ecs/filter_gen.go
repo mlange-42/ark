@@ -27,6 +27,7 @@ func NewFilter0(world *World) *Filter0 {
 
 // With specifies additional components to filter for.
 func (f *Filter0) With(comps ...Comp) *Filter0 {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.mask.Set(id, true)
@@ -36,6 +37,7 @@ func (f *Filter0) With(comps ...Comp) *Filter0 {
 
 // Without specifies components to exclude.
 func (f *Filter0) Without(comps ...Comp) *Filter0 {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -47,15 +49,8 @@ func (f *Filter0) Without(comps ...Comp) *Filter0 {
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter0) Exclusive() *Filter0 {
+	f.checkCached()
 	f.filter = f.filter.Exclusive()
-	return f
-}
-
-// Relations sets permanent entity relation targets for this filter.
-// Relation targets set here are included in filter caching.
-// Contrary, relation targets specified in [Filter0.Query] or [Filter0.Batch] are not cached.
-func (f *Filter0) Relations(rel ...RelationIndex) *Filter0 {
-	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
 }
 
@@ -98,6 +93,12 @@ func (f *Filter0) Batch(rel ...RelationIndex) *Batch {
 	}
 }
 
+func (f *Filter0) checkCached() {
+	if f.cache != nil {
+		panic("can't modify a cached filter")
+	}
+}
+
 // Filter1 is a filter for 1 components.
 type Filter1[A any] struct {
 	world         *World
@@ -125,6 +126,7 @@ func NewFilter1[A any](world *World) *Filter1[A] {
 
 // With specifies additional components to filter for.
 func (f *Filter1[A]) With(comps ...Comp) *Filter1[A] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.mask.Set(id, true)
@@ -134,6 +136,7 @@ func (f *Filter1[A]) With(comps ...Comp) *Filter1[A] {
 
 // Without specifies components to exclude.
 func (f *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -145,6 +148,7 @@ func (f *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter1[A]) Exclusive() *Filter1[A] {
+	f.checkCached()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -153,6 +157,7 @@ func (f *Filter1[A]) Exclusive() *Filter1[A] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter1.Query] or [Filter1.Batch] are not cached.
 func (f *Filter1[A]) Relations(rel ...RelationIndex) *Filter1[A] {
+	f.checkCached()
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
 }
@@ -196,6 +201,12 @@ func (f *Filter1[A]) Batch(rel ...RelationIndex) *Batch {
 	}
 }
 
+func (f *Filter1[A]) checkCached() {
+	if f.cache != nil {
+		panic("can't modify a cached filter")
+	}
+}
+
 // Filter2 is a filter for 2 components.
 type Filter2[A any, B any] struct {
 	world         *World
@@ -224,6 +235,7 @@ func NewFilter2[A any, B any](world *World) *Filter2[A, B] {
 
 // With specifies additional components to filter for.
 func (f *Filter2[A, B]) With(comps ...Comp) *Filter2[A, B] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.mask.Set(id, true)
@@ -233,6 +245,7 @@ func (f *Filter2[A, B]) With(comps ...Comp) *Filter2[A, B] {
 
 // Without specifies components to exclude.
 func (f *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -244,6 +257,7 @@ func (f *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
+	f.checkCached()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -252,6 +266,7 @@ func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter2.Query] or [Filter2.Batch] are not cached.
 func (f *Filter2[A, B]) Relations(rel ...RelationIndex) *Filter2[A, B] {
+	f.checkCached()
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
 }
@@ -295,6 +310,12 @@ func (f *Filter2[A, B]) Batch(rel ...RelationIndex) *Batch {
 	}
 }
 
+func (f *Filter2[A, B]) checkCached() {
+	if f.cache != nil {
+		panic("can't modify a cached filter")
+	}
+}
+
 // Filter3 is a filter for 3 components.
 type Filter3[A any, B any, C any] struct {
 	world         *World
@@ -324,6 +345,7 @@ func NewFilter3[A any, B any, C any](world *World) *Filter3[A, B, C] {
 
 // With specifies additional components to filter for.
 func (f *Filter3[A, B, C]) With(comps ...Comp) *Filter3[A, B, C] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.mask.Set(id, true)
@@ -333,6 +355,7 @@ func (f *Filter3[A, B, C]) With(comps ...Comp) *Filter3[A, B, C] {
 
 // Without specifies components to exclude.
 func (f *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -344,6 +367,7 @@ func (f *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
+	f.checkCached()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -352,6 +376,7 @@ func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter3.Query] or [Filter3.Batch] are not cached.
 func (f *Filter3[A, B, C]) Relations(rel ...RelationIndex) *Filter3[A, B, C] {
+	f.checkCached()
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
 }
@@ -395,6 +420,12 @@ func (f *Filter3[A, B, C]) Batch(rel ...RelationIndex) *Batch {
 	}
 }
 
+func (f *Filter3[A, B, C]) checkCached() {
+	if f.cache != nil {
+		panic("can't modify a cached filter")
+	}
+}
+
 // Filter4 is a filter for 4 components.
 type Filter4[A any, B any, C any, D any] struct {
 	world         *World
@@ -425,6 +456,7 @@ func NewFilter4[A any, B any, C any, D any](world *World) *Filter4[A, B, C, D] {
 
 // With specifies additional components to filter for.
 func (f *Filter4[A, B, C, D]) With(comps ...Comp) *Filter4[A, B, C, D] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.mask.Set(id, true)
@@ -434,6 +466,7 @@ func (f *Filter4[A, B, C, D]) With(comps ...Comp) *Filter4[A, B, C, D] {
 
 // Without specifies components to exclude.
 func (f *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -445,6 +478,7 @@ func (f *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
+	f.checkCached()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -453,6 +487,7 @@ func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter4.Query] or [Filter4.Batch] are not cached.
 func (f *Filter4[A, B, C, D]) Relations(rel ...RelationIndex) *Filter4[A, B, C, D] {
+	f.checkCached()
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
 }
@@ -496,6 +531,12 @@ func (f *Filter4[A, B, C, D]) Batch(rel ...RelationIndex) *Batch {
 	}
 }
 
+func (f *Filter4[A, B, C, D]) checkCached() {
+	if f.cache != nil {
+		panic("can't modify a cached filter")
+	}
+}
+
 // Filter5 is a filter for 5 components.
 type Filter5[A any, B any, C any, D any, E any] struct {
 	world         *World
@@ -527,6 +568,7 @@ func NewFilter5[A any, B any, C any, D any, E any](world *World) *Filter5[A, B, 
 
 // With specifies additional components to filter for.
 func (f *Filter5[A, B, C, D, E]) With(comps ...Comp) *Filter5[A, B, C, D, E] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.mask.Set(id, true)
@@ -536,6 +578,7 @@ func (f *Filter5[A, B, C, D, E]) With(comps ...Comp) *Filter5[A, B, C, D, E] {
 
 // Without specifies components to exclude.
 func (f *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -547,6 +590,7 @@ func (f *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
+	f.checkCached()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -555,6 +599,7 @@ func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter5.Query] or [Filter5.Batch] are not cached.
 func (f *Filter5[A, B, C, D, E]) Relations(rel ...RelationIndex) *Filter5[A, B, C, D, E] {
+	f.checkCached()
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
 }
@@ -598,6 +643,12 @@ func (f *Filter5[A, B, C, D, E]) Batch(rel ...RelationIndex) *Batch {
 	}
 }
 
+func (f *Filter5[A, B, C, D, E]) checkCached() {
+	if f.cache != nil {
+		panic("can't modify a cached filter")
+	}
+}
+
 // Filter6 is a filter for 6 components.
 type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	world         *World
@@ -630,6 +681,7 @@ func NewFilter6[A any, B any, C any, D any, E any, F any](world *World) *Filter6
 
 // With specifies additional components to filter for.
 func (f *Filter6[A, B, C, D, E, F]) With(comps ...Comp) *Filter6[A, B, C, D, E, F] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.mask.Set(id, true)
@@ -639,6 +691,7 @@ func (f *Filter6[A, B, C, D, E, F]) With(comps ...Comp) *Filter6[A, B, C, D, E, 
 
 // Without specifies components to exclude.
 func (f *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, E, F] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -650,6 +703,7 @@ func (f *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
+	f.checkCached()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -658,6 +712,7 @@ func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter6.Query] or [Filter6.Batch] are not cached.
 func (f *Filter6[A, B, C, D, E, F]) Relations(rel ...RelationIndex) *Filter6[A, B, C, D, E, F] {
+	f.checkCached()
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
 }
@@ -701,6 +756,12 @@ func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...RelationIndex) *Batch {
 	}
 }
 
+func (f *Filter6[A, B, C, D, E, F]) checkCached() {
+	if f.cache != nil {
+		panic("can't modify a cached filter")
+	}
+}
+
 // Filter7 is a filter for 7 components.
 type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world         *World
@@ -734,6 +795,7 @@ func NewFilter7[A any, B any, C any, D any, E any, F any, G any](world *World) *
 
 // With specifies additional components to filter for.
 func (f *Filter7[A, B, C, D, E, F, G]) With(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.mask.Set(id, true)
@@ -743,6 +805,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) With(comps ...Comp) *Filter7[A, B, C, D, 
 
 // Without specifies components to exclude.
 func (f *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -754,6 +817,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G] {
+	f.checkCached()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -762,6 +826,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G]
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter7.Query] or [Filter7.Batch] are not cached.
 func (f *Filter7[A, B, C, D, E, F, G]) Relations(rel ...RelationIndex) *Filter7[A, B, C, D, E, F, G] {
+	f.checkCached()
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
 }
@@ -805,6 +870,12 @@ func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...RelationIndex) *Batch {
 	}
 }
 
+func (f *Filter7[A, B, C, D, E, F, G]) checkCached() {
+	if f.cache != nil {
+		panic("can't modify a cached filter")
+	}
+}
+
 // Filter8 is a filter for 8 components.
 type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world         *World
@@ -839,6 +910,7 @@ func NewFilter8[A any, B any, C any, D any, E any, F any, G any, H any](world *W
 
 // With specifies additional components to filter for.
 func (f *Filter8[A, B, C, D, E, F, G, H]) With(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.mask.Set(id, true)
@@ -848,6 +920,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) With(comps ...Comp) *Filter8[A, B, C, 
 
 // Without specifies components to exclude.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
+	f.checkCached()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -859,6 +932,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F, G, H] {
+	f.checkCached()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -867,6 +941,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter8.Query] or [Filter8.Batch] are not cached.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Relations(rel ...RelationIndex) *Filter8[A, B, C, D, E, F, G, H] {
+	f.checkCached()
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
 }
@@ -907,5 +982,11 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...RelationIndex) *Batch {
 	return &Batch{
 		filter:    f.filter,
 		relations: f.tempRelations,
+	}
+}
+
+func (f *Filter8[A, B, C, D, E, F, G, H]) checkCached() {
+	if f.cache != nil {
+		panic("can't modify a cached filter")
 	}
 }
