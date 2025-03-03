@@ -19,6 +19,7 @@ type Filter{{.}}{{$generics}} struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
+	cache         *cacheEntry
 }
 
 // NewFilter{{.}} creates a new [Filter{{.}}].
@@ -72,6 +73,24 @@ func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...RelationIndex) *Filter{
 	return f
 }
 
+// Register this filter to the world's filter cache.
+func (f *Filter{{.}}{{$genericsShort}}) Register() *Filter{{.}}{{$genericsShort}} {
+	if f.cache != nil {
+		panic("filter is already registered, can't register")
+	}
+	f.cache = f.world.storage.registerFilter(f.Batch())
+	return f
+}
+
+// Unregister this filter from the world's filter cache.
+func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
+	if f.cache == nil {
+		panic("filter is not registered, can't unregister")
+	}
+	f.world.storage.unregisterFilter(f.cache)
+	f.cache = nil
+}
+
 // Query creates a [Query{{.}}] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...RelationIndex) Query{{.}}{{$genericsShort}} {
@@ -87,5 +106,6 @@ func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...RelationIndex) *Batch {
 		relations: f.tempRelations,
 	}
 }
+
 {{end -}}
 {{end -}}

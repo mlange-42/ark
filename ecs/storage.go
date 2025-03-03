@@ -162,6 +162,14 @@ func (s *storage) registerTargets(relations []RelationID) {
 	}
 }
 
+func (s *storage) registerFilter(batch *Batch) *cacheEntry {
+	return s.cache.register(s, batch)
+}
+
+func (s *storage) unregisterFilter(entry *cacheEntry) {
+	s.cache.unregister(entry)
+}
+
 func (s *storage) createEntity(table tableID) (Entity, uint32) {
 	entity := s.entityPool.Get()
 

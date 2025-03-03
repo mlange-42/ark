@@ -9,6 +9,7 @@ type Filter0 struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
+	cache         *cacheEntry
 }
 
 // NewFilter0 creates a new [Filter0].
@@ -58,6 +59,24 @@ func (f *Filter0) Relations(rel ...RelationIndex) *Filter0 {
 	return f
 }
 
+// Register this filter to the world's filter cache.
+func (f *Filter0) Register() *Filter0 {
+	if f.cache != nil {
+		panic("filter is already registered, can't register")
+	}
+	f.cache = f.world.storage.registerFilter(f.Batch())
+	return f
+}
+
+// Unregister this filter from the world's filter cache.
+func (f *Filter0) Unregister() {
+	if f.cache == nil {
+		panic("filter is not registered, can't unregister")
+	}
+	f.world.storage.unregisterFilter(f.cache)
+	f.cache = nil
+}
+
 // Query creates a [Query0] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter0) Query(rel ...RelationIndex) Query0 {
@@ -81,6 +100,7 @@ type Filter1[A any] struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
+	cache         *cacheEntry
 }
 
 // NewFilter1 creates a new [Filter1].
@@ -132,6 +152,24 @@ func (f *Filter1[A]) Relations(rel ...RelationIndex) *Filter1[A] {
 	return f
 }
 
+// Register this filter to the world's filter cache.
+func (f *Filter1[A]) Register() *Filter1[A] {
+	if f.cache != nil {
+		panic("filter is already registered, can't register")
+	}
+	f.cache = f.world.storage.registerFilter(f.Batch())
+	return f
+}
+
+// Unregister this filter from the world's filter cache.
+func (f *Filter1[A]) Unregister() {
+	if f.cache == nil {
+		panic("filter is not registered, can't unregister")
+	}
+	f.world.storage.unregisterFilter(f.cache)
+	f.cache = nil
+}
+
 // Query creates a [Query1] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
@@ -155,6 +193,7 @@ type Filter2[A any, B any] struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
+	cache         *cacheEntry
 }
 
 // NewFilter2 creates a new [Filter2].
@@ -207,6 +246,24 @@ func (f *Filter2[A, B]) Relations(rel ...RelationIndex) *Filter2[A, B] {
 	return f
 }
 
+// Register this filter to the world's filter cache.
+func (f *Filter2[A, B]) Register() *Filter2[A, B] {
+	if f.cache != nil {
+		panic("filter is already registered, can't register")
+	}
+	f.cache = f.world.storage.registerFilter(f.Batch())
+	return f
+}
+
+// Unregister this filter from the world's filter cache.
+func (f *Filter2[A, B]) Unregister() {
+	if f.cache == nil {
+		panic("filter is not registered, can't unregister")
+	}
+	f.world.storage.unregisterFilter(f.cache)
+	f.cache = nil
+}
+
 // Query creates a [Query2] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
@@ -230,6 +287,7 @@ type Filter3[A any, B any, C any] struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
+	cache         *cacheEntry
 }
 
 // NewFilter3 creates a new [Filter3].
@@ -283,6 +341,24 @@ func (f *Filter3[A, B, C]) Relations(rel ...RelationIndex) *Filter3[A, B, C] {
 	return f
 }
 
+// Register this filter to the world's filter cache.
+func (f *Filter3[A, B, C]) Register() *Filter3[A, B, C] {
+	if f.cache != nil {
+		panic("filter is already registered, can't register")
+	}
+	f.cache = f.world.storage.registerFilter(f.Batch())
+	return f
+}
+
+// Unregister this filter from the world's filter cache.
+func (f *Filter3[A, B, C]) Unregister() {
+	if f.cache == nil {
+		panic("filter is not registered, can't unregister")
+	}
+	f.world.storage.unregisterFilter(f.cache)
+	f.cache = nil
+}
+
 // Query creates a [Query3] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
@@ -306,6 +382,7 @@ type Filter4[A any, B any, C any, D any] struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
+	cache         *cacheEntry
 }
 
 // NewFilter4 creates a new [Filter4].
@@ -360,6 +437,24 @@ func (f *Filter4[A, B, C, D]) Relations(rel ...RelationIndex) *Filter4[A, B, C, 
 	return f
 }
 
+// Register this filter to the world's filter cache.
+func (f *Filter4[A, B, C, D]) Register() *Filter4[A, B, C, D] {
+	if f.cache != nil {
+		panic("filter is already registered, can't register")
+	}
+	f.cache = f.world.storage.registerFilter(f.Batch())
+	return f
+}
+
+// Unregister this filter from the world's filter cache.
+func (f *Filter4[A, B, C, D]) Unregister() {
+	if f.cache == nil {
+		panic("filter is not registered, can't unregister")
+	}
+	f.world.storage.unregisterFilter(f.cache)
+	f.cache = nil
+}
+
 // Query creates a [Query4] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
@@ -383,6 +478,7 @@ type Filter5[A any, B any, C any, D any, E any] struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
+	cache         *cacheEntry
 }
 
 // NewFilter5 creates a new [Filter5].
@@ -438,6 +534,24 @@ func (f *Filter5[A, B, C, D, E]) Relations(rel ...RelationIndex) *Filter5[A, B, 
 	return f
 }
 
+// Register this filter to the world's filter cache.
+func (f *Filter5[A, B, C, D, E]) Register() *Filter5[A, B, C, D, E] {
+	if f.cache != nil {
+		panic("filter is already registered, can't register")
+	}
+	f.cache = f.world.storage.registerFilter(f.Batch())
+	return f
+}
+
+// Unregister this filter from the world's filter cache.
+func (f *Filter5[A, B, C, D, E]) Unregister() {
+	if f.cache == nil {
+		panic("filter is not registered, can't unregister")
+	}
+	f.world.storage.unregisterFilter(f.cache)
+	f.cache = nil
+}
+
 // Query creates a [Query5] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, E] {
@@ -461,6 +575,7 @@ type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
+	cache         *cacheEntry
 }
 
 // NewFilter6 creates a new [Filter6].
@@ -517,6 +632,24 @@ func (f *Filter6[A, B, C, D, E, F]) Relations(rel ...RelationIndex) *Filter6[A, 
 	return f
 }
 
+// Register this filter to the world's filter cache.
+func (f *Filter6[A, B, C, D, E, F]) Register() *Filter6[A, B, C, D, E, F] {
+	if f.cache != nil {
+		panic("filter is already registered, can't register")
+	}
+	f.cache = f.world.storage.registerFilter(f.Batch())
+	return f
+}
+
+// Unregister this filter from the world's filter cache.
+func (f *Filter6[A, B, C, D, E, F]) Unregister() {
+	if f.cache == nil {
+		panic("filter is not registered, can't unregister")
+	}
+	f.world.storage.unregisterFilter(f.cache)
+	f.cache = nil
+}
+
 // Query creates a [Query6] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, D, E, F] {
@@ -540,6 +673,7 @@ type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
+	cache         *cacheEntry
 }
 
 // NewFilter7 creates a new [Filter7].
@@ -597,6 +731,24 @@ func (f *Filter7[A, B, C, D, E, F, G]) Relations(rel ...RelationIndex) *Filter7[
 	return f
 }
 
+// Register this filter to the world's filter cache.
+func (f *Filter7[A, B, C, D, E, F, G]) Register() *Filter7[A, B, C, D, E, F, G] {
+	if f.cache != nil {
+		panic("filter is already registered, can't register")
+	}
+	f.cache = f.world.storage.registerFilter(f.Batch())
+	return f
+}
+
+// Unregister this filter from the world's filter cache.
+func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
+	if f.cache == nil {
+		panic("filter is not registered, can't unregister")
+	}
+	f.world.storage.unregisterFilter(f.cache)
+	f.cache = nil
+}
+
 // Query creates a [Query7] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, C, D, E, F, G] {
@@ -620,6 +772,7 @@ type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	filter        Filter
 	relations     []RelationID
 	tempRelations []RelationID
+	cache         *cacheEntry
 }
 
 // NewFilter8 creates a new [Filter8].
@@ -676,6 +829,24 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 func (f *Filter8[A, B, C, D, E, F, G, H]) Relations(rel ...RelationIndex) *Filter8[A, B, C, D, E, F, G, H] {
 	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
 	return f
+}
+
+// Register this filter to the world's filter cache.
+func (f *Filter8[A, B, C, D, E, F, G, H]) Register() *Filter8[A, B, C, D, E, F, G, H] {
+	if f.cache != nil {
+		panic("filter is already registered, can't register")
+	}
+	f.cache = f.world.storage.registerFilter(f.Batch())
+	return f
+}
+
+// Unregister this filter from the world's filter cache.
+func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
+	if f.cache == nil {
+		panic("filter is not registered, can't unregister")
+	}
+	f.world.storage.unregisterFilter(f.cache)
+	f.cache = nil
 }
 
 // Query creates a [Query8] from this filter.
