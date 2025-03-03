@@ -13,11 +13,19 @@ Most world functionality is covered in chapters [Entities & Components](../entit
 
 ## World creation
 
-To create a world, use {{< api ecs NewWorld >}} with an initial capacity:
+To create a world with default settings, use {{< api ecs NewWorld >}}:
 
 {{< code-func world_test.go TestWorldSimple >}}
 
+A world can also be configured with an initial capacity:
+
+{{< code-func world_test.go TestWorldConfig >}}
+
 The initial capacity is used to initialize archetypes, the entity list, etc.
+
+For archetypes with an [Entity Relation](../relations), a separate initial capacity can be specified:
+
+{{< code-func world_test.go TestWorldConfigRelations >}}
 
 ## Reset the world
 
