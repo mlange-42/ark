@@ -193,7 +193,7 @@ func (w *World) setRelations(entity Entity, relations []RelationID) {
 		panic("can't set relation for a dead entity")
 	}
 	if len(relations) == 0 {
-		panic("ne relations specified")
+		panic("no relations specified")
 	}
 
 	index := &w.storage.entities[entity.id]
@@ -231,7 +231,7 @@ func (w *World) setRelationsBatch(batch *Batch, relations []RelationID, fn func(
 	w.checkLocked()
 
 	if len(relations) == 0 {
-		panic("ne relations specified")
+		panic("no relations specified")
 	}
 
 	tables := w.storage.getTables(batch)
