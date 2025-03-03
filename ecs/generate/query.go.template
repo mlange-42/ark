@@ -110,9 +110,9 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 
 func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {
 	if q.cache != nil {
-		return q.nextTable()
+		return q.nextTable(q.cache.tables)
 	}
-	if q.cursor.archetype >= 0 && q.nextTable() {
+	if q.cursor.archetype >= 0 && q.nextTable(q.tables) {
 		return true
 	}
 	return q.nextArchetype()
@@ -138,7 +138,7 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 
 		q.tables = archetype.GetTables(q.relations)
 		q.cursor.table = -1
-		if q.nextTable() {
+		if q.nextTable(q.tables) {
 			return true
 		}
 	}
@@ -146,11 +146,11 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 	return false
 }
 
-func (q *Query{{.}}{{$genericsShort}}) nextTable() bool {
-	maxTableIndex := len(q.tables) - 1
+func (q *Query{{.}}{{$genericsShort}}) nextTable(tables []tableID) bool {
+	maxTableIndex := len(tables) - 1
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := &q.world.storage.tables[q.tables[q.cursor.table]]
+		table := &q.world.storage.tables[tables[q.cursor.table]]
 		if table.Len() == 0 {
 			continue
 		}
