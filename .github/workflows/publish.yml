@@ -26,7 +26,8 @@ jobs:
         run: go get ./...
       - name: Run doc tests
         run: |
-          go test -v ./docs/content/...
+          cd ./docs/content/
+          go test -v ./...
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
