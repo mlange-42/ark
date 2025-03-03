@@ -6,6 +6,7 @@ import (
 )
 
 type storage struct {
+	config     config
 	registry   componentRegistry
 	entities   []entityIndex
 	isTarget   []bool
@@ -16,17 +17,18 @@ type storage struct {
 	relationArchetypes []archetypeID
 	tables             []table
 	components         []componentStorage
-	initialCapacity    uint32
 }
 
 type componentStorage struct {
 	columns []*column
 }
 
-func newStorage(capacity uint32) storage {
+func newStorage(capacity ...int) storage {
+	config := newConfig(capacity...)
+
 	reg := newComponentRegistry()
-	entities := make([]entityIndex, reservedEntities, capacity+reservedEntities)
-	isTarget := make([]bool, reservedEntities, capacity+reservedEntities)
+	entities := make([]entityIndex, reservedEntities, config.initialCapacity+reservedEntities)
+	isTarget := make([]bool, reservedEntities, config.initialCapacity+reservedEntities)
 	// Reserved zero and wildcard entities
 	for i := range reservedEntities {
 		entities[i] = entityIndex{table: maxTableID, row: 0}
@@ -37,19 +39,19 @@ func newStorage(capacity uint32) storage {
 	}
 
 	tables := make([]table, 0, 128)
-	tables = append(tables, newTable(0, 0, capacity, &reg, []ID{}, componentsMap, []bool{}, []Entity{}, []RelationID{}))
+	tables = append(tables, newTable(0, 0, uint32(config.initialCapacity), &reg, []ID{}, componentsMap, []bool{}, []Entity{}, []RelationID{}))
 	archetypes := make([]archetype, 0, 128)
 	archetypes = append(archetypes, newArchetype(0, 0, &Mask{}, []ID{}, []tableID{0}, &reg))
 	return storage{
-		registry:        reg,
-		entities:        entities,
-		isTarget:        isTarget,
-		entityPool:      newEntityPool(capacity, reservedEntities),
-		graph:           newGraph(),
-		archetypes:      archetypes,
-		tables:          tables,
-		initialCapacity: capacity,
-		components:      make([]componentStorage, 0, MaskTotalBits),
+		config:     config,
+		registry:   reg,
+		entities:   entities,
+		isTarget:   isTarget,
+		entityPool: newEntityPool(uint32(config.initialCapacity), reservedEntities),
+		graph:      newGraph(),
+		archetypes: archetypes,
+		tables:     tables,
+		components: make([]componentStorage, 0, MaskTotalBits),
 	}
 }
 
@@ -221,8 +223,12 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 		s.tables[newTableID].recycle(targets, relations)
 	} else {
 		newTableID = tableID(len(s.tables))
+		cap := s.config.initialCapacity
+		if archetype.HasRelations() {
+			cap = s.config.initialCapacityRelations
+		}
 		s.tables = append(s.tables, newTable(
-			newTableID, archetype.id, s.initialCapacity, &s.registry,
+			newTableID, archetype.id, uint32(cap), &s.registry,
 			archetype.components, archetype.componentsMap,
 			archetype.isRelation, targets, relations))
 	}

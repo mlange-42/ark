@@ -8,9 +8,15 @@ type World struct {
 }
 
 // NewWorld creates a new [World].
-func NewWorld(initialCapacity uint32) World {
+//
+// Accepts zero, one or two arguments.
+// The first argument is the initial capacity of the world.
+// The second argument is the initial capacity of relation archetypes.
+// If only one argument is provided, it is used for both capacities.
+// If no arguments are provided, the defaults are 1024 and 128, respectively.
+func NewWorld(initialCapacity ...int) World {
 	return World{
-		storage:   newStorage(initialCapacity),
+		storage:   newStorage(initialCapacity...),
 		resources: newResources(),
 		locks:     lock{},
 	}
