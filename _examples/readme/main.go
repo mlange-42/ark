@@ -21,8 +21,8 @@ type Velocity struct {
 }
 
 func main() {
-	// Create a World with given initial capacity.
-	world := ecs.NewWorld(1024)
+	// Create a new World.
+	world := ecs.NewWorld()
 
 	// Create a component mapper.
 	mapper := ecs.NewMap2[Position, Velocity](&world)
