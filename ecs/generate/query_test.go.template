@@ -173,6 +173,76 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	assert.Equal(t, n, cnt)
 }
 
+func TestQuery{{.}}Registered(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap{{.}}{{$genericsRel}}(&w)
+
+	for range n {
+		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent1))
+		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent2))
+		e := mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent3))
+		w.RemoveEntity(e)
+	}
+
+	// normal filter
+	filter := NewFilter{{.}}{{$genericsRel}}(&w).Register()
+	query := filter.Query()
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		{{blanks .}} = query.Get()
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+	filter.Unregister()
+
+	// relation filter 1
+	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(Rel(0, parent2)).Register()
+	query = filter.Query()
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		{{blanks .}} = query.Get()
+		assert.Equal(t, parent2, query.GetRelation(0))
+		cnt++
+	}
+	assert.Equal(t, n, cnt)
+	filter.Unregister()
+
+	// relation filter 2
+	filter = NewFilter{{.}}{{$genericsRel}}(&w).Register()
+	query = filter.Query(Rel(0, parent2))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		{{blanks .}} = query.Get()
+		assert.Equal(t, parent2, query.GetRelation(0))
+		cnt++
+	}
+	assert.Equal(t, n, cnt)
+
+	assert.Panics(t, func(){
+		filter.Exclusive()
+	})
+	assert.Panics(t, func(){
+		filter.Register()
+	})
+	
+	filter.Unregister()
+	assert.Panics(t, func(){
+		filter.Unregister()
+	})
+}
+
 {{end -}}
 
 func TestQuery0(t *testing.T) {
