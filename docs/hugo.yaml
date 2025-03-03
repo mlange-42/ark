@@ -31,6 +31,7 @@ params:
     displayCopyright: false
   
   apiURL: https://pkg.go.dev/github.com/mlange-42/ark/
+  repoURL: https://github.com/mlange-42/ark/
   images:
     - https://mlange-42.github.io/ark/images/social.png
 

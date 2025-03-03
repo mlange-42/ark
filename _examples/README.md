@@ -1,4 +1,4 @@
-# Arche examples
+# Ark examples
 
 This folder contains examples for the [Ark](https://github.com/mlange-42/ark) Entity Component System.
 
@@ -8,7 +8,7 @@ This folder contains examples for the [Ark](https://github.com/mlange-42/ark) En
 
 ```
 git clone https://github.com/mlange-42/ark
-cd arche
+cd ark
 ```
 
 2. Run examples from the project's root directory like this:

@@ -29,6 +29,6 @@ Here is the classical Position/Velocity example that every ECS shows in the docs
 
 If you ask **"What is ECS?"**, take a look at the great [**ECS FAQ**](https://github.com/SanderMertens/ecs-faq) by Sander Mertens, the author of the [Flecs](http://flecs.dev) ECS.
 
-To learn how to use Ark, read the [User Guide](../guide),
+To learn how to use Ark, read the following sections,
 browse the [API documentation](https://pkg.go.dev/github.com/mlange-42/ark),
 or take a look at the {{< repo "tree/main/_examples" examples >}} in the {{< repo "" "GitHub repository" >}}.
