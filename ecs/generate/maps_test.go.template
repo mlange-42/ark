@@ -66,6 +66,7 @@ func TestMap{{.}}NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap{{.}}{{$generics}}(&w)
+	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity({{$mapArgs}})
@@ -90,6 +91,7 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap{{.}}{{$generics}}(&w)
+	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity({{$mapArgs}})

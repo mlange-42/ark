@@ -101,6 +101,8 @@ func TestWorldRemoveEntity(t *testing.T) {
 	e := w.NewEntity()
 	w.RemoveEntity(e)
 	assert.False(t, w.Alive(e))
+
+	assert.Panics(t, func() { w.RemoveEntity(e) })
 }
 
 func TestWorldRemoveEntities(t *testing.T) {
