@@ -75,6 +75,8 @@ func (f *Filter0) Unregister() {
 
 // Query creates a [Query0] from this filter.
 // This must be used each time before iterating a query.
+//
+// Relation targets provided here are added to those specified with [Filter0.Relations].
 func (f *Filter0) Query(rel ...RelationIndex) Query0 {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -85,6 +87,8 @@ func (f *Filter0) Query(rel ...RelationIndex) Query0 {
 }
 
 // Batch creates a [Batch] from this filter.
+//
+// Relation targets provided here are added to those specified with [Filter0.Relations].
 func (f *Filter0) Batch(rel ...RelationIndex) *Batch {
 	// TODO: use cache?
 	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -184,6 +188,8 @@ func (f *Filter1[A]) Unregister() {
 
 // Query creates a [Query1] from this filter.
 // This must be used each time before iterating a query.
+//
+// Relation targets provided here are added to those specified with [Filter1.Relations].
 func (f *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -194,6 +200,8 @@ func (f *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
 }
 
 // Batch creates a [Batch] from this filter.
+//
+// Relation targets provided here are added to those specified with [Filter1.Relations].
 func (f *Filter1[A]) Batch(rel ...RelationIndex) *Batch {
 	// TODO: use cache?
 	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -294,6 +302,8 @@ func (f *Filter2[A, B]) Unregister() {
 
 // Query creates a [Query2] from this filter.
 // This must be used each time before iterating a query.
+//
+// Relation targets provided here are added to those specified with [Filter2.Relations].
 func (f *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -304,6 +314,8 @@ func (f *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
 }
 
 // Batch creates a [Batch] from this filter.
+//
+// Relation targets provided here are added to those specified with [Filter2.Relations].
 func (f *Filter2[A, B]) Batch(rel ...RelationIndex) *Batch {
 	// TODO: use cache?
 	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -405,6 +417,8 @@ func (f *Filter3[A, B, C]) Unregister() {
 
 // Query creates a [Query3] from this filter.
 // This must be used each time before iterating a query.
+//
+// Relation targets provided here are added to those specified with [Filter3.Relations].
 func (f *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -415,6 +429,8 @@ func (f *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
 }
 
 // Batch creates a [Batch] from this filter.
+//
+// Relation targets provided here are added to those specified with [Filter3.Relations].
 func (f *Filter3[A, B, C]) Batch(rel ...RelationIndex) *Batch {
 	// TODO: use cache?
 	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -517,6 +533,8 @@ func (f *Filter4[A, B, C, D]) Unregister() {
 
 // Query creates a [Query4] from this filter.
 // This must be used each time before iterating a query.
+//
+// Relation targets provided here are added to those specified with [Filter4.Relations].
 func (f *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -527,6 +545,8 @@ func (f *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
 }
 
 // Batch creates a [Batch] from this filter.
+//
+// Relation targets provided here are added to those specified with [Filter4.Relations].
 func (f *Filter4[A, B, C, D]) Batch(rel ...RelationIndex) *Batch {
 	// TODO: use cache?
 	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -630,6 +650,8 @@ func (f *Filter5[A, B, C, D, E]) Unregister() {
 
 // Query creates a [Query5] from this filter.
 // This must be used each time before iterating a query.
+//
+// Relation targets provided here are added to those specified with [Filter5.Relations].
 func (f *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, E] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -640,6 +662,8 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, 
 }
 
 // Batch creates a [Batch] from this filter.
+//
+// Relation targets provided here are added to those specified with [Filter5.Relations].
 func (f *Filter5[A, B, C, D, E]) Batch(rel ...RelationIndex) *Batch {
 	// TODO: use cache?
 	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -744,6 +768,8 @@ func (f *Filter6[A, B, C, D, E, F]) Unregister() {
 
 // Query creates a [Query6] from this filter.
 // This must be used each time before iterating a query.
+//
+// Relation targets provided here are added to those specified with [Filter6.Relations].
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, D, E, F] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -754,6 +780,8 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, 
 }
 
 // Batch creates a [Batch] from this filter.
+//
+// Relation targets provided here are added to those specified with [Filter6.Relations].
 func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...RelationIndex) *Batch {
 	// TODO: use cache?
 	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -859,6 +887,8 @@ func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
 
 // Query creates a [Query7] from this filter.
 // This must be used each time before iterating a query.
+//
+// Relation targets provided here are added to those specified with [Filter7.Relations].
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, C, D, E, F, G] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -869,6 +899,8 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, 
 }
 
 // Batch creates a [Batch] from this filter.
+//
+// Relation targets provided here are added to those specified with [Filter7.Relations].
 func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...RelationIndex) *Batch {
 	// TODO: use cache?
 	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -975,6 +1007,8 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
 
 // Query creates a [Query8] from this filter.
 // This must be used each time before iterating a query.
+//
+// Relation targets provided here are added to those specified with [Filter8.Relations].
 func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, B, C, D, E, F, G, H] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
@@ -985,6 +1019,8 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, 
 }
 
 // Batch creates a [Batch] from this filter.
+//
+// Relation targets provided here are added to those specified with [Filter8.Relations].
 func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...RelationIndex) *Batch {
 	// TODO: use cache?
 	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)

@@ -96,6 +96,8 @@ func TestMap1NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap1Relations(t *testing.T) {
@@ -345,6 +347,8 @@ func TestMap2NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap2Relations(t *testing.T) {
@@ -594,6 +598,8 @@ func TestMap3NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap3Relations(t *testing.T) {
@@ -843,6 +849,8 @@ func TestMap4NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap4Relations(t *testing.T) {
@@ -1092,6 +1100,8 @@ func TestMap5NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap5Relations(t *testing.T) {
@@ -1341,6 +1351,8 @@ func TestMap6NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap6Relations(t *testing.T) {
@@ -1590,6 +1602,8 @@ func TestMap7NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap7Relations(t *testing.T) {
@@ -1839,6 +1853,8 @@ func TestMap8NewBatchFn(t *testing.T) {
 	}
 	assert.True(t, mapper.HasAll(lastEntity))
 	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap8Relations(t *testing.T) {
