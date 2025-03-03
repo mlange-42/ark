@@ -180,9 +180,7 @@ func (m *Map1[A]) GetRelationUnchecked(entity Entity, index int) Entity {
 
 // SetRelations sets relation targets for the given entity.
 func (m *Map1[A]) SetRelations(entity Entity, rel ...RelationIndex) {
-	if !m.world.Alive(entity) {
-		panic("can't set entity relation targets for a dead entity")
-	}
+	// alive check is done in World.setRelations
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
@@ -397,9 +395,7 @@ func (m *Map2[A, B]) GetRelationUnchecked(entity Entity, index int) Entity {
 
 // SetRelations sets relation targets for the given entity.
 func (m *Map2[A, B]) SetRelations(entity Entity, rel ...RelationIndex) {
-	if !m.world.Alive(entity) {
-		panic("can't set entity relation targets for a dead entity")
-	}
+	// alive check is done in World.setRelations
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
@@ -628,9 +624,7 @@ func (m *Map3[A, B, C]) GetRelationUnchecked(entity Entity, index int) Entity {
 
 // SetRelations sets relation targets for the given entity.
 func (m *Map3[A, B, C]) SetRelations(entity Entity, rel ...RelationIndex) {
-	if !m.world.Alive(entity) {
-		panic("can't set entity relation targets for a dead entity")
-	}
+	// alive check is done in World.setRelations
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
@@ -873,9 +867,7 @@ func (m *Map4[A, B, C, D]) GetRelationUnchecked(entity Entity, index int) Entity
 
 // SetRelations sets relation targets for the given entity.
 func (m *Map4[A, B, C, D]) SetRelations(entity Entity, rel ...RelationIndex) {
-	if !m.world.Alive(entity) {
-		panic("can't set entity relation targets for a dead entity")
-	}
+	// alive check is done in World.setRelations
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
@@ -1132,9 +1124,7 @@ func (m *Map5[A, B, C, D, E]) GetRelationUnchecked(entity Entity, index int) Ent
 
 // SetRelations sets relation targets for the given entity.
 func (m *Map5[A, B, C, D, E]) SetRelations(entity Entity, rel ...RelationIndex) {
-	if !m.world.Alive(entity) {
-		panic("can't set entity relation targets for a dead entity")
-	}
+	// alive check is done in World.setRelations
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
@@ -1405,9 +1395,7 @@ func (m *Map6[A, B, C, D, E, F]) GetRelationUnchecked(entity Entity, index int) 
 
 // SetRelations sets relation targets for the given entity.
 func (m *Map6[A, B, C, D, E, F]) SetRelations(entity Entity, rel ...RelationIndex) {
-	if !m.world.Alive(entity) {
-		panic("can't set entity relation targets for a dead entity")
-	}
+	// alive check is done in World.setRelations
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
@@ -1692,9 +1680,7 @@ func (m *Map7[A, B, C, D, E, F, G]) GetRelationUnchecked(entity Entity, index in
 
 // SetRelations sets relation targets for the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) SetRelations(entity Entity, rel ...RelationIndex) {
-	if !m.world.Alive(entity) {
-		panic("can't set entity relation targets for a dead entity")
-	}
+	// alive check is done in World.setRelations
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
@@ -1993,9 +1979,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) GetRelationUnchecked(entity Entity, index
 
 // SetRelations sets relation targets for the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) SetRelations(entity Entity, rel ...RelationIndex) {
-	if !m.world.Alive(entity) {
-		panic("can't set entity relation targets for a dead entity")
-	}
+	// alive check is done in World.setRelations
 	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
