@@ -7,7 +7,11 @@ import (
 )
 
 func TestConfig(t *testing.T) {
-	c := newConfig(16)
+	c := newConfig()
+	assert.Equal(t, 1024, c.initialCapacity)
+	assert.Equal(t, 128, c.initialCapacityRelations)
+
+	c = newConfig(16)
 	assert.Equal(t, 16, c.initialCapacity)
 	assert.Equal(t, 16, c.initialCapacityRelations)
 
