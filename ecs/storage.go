@@ -369,3 +369,56 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([
 
 	return result, true
 }
+
+func (s *storage) getTables(batch *Batch) []*table {
+	tables := []*table{}
+
+	for i := range s.archetypes {
+		archetype := &s.archetypes[i]
+		if !batch.filter.matches(&archetype.mask) {
+			continue
+		}
+
+		if !archetype.HasRelations() {
+			table := &s.tables[archetype.tables[0]]
+			tables = append(tables, table)
+			continue
+		}
+
+		tableIDs := archetype.GetTables(batch.relations)
+		for _, tab := range tableIDs {
+			table := &s.tables[tab]
+			if !table.Matches(batch.relations) {
+				continue
+			}
+			tables = append(tables, table)
+		}
+	}
+	return tables
+}
+
+func (s *storage) getTableIDs(batch *Batch) []tableID {
+	tables := []tableID{}
+
+	for i := range s.archetypes {
+		archetype := &s.archetypes[i]
+		if !batch.filter.matches(&archetype.mask) {
+			continue
+		}
+
+		if !archetype.HasRelations() {
+			tables = append(tables, archetype.tables[0])
+			continue
+		}
+
+		tableIDs := archetype.GetTables(batch.relations)
+		for _, tab := range tableIDs {
+			table := &s.tables[tab]
+			if !table.Matches(batch.relations) {
+				continue
+			}
+			tables = append(tables, tab)
+		}
+	}
+	return tables
+}
