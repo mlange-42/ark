@@ -37,6 +37,7 @@ func newCache() cache {
 func (c *cache) register(storage *storage, batch *Batch) *cacheEntry {
 	// TODO: prevent duplicate registration
 	id := c.intPool.Get()
+	index := len(c.filters)
 	c.filters = append(c.filters,
 		cacheEntry{
 			id:      id,
@@ -44,8 +45,8 @@ func (c *cache) register(storage *storage, batch *Batch) *cacheEntry {
 			tables:  storage.getTableIDs(batch),
 			indices: nil,
 		})
-	c.indices[id] = len(c.filters) - 1
-	return &c.filters[len(c.filters)-1]
+	c.indices[id] = index
+	return &c.filters[index]
 }
 
 func (c *cache) unregister(f *cacheEntry) {
