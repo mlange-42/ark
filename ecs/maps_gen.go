@@ -26,7 +26,7 @@ func NewMap1[A any](world *World) Map1[A] {
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map1[A]) NewEntity(a *A, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations)
@@ -34,7 +34,7 @@ func (m *Map1[A]) NewEntity(a *A, rel ...RelationIndex) Entity {
 
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map1[A]) NewBatch(count int, a *A, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations)
@@ -43,7 +43,7 @@ func (m *Map1[A]) NewBatch(count int, a *A, rel ...RelationIndex) {
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
 func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -97,7 +97,7 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations)
@@ -105,7 +105,7 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...RelationIndex) {
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations, nil)
@@ -114,7 +114,7 @@ func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...RelationIndex) {
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -183,13 +183,13 @@ func (m *Map1[A]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't set entity relation targets for a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map1[A]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -232,7 +232,7 @@ func NewMap2[A any, B any](world *World) Map2[A, B] {
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -241,7 +241,7 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...RelationIndex) Entity {
 
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -251,7 +251,7 @@ func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...RelationIndex) {
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
 func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -310,7 +310,7 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -319,7 +319,7 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...RelationIndex) {
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -329,7 +329,7 @@ func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...RelationIndex) {
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -400,13 +400,13 @@ func (m *Map2[A, B]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't set entity relation targets for a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map2[A, B]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -452,7 +452,7 @@ func NewMap3[A any, B any, C any](world *World) Map3[A, B, C] {
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -462,7 +462,7 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...RelationIndex) Entity
 
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -473,7 +473,7 @@ func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...RelationInd
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
 func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -537,7 +537,7 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...RelationInde
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -547,7 +547,7 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...RelationInde
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -558,7 +558,7 @@ func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -631,13 +631,13 @@ func (m *Map3[A, B, C]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't set entity relation targets for a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map3[A, B, C]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -686,7 +686,7 @@ func NewMap4[A any, B any, C any, D any](world *World) Map4[A, B, C, D] {
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -697,7 +697,7 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...RelationInde
 
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -709,7 +709,7 @@ func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Re
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
 func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -778,7 +778,7 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -789,7 +789,7 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -801,7 +801,7 @@ func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ..
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -876,13 +876,13 @@ func (m *Map4[A, B, C, D]) SetRelations(entity Entity, rel ...RelationIndex) {
 	if !m.world.Alive(entity) {
 		panic("can't set entity relation targets for a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map4[A, B, C, D]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -934,7 +934,7 @@ func NewMap5[A any, B any, C any, D any, E any](world *World) Map5[A, B, C, D, E
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -946,7 +946,7 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -959,7 +959,7 @@ func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
 func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -1033,7 +1033,7 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1045,7 +1045,7 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1058,7 +1058,7 @@ func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1135,13 +1135,13 @@ func (m *Map5[A, B, C, D, E]) SetRelations(entity Entity, rel ...RelationIndex) 
 	if !m.world.Alive(entity) {
 		panic("can't set entity relation targets for a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map5[A, B, C, D, E]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1196,7 +1196,7 @@ func NewMap6[A any, B any, C any, D any, E any, F any](world *World) Map6[A, B, 
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1209,7 +1209,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1223,7 +1223,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
 func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -1302,7 +1302,7 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1315,7 +1315,7 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1329,7 +1329,7 @@ func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1408,13 +1408,13 @@ func (m *Map6[A, B, C, D, E, F]) SetRelations(entity Entity, rel ...RelationInde
 	if !m.world.Alive(entity) {
 		panic("can't set entity relation targets for a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map6[A, B, C, D, E, F]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1472,7 +1472,7 @@ func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) Map7
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1486,7 +1486,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1501,7 +1501,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
 func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -1585,7 +1585,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1599,7 +1599,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1614,7 +1614,7 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1695,13 +1695,13 @@ func (m *Map7[A, B, C, D, E, F, G]) SetRelations(entity Entity, rel ...RelationI
 	if !m.world.Alive(entity) {
 		panic("can't set entity relation targets for a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map7[A, B, C, D, E, F, G]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1762,7 +1762,7 @@ func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *Worl
 
 // NewEntity creates a new entity with the mapped components.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) Entity {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1777,7 +1777,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1793,7 +1793,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -1882,7 +1882,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1897,7 +1897,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1913,7 +1913,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1996,13 +1996,13 @@ func (m *Map8[A, B, C, D, E, F, G, H]) SetRelations(entity Entity, rel ...Relati
 	if !m.world.Alive(entity) {
 		panic("can't set entity relation targets for a dead entity")
 	}
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map8[A, B, C, D, E, F, G, H]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...RelationIndex) {
-	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, m.relations)
+	m.relations = relations(rel).toRelations(&m.world.storage.registry, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {

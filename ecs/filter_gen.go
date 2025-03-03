@@ -7,6 +7,7 @@ type Filter0 struct {
 	world         *World
 	ids           []ID
 	filter        Filter
+	relations     []RelationID
 	tempRelations []RelationID
 }
 
@@ -49,16 +50,22 @@ func (f *Filter0) Exclusive() *Filter0 {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+func (f *Filter0) Relations(rel ...RelationIndex) *Filter0 {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query0] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter0) Query(rel ...RelationIndex) Query0 {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return newQuery0(f.world, f.filter, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter0) Batch(rel ...RelationIndex) *Batch {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
 		relations: f.tempRelations,
@@ -70,6 +77,7 @@ type Filter1[A any] struct {
 	world         *World
 	ids           []ID
 	filter        Filter
+	relations     []RelationID
 	tempRelations []RelationID
 }
 
@@ -114,16 +122,22 @@ func (f *Filter1[A]) Exclusive() *Filter1[A] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+func (f *Filter1[A]) Relations(rel ...RelationIndex) *Filter1[A] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query1] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter1[A]) Query(rel ...RelationIndex) Query1[A] {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return newQuery1[A](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter1[A]) Batch(rel ...RelationIndex) *Batch {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
 		relations: f.tempRelations,
@@ -135,6 +149,7 @@ type Filter2[A any, B any] struct {
 	world         *World
 	ids           []ID
 	filter        Filter
+	relations     []RelationID
 	tempRelations []RelationID
 }
 
@@ -180,16 +195,22 @@ func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+func (f *Filter2[A, B]) Relations(rel ...RelationIndex) *Filter2[A, B] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query2] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter2[A, B]) Query(rel ...RelationIndex) Query2[A, B] {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return newQuery2[A, B](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter2[A, B]) Batch(rel ...RelationIndex) *Batch {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
 		relations: f.tempRelations,
@@ -201,6 +222,7 @@ type Filter3[A any, B any, C any] struct {
 	world         *World
 	ids           []ID
 	filter        Filter
+	relations     []RelationID
 	tempRelations []RelationID
 }
 
@@ -247,16 +269,22 @@ func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+func (f *Filter3[A, B, C]) Relations(rel ...RelationIndex) *Filter3[A, B, C] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query3] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter3[A, B, C]) Query(rel ...RelationIndex) Query3[A, B, C] {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return newQuery3[A, B, C](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter3[A, B, C]) Batch(rel ...RelationIndex) *Batch {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
 		relations: f.tempRelations,
@@ -268,6 +296,7 @@ type Filter4[A any, B any, C any, D any] struct {
 	world         *World
 	ids           []ID
 	filter        Filter
+	relations     []RelationID
 	tempRelations []RelationID
 }
 
@@ -315,16 +344,22 @@ func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+func (f *Filter4[A, B, C, D]) Relations(rel ...RelationIndex) *Filter4[A, B, C, D] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query4] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter4[A, B, C, D]) Query(rel ...RelationIndex) Query4[A, B, C, D] {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return newQuery4[A, B, C, D](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter4[A, B, C, D]) Batch(rel ...RelationIndex) *Batch {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
 		relations: f.tempRelations,
@@ -336,6 +371,7 @@ type Filter5[A any, B any, C any, D any, E any] struct {
 	world         *World
 	ids           []ID
 	filter        Filter
+	relations     []RelationID
 	tempRelations []RelationID
 }
 
@@ -384,16 +420,22 @@ func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+func (f *Filter5[A, B, C, D, E]) Relations(rel ...RelationIndex) *Filter5[A, B, C, D, E] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query5] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter5[A, B, C, D, E]) Query(rel ...RelationIndex) Query5[A, B, C, D, E] {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return newQuery5[A, B, C, D, E](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter5[A, B, C, D, E]) Batch(rel ...RelationIndex) *Batch {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
 		relations: f.tempRelations,
@@ -405,6 +447,7 @@ type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	world         *World
 	ids           []ID
 	filter        Filter
+	relations     []RelationID
 	tempRelations []RelationID
 }
 
@@ -454,16 +497,22 @@ func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+func (f *Filter6[A, B, C, D, E, F]) Relations(rel ...RelationIndex) *Filter6[A, B, C, D, E, F] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query6] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...RelationIndex) Query6[A, B, C, D, E, F] {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return newQuery6[A, B, C, D, E, F](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...RelationIndex) *Batch {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
 		relations: f.tempRelations,
@@ -475,6 +524,7 @@ type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world         *World
 	ids           []ID
 	filter        Filter
+	relations     []RelationID
 	tempRelations []RelationID
 }
 
@@ -525,16 +575,22 @@ func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G]
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+func (f *Filter7[A, B, C, D, E, F, G]) Relations(rel ...RelationIndex) *Filter7[A, B, C, D, E, F, G] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query7] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...RelationIndex) Query7[A, B, C, D, E, F, G] {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return newQuery7[A, B, C, D, E, F, G](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...RelationIndex) *Batch {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
 		relations: f.tempRelations,
@@ -546,6 +602,7 @@ type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world         *World
 	ids           []ID
 	filter        Filter
+	relations     []RelationID
 	tempRelations []RelationID
 }
 
@@ -597,16 +654,22 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+func (f *Filter8[A, B, C, D, E, F, G, H]) Relations(rel ...RelationIndex) *Filter8[A, B, C, D, E, F, G, H] {
+	f.relations = relations(rel).toRelations(&f.world.storage.registry, f.ids, nil, f.relations)
+	return f
+}
+
 // Query creates a [Query8] from this filter.
 // This must be used each time before iterating a query.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...RelationIndex) Query8[A, B, C, D, E, F, G, H] {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return newQuery8[A, B, C, D, E, F, G, H](f.world, f.filter, f.ids, f.tempRelations)
 }
 
 // Batch creates a [Batch] from this filter.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...RelationIndex) *Batch {
-	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.tempRelations)
+	f.tempRelations = relations(rel).toRelations(&f.world.storage.registry, f.ids, f.relations, f.tempRelations)
 	return &Batch{
 		filter:    f.filter,
 		relations: f.tempRelations,

@@ -50,8 +50,9 @@ func Rel(index int, target Entity) RelationIndex {
 // Helper for converting relations
 type relations []RelationIndex
 
-func (r relations) toRelations(reg *componentRegistry, ids []ID, out []RelationID) []RelationID {
+func (r relations) toRelations(reg *componentRegistry, ids []ID, base []RelationID, out []RelationID) []RelationID {
 	out = out[:0]
+	out = append(out, base...)
 	for _, rel := range r {
 		id := ids[rel.index]
 		if !reg.IsRelation[id.id] {
