@@ -49,7 +49,7 @@ func TestQuery{{.}}(t *testing.T) {
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 2*n)
+	assert.Equal(t, 2*n, cnt)
 
 	// filter without
 	filter = NewFilter{{.}}{{$generics}}(&w).Without(C[Position]())
@@ -61,7 +61,7 @@ func TestQuery{{.}}(t *testing.T) {
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	assert.Equal(t, n, cnt)
 	
 	// filter exclusive
 	filter = NewFilter{{.}}{{$generics}}(&w).Exclusive()
@@ -73,7 +73,7 @@ func TestQuery{{.}}(t *testing.T) {
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	assert.Equal(t, n, cnt)
 	
 	// filter with
 	filter = NewFilter{{.}}{{$generics}}(&w).With(C[Position]())
@@ -85,7 +85,7 @@ func TestQuery{{.}}(t *testing.T) {
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	assert.Equal(t, n, cnt)
 
 	_ = filter.Batch()
 }
@@ -144,7 +144,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, cnt, 2*n)
+	assert.Equal(t, 2*n, cnt)
 
 	// relation filter 1
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(Rel(0, parent2))
@@ -157,7 +157,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 		assert.Equal(t, parent2, query.GetRelation(0))
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	assert.Equal(t, n, cnt)
 
 	// relation filter 2
 	filter = NewFilter{{.}}{{$genericsRel}}(&w)
@@ -170,7 +170,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 		assert.Equal(t, parent2, query.GetRelation(0))
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	assert.Equal(t, n, cnt)
 }
 
 {{end -}}
@@ -196,7 +196,7 @@ func TestQuery0(t *testing.T) {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, cnt, 2*n)
+	assert.Equal(t, 2*n, cnt)
 
 	// filter without
 	filter = NewFilter0(&w).Without(C[Position]())
@@ -207,7 +207,7 @@ func TestQuery0(t *testing.T) {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	assert.Equal(t, n, cnt)
 
 	// filter exclusive
 	filter = NewFilter0(&w).Exclusive()
@@ -218,7 +218,7 @@ func TestQuery0(t *testing.T) {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	assert.Equal(t, n, cnt)
 	
 	// filter with
 	filter = NewFilter0(&w).With(C[Position]())
@@ -229,7 +229,7 @@ func TestQuery0(t *testing.T) {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	assert.Equal(t, n, cnt)
 }
 
 func TestQuery0Empty(t *testing.T) {
@@ -251,7 +251,7 @@ func TestQuery0Empty(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	assert.Equal(t, cnt, 0)
 
 	assert.Panics(t, func() { query.Entity() })
 	assert.Panics(t, func() { query.Next() })

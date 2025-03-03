@@ -71,6 +71,9 @@ func (q *Query0) Close() {
 }
 
 func (q *Query0) nextTableOrArchetype() bool {
+	if q.cache != nil {
+		return q.nextTable()
+	}
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}
@@ -207,6 +210,9 @@ func (q *Query1[A]) Close() {
 }
 
 func (q *Query1[A]) nextTableOrArchetype() bool {
+	if q.cache != nil {
+		return q.nextTable()
+	}
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}
@@ -347,6 +353,9 @@ func (q *Query2[A, B]) Close() {
 }
 
 func (q *Query2[A, B]) nextTableOrArchetype() bool {
+	if q.cache != nil {
+		return q.nextTable()
+	}
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}
@@ -491,6 +500,9 @@ func (q *Query3[A, B, C]) Close() {
 }
 
 func (q *Query3[A, B, C]) nextTableOrArchetype() bool {
+	if q.cache != nil {
+		return q.nextTable()
+	}
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}
@@ -639,6 +651,9 @@ func (q *Query4[A, B, C, D]) Close() {
 }
 
 func (q *Query4[A, B, C, D]) nextTableOrArchetype() bool {
+	if q.cache != nil {
+		return q.nextTable()
+	}
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}
@@ -791,6 +806,9 @@ func (q *Query5[A, B, C, D, E]) Close() {
 }
 
 func (q *Query5[A, B, C, D, E]) nextTableOrArchetype() bool {
+	if q.cache != nil {
+		return q.nextTable()
+	}
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}
@@ -947,6 +965,9 @@ func (q *Query6[A, B, C, D, E, F]) Close() {
 }
 
 func (q *Query6[A, B, C, D, E, F]) nextTableOrArchetype() bool {
+	if q.cache != nil {
+		return q.nextTable()
+	}
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}
@@ -1107,6 +1128,9 @@ func (q *Query7[A, B, C, D, E, F, G]) Close() {
 }
 
 func (q *Query7[A, B, C, D, E, F, G]) nextTableOrArchetype() bool {
+	if q.cache != nil {
+		return q.nextTable()
+	}
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}
@@ -1271,6 +1295,9 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 }
 
 func (q *Query8[A, B, C, D, E, F, G, H]) nextTableOrArchetype() bool {
+	if q.cache != nil {
+		return q.nextTable()
+	}
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}

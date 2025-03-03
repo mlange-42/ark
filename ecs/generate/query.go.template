@@ -109,6 +109,9 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 }
 
 func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {
+	if q.cache != nil {
+		return q.nextTable()
+	}
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}
