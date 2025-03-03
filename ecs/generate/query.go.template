@@ -106,6 +106,7 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
+	q.cache = nil
 	{{- range $i, $v := $upper}}
 	q.column{{$v}} = nil
 	{{- end}}
@@ -163,6 +164,9 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable(tables []tableID) bool {
 		}
 		q.setTable(q.cursor.table, table)
 		return true
+	}
+	if q.cache != nil {
+		q.Close()
 	}
 	return false
 }

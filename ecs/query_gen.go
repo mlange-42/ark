@@ -72,6 +72,7 @@ func (q *Query0) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
+	q.cache = nil
 	q.world.unlock(q.lock)
 }
 
@@ -126,6 +127,9 @@ func (q *Query0) nextTable(tables []tableID) bool {
 		}
 		q.setTable(q.cursor.table, table)
 		return true
+	}
+	if q.cache != nil {
+		q.Close()
 	}
 	return false
 }
@@ -214,6 +218,7 @@ func (q *Query1[A]) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
+	q.cache = nil
 	q.columnA = nil
 	q.world.unlock(q.lock)
 }
@@ -269,6 +274,9 @@ func (q *Query1[A]) nextTable(tables []tableID) bool {
 		}
 		q.setTable(q.cursor.table, table)
 		return true
+	}
+	if q.cache != nil {
+		q.Close()
 	}
 	return false
 }
@@ -360,6 +368,7 @@ func (q *Query2[A, B]) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
+	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
 	q.world.unlock(q.lock)
@@ -416,6 +425,9 @@ func (q *Query2[A, B]) nextTable(tables []tableID) bool {
 		}
 		q.setTable(q.cursor.table, table)
 		return true
+	}
+	if q.cache != nil {
+		q.Close()
 	}
 	return false
 }
@@ -510,6 +522,7 @@ func (q *Query3[A, B, C]) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
+	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
 	q.columnC = nil
@@ -567,6 +580,9 @@ func (q *Query3[A, B, C]) nextTable(tables []tableID) bool {
 		}
 		q.setTable(q.cursor.table, table)
 		return true
+	}
+	if q.cache != nil {
+		q.Close()
 	}
 	return false
 }
@@ -664,6 +680,7 @@ func (q *Query4[A, B, C, D]) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
+	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
 	q.columnC = nil
@@ -722,6 +739,9 @@ func (q *Query4[A, B, C, D]) nextTable(tables []tableID) bool {
 		}
 		q.setTable(q.cursor.table, table)
 		return true
+	}
+	if q.cache != nil {
+		q.Close()
 	}
 	return false
 }
@@ -822,6 +842,7 @@ func (q *Query5[A, B, C, D, E]) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
+	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
 	q.columnC = nil
@@ -881,6 +902,9 @@ func (q *Query5[A, B, C, D, E]) nextTable(tables []tableID) bool {
 		}
 		q.setTable(q.cursor.table, table)
 		return true
+	}
+	if q.cache != nil {
+		q.Close()
 	}
 	return false
 }
@@ -984,6 +1008,7 @@ func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
+	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
 	q.columnC = nil
@@ -1044,6 +1069,9 @@ func (q *Query6[A, B, C, D, E, F]) nextTable(tables []tableID) bool {
 		}
 		q.setTable(q.cursor.table, table)
 		return true
+	}
+	if q.cache != nil {
+		q.Close()
 	}
 	return false
 }
@@ -1150,6 +1178,7 @@ func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
+	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
 	q.columnC = nil
@@ -1211,6 +1240,9 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable(tables []tableID) bool {
 		}
 		q.setTable(q.cursor.table, table)
 		return true
+	}
+	if q.cache != nil {
+		q.Close()
 	}
 	return false
 }
@@ -1320,6 +1352,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
+	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
 	q.columnC = nil
@@ -1382,6 +1415,9 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable(tables []tableID) bool {
 		}
 		q.setTable(q.cursor.table, table)
 		return true
+	}
+	if q.cache != nil {
+		q.Close()
 	}
 	return false
 }
