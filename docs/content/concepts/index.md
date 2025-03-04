@@ -132,4 +132,4 @@ Each entity can have an arbitrary number of relationships to other entities,
 but for each relation type (i.e. relation component), there can be only one target entity.
 This is primarily a performance consideration.
 
-For usage and more details, see chapter [Entity relations](../relations).
+For usage and more details, see chapter [Entity relationships](../relations).
