@@ -52,11 +52,11 @@ func TestMap1NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap1[CompA](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{})
 
 	filter := NewFilter1[CompA](&w)
@@ -77,11 +77,11 @@ func TestMap1NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap1[CompA](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA) {
 		a.X = 5
 		a.Y = 6
@@ -305,11 +305,11 @@ func TestMap2NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap2[CompA, CompB](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{})
 
 	filter := NewFilter2[CompA, CompB](&w)
@@ -330,11 +330,11 @@ func TestMap2NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap2[CompA, CompB](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB) {
 		a.X = 5
 		a.Y = 6
@@ -558,11 +558,11 @@ func TestMap3NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap3[CompA, CompB, CompC](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{})
 
 	filter := NewFilter3[CompA, CompB, CompC](&w)
@@ -583,11 +583,11 @@ func TestMap3NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap3[CompA, CompB, CompC](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC) {
 		a.X = 5
 		a.Y = 6
@@ -811,11 +811,11 @@ func TestMap4NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 
 	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
@@ -836,11 +836,11 @@ func TestMap4NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD) {
 		a.X = 5
 		a.Y = 6
@@ -1064,11 +1064,11 @@ func TestMap5NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 
 	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
@@ -1089,11 +1089,11 @@ func TestMap5NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 		a.X = 5
 		a.Y = 6
@@ -1317,11 +1317,11 @@ func TestMap6NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 
 	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
@@ -1342,11 +1342,11 @@ func TestMap6NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 		a.X = 5
 		a.Y = 6
@@ -1570,11 +1570,11 @@ func TestMap7NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 
 	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
@@ -1595,11 +1595,11 @@ func TestMap7NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 		a.X = 5
 		a.Y = 6
@@ -1823,11 +1823,11 @@ func TestMap8NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
@@ -1848,11 +1848,11 @@ func TestMap8NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
-	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	}
+	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 		a.X = 5
 		a.Y = 6
