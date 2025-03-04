@@ -37,3 +37,6 @@ instead of using multiple operations.
 
 For that sake, Ark provides {{< api ecs Exchange1 >}}, {{< api ecs Exchange2 >}} etc.,
 to do additions and removals in one go.
+It adds the components given by the generics, and removes those specified with {{< api ecs Exchange2.Removes >}}.
+
+{{< code-func operations_test.go TestExchange >}}

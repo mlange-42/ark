@@ -66,9 +66,13 @@ func TestComponentMapperGet(t *testing.T) {
 }
 
 func TestExchange(t *testing.T) {
-	// Create an exchange helper
+	// Create an entity with components.
+	mapper := ecs.NewMap2[Position, Velocity](&world)
+	entity := mapper.NewEntity(&Position{}, &Velocity{})
+
+	// Create an exchange helper.
 	exchange := ecs.NewExchange1[Altitude](&world).
 		Removes(ecs.C[Position](), ecs.C[Velocity]())
 
-	_ = exchange
+	exchange.Exchange(entity, &Altitude{Z: 100})
 }
