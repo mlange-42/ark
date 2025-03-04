@@ -4,7 +4,7 @@ type = "docs"
 weight = 20
 description = "ECS concepts in Ark."
 +++
-This section gives a brief explanation of ECS concepts and how they are represented in Ark.
+This chapter gives a brief explanation of ECS concepts and how they are represented in Ark.
 
 ## The World
 
@@ -107,7 +107,7 @@ Then, create a new query from the filter each time before the iteration loop.
 > As with [component mappers](#component-mappers), the component pointers obtained should never be stored
 > outside of the current context (i.e. the query loop), as they are not persistent inside the world.
 
-For advanced filters, see chapter [Queries](../queries).
+For advanced filters, caching and other details, see chapter [Filters & queries](../queries).
 
 ## Systems
 
