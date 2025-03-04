@@ -1,11 +1,8 @@
 +++
 title = 'Quickstart'
 type = 'docs'
-weight = 1
+weight = 10
 description = 'Quickstart guide to install and use Ark.'
-
-[params]
-next = "/guide"
 +++
 This page shows how to install Ark, and gives a minimal usage example.
 
