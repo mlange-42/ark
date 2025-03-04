@@ -1,9 +1,15 @@
-//go:build !debug
-
 package ecs
 
-func (w *World) checkQueryNext(cursor *cursor) {}
+import "fmt"
 
-func (w *World) checkQueryGet(cursor *cursor) {}
+func (s *storage) checkRelationComponent(id ID) {
+	if !s.registry.IsRelation[id.id] {
+		panic(fmt.Sprintf("component with ID %d is not a relation component", id.id))
+	}
+}
 
-func (s *storage) checkHasComponent(entity Entity, comp ID) {}
+func (s *storage) checkRelationTarget(target Entity) {
+	if !target.IsZero() && !s.entityPool.Alive(target) {
+		panic("can't use a dead entity as relation target, except for the zero entity")
+	}
+}

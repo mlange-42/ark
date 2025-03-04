@@ -22,7 +22,7 @@ func NewMap[T any](w *World) Map[T] {
 
 // NewEntity creates a new entity with the mapped component.
 func (m *Map[T]) NewEntity(comp *T, rel ...Entity) Entity {
-	m.relations = relationEntities(rel).toRelation(m.id, m.relations)
+	m.relations = relationEntities(rel).toRelation(m.world, m.id, m.relations)
 	return m.world.newEntityWith([]ID{m.id}, []unsafe.Pointer{unsafe.Pointer(comp)}, m.relations)
 }
 
@@ -64,7 +64,7 @@ func (m *Map[T]) Add(entity Entity, comp *T, rel ...Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't add a component to a dead entity")
 	}
-	m.relations = relationEntities(rel).toRelation(m.id, m.relations)
+	m.relations = relationEntities(rel).toRelation(m.world, m.id, m.relations)
 	m.world.exchange(entity, []ID{m.id}, nil, []unsafe.Pointer{unsafe.Pointer(comp)}, m.relations)
 }
 
@@ -90,13 +90,13 @@ func (m *Map[T]) GetRelationUnchecked(entity Entity) Entity {
 
 // SetRelation sets the relation target for the entity and the mapped component.
 func (m *Map[T]) SetRelation(entity Entity, target Entity) {
-	m.relations = target.toRelation(m.id, m.relations)
+	m.relations = target.toRelation(m.world, m.id, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationBatch sets the relation target for all entities matching the given batch filter.
 func (m *Map[T]) SetRelationBatch(batch *Batch, target Entity, fn func(entity Entity)) {
-	m.relations = target.toRelation(m.id, m.relations)
+	m.relations = target.toRelation(m.world, m.id, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {

@@ -1,9 +1,5 @@
 package ecs
 
-import (
-	"fmt"
-)
-
 var relationType = typeOf[RelationMarker]()
 
 // RelationMarker is a marker for entity relation components.
@@ -116,9 +112,8 @@ func (r relations) toRelations(world *World, ids []ID, base []RelationID, out []
 	out = append(out, base...)
 	for _, rel := range r {
 		id := rel.id(ids, world)
-		if !world.storage.registry.IsRelation[id.id] {
-			panic(fmt.Sprintf("component with ID %d is not a relation component", id))
-		}
+		world.storage.checkRelationTarget(rel.targetEntity())
+		world.storage.checkRelationComponent(id)
 		out = append(out, RelationID{
 			component: id,
 			target:    rel.targetEntity(),
@@ -127,12 +122,25 @@ func (r relations) toRelations(world *World, ids []ID, base []RelationID, out []
 	return out
 }
 
+func (e Entity) toRelation(world *World, id ID, out []RelationID) []RelationID {
+	world.storage.checkRelationTarget(e)
+	world.storage.checkRelationComponent(id)
+	out = out[:0]
+	out = append(out, RelationID{
+		component: id,
+		target:    e,
+	})
+	return out
+}
+
 // Helper for converting relations
 type relationEntities []Entity
 
-func (r relationEntities) toRelation(id ID, out []RelationID) []RelationID {
+func (r relationEntities) toRelation(world *World, id ID, out []RelationID) []RelationID {
 	out = out[:0]
 	for _, rel := range r {
+		world.storage.checkRelationTarget(rel)
+		world.storage.checkRelationComponent(id)
 		out = append(out, RelationID{
 			component: id,
 			target:    rel,

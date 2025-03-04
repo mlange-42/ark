@@ -233,13 +233,8 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 	}
 	for i := range relations {
 		rel := &relations[i]
-		if !rel.target.IsZero() && !s.entityPool.Alive(rel.target) {
-			panic("can't use a dead entity as relation target, except for the zero entity")
-		}
-		index := archetype.componentsMap[rel.component.id]
-		if !archetype.isRelation[index] {
-			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
-		}
+		s.checkRelationComponent(rel.component)
+		s.checkRelationTarget(rel.target)
 	}
 
 	var newTableID tableID
