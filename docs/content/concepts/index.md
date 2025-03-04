@@ -33,7 +33,7 @@ Entities without any components can be created through the ({{< api ecs World >}
 
 {{< code-func concepts_test.go TestCreateEntitySimple >}}
 
-For creating entities with components, [component mappers](#component-mappers) are used.
+For creating entities with components, [component mappers](../components#component-mappers) are used.
 Entities can be removed or deleted like this:
 
 {{< code-func concepts_test.go TestRemoveEntity >}}
@@ -69,26 +69,8 @@ and only contain closely related state variables that are typically used togethe
 Components can also be labels or tags, which means that they don't contain any data
 but are just used to tag entities, like `Female` and `Male`.
 
-### Component mappers
-
-Component mappers are helpers that allow to create entities with components,
-to add components to entities, and to remove components from entities.
-They are parametrized by the component types they handle.
-
-{{< code-func concepts_test.go TestComponentMapper >}}
-
-In this example, the `2` in `NewMap2` denotes the number of mapped components.
-Unfortunately, this is required due to the limitations of Go's generics. 
-
-Component mappers can also be used to access components for specific entities:
-
-{{< code-func concepts_test.go TestComponentMapperGet >}}
-
-> [!IMPORTANT]
-> The component pointers obtained should never be stored
-> outside of the current context, as they are not persistent inside the world.
-
-See chapter [Component operations](../operations) for details.
+See chapter [Component operations](../operations) for how to create entities with components,
+adding and removing components, and other details.
 
 ## Queries
 
