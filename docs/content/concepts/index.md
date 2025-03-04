@@ -88,6 +88,8 @@ Component mappers can also be used to access components for specific entities:
 > The component pointers obtained should never be stored
 > outside of the current context, as they are not persistent inside the world.
 
+See chapter [Component operations](../operations) for details.
+
 ## Queries
 
 Queries are the main feature for writing logic in an ECS.
