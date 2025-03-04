@@ -79,6 +79,12 @@ func TestMapRelation(t *testing.T) {
 	childMap.SetRelation(e, Entity{})
 	assert.Equal(t, Entity{}, childMap.GetRelation(e))
 	assert.Equal(t, Entity{}, childMap.GetRelationUnchecked(e))
+
+	deadParent := w.NewEntity()
+	w.RemoveEntity(deadParent)
+	assert.Panics(t, func() {
+		childMap.SetRelation(e, deadParent)
+	})
 }
 
 func TestMapRelationBatch(t *testing.T) {
