@@ -168,7 +168,7 @@ func (f *Filter1[A]) Exclusive() *Filter1[A] {
 // Contrary, relation targets specified in [Filter1.Query] or [Filter1.Batch] are not cached.
 func (f *Filter1[A]) Relations(rel ...Relation) *Filter1[A] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, nil, f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
 	return f
 }
 
@@ -284,7 +284,7 @@ func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 // Contrary, relation targets specified in [Filter2.Query] or [Filter2.Batch] are not cached.
 func (f *Filter2[A, B]) Relations(rel ...Relation) *Filter2[A, B] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, nil, f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
 	return f
 }
 
@@ -401,7 +401,7 @@ func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
 // Contrary, relation targets specified in [Filter3.Query] or [Filter3.Batch] are not cached.
 func (f *Filter3[A, B, C]) Relations(rel ...Relation) *Filter3[A, B, C] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, nil, f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
 	return f
 }
 
@@ -519,7 +519,7 @@ func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 // Contrary, relation targets specified in [Filter4.Query] or [Filter4.Batch] are not cached.
 func (f *Filter4[A, B, C, D]) Relations(rel ...Relation) *Filter4[A, B, C, D] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, nil, f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
 	return f
 }
 
@@ -638,7 +638,7 @@ func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
 // Contrary, relation targets specified in [Filter5.Query] or [Filter5.Batch] are not cached.
 func (f *Filter5[A, B, C, D, E]) Relations(rel ...Relation) *Filter5[A, B, C, D, E] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, nil, f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
 	return f
 }
 
@@ -758,7 +758,7 @@ func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 // Contrary, relation targets specified in [Filter6.Query] or [Filter6.Batch] are not cached.
 func (f *Filter6[A, B, C, D, E, F]) Relations(rel ...Relation) *Filter6[A, B, C, D, E, F] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, nil, f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
 	return f
 }
 
@@ -879,7 +879,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G]
 // Contrary, relation targets specified in [Filter7.Query] or [Filter7.Batch] are not cached.
 func (f *Filter7[A, B, C, D, E, F, G]) Relations(rel ...Relation) *Filter7[A, B, C, D, E, F, G] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, nil, f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
 	return f
 }
 
@@ -1001,7 +1001,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 // Contrary, relation targets specified in [Filter8.Query] or [Filter8.Batch] are not cached.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Relations(rel ...Relation) *Filter8[A, B, C, D, E, F, G, H] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, nil, f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
 	return f
 }
 
