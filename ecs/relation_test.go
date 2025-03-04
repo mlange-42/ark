@@ -51,4 +51,18 @@ func TestToRelations(t *testing.T) {
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}, out)
+
+	inRelations = relations{Rel[ChildOf](Entity{2, 0})}
+	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, nil, out)
+	assert.Equal(t, []RelationID{
+		{component: childID, target: Entity{2, 0}},
+	}, out)
+
+	inRelations = relations{Rel[ChildOf2](Entity{3, 0})}
+	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, append([]RelationID(nil), out...), out)
+
+	assert.Equal(t, []RelationID{
+		{component: childID, target: Entity{2, 0}},
+		{component: child2ID, target: Entity{3, 0}},
+	}, out)
 }
