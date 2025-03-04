@@ -25,6 +25,19 @@ In the example below, the filter would match any entities that have
 {{< api ecs Query2.Get >}} returns all queries components of the current entity.
 The current entity can be obtained with {{< api ecs Query2.Entity >}}.
 
+## Query performance
+
+Queries iteration is what an archetype-based ECS is optimized for, and it is really fast.
+This has two reasons.
+
+Firstly, all entities with the same component composition are stored in the same archetype, or "table".
+This means that filters only need to be checked against archetypes,
+and the entities of a matching archetype can be iterated without any further checks.
+
+Secondly, all components of the same type (like `Position`) are stored in a dedicated column of the archetype.
+A query only accesses the required components (i.e. columns), although entities may possess many more components.
+Memory access is therefore completely linear and contiguous, and the CPUs cache is used as efficiently as possible.
+
 ## World lock
 
 The world gets locked for [component operations](../operations/) when a query is created.
@@ -76,3 +89,17 @@ Instead, use {{< api ecs Map.Has >}}, {{< api ecs Map.Get >}} or similar methods
 {{< code-func queries_test.go TestQueriesOptional >}}
 
 ## Filter caching
+
+Although queries are highly performant, a huge number of archetypes (k´like hundreds or thousands) may cause a slowdown.
+To prevent this slowdown, filters can be registered to the world's filter cache via
+{{< api ecs Filter2.Register >}}:
+
+{{< code-func queries_test.go TestQueriesCached >}}
+
+For registered filters, the list of matching archetypes is cached internally.
+Thus, no filter evaluations are required during iteration.
+Instead, filters are only evaluated when a new archetype is created.
+
+When a registered filter is not required anymore, it can be unregistered with
+{{< api ecs Filter2.Unregister >}}.
+However, this is rarely required as (registered) filters are usually used over an entire simulation run.

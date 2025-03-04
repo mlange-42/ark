@@ -64,6 +64,7 @@ func TestQueriesWith(t *testing.T) {
 	// Create a filter.
 	filter := ecs.NewFilter1[Position](&world).
 		With(ecs.C[Velocity](), ecs.C[Altitude]())
+
 	// Obtain a query.
 	_ = filter.Query()
 	// ...
@@ -74,6 +75,7 @@ func TestQueriesWith2(t *testing.T) {
 	filter := ecs.NewFilter1[Position](&world).
 		With(ecs.C[Velocity]()).
 		With(ecs.C[Altitude]())
+
 	// Obtain a query.
 	_ = filter.Query()
 	// ...
@@ -83,6 +85,7 @@ func TestQueriesWithout(t *testing.T) {
 	// Create a filter.
 	filter := ecs.NewFilter1[Position](&world).
 		Without(ecs.C[Velocity](), ecs.C[Altitude]())
+
 	// Obtain a query.
 	_ = filter.Query()
 	// ...
@@ -93,6 +96,7 @@ func TestQueriesWithout2(t *testing.T) {
 	filter := ecs.NewFilter1[Position](&world).
 		Without(ecs.C[Velocity]()).
 		Without(ecs.C[Altitude]())
+
 	// Obtain a query.
 	_ = filter.Query()
 	// ...
@@ -102,6 +106,7 @@ func TestQueriesExclusive(t *testing.T) {
 	// Create a filter.
 	filter := ecs.NewFilter1[Position](&world).
 		Exclusive()
+
 	// Obtain a query.
 	_ = filter.Query()
 	// ...
@@ -125,4 +130,14 @@ func TestQueriesOptional(t *testing.T) {
 		}
 		// Do other stuff...
 	}
+}
+
+func TestQueriesCached(t *testing.T) {
+	// Create a filter.
+	filter := ecs.NewFilter2[Position, Velocity](&world).
+		Register() // Register it to the cache.
+
+	// Obtain a query.
+	_ = filter.Query()
+	// ...
 }
