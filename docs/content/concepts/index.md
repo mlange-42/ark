@@ -4,7 +4,7 @@ type = "docs"
 weight = 20
 description = "ECS concepts in Ark."
 +++
-This section gives a brief explanation of ECS concepts and how they are represented in Ark.
+This chapter gives a brief explanation of ECS concepts and how they are represented in Ark.
 
 ## The World
 
@@ -88,6 +88,8 @@ Component mappers can also be used to access components for specific entities:
 > The component pointers obtained should never be stored
 > outside of the current context, as they are not persistent inside the world.
 
+See chapter [Component operations](../operations) for details.
+
 ## Queries
 
 Queries are the main feature for writing logic in an ECS.
@@ -107,7 +109,7 @@ Then, create a new query from the filter each time before the iteration loop.
 > As with [component mappers](#component-mappers), the component pointers obtained should never be stored
 > outside of the current context (i.e. the query loop), as they are not persistent inside the world.
 
-For advanced filters, see chapter [Filters](../filters).
+For advanced filters, caching and other details, see chapter [Filters & queries](../queries).
 
 ## Systems
 
