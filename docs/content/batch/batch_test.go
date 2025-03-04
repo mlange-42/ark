@@ -57,7 +57,10 @@ func TestBatchComponents(t *testing.T) {
 	// Batch-add components.
 	mapper.AddBatch(filter.Batch(), &Position{}, &Velocity{X: 1, Y: -1})
 
-	// Or, initialize components with a callback.
+	// Batch-Remove components. The optional callback is not used here.
+	mapper.RemoveBatch(filter.Batch(), nil)
+
+	// Alternatively, add and initialize components with a callback.
 	mapper.AddBatchFn(filter.Batch(), func(entity ecs.Entity, pos *Position, vel *Velocity) {
 		// ...
 	})
