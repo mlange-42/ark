@@ -5,4 +5,9 @@ weight = 90
 description = "External tools for Ark."
 +++
 
-TODO
+A number of tools has been created for Ark.
+
+If you wrote a tool and want it to be included here, please [open an issue](https://github.com/mlange-42/ark/issues/new) on GitHub.
+
+- [ark-serde](https://github.com/mlange-42/ark-serde) provides JSON serialization and deserialization for Ark's World.
+- [ark-tools](https://github.com/mlange-42/ark-model) provides systems, a scheduler, and other useful stuff for Ark.

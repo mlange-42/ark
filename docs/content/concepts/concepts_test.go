@@ -59,48 +59,6 @@ func TestEntityAlive(t *testing.T) {
 	}
 }
 
-func TestComponentMapper(t *testing.T) {
-	// Create a component mapper.
-	mapper := ecs.NewMap2[Position, Velocity](&world)
-
-	// Create an entity with components.
-	entity1 := mapper.NewEntity(
-		&Position{X: 0, Y: 0},
-		&Velocity{X: 1, Y: -1},
-	)
-
-	// Create an entity without components.
-	entity2 := world.NewEntity()
-	// Add components to it.
-	mapper.Add(
-		entity2,
-		&Position{X: 0, Y: 0},
-		&Velocity{X: 1, Y: -1},
-	)
-	// Remove components.
-	mapper.Remove(entity2)
-
-	// Remove the entities.
-	world.RemoveEntity(entity1)
-	world.RemoveEntity(entity2)
-}
-
-func TestComponentMapperGet(t *testing.T) {
-	// Create a component mapper.
-	mapper := ecs.NewMap2[Position, Velocity](&world)
-
-	// Create an entity with components.
-	entity1 := mapper.NewEntity(
-		&Position{X: 0, Y: 0},
-		&Velocity{X: 1, Y: -1},
-	)
-
-	// Get mapped components for an entity.
-	pos, vel := mapper.Get(entity1)
-
-	_, _ = pos, vel
-}
-
 func TestQuery(t *testing.T) {
 	// Create a filter.
 	filter := ecs.NewFilter2[Position, Velocity](&world)
