@@ -87,23 +87,23 @@ func TestMapRelationBatch(t *testing.T) {
 	mapper := NewMap3[Position, Velocity, ChildOf](&w)
 	childMap := NewMap[ChildOf](&w)
 
-	mapper.NewBatch(n, &Position{}, &Velocity{}, &ChildOf{}, Rel(2, parent1))
-	mapper.NewBatch(n, &Position{}, &Velocity{}, &ChildOf{}, Rel(2, parent2))
+	mapper.NewBatch(n, &Position{}, &Velocity{}, &ChildOf{}, RelIdx(2, parent1))
+	mapper.NewBatch(n, &Position{}, &Velocity{}, &ChildOf{}, RelIdx(2, parent2))
 
 	filter := NewFilter1[ChildOf](&w)
 
-	childMap.SetRelationBatch(filter.Batch(Rel(0, parent2)), parent3, func(entity Entity) {
+	childMap.SetRelationBatch(filter.Batch(RelIdx(0, parent2)), parent3, func(entity Entity) {
 		assert.Equal(t, parent3, childMap.GetRelation(entity))
 	})
 
-	query := filter.Query(Rel(0, parent2))
+	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
 	assert.Equal(t, 0, cnt)
 
-	query = filter.Query(Rel(0, parent3))
+	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++

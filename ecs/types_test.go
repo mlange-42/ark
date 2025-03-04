@@ -21,11 +21,11 @@ type Heading struct {
 type Label struct{}
 
 type ChildOf struct {
-	Relation
+	RelationMarker
 }
 
 type ChildOf2 struct {
-	Relation
+	RelationMarker
 }
 
 type SliceComp struct {
