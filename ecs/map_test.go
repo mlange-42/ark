@@ -65,15 +65,25 @@ func TestMapRelation(t *testing.T) {
 	e := w.NewEntity()
 
 	childMap.Add(e, &ChildOf{}, parent1)
-	assert.Equal(t, childMap.GetRelation(e), parent1)
-	assert.Equal(t, childMap.GetRelationUnchecked(e), parent1)
+	assert.Equal(t, parent1, childMap.GetRelation(e))
+	assert.Equal(t, parent1, childMap.GetRelationUnchecked(e))
 
 	childMap.SetRelation(e, parent2)
-	assert.Equal(t, childMap.GetRelation(e), parent2)
-	assert.Equal(t, childMap.GetRelationUnchecked(e), parent2)
+	assert.Equal(t, parent2, childMap.GetRelation(e))
+	assert.Equal(t, parent2, childMap.GetRelationUnchecked(e))
 
 	assert.Panics(t, func() {
 		childMap.GetRelation(Entity{})
+	})
+
+	childMap.SetRelation(e, Entity{})
+	assert.Equal(t, Entity{}, childMap.GetRelation(e))
+	assert.Equal(t, Entity{}, childMap.GetRelationUnchecked(e))
+
+	deadParent := w.NewEntity()
+	w.RemoveEntity(deadParent)
+	assert.Panics(t, func() {
+		childMap.SetRelation(e, deadParent)
 	})
 }
 
