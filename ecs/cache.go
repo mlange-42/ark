@@ -146,3 +146,9 @@ func (c *cache) mapTables(storage *storage, e *cacheEntry) {
 		}
 	}
 }
+
+func (c *cache) Reset() {
+	c.indices = map[cacheID]int{}
+	c.filters = c.filters[:0]
+	c.intPool.Reset()
+}
