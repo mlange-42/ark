@@ -12,7 +12,6 @@ var relationType = typeOf[RelationMarker]()
 //
 // Entity relations allow for fast queries using entity relationships.
 // E.g. to iterate over all entities that are the child of a certain parent entity.
-// Currently, each entity can only have a single relation component.
 type RelationMarker struct{}
 
 // Relation is the common interface for specifying relation targets.
