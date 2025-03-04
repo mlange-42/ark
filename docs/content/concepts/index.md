@@ -92,7 +92,7 @@ See chapter [Component operations](../operations) for details.
 
 ## Queries
 
-Queries are the main feature for writing logic in an ECS.
+Queries are the core feature for writing logic in an ECS.
 A query iterates over all entities that possess all the component types specified by the query.
 Note that these entities may contain further components, which are ignored.
 
