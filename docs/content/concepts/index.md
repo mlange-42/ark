@@ -1,7 +1,7 @@
 +++
 title = 'Concepts'
 type = "docs"
-weight = 10
+weight = 20
 description = "ECS concepts in Ark."
 +++
 This section gives a brief explanation of ECS concepts and how they are represented in Ark.
