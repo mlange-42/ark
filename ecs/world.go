@@ -95,10 +95,10 @@ func (w *World) Unsafe() Unsafe {
 	}
 }
 
-// Reset removes all entities and resources from the world.
+// Reset removes all entities and resources from the world, and clears the filter cache.
 //
-// Does NOT free reserved memory, remove archetypes, clear the registry, clear cached filters, etc.
-// However, it removes archetypes with a relation component that is not zero.
+// Does NOT free reserved memory, remove archetypes, or clear the registry.
+// However, it removes archetypes with a relation component.
 //
 // Can be used to run systematic simulations without the need to re-allocate memory for each run.
 // Accelerates re-populating the world by a factor of 2-3.

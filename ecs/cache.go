@@ -146,3 +146,12 @@ func (c *cache) mapTables(storage *storage, e *cacheEntry) {
 		}
 	}
 }
+
+func (c *cache) Reset() {
+	for i := range c.filters {
+		c.filters[i].tables = nil
+	}
+	c.indices = map[cacheID]int{}
+	c.filters = c.filters[:0]
+	c.intPool.Reset()
+}

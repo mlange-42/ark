@@ -112,6 +112,7 @@ func (s *storage) Reset() {
 	s.entities = s.entities[:reservedEntities]
 	s.entityPool.Reset()
 	s.isTarget = s.isTarget[:reservedEntities]
+	s.cache.Reset()
 
 	for i := range s.archetypes {
 		s.archetypes[i].Reset(s)
