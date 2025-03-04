@@ -2,6 +2,8 @@
 title = 'Ark'
 type = 'docs'
 description = 'Ark is an archetype-based Entity Component System (ECS) for Go.'
+[params]
+next = "/quickstart"
 +++
 {{< html >}}
 <img src="images/logo-light.svg" alt="Ark" class="light" style="width: 100%; max-width: 680px; margin:24px auto 36px auto;"/>
