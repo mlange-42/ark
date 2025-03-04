@@ -271,6 +271,8 @@ func TestWorldReset(t *testing.T) {
 	velID := ComponentID[Velocity](&world)
 	relID := ComponentID[ChildOf](&world)
 
+	_ = NewFilter2[Position, Velocity](&world).Register()
+
 	target1 := world.NewEntity()
 	target2 := world.NewEntity()
 
