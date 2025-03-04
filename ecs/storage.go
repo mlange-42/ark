@@ -231,6 +231,16 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 	if numRelations != archetype.numRelations {
 		panic("relations must be fully specified")
 	}
+	for i := range relations {
+		rel := &relations[i]
+		if !rel.target.IsZero() && !s.entityPool.Alive(rel.target) {
+			panic("can't use a dead entity as relation target, except for the zero entity")
+		}
+		index := archetype.componentsMap[rel.component.id]
+		if !archetype.isRelation[index] {
+			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
+		}
+	}
 
 	var newTableID tableID
 	if id, ok := archetype.GetFreeTable(); ok {
@@ -362,13 +372,9 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([
 		targets[i] = oldTable.columns[i].target
 	}
 	for _, rel := range relations {
-		if !rel.target.IsZero() && !s.entityPool.Alive(rel.target) {
-			panic("can't make a dead entity a relation target")
-		}
+		// Validity of the target is checked when creating a new table.
+		// Whether the component is a relation is checked when creating a new table.
 		index := oldTable.components[rel.component.id]
-		if !oldTable.columns[index].isRelation {
-			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
-		}
 		if rel.target == targets[index] {
 			continue
 		}
