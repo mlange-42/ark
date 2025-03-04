@@ -52,15 +52,6 @@ func (e *Entity) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (e Entity) toRelation(id ID, out []RelationID) []RelationID {
-	out = out[:0]
-	out = append(out, RelationID{
-		component: id,
-		target:    Entity(e),
-	})
-	return out
-}
-
 // entityIndex denotes an entity's location by table and row index.
 type entityIndex struct {
 	table tableID

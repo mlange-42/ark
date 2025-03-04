@@ -30,7 +30,8 @@
 ### Bugfixes
 
 - Locks the world during batch entity creation callback (#97)
-- Check the validity of relations when creating tables (#131)
+- Checks the validity of relations when creating tables (#131)
+- Checks the validity of relations in filters and component mappers (#132)
 
 ## [[v0.2.0]](https://github.com/mlange-42/ark/compare/v0.1.0...v0.2.0)
 
