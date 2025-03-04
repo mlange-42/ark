@@ -107,7 +107,7 @@ Then, create a new query from the filter each time before the iteration loop.
 > As with [component mappers](#component-mappers), the component pointers obtained should never be stored
 > outside of the current context (i.e. the query loop), as they are not persistent inside the world.
 
-For advanced filters, see chapter [Filters](../filters).
+For advanced filters, see chapter [Queries](../queries).
 
 ## Systems
 
