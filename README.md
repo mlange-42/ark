@@ -79,7 +79,7 @@ func main() {
 		)
 	}
 
-	// Create a generic filter.
+	// Create a filter.
 	filter := ecs.NewFilter2[Position, Velocity](&world)
 
 	// Time loop.
