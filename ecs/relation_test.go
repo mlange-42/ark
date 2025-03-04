@@ -7,7 +7,7 @@ import (
 )
 
 func TestRel(t *testing.T) {
-	r := Rel(1, Entity{5, 0})
+	r := RelIdx(1, Entity{5, 0})
 	assert.Equal(t, RelationIndex{1, Entity{5, 0}}, r)
 }
 
@@ -17,22 +17,22 @@ func TestRelID(t *testing.T) {
 }
 
 func TestToRelations(t *testing.T) {
-	reg := newComponentRegistry()
+	w := NewWorld()
 
-	childID, _ := reg.ComponentID(typeOf[ChildOf]())
-	child2ID, _ := reg.ComponentID(typeOf[ChildOf2]())
-	posID, _ := reg.ComponentID(typeOf[Position]())
+	childID := ComponentID[ChildOf](&w)
+	child2ID := ComponentID[ChildOf2](&w)
+	posID := ComponentID[Position](&w)
 
-	relations := relations{Rel(1, Entity{2, 0}), Rel(2, Entity{3, 0})}
+	relations := relations{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
 	var out []RelationID
-	out = relations.toRelations(&reg, []ID{{posID}, {childID}, {child2ID}}, nil, out)
+	out = relations.toRelations(&w, []ID{posID, childID, child2ID}, nil, out)
 
 	assert.Equal(t, []RelationID{
-		{component: ID{childID}, target: Entity{2, 0}},
-		{component: ID{child2ID}, target: Entity{3, 0}},
+		{component: childID, target: Entity{2, 0}},
+		{component: child2ID, target: Entity{3, 0}},
 	}, out)
 
 	assert.Panics(t, func() {
-		_ = relations.toRelations(&reg, []ID{{childID}, {child2ID}, {posID}}, nil, out)
+		_ = relations.toRelations(&w, []ID{childID, child2ID, posID}, nil, out)
 	})
 }

@@ -14,6 +14,7 @@
 - Initial world capacity is optional, 2nd value for relation archetype initial capacity (#109)
 - Filters have permanent and ad-hoc relation targets (#113)
 - Filters can be registered to the cache to speed up query iteration (#114, #116)
+- Relation targets can be specified by either component type or component index (#120)
 
 ### Documentation
 

@@ -128,9 +128,9 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	mapper := NewMap{{.}}{{$genericsRel}}(&w)
 
 	for range n {
-		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent1))
-		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent2))
-		e := mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent3))
+		_ = mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent1))
+		_ = mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent2))
+		e := mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent3))
 		w.RemoveEntity(e)
 	}
 
@@ -147,7 +147,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	assert.Equal(t, 2*n, cnt)
 
 	// relation filter 1
-	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(Rel(0, parent2))
+	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
 
 	cnt = 0
@@ -161,7 +161,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 
 	// relation filter 2
 	filter = NewFilter{{.}}{{$genericsRel}}(&w)
-	query = filter.Query(Rel(0, parent2))
+	query = filter.Query(RelIdx(0, parent2))
 
 	cnt = 0
 	for query.Next() {
@@ -184,9 +184,9 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	mapper := NewMap{{.}}{{$genericsRel}}(&w)
 
 	for range n {
-		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent1))
-		_ = mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent2))
-		e := mapper.NewEntity({{$mapArgsRel}}, Rel(0, parent3))
+		_ = mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent1))
+		_ = mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent2))
+		e := mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent3))
 		w.RemoveEntity(e)
 	}
 
@@ -204,7 +204,7 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 1
-	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(Rel(0, parent2)).Register()
+	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
 
 	cnt = 0
@@ -219,7 +219,7 @@ func TestQuery{{.}}Registered(t *testing.T) {
 
 	// relation filter 2
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Register()
-	query = filter.Query(Rel(0, parent2))
+	query = filter.Query(RelIdx(0, parent2))
 
 	cnt = 0
 	for query.Next() {

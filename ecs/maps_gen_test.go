@@ -110,15 +110,15 @@ func TestMap1Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	e := mapper.NewEntity(&ChildOf{}, Rel(0, parent1))
+	e := mapper.NewEntity(&ChildOf{}, RelIdx(0, parent1))
 	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
 	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	mapper.SetRelations(e, Rel(0, parent2))
+	mapper.SetRelations(e, RelIdx(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 
 	assert.Panics(t, func() {
-		mapper.SetRelations(Entity{}, Rel(0, parent2))
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
 	assert.Panics(t, func() {
 		mapper.SetRelations(e)
@@ -232,23 +232,23 @@ func TestMap1SetRelationsBatch(t *testing.T) {
 	mapper := NewMap1[ChildOf](&w)
 	childMap := NewMap[ChildOf](&w)
 
-	mapper.NewBatch(n, &ChildOf{}, Rel(0, parent1))
-	mapper.NewBatch(n, &ChildOf{}, Rel(0, parent2))
+	mapper.NewBatch(n, &ChildOf{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, RelIdx(0, parent2))
 
 	filter := NewFilter1[ChildOf](&w)
 
-	mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 		assert.Equal(t, parent3, childMap.GetRelation(entity))
-	}, Rel(0, parent3))
+	}, RelIdx(0, parent3))
 
-	query := filter.Query(Rel(0, parent2))
+	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
 	assert.Equal(t, 0, cnt)
 
-	query = filter.Query(Rel(0, parent3))
+	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
@@ -256,7 +256,7 @@ func TestMap1SetRelationsBatch(t *testing.T) {
 	assert.Equal(t, n, cnt)
 
 	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 			assert.Equal(t, parent3, childMap.GetRelation(entity))
 		})
 	})
@@ -305,11 +305,11 @@ func TestMap2NewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap2[CompA, CompB](&w)
+	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{})
 	}
-	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{})
 
 	filter := NewFilter2[CompA, CompB](&w)
@@ -330,11 +330,11 @@ func TestMap2NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	mapper := NewMap2[CompA, CompB](&w)
+	w.RemoveEntity(w.NewEntity())
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{})
 	}
-	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB) {
 		a.X = 5
 		a.Y = 6
@@ -363,15 +363,15 @@ func TestMap2Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	e := mapper.NewEntity(&ChildOf{}, &CompB{}, Rel(0, parent1))
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, RelIdx(0, parent1))
 	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
 	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	mapper.SetRelations(e, Rel(0, parent2))
+	mapper.SetRelations(e, RelIdx(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 
 	assert.Panics(t, func() {
-		mapper.SetRelations(Entity{}, Rel(0, parent2))
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
 	assert.Panics(t, func() {
 		mapper.SetRelations(e)
@@ -485,23 +485,23 @@ func TestMap2SetRelationsBatch(t *testing.T) {
 	mapper := NewMap2[ChildOf, CompB](&w)
 	childMap := NewMap[ChildOf](&w)
 
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, Rel(0, parent1))
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, Rel(0, parent2))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, RelIdx(0, parent2))
 
 	filter := NewFilter1[ChildOf](&w)
 
-	mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 		assert.Equal(t, parent3, childMap.GetRelation(entity))
-	}, Rel(0, parent3))
+	}, RelIdx(0, parent3))
 
-	query := filter.Query(Rel(0, parent2))
+	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
 	assert.Equal(t, 0, cnt)
 
-	query = filter.Query(Rel(0, parent3))
+	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
@@ -509,7 +509,7 @@ func TestMap2SetRelationsBatch(t *testing.T) {
 	assert.Equal(t, n, cnt)
 
 	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 			assert.Equal(t, parent3, childMap.GetRelation(entity))
 		})
 	})
@@ -616,15 +616,15 @@ func TestMap3Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, Rel(0, parent1))
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, RelIdx(0, parent1))
 	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
 	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	mapper.SetRelations(e, Rel(0, parent2))
+	mapper.SetRelations(e, RelIdx(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 
 	assert.Panics(t, func() {
-		mapper.SetRelations(Entity{}, Rel(0, parent2))
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
 	assert.Panics(t, func() {
 		mapper.SetRelations(e)
@@ -738,23 +738,23 @@ func TestMap3SetRelationsBatch(t *testing.T) {
 	mapper := NewMap3[ChildOf, CompB, CompC](&w)
 	childMap := NewMap[ChildOf](&w)
 
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, Rel(0, parent1))
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, Rel(0, parent2))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, RelIdx(0, parent2))
 
 	filter := NewFilter1[ChildOf](&w)
 
-	mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 		assert.Equal(t, parent3, childMap.GetRelation(entity))
-	}, Rel(0, parent3))
+	}, RelIdx(0, parent3))
 
-	query := filter.Query(Rel(0, parent2))
+	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
 	assert.Equal(t, 0, cnt)
 
-	query = filter.Query(Rel(0, parent3))
+	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
@@ -762,7 +762,7 @@ func TestMap3SetRelationsBatch(t *testing.T) {
 	assert.Equal(t, n, cnt)
 
 	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 			assert.Equal(t, parent3, childMap.GetRelation(entity))
 		})
 	})
@@ -869,15 +869,15 @@ func TestMap4Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, Rel(0, parent1))
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, RelIdx(0, parent1))
 	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
 	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	mapper.SetRelations(e, Rel(0, parent2))
+	mapper.SetRelations(e, RelIdx(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 
 	assert.Panics(t, func() {
-		mapper.SetRelations(Entity{}, Rel(0, parent2))
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
 	assert.Panics(t, func() {
 		mapper.SetRelations(e)
@@ -991,23 +991,23 @@ func TestMap4SetRelationsBatch(t *testing.T) {
 	mapper := NewMap4[ChildOf, CompB, CompC, CompD](&w)
 	childMap := NewMap[ChildOf](&w)
 
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, Rel(0, parent1))
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, Rel(0, parent2))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, RelIdx(0, parent2))
 
 	filter := NewFilter1[ChildOf](&w)
 
-	mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 		assert.Equal(t, parent3, childMap.GetRelation(entity))
-	}, Rel(0, parent3))
+	}, RelIdx(0, parent3))
 
-	query := filter.Query(Rel(0, parent2))
+	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
 	assert.Equal(t, 0, cnt)
 
-	query = filter.Query(Rel(0, parent3))
+	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
@@ -1015,7 +1015,7 @@ func TestMap4SetRelationsBatch(t *testing.T) {
 	assert.Equal(t, n, cnt)
 
 	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 			assert.Equal(t, parent3, childMap.GetRelation(entity))
 		})
 	})
@@ -1122,15 +1122,15 @@ func TestMap5Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, Rel(0, parent1))
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, RelIdx(0, parent1))
 	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
 	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	mapper.SetRelations(e, Rel(0, parent2))
+	mapper.SetRelations(e, RelIdx(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 
 	assert.Panics(t, func() {
-		mapper.SetRelations(Entity{}, Rel(0, parent2))
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
 	assert.Panics(t, func() {
 		mapper.SetRelations(e)
@@ -1244,23 +1244,23 @@ func TestMap5SetRelationsBatch(t *testing.T) {
 	mapper := NewMap5[ChildOf, CompB, CompC, CompD, CompE](&w)
 	childMap := NewMap[ChildOf](&w)
 
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, Rel(0, parent1))
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, Rel(0, parent2))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, RelIdx(0, parent2))
 
 	filter := NewFilter1[ChildOf](&w)
 
-	mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 		assert.Equal(t, parent3, childMap.GetRelation(entity))
-	}, Rel(0, parent3))
+	}, RelIdx(0, parent3))
 
-	query := filter.Query(Rel(0, parent2))
+	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
 	assert.Equal(t, 0, cnt)
 
-	query = filter.Query(Rel(0, parent3))
+	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
@@ -1268,7 +1268,7 @@ func TestMap5SetRelationsBatch(t *testing.T) {
 	assert.Equal(t, n, cnt)
 
 	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 			assert.Equal(t, parent3, childMap.GetRelation(entity))
 		})
 	})
@@ -1375,15 +1375,15 @@ func TestMap6Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, Rel(0, parent1))
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, RelIdx(0, parent1))
 	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
 	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	mapper.SetRelations(e, Rel(0, parent2))
+	mapper.SetRelations(e, RelIdx(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 
 	assert.Panics(t, func() {
-		mapper.SetRelations(Entity{}, Rel(0, parent2))
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
 	assert.Panics(t, func() {
 		mapper.SetRelations(e)
@@ -1497,23 +1497,23 @@ func TestMap6SetRelationsBatch(t *testing.T) {
 	mapper := NewMap6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
 	childMap := NewMap[ChildOf](&w)
 
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, Rel(0, parent1))
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, Rel(0, parent2))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, RelIdx(0, parent2))
 
 	filter := NewFilter1[ChildOf](&w)
 
-	mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 		assert.Equal(t, parent3, childMap.GetRelation(entity))
-	}, Rel(0, parent3))
+	}, RelIdx(0, parent3))
 
-	query := filter.Query(Rel(0, parent2))
+	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
 	assert.Equal(t, 0, cnt)
 
-	query = filter.Query(Rel(0, parent3))
+	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
@@ -1521,7 +1521,7 @@ func TestMap6SetRelationsBatch(t *testing.T) {
 	assert.Equal(t, n, cnt)
 
 	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 			assert.Equal(t, parent3, childMap.GetRelation(entity))
 		})
 	})
@@ -1628,15 +1628,15 @@ func TestMap7Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, Rel(0, parent1))
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, RelIdx(0, parent1))
 	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
 	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	mapper.SetRelations(e, Rel(0, parent2))
+	mapper.SetRelations(e, RelIdx(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 
 	assert.Panics(t, func() {
-		mapper.SetRelations(Entity{}, Rel(0, parent2))
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
 	assert.Panics(t, func() {
 		mapper.SetRelations(e)
@@ -1750,23 +1750,23 @@ func TestMap7SetRelationsBatch(t *testing.T) {
 	mapper := NewMap7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	childMap := NewMap[ChildOf](&w)
 
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, Rel(0, parent1))
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, Rel(0, parent2))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, RelIdx(0, parent2))
 
 	filter := NewFilter1[ChildOf](&w)
 
-	mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 		assert.Equal(t, parent3, childMap.GetRelation(entity))
-	}, Rel(0, parent3))
+	}, RelIdx(0, parent3))
 
-	query := filter.Query(Rel(0, parent2))
+	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
 	assert.Equal(t, 0, cnt)
 
-	query = filter.Query(Rel(0, parent3))
+	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
@@ -1774,7 +1774,7 @@ func TestMap7SetRelationsBatch(t *testing.T) {
 	assert.Equal(t, n, cnt)
 
 	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 			assert.Equal(t, parent3, childMap.GetRelation(entity))
 		})
 	})
@@ -1881,15 +1881,15 @@ func TestMap8Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, Rel(0, parent1))
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, RelIdx(0, parent1))
 	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
 	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	mapper.SetRelations(e, Rel(0, parent2))
+	mapper.SetRelations(e, RelIdx(0, parent2))
 	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
 
 	assert.Panics(t, func() {
-		mapper.SetRelations(Entity{}, Rel(0, parent2))
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
 	assert.Panics(t, func() {
 		mapper.SetRelations(e)
@@ -2003,23 +2003,23 @@ func TestMap8SetRelationsBatch(t *testing.T) {
 	mapper := NewMap8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	childMap := NewMap[ChildOf](&w)
 
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, Rel(0, parent1))
-	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, Rel(0, parent2))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, RelIdx(0, parent2))
 
 	filter := NewFilter1[ChildOf](&w)
 
-	mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 		assert.Equal(t, parent3, childMap.GetRelation(entity))
-	}, Rel(0, parent3))
+	}, RelIdx(0, parent3))
 
-	query := filter.Query(Rel(0, parent2))
+	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
 	assert.Equal(t, 0, cnt)
 
-	query = filter.Query(Rel(0, parent3))
+	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
@@ -2027,7 +2027,7 @@ func TestMap8SetRelationsBatch(t *testing.T) {
 	assert.Equal(t, n, cnt)
 
 	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(Rel(0, parent2)), func(entity Entity) {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 			assert.Equal(t, parent3, childMap.GetRelation(entity))
 		})
 	})

@@ -48,8 +48,8 @@ func TestFilterCacheRelation(t *testing.T) {
 	target4 := world.NewEntity()
 
 	f1 := NewFilter1[ChildOf](&world).Register()
-	f2 := NewFilter1[ChildOf](&world).Relations(Rel(0, target1)).Register()
-	f3 := NewFilter1[ChildOf](&world).Relations(Rel(0, target2)).Register()
+	f2 := NewFilter1[ChildOf](&world).Relations(RelIdx(0, target1)).Register()
+	f3 := NewFilter1[ChildOf](&world).Relations(RelIdx(0, target2)).Register()
 
 	c1 := world.storage.getRegisteredFilter(f1.cache)
 	c2 := world.storage.getRegisteredFilter(f2.cache)
@@ -61,25 +61,25 @@ func TestFilterCacheRelation(t *testing.T) {
 	assert.Equal(t, 0, len(c2.tables))
 	assert.Equal(t, 0, len(c3.tables))
 
-	e1 := childMap.NewEntity(&ChildOf{}, Rel(0, target1))
+	e1 := childMap.NewEntity(&ChildOf{}, RelIdx(0, target1))
 	assert.Equal(t, 1, len(c1.tables))
 	assert.Equal(t, 1, len(c2.tables))
 
-	childMap.NewEntity(&ChildOf{}, Rel(0, target3))
+	childMap.NewEntity(&ChildOf{}, RelIdx(0, target3))
 	assert.Equal(t, 2, len(c1.tables))
 	assert.Equal(t, 1, len(c2.tables))
 
-	child2Map.NewEntity(&ChildOf2{}, Rel(0, target2))
+	child2Map.NewEntity(&ChildOf2{}, RelIdx(0, target2))
 
 	world.RemoveEntity(e1)
 	world.RemoveEntity(target1)
 	assert.Equal(t, 1, len(c1.tables))
 	assert.Equal(t, 0, len(c2.tables))
 
-	childMap.NewEntity(&ChildOf{}, Rel(0, target2))
-	posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, target2))
-	posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, target3))
-	posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, target4))
+	childMap.NewEntity(&ChildOf{}, RelIdx(0, target2))
+	posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, target2))
+	posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, target3))
+	posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, target4))
 
 	assert.Equal(t, 5, len(c1.tables))
 	assert.Equal(t, 2, len(c3.tables))

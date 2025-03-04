@@ -155,10 +155,10 @@ func TestWorldRelations(t *testing.T) {
 	assert.True(t, w.storage.registry.IsRelation[ComponentID[ChildOf2](&w).id])
 
 	for range 10 {
-		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent1))
-		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent1), Rel(2, parent2))
-		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent1))
-		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel(1, parent2), Rel(2, parent2))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel[ChildOf](parent1), RelIdx(2, parent1))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, RelIdx(1, parent1), RelIdx(2, parent2))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, RelIdx(1, parent2), RelIdx(2, parent1))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel[ChildOf](parent2), Rel[ChildOf2](parent2))
 	}
 
 	filter := NewFilter3[Position, ChildOf, ChildOf2](&w)
@@ -170,14 +170,14 @@ func TestWorldRelations(t *testing.T) {
 	}
 	assert.Equal(t, 40, cnt)
 
-	query = filter.Query(Rel(1, parent1), Rel(2, parent2))
+	query = filter.Query(RelIdx(1, parent1), RelIdx(2, parent2))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
 	assert.Equal(t, 10, cnt)
 
-	query = filter.Query(Rel(1, parent1))
+	query = filter.Query(RelIdx(1, parent1))
 	cnt = 0
 	for query.Next() {
 		cnt++
@@ -187,8 +187,8 @@ func TestWorldRelations(t *testing.T) {
 	mapper2 := NewMap2[Position, ChildOf](&w)
 	child2Map := NewMap1[ChildOf2](&w)
 
-	e := mapper2.NewEntity(&Position{}, &ChildOf{}, Rel(1, parent1))
-	child2Map.Add(e, &ChildOf2{}, Rel(0, parent2))
+	e := mapper2.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, parent1))
+	child2Map.Add(e, &ChildOf2{}, RelIdx(0, parent2))
 }
 
 func TestWorldSetRelations(t *testing.T) {
@@ -227,11 +227,11 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 
 	entities := []Entity{}
 	for range 32 {
-		e := posChildMap.NewEntity(&Position{X: -1, Y: 1}, &ChildOf{}, Rel(1, parent1))
+		e := posChildMap.NewEntity(&Position{X: -1, Y: 1}, &ChildOf{}, RelIdx(1, parent1))
 		assert.Equal(t, parent1, childMap.GetRelation(e))
 		entities = append(entities, e)
 	}
-	_ = posChildMap.NewEntity(&Position{}, &ChildOf{}, Rel(1, parent2))
+	_ = posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, parent2))
 
 	w.RemoveEntity(parent1)
 
@@ -251,7 +251,7 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 	assert.Equal(t, []tableID{}, archetype.freeTables)
 
 	filter := NewFilter2[Position, ChildOf](&w)
-	query := filter.Query(Rel(1, parent3))
+	query := filter.Query(RelIdx(1, parent3))
 	cnt := 0
 	for query.Next() {
 		pos, _ := query.Get()
