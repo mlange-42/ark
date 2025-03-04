@@ -1,6 +1,8 @@
 +++
 title = 'Entity relationships'
 type = "docs"
-weight = 50
+weight = 40
 description = "Entity relationships usage and details."
 +++
+
+TODO
