@@ -45,6 +45,9 @@ func TestNewBatchFn(t *testing.T) {
 }
 
 func TestBatchComponents(t *testing.T) {
+	// Create a world
+	world := ecs.NewWorld()
+
 	// Create a component mapper.
 	mapper := ecs.NewMap2[Position, Velocity](&world)
 	// Create some entities.
