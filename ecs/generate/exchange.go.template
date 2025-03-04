@@ -39,12 +39,11 @@ func NewExchange{{.}}{{$generics}}(world *World) *Exchange{{.}}{{$genericsShort}
 }
 
 // Removes sets the components that this [Exchange{{.}}] removes.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange{{.}}{{$genericsShort}}) Removes(components ...Comp) *Exchange{{.}}{{$genericsShort}} {
-	ids := make([]ID, len(components))
-	for i, c := range components {
-		ids[i] = ex.world.componentID(c.tp)
+	for _, c := range components {
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
-	ex.remove = ids
 	return ex
 }
 

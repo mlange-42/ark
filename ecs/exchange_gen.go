@@ -26,12 +26,11 @@ func NewExchange1[A any](world *World) *Exchange1[A] {
 }
 
 // Removes sets the components that this [Exchange1] removes.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange1[A]) Removes(components ...Comp) *Exchange1[A] {
-	ids := make([]ID, len(components))
-	for i, c := range components {
-		ids[i] = ex.world.componentID(c.tp)
+	for _, c := range components {
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
-	ex.remove = ids
 	return ex
 }
 
@@ -155,12 +154,11 @@ func NewExchange2[A any, B any](world *World) *Exchange2[A, B] {
 }
 
 // Removes sets the components that this [Exchange2] removes.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange2[A, B]) Removes(components ...Comp) *Exchange2[A, B] {
-	ids := make([]ID, len(components))
-	for i, c := range components {
-		ids[i] = ex.world.componentID(c.tp)
+	for _, c := range components {
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
-	ex.remove = ids
 	return ex
 }
 
@@ -291,12 +289,11 @@ func NewExchange3[A any, B any, C any](world *World) *Exchange3[A, B, C] {
 }
 
 // Removes sets the components that this [Exchange3] removes.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange3[A, B, C]) Removes(components ...Comp) *Exchange3[A, B, C] {
-	ids := make([]ID, len(components))
-	for i, c := range components {
-		ids[i] = ex.world.componentID(c.tp)
+	for _, c := range components {
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
-	ex.remove = ids
 	return ex
 }
 
@@ -434,12 +431,11 @@ func NewExchange4[A any, B any, C any, D any](world *World) *Exchange4[A, B, C, 
 }
 
 // Removes sets the components that this [Exchange4] removes.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange4[A, B, C, D]) Removes(components ...Comp) *Exchange4[A, B, C, D] {
-	ids := make([]ID, len(components))
-	for i, c := range components {
-		ids[i] = ex.world.componentID(c.tp)
+	for _, c := range components {
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
-	ex.remove = ids
 	return ex
 }
 
@@ -584,12 +580,11 @@ func NewExchange5[A any, B any, C any, D any, E any](world *World) *Exchange5[A,
 }
 
 // Removes sets the components that this [Exchange5] removes.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange5[A, B, C, D, E]) Removes(components ...Comp) *Exchange5[A, B, C, D, E] {
-	ids := make([]ID, len(components))
-	for i, c := range components {
-		ids[i] = ex.world.componentID(c.tp)
+	for _, c := range components {
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
-	ex.remove = ids
 	return ex
 }
 
@@ -741,12 +736,11 @@ func NewExchange6[A any, B any, C any, D any, E any, F any](world *World) *Excha
 }
 
 // Removes sets the components that this [Exchange6] removes.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange6[A, B, C, D, E, F]) Removes(components ...Comp) *Exchange6[A, B, C, D, E, F] {
-	ids := make([]ID, len(components))
-	for i, c := range components {
-		ids[i] = ex.world.componentID(c.tp)
+	for _, c := range components {
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
-	ex.remove = ids
 	return ex
 }
 
@@ -905,12 +899,11 @@ func NewExchange7[A any, B any, C any, D any, E any, F any, G any](world *World)
 }
 
 // Removes sets the components that this [Exchange7] removes.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange7[A, B, C, D, E, F, G]) Removes(components ...Comp) *Exchange7[A, B, C, D, E, F, G] {
-	ids := make([]ID, len(components))
-	for i, c := range components {
-		ids[i] = ex.world.componentID(c.tp)
+	for _, c := range components {
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
-	ex.remove = ids
 	return ex
 }
 
@@ -1076,12 +1069,11 @@ func NewExchange8[A any, B any, C any, D any, E any, F any, G any, H any](world 
 }
 
 // Removes sets the components that this [Exchange8] removes.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) Removes(components ...Comp) *Exchange8[A, B, C, D, E, F, G, H] {
-	ids := make([]ID, len(components))
-	for i, c := range components {
-		ids[i] = ex.world.componentID(c.tp)
+	for _, c := range components {
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
-	ex.remove = ids
 	return ex
 }
 
