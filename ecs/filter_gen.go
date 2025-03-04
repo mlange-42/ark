@@ -27,6 +27,7 @@ func NewFilter0(world *World) *Filter0 {
 }
 
 // With specifies additional components to filter for.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter0) With(comps ...Comp) *Filter0 {
 	f.checkCached()
 	for _, c := range comps {
@@ -37,6 +38,7 @@ func (f *Filter0) With(comps ...Comp) *Filter0 {
 }
 
 // Without specifies components to exclude.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter0) Without(comps ...Comp) *Filter0 {
 	f.checkCached()
 	for _, c := range comps {
@@ -131,6 +133,7 @@ func NewFilter1[A any](world *World) *Filter1[A] {
 }
 
 // With specifies additional components to filter for.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter1[A]) With(comps ...Comp) *Filter1[A] {
 	f.checkCached()
 	for _, c := range comps {
@@ -141,6 +144,7 @@ func (f *Filter1[A]) With(comps ...Comp) *Filter1[A] {
 }
 
 // Without specifies components to exclude.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
 	f.checkCached()
 	for _, c := range comps {
@@ -245,6 +249,7 @@ func NewFilter2[A any, B any](world *World) *Filter2[A, B] {
 }
 
 // With specifies additional components to filter for.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter2[A, B]) With(comps ...Comp) *Filter2[A, B] {
 	f.checkCached()
 	for _, c := range comps {
@@ -255,6 +260,7 @@ func (f *Filter2[A, B]) With(comps ...Comp) *Filter2[A, B] {
 }
 
 // Without specifies components to exclude.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
 	f.checkCached()
 	for _, c := range comps {
@@ -360,6 +366,7 @@ func NewFilter3[A any, B any, C any](world *World) *Filter3[A, B, C] {
 }
 
 // With specifies additional components to filter for.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter3[A, B, C]) With(comps ...Comp) *Filter3[A, B, C] {
 	f.checkCached()
 	for _, c := range comps {
@@ -370,6 +377,7 @@ func (f *Filter3[A, B, C]) With(comps ...Comp) *Filter3[A, B, C] {
 }
 
 // Without specifies components to exclude.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
 	f.checkCached()
 	for _, c := range comps {
@@ -476,6 +484,7 @@ func NewFilter4[A any, B any, C any, D any](world *World) *Filter4[A, B, C, D] {
 }
 
 // With specifies additional components to filter for.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter4[A, B, C, D]) With(comps ...Comp) *Filter4[A, B, C, D] {
 	f.checkCached()
 	for _, c := range comps {
@@ -486,6 +495,7 @@ func (f *Filter4[A, B, C, D]) With(comps ...Comp) *Filter4[A, B, C, D] {
 }
 
 // Without specifies components to exclude.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
 	f.checkCached()
 	for _, c := range comps {
@@ -593,6 +603,7 @@ func NewFilter5[A any, B any, C any, D any, E any](world *World) *Filter5[A, B, 
 }
 
 // With specifies additional components to filter for.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter5[A, B, C, D, E]) With(comps ...Comp) *Filter5[A, B, C, D, E] {
 	f.checkCached()
 	for _, c := range comps {
@@ -603,6 +614,7 @@ func (f *Filter5[A, B, C, D, E]) With(comps ...Comp) *Filter5[A, B, C, D, E] {
 }
 
 // Without specifies components to exclude.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] {
 	f.checkCached()
 	for _, c := range comps {
@@ -711,6 +723,7 @@ func NewFilter6[A any, B any, C any, D any, E any, F any](world *World) *Filter6
 }
 
 // With specifies additional components to filter for.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter6[A, B, C, D, E, F]) With(comps ...Comp) *Filter6[A, B, C, D, E, F] {
 	f.checkCached()
 	for _, c := range comps {
@@ -721,6 +734,7 @@ func (f *Filter6[A, B, C, D, E, F]) With(comps ...Comp) *Filter6[A, B, C, D, E, 
 }
 
 // Without specifies components to exclude.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, E, F] {
 	f.checkCached()
 	for _, c := range comps {
@@ -830,6 +844,7 @@ func NewFilter7[A any, B any, C any, D any, E any, F any, G any](world *World) *
 }
 
 // With specifies additional components to filter for.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter7[A, B, C, D, E, F, G]) With(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
 	f.checkCached()
 	for _, c := range comps {
@@ -840,6 +855,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) With(comps ...Comp) *Filter7[A, B, C, D, 
 }
 
 // Without specifies components to exclude.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
 	f.checkCached()
 	for _, c := range comps {
@@ -950,6 +966,7 @@ func NewFilter8[A any, B any, C any, D any, E any, F any, G any, H any](world *W
 }
 
 // With specifies additional components to filter for.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter8[A, B, C, D, E, F, G, H]) With(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
 	f.checkCached()
 	for _, c := range comps {
@@ -960,6 +977,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) With(comps ...Comp) *Filter8[A, B, C, 
 }
 
 // Without specifies components to exclude.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
 	f.checkCached()
 	for _, c := range comps {

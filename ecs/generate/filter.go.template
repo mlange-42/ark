@@ -41,6 +41,7 @@ func NewFilter{{.}}{{$generics}}(world *World) *Filter{{.}}{{$genericsShort}} {
 }
 
 // With specifies additional components to filter for.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter{{.}}{{$genericsShort}}) With(comps ...Comp) *Filter{{.}}{{$genericsShort}} {
 	f.checkCached()
 	for _, c := range comps {
@@ -51,6 +52,7 @@ func (f *Filter{{.}}{{$genericsShort}}) With(comps ...Comp) *Filter{{.}}{{$gener
 }
 
 // Without specifies components to exclude.
+// Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter{{.}}{{$genericsShort}}) Without(comps ...Comp) *Filter{{.}}{{$genericsShort}} {
 	f.checkCached()
 	for _,c := range comps {
