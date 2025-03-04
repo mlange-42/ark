@@ -38,9 +38,7 @@ go get github.com/mlange-42/ark
 
 Below is the classical Position/Velocity example that every ECS shows in the docs.
 
-For documentation besides the [API docs](https://pkg.go.dev/github.com/mlange-42/ark),
-see Arche and its [user guide](https://mlange-42.github.io/arche/) for now.
-Ark closely resembles Arche's generic API, and most information about Arche also applies to Ark.
+See the [User Guide](https://mlange-42.github.io/ark/), [API docs](https://pkg.go.dev/github.com/mlange-42/ark) and [examples](https://github.com/mlange-42/ark/tree/main/_examples) for details.
 
 ```go
 package main
