@@ -23,9 +23,9 @@ func TestToRelations(t *testing.T) {
 	child2ID := ComponentID[ChildOf2](&w)
 	posID := ComponentID[Position](&w)
 
-	relations := relations{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
+	inRelations := relations{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
 	var out []RelationID
-	out = relations.toRelations(&w, []ID{posID, childID, child2ID}, nil, out)
+	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, nil, out)
 
 	assert.Equal(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
@@ -33,6 +33,22 @@ func TestToRelations(t *testing.T) {
 	}, out)
 
 	assert.Panics(t, func() {
-		_ = relations.toRelations(&w, []ID{childID, child2ID, posID}, nil, out)
+		_ = inRelations.toRelations(&w, []ID{childID, child2ID, posID}, nil, out)
 	})
+
+	inRelations = relations{RelID(childID, Entity{2, 0}), RelID(child2ID, Entity{3, 0})}
+	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, nil, out)
+
+	assert.Equal(t, []RelationID{
+		{component: childID, target: Entity{2, 0}},
+		{component: child2ID, target: Entity{3, 0}},
+	}, out)
+
+	inRelations = relations{Rel[ChildOf](Entity{2, 0}), Rel[ChildOf2](Entity{3, 0})}
+	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, nil, out)
+
+	assert.Equal(t, []RelationID{
+		{component: childID, target: Entity{2, 0}},
+		{component: child2ID, target: Entity{3, 0}},
+	}, out)
 }
