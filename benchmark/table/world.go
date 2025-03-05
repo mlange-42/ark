@@ -10,17 +10,17 @@ import (
 
 func benchesWorld() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
-		{Name: "Map.Get", Desc: "random, 1000 entities", F: worldGet_1000, N: 1000},
-		{Name: "Map.GetUnchecked", Desc: "random, 1000 entities", F: worldGetUnchecked_1000, N: 1000},
-		{Name: "Map.Has", Desc: "random, 1000 entities", F: worldHas_1000, N: 1000},
-		{Name: "Map.HasUnchecked", Desc: "random, 1000 entities", F: worldHasUnchecked_1000, N: 1000},
-		{Name: "World.Alive", Desc: "random, 1000 entities", F: worldAlive_1000, N: 1000},
-		{Name: "Map.GetRelation", Desc: "random, 1000 entities", F: worldRelation_1000, N: 1000},
-		{Name: "Map.GetRelation", Desc: "random, 1000 entities", F: worldRelationUnchecked_1000, N: 1000},
+		{Name: "Map.Get", Desc: "random, 1000 entities", F: worldGet1000, N: 1000},
+		{Name: "Map.GetUnchecked", Desc: "random, 1000 entities", F: worldGetUnchecked1000, N: 1000},
+		{Name: "Map.Has", Desc: "random, 1000 entities", F: worldHas1000, N: 1000},
+		{Name: "Map.HasUnchecked", Desc: "random, 1000 entities", F: worldHasUnchecked1000, N: 1000},
+		{Name: "World.Alive", Desc: "random, 1000 entities", F: worldAlive1000, N: 1000},
+		{Name: "Map.GetRelation", Desc: "random, 1000 entities", F: worldRelation1000, N: 1000},
+		{Name: "Map.GetRelation", Desc: "random, 1000 entities", F: worldRelationUnchecked1000, N: 1000},
 	}
 }
 
-func worldGet_1000(b *testing.B) {
+func worldGet1000(b *testing.B) {
 	w := ecs.NewWorld()
 
 	mapper := ecs.NewMap[comp1](&w)
@@ -41,7 +41,7 @@ func worldGet_1000(b *testing.B) {
 	_ = comp
 }
 
-func worldGetUnchecked_1000(b *testing.B) {
+func worldGetUnchecked1000(b *testing.B) {
 	w := ecs.NewWorld()
 
 	mapper := ecs.NewMap[comp1](&w)
@@ -62,7 +62,7 @@ func worldGetUnchecked_1000(b *testing.B) {
 	_ = comp
 }
 
-func worldHas_1000(b *testing.B) {
+func worldHas1000(b *testing.B) {
 	w := ecs.NewWorld()
 
 	mapper := ecs.NewMap[comp1](&w)
@@ -83,7 +83,7 @@ func worldHas_1000(b *testing.B) {
 	_ = has
 }
 
-func worldHasUnchecked_1000(b *testing.B) {
+func worldHasUnchecked1000(b *testing.B) {
 	w := ecs.NewWorld()
 
 	mapper := ecs.NewMap[comp1](&w)
@@ -104,7 +104,7 @@ func worldHasUnchecked_1000(b *testing.B) {
 	_ = has
 }
 
-func worldAlive_1000(b *testing.B) {
+func worldAlive1000(b *testing.B) {
 	w := ecs.NewWorld()
 
 	entities := make([]ecs.Entity, 0, 1000)
@@ -124,7 +124,7 @@ func worldAlive_1000(b *testing.B) {
 	_ = has
 }
 
-func worldRelation_1000(b *testing.B) {
+func worldRelation1000(b *testing.B) {
 	w := ecs.NewWorld()
 	parent := w.NewEntity()
 
@@ -146,7 +146,7 @@ func worldRelation_1000(b *testing.B) {
 	_ = par
 }
 
-func worldRelationUnchecked_1000(b *testing.B) {
+func worldRelationUnchecked1000(b *testing.B) {
 	w := ecs.NewWorld()
 	parent := w.NewEntity()
 

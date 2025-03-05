@@ -19,6 +19,7 @@ Benchmarks are run automatically in the GitHub CI, and are updated on this page 
 They always reflect the latest development state of Ark.
 
 {{< html >}}
+<br/>
 <div class="font-small">
 {{< /html >}}
 

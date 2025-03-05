@@ -9,21 +9,21 @@ import (
 
 func benchesQuery() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
-		{Name: "Query.Next", Desc: "", F: queryIter_100_000, N: 100_000},
-		{Name: "Query.Next + Query.Get 1", Desc: "", F: queryIterGet_1_100_000, N: 100_000},
-		{Name: "Query.Next + Query.Get 2", Desc: "", F: queryIterGet_2_100_000, N: 100_000},
-		{Name: "Query.Next + Query.Get 5", Desc: "", F: queryIterGet_5_100_000, N: 100_000},
+		{Name: "Query.Next", Desc: "", F: queryIter100k, N: 100_000},
+		{Name: "Query.Next + Query.Get 1", Desc: "", F: queryIterGet1Comp100k, N: 100_000},
+		{Name: "Query.Next + Query.Get 2", Desc: "", F: queryIterGet2Comp100k, N: 100_000},
+		{Name: "Query.Next + Query.Get 5", Desc: "", F: queryIterGet5Comp100k, N: 100_000},
 
-		{Name: "Query.Next + Query.Entity", Desc: "", F: queryIterEntity_100_000, N: 100_000},
+		{Name: "Query.Next + Query.Entity", Desc: "", F: queryIterEntity100k, N: 100_000},
 
-		{Name: "Query.Next + Query.Relation", Desc: "", F: queryRelation_100_000, N: 100_000},
+		{Name: "Query.Next + Query.Relation", Desc: "", F: queryRelation100k, N: 100_000},
 
-		{Name: "Filter1.Query", Desc: "", F: queryCreate, N: 1},
-		{Name: "Filter1.Query", Desc: "registered filter", F: queryCreateCached, N: 1},
+		{Name: "Filter1.Query + Query1.Close", Desc: "", F: queryCreate, N: 1},
+		{Name: "Filter1.Query + Query1.Close", Desc: "registered filter", F: queryCreateCached, N: 1},
 	}
 }
 
-func queryIter_100_000(b *testing.B) {
+func queryIter100k(b *testing.B) {
 	w := ecs.NewWorld()
 
 	w.NewEntities(100_000, nil)
@@ -36,7 +36,7 @@ func queryIter_100_000(b *testing.B) {
 	}
 }
 
-func queryIterGet_1_100_000(b *testing.B) {
+func queryIterGet1Comp100k(b *testing.B) {
 	w := ecs.NewWorld()
 
 	builder := ecs.NewMap1[comp1](&w)
@@ -55,7 +55,7 @@ func queryIterGet_1_100_000(b *testing.B) {
 	_ = c1
 }
 
-func queryIterGet_2_100_000(b *testing.B) {
+func queryIterGet2Comp100k(b *testing.B) {
 	w := ecs.NewWorld()
 
 	builder := ecs.NewMap2[comp1, comp2](&w)
@@ -75,7 +75,7 @@ func queryIterGet_2_100_000(b *testing.B) {
 	_, _ = c1, c2
 }
 
-func queryIterGet_5_100_000(b *testing.B) {
+func queryIterGet5Comp100k(b *testing.B) {
 	w := ecs.NewWorld()
 
 	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
@@ -99,7 +99,7 @@ func queryIterGet_5_100_000(b *testing.B) {
 	_ = sum
 }
 
-func queryIterEntity_100_000(b *testing.B) {
+func queryIterEntity100k(b *testing.B) {
 	w := ecs.NewWorld()
 
 	builder := ecs.NewMap1[comp1](&w)
@@ -118,7 +118,7 @@ func queryIterEntity_100_000(b *testing.B) {
 	_ = e
 }
 
-func queryRelation_100_000(b *testing.B) {
+func queryRelation100k(b *testing.B) {
 	w := ecs.NewWorld()
 	parent := w.NewEntity()
 
