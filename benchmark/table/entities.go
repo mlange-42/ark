@@ -9,19 +9,19 @@ import (
 
 func benchesEntities() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
-		{Name: "Entity.IsZero", Desc: "", F: entitiesIsZero_2, N: 2},
+		{Name: "Entity.IsZero", Desc: "", F: entitiesIsZero2, N: 2},
 
-		{Name: "World.NewEntity", Desc: "memory already alloc.", F: entitiesCreate_1000, N: 1000},
-		{Name: "Map1.NewEntity w/ 1 Comp", Desc: "memory already alloc.", F: entitiesCreate_1Comp_1000, N: 1000},
-		{Name: "Map5.NewEntity w/ 5 Comps", Desc: "memory already alloc.", F: entitiesCreate_5Comp_1000, N: 1000},
+		{Name: "World.NewEntity", Desc: "memory already alloc.", F: entitiesCreate1000, N: 1000},
+		{Name: "Map1.NewEntity w/ 1 Comp", Desc: "memory already alloc.", F: entitiesCreate1Comp1000, N: 1000},
+		{Name: "Map5.NewEntity w/ 5 Comps", Desc: "memory already alloc.", F: entitiesCreate5Comp1000, N: 1000},
 
-		{Name: "World.RemoveEntity", Desc: "", F: entitiesRemove_1000, N: 1000},
-		{Name: "World.RemoveEntity w/ 1 Comp", Desc: "", F: entitiesRemove_1Comp_1000, N: 1000},
-		{Name: "World.RemoveEntity w/ 5 Comps", Desc: "", F: entitiesRemove_5Comp_1000, N: 1000},
+		{Name: "World.RemoveEntity", Desc: "", F: entitiesRemove1000, N: 1000},
+		{Name: "World.RemoveEntity w/ 1 Comp", Desc: "", F: entitiesRemove1Comp1000, N: 1000},
+		{Name: "World.RemoveEntity w/ 5 Comps", Desc: "", F: entitiesRemove5Comp1000, N: 1000},
 	}
 }
 
-func entitiesIsZero_2(b *testing.B) {
+func entitiesIsZero2(b *testing.B) {
 	w := ecs.NewWorld()
 	e := w.NewEntity()
 	z := ecs.Entity{}
@@ -36,7 +36,7 @@ func entitiesIsZero_2(b *testing.B) {
 	_ = s
 }
 
-func entitiesCreate_1000(b *testing.B) {
+func entitiesCreate1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
@@ -52,7 +52,7 @@ func entitiesCreate_1000(b *testing.B) {
 	}
 }
 
-func entitiesCreate_1Comp_1000(b *testing.B) {
+func entitiesCreate1Comp1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
@@ -70,7 +70,7 @@ func entitiesCreate_1Comp_1000(b *testing.B) {
 	}
 }
 
-func entitiesCreate_5Comp_1000(b *testing.B) {
+func entitiesCreate5Comp1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
@@ -93,7 +93,7 @@ func entitiesCreate_5Comp_1000(b *testing.B) {
 	}
 }
 
-func entitiesRemove_1000(b *testing.B) {
+func entitiesRemove1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
@@ -113,7 +113,7 @@ func entitiesRemove_1000(b *testing.B) {
 	}
 }
 
-func entitiesRemove_1Comp_1000(b *testing.B) {
+func entitiesRemove1Comp1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
@@ -134,7 +134,7 @@ func entitiesRemove_1Comp_1000(b *testing.B) {
 	}
 }
 
-func entitiesRemove_5Comp_1000(b *testing.B) {
+func entitiesRemove5Comp1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
