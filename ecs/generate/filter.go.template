@@ -20,6 +20,7 @@ type Filter{{.}}{{$generics}} struct {
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
+	components    []*componentStorage
 }
 
 // NewFilter{{.}} creates a new [Filter{{.}}].
@@ -112,7 +113,13 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 	} else {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
 	}
-	return newQuery{{.}}{{$genericsShort}}(f.world, f.filter{{if .}}, f.ids{{end}}, f.tempRelations, f.cache)
+	if f.components == nil {
+		f.components = make([]*componentStorage, {{.}})
+		{{if .}}for i := range {{.}} {
+			f.components[i] = &f.world.storage.components[f.ids[i].id]
+		}{{end}}
+	}
+	return newQuery{{.}}{{$genericsShort}}(f.world, f.filter{{if .}}, f.ids{{end}}, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.
