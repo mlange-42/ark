@@ -23,13 +23,13 @@ func main() {
 		break
 	}
 
-	//benchmark.RunBenchmarks("Query", benchesQuery(), benchmark.ToMarkdown)
-	//benchmark.RunBenchmarks("World access", benchesWorld(), benchmark.ToMarkdown)
-	//benchmark.RunBenchmarks("Entities", benchesEntities(), benchmark.ToMarkdown)
-	//benchmark.RunBenchmarks("Entities, batched", benchesEntitiesBatch(), benchmark.ToMarkdown)
-	//benchmark.RunBenchmarks("Components", benchesComponents(), benchmark.ToMarkdown)
+	benchmark.RunBenchmarks("Query", benchesQuery(), benchmark.ToMarkdown)
+	benchmark.RunBenchmarks("World access", benchesWorld(), benchmark.ToMarkdown)
+	benchmark.RunBenchmarks("Entities", benchesEntities(), benchmark.ToMarkdown)
+	benchmark.RunBenchmarks("Entities, batched", benchesEntitiesBatch(), benchmark.ToMarkdown)
+	benchmark.RunBenchmarks("Components", benchesComponents(), benchmark.ToMarkdown)
 	benchmark.RunBenchmarks("Components, batched", benchesComponentsBatch(), benchmark.ToMarkdown)
-	//benchmark.RunBenchmarks("Other", benchesOther(), benchmark.ToMarkdown)
+	benchmark.RunBenchmarks("Other", benchesOther(), benchmark.ToMarkdown)
 
 	fmt.Print("\n\n")
 }
