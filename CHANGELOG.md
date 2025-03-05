@@ -17,6 +17,7 @@
 - Relation targets can be specified by either component type or component index (#120)
 - `ExchangeX.Removes` can be called multiple times in chains (#124)
 - `FilterX.Relations` can be called multiple times in chains (#129)
+- Adds methods `Entity.ID` and `Entity.Gen` for debugging purposes (#134)
 
 ### Documentation
 
