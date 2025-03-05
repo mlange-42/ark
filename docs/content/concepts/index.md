@@ -97,9 +97,9 @@ For advanced filters, caching and other details, see chapter [Filters & queries]
 
 Systems perform the logic of your game or simulation, using queries.
 Ark does not provide systems or a scheduler for them.
-You can create your own interface for them, matching your game engine if you are using one.
+You can create your own interface for system, matching your game engine if you are using one.
 Alternatively, [ark-tools](https://github.com/mlange-42/ark-tools) provides systems,
-a scheduler, and other useful stuff for Ark. See there for an example.
+a scheduler, and other useful stuff for Ark. See there for a full example.
 
 ## Resources
 
