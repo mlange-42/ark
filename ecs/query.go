@@ -7,7 +7,7 @@ import "unsafe"
 // and should only be used when component types are not known at compile time.
 type Query struct {
 	world     *World
-	filter    Filter
+	filter    filter
 	relations []RelationID
 	lock      uint8
 	cursor    cursor
@@ -15,7 +15,7 @@ type Query struct {
 	table     *table
 }
 
-func newQuery(world *World, filter Filter, relations []RelationID) Query {
+func newQuery(world *World, filter filter, relations []RelationID) Query {
 	return Query{
 		world:     world,
 		filter:    filter,

@@ -28,7 +28,7 @@ type cursor struct {
 // Use a [NewFilter{{.}}] to create one.
 type Query{{.}}{{$generics}} struct {
 	world      *World
-	filter     Filter
+	filter     filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -41,7 +41,7 @@ type Query{{.}}{{$generics}} struct {
 	{{- end}}
 }
 
-func newQuery{{.}}{{$generics}}(world *World, filter Filter{{if .}}, ids []ID{{end}}, relations []RelationID, cacheID cacheID) Query{{.}}{{$genericsShort}} {
+func newQuery{{.}}{{$generics}}(world *World, filter filter{{if .}}, ids []ID{{end}}, relations []RelationID, cacheID cacheID) Query{{.}}{{$genericsShort}} {
 	components := make([]*componentStorage, {{.}})
 	{{if .}}for i := range {{.}} {
 		components[i] = &world.storage.components[ids[i].id]

@@ -2,6 +2,10 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.2.0...main)
 
+### Breaking changes
+
+- World argument in unsafe/ID-based filter moved from method `Query` to filter constructor (#137)
+
 ### Features
 
 - Adds `MapX.AddBatch` and `MapX.AddBatchFn` batch operations (#100)

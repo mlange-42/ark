@@ -16,16 +16,16 @@ func TestFilter(t *testing.T) {
 		mask    Mask
 		matches bool
 	}{
-		{NewFilter(id1, id2), NewMask(id1, id2, id3), true},
-		{NewFilter(id1, id2), NewMask(id1), false},
+		{NewFilter(nil, id1, id2), NewMask(id1, id2, id3), true},
+		{NewFilter(nil, id1, id2), NewMask(id1), false},
 
-		{NewFilter(id1, id2).Without(id3), NewMask(id1, id2), true},
-		{NewFilter(id1, id2).Without(id3), NewMask(id1, id2, id3), false},
-		{NewFilter(id1, id2).Without(id3), NewMask(id1), false},
+		{NewFilter(nil, id1, id2).Without(id3), NewMask(id1, id2), true},
+		{NewFilter(nil, id1, id2).Without(id3), NewMask(id1, id2, id3), false},
+		{NewFilter(nil, id1, id2).Without(id3), NewMask(id1), false},
 
-		{NewFilter(id1, id2).Exclusive(), NewMask(id1, id2), true},
-		{NewFilter(id1, id2).Exclusive(), NewMask(id1, id2, id3), false},
-		{NewFilter(id1, id2).Exclusive(), NewMask(id1), false},
+		{NewFilter(nil, id1, id2).Exclusive(), NewMask(id1, id2), true},
+		{NewFilter(nil, id1, id2).Exclusive(), NewMask(id1, id2, id3), false},
+		{NewFilter(nil, id1, id2).Exclusive(), NewMask(id1), false},
 	}
 
 	for _, test := range tests {
@@ -34,7 +34,7 @@ func TestFilter(t *testing.T) {
 }
 
 func BenchmarkFilterCopy(b *testing.B) {
-	f := NewFilter(id(1))
+	f := NewFilter(nil, id(1))
 
 	var ff Filter
 	for b.Loop() {
