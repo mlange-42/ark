@@ -18,8 +18,8 @@ func benchesQuery() []benchmark.Benchmark {
 
 		{Name: "Query.Next + Query.Relation", Desc: "", F: queryRelation100k, N: 100_000},
 
-		{Name: "Filter1.Query", Desc: "", F: queryCreate, N: 1},
-		{Name: "Filter1.Query", Desc: "registered filter", F: queryCreateCached, N: 1},
+		{Name: "Filter1.Query + Query1.Close", Desc: "", F: queryCreate, N: 1},
+		{Name: "Filter1.Query + Query1.Close", Desc: "registered filter", F: queryCreateCached, N: 1},
 	}
 }
 
