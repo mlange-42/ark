@@ -153,3 +153,10 @@ This concept is particularly useful for things that would best be expressed by c
 but the possible components (or categories) are only known at runtime.
 Thus, it is not possible to create ordinary components for them.
 However, these categories can be represented by entities, which are used as relation targets.
+
+## Longer example
+
+To conclude this chapter, here is a longer example that uses Ark's entity relationships feature
+to represent animals of different species in multiple farms.
+
+{{< code relations_example_test.go >}}
