@@ -1,7 +1,7 @@
 package main
 
 // Profiling:
-// go build ./query
+// go build ./profile/query
 // ./query
 // go tool pprof -http=":8000" -nodefraction=0.001 ./query cpu.pprof
 
