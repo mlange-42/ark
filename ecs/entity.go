@@ -19,6 +19,16 @@ func newEntity(id entityID) Entity {
 	return Entity{id, 0}
 }
 
+// ID returns the entity's ID, primarily for debugging purposes.
+func (e Entity) ID() uint32 {
+	return uint32(e.id)
+}
+
+// Gen returns the entity's generation, primarily for debugging purposes.
+func (e Entity) Gen() uint32 {
+	return e.gen
+}
+
 // IsZero returns whether this entity is the reserved zero entity.
 func (e Entity) IsZero() bool {
 	return e.id == 0
