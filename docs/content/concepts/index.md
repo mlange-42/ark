@@ -88,7 +88,7 @@ Thus, make sure to create filters only once and store them, e.g. in [systems](#s
 Then, create a new query from the filter each time before the iteration loop.
 
 > [!IMPORTANT]
-> As with [component mappers](#component-mappers), the component pointers obtained should never be stored
+> The component pointers obtained from a query should never be stored
 > outside of the current context (i.e. the query loop), as they are not persistent inside the world.
 
 For advanced filters, caching and other details, see chapter [Filters & queries](../queries).
