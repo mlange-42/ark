@@ -114,6 +114,17 @@ func TestWorldNewEntities(t *testing.T) {
 		assert.EqualValues(t, cnt+2, entity.ID())
 		cnt++
 	})
+	assert.Equal(t, n, cnt)
+
+	w.NewEntities(n, nil)
+
+	filter := NewFilter()
+	query := filter.Query(&w)
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
 }
 
 func TestWorldRemoveEntities(t *testing.T) {
