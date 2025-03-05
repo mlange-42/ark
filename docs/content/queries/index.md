@@ -22,7 +22,7 @@ In the example below, the filter would match any entities that have
 
 {{< code-func queries_test.go TestQueriesBasic >}}
 
-{{< api ecs Query2.Get >}} returns all queries components of the current entity.
+{{< api ecs Query2.Get >}} returns all queried components of the current entity.
 The current entity can be obtained with {{< api ecs Query2.Entity >}}.
 
 ## Query performance
@@ -44,7 +44,7 @@ The world gets locked for [component operations](../operations/) when a query is
 The lock is automatically released when query iteration has finished.
 When breaking out of the iteration, the query must be closed manually with {{< api ecs Query2.Close >}}.
 
-The lock prevents entity creation and removal as well as adding and removing components.
+The lock prevents entity creation and removal, as well as adding and removing components.
 Thus, it may be necessary to collect entities during the iteration, and perform the operation afterwards:
 
 {{< code-func queries_test.go TestQueriesLock >}}
@@ -77,29 +77,29 @@ As with `With`, `Without` can be called multiple times:
 ### Exclusive
 
 {{< api ecs Filter2.Exclusive >}} (and related methods) make the filter exclusive on the given components,
-i.e. is excludes all other components:
+i.e. it excludes all other components:
 
 {{< code-func queries_test.go TestQueriesExclusive >}}
 
 ### Optional
 
 There is no `Optional` provided, as it would require an additional check in {{< api ecs Query2.Get >}} et al.
-Instead, use {{< api ecs Map.Has >}}, {{< api ecs Map.Get >}} or similar methods in {{< api ecs Map2 >}} et al.
+Instead, use {{< api ecs Map.Has >}}, {{< api ecs Map.Get >}} or similar methods in {{< api ecs Map2 >}} et al.:
 
 {{< code-func queries_test.go TestQueriesOptional >}}
 
 ## Filter caching
 
-Although queries are highly performant, a huge number of archetypes (k´like hundreds or thousands) may cause a slowdown.
+Although queries are highly performant, a huge number of archetypes (like hundreds or thousands) may cause a slowdown.
 To prevent this slowdown, filters can be registered to the world's filter cache via
 {{< api ecs Filter2.Register >}}:
 
 {{< code-func queries_test.go TestQueriesCached >}}
 
-For registered filters, the list of matching archetypes is cached internally.
+For registered filters, a list of matching archetypes is cached internally.
 Thus, no filter evaluations are required during iteration.
 Instead, filters are only evaluated when a new archetype is created.
 
 When a registered filter is not required anymore, it can be unregistered with
 {{< api ecs Filter2.Unregister >}}.
-However, this is rarely required as (registered) filters are usually used over an entire simulation run.
+However, this is rarely required as (registered) filters are usually used over an entire game session or simulation run.

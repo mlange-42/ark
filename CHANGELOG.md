@@ -23,6 +23,7 @@
 
 - Adds a section on tools to the README (#94, #95)
 - Adds a benchmark for unsafe queries and world access (#98)
+- Adds a comprehensive user guide (#106, #107, #121, #123, #125, #126, #127, #133, #135)
 
 ### Performance
 
