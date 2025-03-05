@@ -1,6 +1,5 @@
 package main
 
-/*
 import (
 	"testing"
 
@@ -27,20 +26,24 @@ func componentsBatchAdd1_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	filter := ecs.All(id1)
+	mapper := ecs.NewMap1[comp1](&w)
+	filter1 := ecs.NewFilter0(&w)
+	filter2 := ecs.NewFilter1[comp1](&w)
 
-	w.Batch().New(1000)
+	entities := make([]ecs.Entity, 0, 1000)
+	w.NewEntities(1000, func(entity ecs.Entity) {
+		entities = append(entities, entity)
+	})
 
 	// Run once to allocate memory
-	w.Batch().Add(ecs.All(), id1)
-	w.Batch().Remove(filter, id1)
+	mapper.AddBatchFn(filter1.Batch(), nil)
+	mapper.RemoveBatch(filter2.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().Add(ecs.All(), id1)
+		mapper.AddBatchFn(filter1.Batch(), nil)
 		b.StopTimer()
-		w.Batch().Remove(filter, id1)
+		mapper.RemoveBatch(filter2.Batch(), nil)
 	}
 }
 
@@ -48,25 +51,24 @@ func componentsBatchAdd5_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	id2 := ecs.ComponentID[comp2](&w)
-	id3 := ecs.ComponentID[comp3](&w)
-	id4 := ecs.ComponentID[comp4](&w)
-	id5 := ecs.ComponentID[comp5](&w)
-	ids := []ecs.ID{id1, id2, id3, id4, id5}
-	filter := ecs.All(ids...)
+	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
+	filter1 := ecs.NewFilter0(&w)
+	filter2 := ecs.NewFilter5[comp1, comp2, comp3, comp4, comp5](&w)
 
-	w.Batch().New(1000)
+	entities := make([]ecs.Entity, 0, 1000)
+	w.NewEntities(1000, func(entity ecs.Entity) {
+		entities = append(entities, entity)
+	})
 
 	// Run once to allocate memory
-	w.Batch().Add(ecs.All(), ids...)
-	w.Batch().Remove(filter, ids...)
+	mapper.AddBatchFn(filter1.Batch(), nil)
+	mapper.RemoveBatch(filter2.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().Add(ecs.All(), ids...)
+		mapper.AddBatchFn(filter1.Batch(), nil)
 		b.StopTimer()
-		w.Batch().Remove(filter, ids...)
+		mapper.RemoveBatch(filter2.Batch(), nil)
 	}
 }
 
@@ -74,25 +76,25 @@ func componentsBatchAdd1to5_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	id2 := ecs.ComponentID[comp2](&w)
-	id3 := ecs.ComponentID[comp3](&w)
-	id4 := ecs.ComponentID[comp4](&w)
-	id5 := ecs.ComponentID[comp5](&w)
-	id6 := ecs.ComponentID[comp6](&w)
-	filter := ecs.All(id1)
+	builder := ecs.NewMap5[comp2, comp3, comp4, comp5, comp6](&w)
+	mapper := ecs.NewMap1[comp1](&w)
+	filter1 := ecs.NewFilter0(&w)
+	filter2 := ecs.NewFilter1[comp1](&w)
 
-	w.Batch().New(1000, id2, id3, id4, id5, id6)
+	entities := make([]ecs.Entity, 0, 1000)
+	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp2, b *comp3, c *comp4, d *comp5, e *comp6) {
+		entities = append(entities, entity)
+	})
 
 	// Run once to allocate memory
-	w.Batch().Add(ecs.All(), id1)
-	w.Batch().Remove(filter, id1)
+	mapper.AddBatchFn(filter1.Batch(), nil)
+	mapper.RemoveBatch(filter2.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().Add(ecs.All(), id1)
+		mapper.AddBatchFn(filter1.Batch(), nil)
 		b.StopTimer()
-		w.Batch().Remove(filter, id1)
+		mapper.RemoveBatch(filter2.Batch(), nil)
 	}
 }
 
@@ -100,20 +102,24 @@ func componentsBatchRemove1_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	filter := ecs.All(id1)
+	mapper := ecs.NewMap1[comp1](&w)
+	filter1 := ecs.NewFilter1[comp1](&w)
+	filter2 := ecs.NewFilter0(&w)
 
-	w.Batch().New(1000, id1)
+	entities := make([]ecs.Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
+		entities = append(entities, entity)
+	})
 
 	// Run once to allocate memory
-	w.Batch().Remove(filter, id1)
-	w.Batch().Add(ecs.All(), id1)
+	mapper.RemoveBatch(filter1.Batch(), nil)
+	mapper.AddBatchFn(filter2.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().Remove(filter, id1)
+		mapper.RemoveBatch(filter1.Batch(), nil)
 		b.StopTimer()
-		w.Batch().Add(ecs.All(), id1)
+		mapper.AddBatchFn(filter2.Batch(), nil)
 	}
 }
 
@@ -121,25 +127,24 @@ func componentsBatchRemove5_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	id2 := ecs.ComponentID[comp2](&w)
-	id3 := ecs.ComponentID[comp3](&w)
-	id4 := ecs.ComponentID[comp4](&w)
-	id5 := ecs.ComponentID[comp5](&w)
-	ids := []ecs.ID{id1, id2, id3, id4, id5}
-	filter := ecs.All(ids...)
+	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
+	filter1 := ecs.NewFilter5[comp1, comp2, comp3, comp4, comp5](&w)
+	filter2 := ecs.NewFilter0(&w)
 
-	w.Batch().New(1000, ids...)
+	entities := make([]ecs.Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(entity ecs.Entity, a *comp1, b *comp2, c *comp3, d *comp4, e *comp5) {
+		entities = append(entities, entity)
+	})
 
 	// Run once to allocate memory
-	w.Batch().Remove(filter, ids...)
-	w.Batch().Add(ecs.All(), ids...)
+	mapper.RemoveBatch(filter1.Batch(), nil)
+	mapper.AddBatchFn(filter2.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().Remove(filter, ids...)
+		mapper.RemoveBatch(filter1.Batch(), nil)
 		b.StopTimer()
-		w.Batch().Add(ecs.All(), ids...)
+		mapper.AddBatchFn(filter2.Batch(), nil)
 	}
 }
 
@@ -147,24 +152,25 @@ func componentsBatchRemove1of5_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	id2 := ecs.ComponentID[comp2](&w)
-	id3 := ecs.ComponentID[comp3](&w)
-	id4 := ecs.ComponentID[comp4](&w)
-	id5 := ecs.ComponentID[comp5](&w)
-	filter := ecs.All(id1)
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
+	mapper := ecs.NewMap1[comp1](&w)
+	filter1 := ecs.NewFilter1[comp1](&w)
+	filter2 := ecs.NewFilter0(&w)
 
-	w.Batch().New(1000, id1, id2, id3, id4, id5)
+	entities := make([]ecs.Entity, 0, 1000)
+	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1, b *comp2, c *comp3, d *comp4, e *comp5) {
+		entities = append(entities, entity)
+	})
 
 	// Run once to allocate memory
-	w.Batch().Remove(filter, id1)
-	w.Batch().Add(ecs.All(), id1)
+	mapper.RemoveBatch(filter1.Batch(), nil)
+	mapper.AddBatchFn(filter2.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().Remove(filter, id1)
+		mapper.RemoveBatch(filter1.Batch(), nil)
 		b.StopTimer()
-		w.Batch().Add(ecs.All(), id1)
+		mapper.AddBatchFn(filter2.Batch(), nil)
 	}
 }
 
@@ -172,24 +178,26 @@ func componentsBatchExchange1_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	id2 := ecs.ComponentID[comp2](&w)
-	filter1 := ecs.All(id1)
-	filter2 := ecs.All(id2)
-	ex1 := []ecs.ID{id1}
-	ex2 := []ecs.ID{id2}
+	ex1 := ecs.NewExchange1[comp1](&w).Removes(ecs.C[comp2]())
+	ex2 := ecs.NewExchange1[comp2](&w).Removes(ecs.C[comp1]())
+	builder := ecs.NewMap1[comp1](&w)
+	filter1 := ecs.NewFilter1[comp1](&w)
+	filter2 := ecs.NewFilter1[comp2](&w)
 
-	w.Batch().New(1000, id1)
+	entities := make([]ecs.Entity, 0, 1000)
+	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
+		entities = append(entities, entity)
+	})
 
 	// Run once to allocate memory
-	w.Batch().Exchange(filter1, ex2, ex1)
-	w.Batch().Exchange(filter2, ex1, ex2)
+	ex2.ExchangeBatchFn(filter1.Batch(), nil)
+	ex1.ExchangeBatchFn(filter2.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().Exchange(filter1, ex2, ex1)
+		ex2.ExchangeBatchFn(filter1.Batch(), nil)
 		b.StopTimer()
-		w.Batch().Exchange(filter2, ex1, ex2)
+		ex1.ExchangeBatchFn(filter2.Batch(), nil)
 	}
 }
 
@@ -197,30 +205,25 @@ func componentsBatchExchange1of5_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	id2 := ecs.ComponentID[comp2](&w)
+	ex1 := ecs.NewExchange1[comp1](&w).Removes(ecs.C[comp2]())
+	ex2 := ecs.NewExchange1[comp2](&w).Removes(ecs.C[comp1]())
+	builder := ecs.NewMap5[comp1, comp3, comp4, comp5, comp6](&w)
+	filter1 := ecs.NewFilter1[comp1](&w)
+	filter2 := ecs.NewFilter1[comp2](&w)
 
-	id3 := ecs.ComponentID[comp3](&w)
-	id4 := ecs.ComponentID[comp4](&w)
-	id5 := ecs.ComponentID[comp5](&w)
-	id6 := ecs.ComponentID[comp6](&w)
-
-	filter1 := ecs.All(id1)
-	filter2 := ecs.All(id2)
-	ex1 := []ecs.ID{id1}
-	ex2 := []ecs.ID{id2}
-
-	w.Batch().New(1000, id1, id3, id4, id5, id6)
+	entities := make([]ecs.Entity, 0, 1000)
+	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1, b *comp3, c *comp4, d *comp5, e *comp6) {
+		entities = append(entities, entity)
+	})
 
 	// Run once to allocate memory
-	w.Batch().Exchange(filter1, ex2, ex1)
-	w.Batch().Exchange(filter2, ex1, ex2)
+	ex2.ExchangeBatchFn(filter1.Batch(), nil)
+	ex1.ExchangeBatchFn(filter2.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().Exchange(filter1, ex2, ex1)
+		ex2.ExchangeBatchFn(filter1.Batch(), nil)
 		b.StopTimer()
-		w.Batch().Exchange(filter2, ex1, ex2)
+		ex1.ExchangeBatchFn(filter2.Batch(), nil)
 	}
 }
-*/
