@@ -104,7 +104,30 @@ All [batch operation](../batch) methods of `MapX` (e.g. {{< api ecs Map2.NewBatc
 There are two ways to specify targets to filter for: when building the filter, and when getting the query.
 Both ways can be combined.
 
+Relation targets given via {{< api ecs Map2.Relations >}} when building a filter are best used for permanent or long-lived targets.
+
+{{< code-func relations_test.go TestFilter1 >}}
+
+With [cached filters](../queries#filter-caching), the targets specified this way are included in the cache.
+For short-lived targets, it is better to pass them when building a query with {{< api ecs Map2.Query >}}
+
+{{< code-func relations_test.go TestFilter2 >}}
+
+These targets are not cached, but the same filter can be used for different targets.
+
+Filters also support both {{< api Rel >}} and {{< api RelIdx >}}.
+In the filter examples above, we used the slow but safe {{< api Rel >}} when building the filter.
+When getting the query, we use the faster {{< api RelIdx >}},
+because in real-world use cases this is called more frequently than the one-time filter construction.
+
+Relation targets not specified by the filter are treated as wildcard.
+This means that the filter matches entities with any target.
+
 ## Dead target entities
+
+Entities that are the target of any relationships can be removed from the world like any other entity.
+When this happens, all entities that have this target in a relation get assigned to the zero entity as target.
+The respective archetype is de-activated and marked for potential re-use for another target entity.
 
 ## When to use, and when not
 

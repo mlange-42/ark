@@ -116,3 +116,13 @@ func TestFilter1(t *testing.T) {
 	// ...
 	_ = query
 }
+
+func TestFilter2(t *testing.T) {
+	// Create a filter.
+	filter := ecs.NewFilter2[Position, ChildOf](&world)
+
+	// Get a query with a relation target.
+	query := filter.Query(ecs.RelIdx(1, parent))
+	// ...
+	_ = query
+}
