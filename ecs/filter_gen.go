@@ -10,6 +10,7 @@ type Filter0 struct {
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
+	components    []*componentStorage
 }
 
 // NewFilter0 creates a new [Filter0].
@@ -85,7 +86,11 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 	} else {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
 	}
-	return newQuery0(f.world, f.filter, f.tempRelations, f.cache)
+	if f.components == nil {
+		f.components = make([]*componentStorage, 0)
+
+	}
+	return newQuery0(f.world, &f.filter, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -114,6 +119,7 @@ type Filter1[A any] struct {
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
+	components    []*componentStorage
 }
 
 // NewFilter1 creates a new [Filter1].
@@ -202,7 +208,13 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 	} else {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
 	}
-	return newQuery1[A](f.world, f.filter, f.ids, f.tempRelations, f.cache)
+	if f.components == nil {
+		f.components = make([]*componentStorage, 1)
+		for i := range 1 {
+			f.components[i] = &f.world.storage.components[f.ids[i].id]
+		}
+	}
+	return newQuery1[A](f.world, &f.filter, f.ids, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -231,6 +243,7 @@ type Filter2[A any, B any] struct {
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
+	components    []*componentStorage
 }
 
 // NewFilter2 creates a new [Filter2].
@@ -320,7 +333,13 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 	} else {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
 	}
-	return newQuery2[A, B](f.world, f.filter, f.ids, f.tempRelations, f.cache)
+	if f.components == nil {
+		f.components = make([]*componentStorage, 2)
+		for i := range 2 {
+			f.components[i] = &f.world.storage.components[f.ids[i].id]
+		}
+	}
+	return newQuery2[A, B](f.world, &f.filter, f.ids, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -349,6 +368,7 @@ type Filter3[A any, B any, C any] struct {
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
+	components    []*componentStorage
 }
 
 // NewFilter3 creates a new [Filter3].
@@ -439,7 +459,13 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 	} else {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
 	}
-	return newQuery3[A, B, C](f.world, f.filter, f.ids, f.tempRelations, f.cache)
+	if f.components == nil {
+		f.components = make([]*componentStorage, 3)
+		for i := range 3 {
+			f.components[i] = &f.world.storage.components[f.ids[i].id]
+		}
+	}
+	return newQuery3[A, B, C](f.world, &f.filter, f.ids, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -468,6 +494,7 @@ type Filter4[A any, B any, C any, D any] struct {
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
+	components    []*componentStorage
 }
 
 // NewFilter4 creates a new [Filter4].
@@ -559,7 +586,13 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 	} else {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
 	}
-	return newQuery4[A, B, C, D](f.world, f.filter, f.ids, f.tempRelations, f.cache)
+	if f.components == nil {
+		f.components = make([]*componentStorage, 4)
+		for i := range 4 {
+			f.components[i] = &f.world.storage.components[f.ids[i].id]
+		}
+	}
+	return newQuery4[A, B, C, D](f.world, &f.filter, f.ids, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -588,6 +621,7 @@ type Filter5[A any, B any, C any, D any, E any] struct {
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
+	components    []*componentStorage
 }
 
 // NewFilter5 creates a new [Filter5].
@@ -680,7 +714,13 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 	} else {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
 	}
-	return newQuery5[A, B, C, D, E](f.world, f.filter, f.ids, f.tempRelations, f.cache)
+	if f.components == nil {
+		f.components = make([]*componentStorage, 5)
+		for i := range 5 {
+			f.components[i] = &f.world.storage.components[f.ids[i].id]
+		}
+	}
+	return newQuery5[A, B, C, D, E](f.world, &f.filter, f.ids, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -709,6 +749,7 @@ type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
+	components    []*componentStorage
 }
 
 // NewFilter6 creates a new [Filter6].
@@ -802,7 +843,13 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 	} else {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
 	}
-	return newQuery6[A, B, C, D, E, F](f.world, f.filter, f.ids, f.tempRelations, f.cache)
+	if f.components == nil {
+		f.components = make([]*componentStorage, 6)
+		for i := range 6 {
+			f.components[i] = &f.world.storage.components[f.ids[i].id]
+		}
+	}
+	return newQuery6[A, B, C, D, E, F](f.world, &f.filter, f.ids, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -831,6 +878,7 @@ type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
+	components    []*componentStorage
 }
 
 // NewFilter7 creates a new [Filter7].
@@ -925,7 +973,13 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 	} else {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
 	}
-	return newQuery7[A, B, C, D, E, F, G](f.world, f.filter, f.ids, f.tempRelations, f.cache)
+	if f.components == nil {
+		f.components = make([]*componentStorage, 7)
+		for i := range 7 {
+			f.components[i] = &f.world.storage.components[f.ids[i].id]
+		}
+	}
+	return newQuery7[A, B, C, D, E, F, G](f.world, &f.filter, f.ids, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -954,6 +1008,7 @@ type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
+	components    []*componentStorage
 }
 
 // NewFilter8 creates a new [Filter8].
@@ -1049,7 +1104,13 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 	} else {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
 	}
-	return newQuery8[A, B, C, D, E, F, G, H](f.world, f.filter, f.ids, f.tempRelations, f.cache)
+	if f.components == nil {
+		f.components = make([]*componentStorage, 8)
+		for i := range 8 {
+			f.components[i] = &f.world.storage.components[f.ids[i].id]
+		}
+	}
+	return newQuery8[A, B, C, D, E, F, G, H](f.world, &f.filter, f.ids, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.

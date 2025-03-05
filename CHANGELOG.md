@@ -34,6 +34,7 @@
 ### Performance
 
 - Implements archetype graph for faster lookup on transitions (#104)
+- Optimizes query creation with 50% speedup (#144)
 
 ### Bugfixes
 
