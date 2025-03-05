@@ -1,6 +1,5 @@
 package main
 
-/*
 import (
 	"testing"
 
@@ -24,12 +23,13 @@ func entitiesBatchCreate_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
+	filter := ecs.NewFilter0(&w)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().New(1000)
+		w.NewEntities(1000, nil)
 		b.StopTimer()
-		w.Batch().RemoveEntities(ecs.All())
+		w.RemoveEntities(filter.Batch(), nil)
 	}
 }
 
@@ -37,15 +37,14 @@ func entitiesBatchCreate_1Comp_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	ids := []ecs.ID{
-		ecs.ComponentID[comp1](&w),
-	}
+	builder := ecs.NewMap1[comp1](&w)
+	filter := ecs.NewFilter0(&w)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().New(1000, ids...)
+		builder.NewBatchFn(1000, nil)
 		b.StopTimer()
-		w.Batch().RemoveEntities(ecs.All())
+		w.RemoveEntities(filter.Batch(), nil)
 	}
 }
 
@@ -53,18 +52,14 @@ func entitiesBatchCreate_5Comp_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	id2 := ecs.ComponentID[comp2](&w)
-	id3 := ecs.ComponentID[comp3](&w)
-	id4 := ecs.ComponentID[comp4](&w)
-	id5 := ecs.ComponentID[comp5](&w)
-	ids := []ecs.ID{id1, id2, id3, id4, id5}
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
+	filter := ecs.NewFilter0(&w)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		w.Batch().New(1000, ids...)
+		builder.NewBatchFn(1000, nil)
 		b.StopTimer()
-		w.Batch().RemoveEntities(ecs.All())
+		w.RemoveEntities(filter.Batch(), nil)
 	}
 }
 
@@ -72,16 +67,13 @@ func entitiesBatchRemove_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	builder := ecs.NewBuilder(&w)
-
-	entities := make([]ecs.Entity, 0, 1000)
+	filter := ecs.NewFilter0(&w)
 
 	for i := 0; i < b.N; i++ {
-		builder.NewBatch(1000)
+		w.NewEntities(1000, nil)
 		b.StartTimer()
-		w.Batch().RemoveEntities(ecs.All())
+		w.RemoveEntities(filter.Batch(), nil)
 		b.StopTimer()
-		entities = entities[:0]
 	}
 }
 
@@ -89,17 +81,14 @@ func entitiesBatchRemove_1Comp_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	builder := ecs.NewBuilder(&w, id1)
-
-	entities := make([]ecs.Entity, 0, 1000)
+	builder := ecs.NewMap1[comp1](&w)
+	filter := ecs.NewFilter0(&w)
 
 	for i := 0; i < b.N; i++ {
-		builder.NewBatch(1000)
+		builder.NewBatchFn(1000, nil)
 		b.StartTimer()
-		w.Batch().RemoveEntities(ecs.All())
+		w.RemoveEntities(filter.Batch(), nil)
 		b.StopTimer()
-		entities = entities[:0]
 	}
 }
 
@@ -107,22 +96,13 @@ func entitiesBatchRemove_5Comp_1000(b *testing.B) {
 	b.StopTimer()
 
 	w := ecs.NewWorld()
-	id1 := ecs.ComponentID[comp1](&w)
-	id2 := ecs.ComponentID[comp2](&w)
-	id3 := ecs.ComponentID[comp3](&w)
-	id4 := ecs.ComponentID[comp4](&w)
-	id5 := ecs.ComponentID[comp5](&w)
-	ids := []ecs.ID{id1, id2, id3, id4, id5}
-	builder := ecs.NewBuilder(&w, ids...)
-
-	entities := make([]ecs.Entity, 0, 1000)
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
+	filter := ecs.NewFilter0(&w)
 
 	for i := 0; i < b.N; i++ {
-		builder.NewBatch(1000)
+		builder.NewBatchFn(1000, nil)
 		b.StartTimer()
-		w.Batch().RemoveEntities(ecs.All())
+		w.RemoveEntities(filter.Batch(), nil)
 		b.StopTimer()
-		entities = entities[:0]
 	}
 }
-*/
