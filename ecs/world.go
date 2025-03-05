@@ -30,6 +30,24 @@ func (w *World) NewEntity() Entity {
 	return entity
 }
 
+// NewEntities creates a batch of new entities without any components, running the given callback function on each.
+// The callback function can be nil.
+func (w *World) NewEntities(count int, fn func(entity Entity)) {
+	tableID, start := w.newEntities(count, nil, nil)
+	if fn == nil {
+		return
+	}
+	table := &w.storage.tables[tableID]
+	lock := w.lock()
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+		)
+	}
+	w.unlock(lock)
+}
+
 // Alive return whether the given entity is alive.
 func (w *World) Alive(entity Entity) bool {
 	return w.storage.entityPool.Alive(entity)
