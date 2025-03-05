@@ -13,6 +13,7 @@ type column struct {
 	target     Entity         // target entity if for a relation component
 	itemSize   uintptr        // memory size of items
 	len        uint32         // number of items
+	cap        uint32         // capacity
 }
 
 // newColumn creates a new column for a given type and capacity.
@@ -28,17 +29,18 @@ func newColumn(tp reflect.Type, isRelation bool, target Entity, capacity uint32)
 		isRelation: isRelation,
 		target:     target,
 		len:        0,
+		cap:        capacity,
 	}
 }
 
 // Len returns the number of components in the column.
-func (c *column) Len() int {
-	return int(c.len)
+func (c *column) Len() uint32 {
+	return c.len
 }
 
 // Cap returns the current capacity of the column.
-func (c *column) Cap() int {
-	return c.data.Cap()
+func (c *column) Cap() uint32 {
+	return c.cap
 }
 
 // Get returns a pointer to the component at the given index.
@@ -107,16 +109,15 @@ func (c *column) Remove(index uint32, zero unsafe.Pointer) bool {
 // Has no effect of the column's capacity is already sufficient.
 // If the capacity needs to be increased, it will be doubled until it is sufficient.
 func (c *column) Extend(by uint32) {
-	required := c.Len() + int(by)
-	cap := c.Cap()
-	if cap >= required {
+	required := c.Len() + by
+	if c.cap >= required {
 		return
 	}
-	for cap < required {
-		cap *= 2
+	for c.cap < required {
+		c.cap *= 2
 	}
 	old := c.data
-	c.data = reflect.New(reflect.ArrayOf(cap, old.Type().Elem())).Elem()
+	c.data = reflect.New(reflect.ArrayOf(int(c.cap), old.Type().Elem())).Elem()
 	c.pointer = c.data.Addr().UnsafePointer()
 	reflect.Copy(c.data, old)
 }
