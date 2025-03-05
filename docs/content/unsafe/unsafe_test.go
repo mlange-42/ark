@@ -57,5 +57,5 @@ func TestUnsafeComponents(t *testing.T) {
 	entity := world.NewEntity()
 
 	world.Unsafe().Add(entity, posID, velID)
-	world.Unsafe().Remove(entity, posID)
+	world.Unsafe().Remove(entity, posID, velID)
 }

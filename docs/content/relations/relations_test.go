@@ -45,7 +45,7 @@ func TestAdd(t *testing.T) {
 	// Create a child entity.
 	child := world.NewEntity()
 
-	// Add components and a relation target to it, the slow way.
+	// Add components and a relation target to the child, the slow way.
 	mapper.Add(child, &Position{}, &ChildOf{}, ecs.Rel[ChildOf](parent))
 
 	// Add components and a relation target to an entity, the fast way.
@@ -64,10 +64,10 @@ func TestSetRelations(t *testing.T) {
 	// Create an entity with a parent entity.
 	child := mapper.NewEntity(&Position{}, &ChildOf{}, ecs.RelIdx(1, parent1))
 
-	// Change the entity's parent.
+	// Change the child's parent.
 	mapper.SetRelations(child, ecs.RelIdx(1, parent2))
 
-	// Change the entity's parent, the slow way.
+	// Change the child's parent, the slow way.
 	mapper.SetRelations(child, ecs.Rel[ChildOf](parent2))
 }
 

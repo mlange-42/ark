@@ -24,15 +24,15 @@ type Parent struct {
 ```
 
 In conjunction with [component mappers](../operations#component-mappers), this is often sufficient.
-However, we are not able to leverage the power of queries to e.g. get all children of a particular parent.
+However, we are not able to leverage the power of queries to e.g. get all children of a particular parent in an efficient way.
 
-To make entity relations even more useful and efficient, Ark supports them as first class feature.
+To make entity relations even more useful and efficient, Ark supports them as a first class feature.
 Relations are added to and removed from entities just like components,
 and hence can be queried like components, with the usual efficiency.
 This is achieved by creating separate archetypes
 for relations with different target entities.
 
-## Relations components
+## Relation components
 
 To use entity relations, create components that have *embedded* an {{< api ecs RelationMarker >}} as their first member:
 
@@ -75,7 +75,7 @@ Relation target must also be given when adding relation components to an entity:
 
 ## Set and get relations
 
-We can also change the target of an already assigned relation component.
+We can also change the target entity of an already assigned relation component.
 This is done via {{< api ecs Map2.SetRelations >}} et al.:
 
 {{< code-func relations_test.go TestSetRelations >}}
@@ -101,7 +101,7 @@ All [batch operation](../batch) methods of `MapX` (e.g. {{< api ecs Map2.NewBatc
 
 [Filters](../queries) support entity relationships using the same syntax as shown in the examples above.
 
-There are two ways to specify targets to filter for: when building the filter, and when getting the query.
+There are two ways to specify target entities to filter for: when building the filter, and when getting the query.
 Both ways can be combined.
 
 Relation targets given via {{< api ecs Map2.Relations >}} when building a filter are best used for permanent or long-lived targets.
@@ -131,7 +131,7 @@ The respective archetype is de-activated and marked for potential re-use for ano
 
 ## When to use, and when not
 
-When using Arche's entity relations, an archetype is created for each target entity of a relation.
+When using Ark's entity relations, an archetype is created for each target entity of a relation.
 Thus, entity relations are not efficient if the number of target entities is high (tens of thousands),
 while only a low number of entities has a relation to each particular target (less than a few dozens).
 Particularly in the extreme case of 1:1 relations, storing entities in components
@@ -144,10 +144,10 @@ Beyond use cases where the relation target is a "physical" entity that appears
 in a simulation or game, targets can also be more abstract, like categories.
 Examples:
 
- - Different tree species in a forest model
- - Behavioral states in a finite state machine
- - The opposing factions in a strategy game
- - Render layers in a game or other graphical application
+ - Different tree species in a forest model.
+ - Behavioral states in a finite state machine.
+ - The opposing factions in a strategy game.
+ - Render layers in a game or other graphical application.
 
 This concept is particularly useful for things that would best be expressed by components,
 but the possible components (or categories) are only known at runtime.
