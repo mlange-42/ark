@@ -26,7 +26,7 @@ func (e Entity) ID() uint32 {
 
 // Gen returns the entity's generation, primarily for debugging purposes.
 func (e Entity) Gen() uint32 {
-	return uint32(e.gen)
+	return e.gen
 }
 
 // IsZero returns whether this entity is the reserved zero entity.
