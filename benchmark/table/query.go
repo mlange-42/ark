@@ -10,16 +10,16 @@ import (
 func benchesQuery() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
 		{Name: "Query.Next", Desc: "", F: queryIter_100_000, N: 100_000},
-		{Name: "Query.Next + 1x Query.Get", Desc: "", F: queryIterGet_1_100_000, N: 100_000},
-		{Name: "Query.Next + 2x Query.Get", Desc: "", F: queryIterGet_2_100_000, N: 100_000},
-		{Name: "Query.Next + 5x Query.Get", Desc: "", F: queryIterGet_5_100_000, N: 100_000},
+		{Name: "Query.Next + Query.Get 1", Desc: "", F: queryIterGet_1_100_000, N: 100_000},
+		{Name: "Query.Next + Query.Get 2", Desc: "", F: queryIterGet_2_100_000, N: 100_000},
+		{Name: "Query.Next + Query.Get 5", Desc: "", F: queryIterGet_5_100_000, N: 100_000},
 
 		{Name: "Query.Next + Query.Entity", Desc: "", F: queryIterEntity_100_000, N: 100_000},
 
 		{Name: "Query.Next + Query.Relation", Desc: "", F: queryRelation_100_000, N: 100_000},
 
-		{Name: "World.Query", Desc: "", F: queryCreate, N: 1},
-		{Name: "World.Query", Desc: "registered filter", F: queryCreateCached, N: 1},
+		{Name: "Filter1.Query", Desc: "", F: queryCreate, N: 1},
+		{Name: "Filter1.Query", Desc: "registered filter", F: queryCreateCached, N: 1},
 	}
 }
 

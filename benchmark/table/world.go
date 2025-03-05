@@ -10,13 +10,13 @@ import (
 
 func benchesWorld() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
-		{Name: "World.Get", Desc: "random, 1000 entities", F: worldGet_1000, N: 1000},
-		{Name: "World.GetUnchecked", Desc: "random, 1000 entities", F: worldGetUnchecked_1000, N: 1000},
-		{Name: "World.Has", Desc: "random, 1000 entities", F: worldHas_1000, N: 1000},
-		{Name: "World.HasUnchecked", Desc: "random, 1000 entities", F: worldHasUnchecked_1000, N: 1000},
+		{Name: "Map.Get", Desc: "random, 1000 entities", F: worldGet_1000, N: 1000},
+		{Name: "Map.GetUnchecked", Desc: "random, 1000 entities", F: worldGetUnchecked_1000, N: 1000},
+		{Name: "Map.Has", Desc: "random, 1000 entities", F: worldHas_1000, N: 1000},
+		{Name: "Map.HasUnchecked", Desc: "random, 1000 entities", F: worldHasUnchecked_1000, N: 1000},
 		{Name: "World.Alive", Desc: "random, 1000 entities", F: worldAlive_1000, N: 1000},
-		{Name: "World.Relations.Get", Desc: "random, 1000 entities", F: worldRelation_1000, N: 1000},
-		{Name: "World.Relations.GetUnchecked", Desc: "random, 1000 entities", F: worldRelationUnchecked_1000, N: 1000},
+		{Name: "Map.GetRelation", Desc: "random, 1000 entities", F: worldRelation_1000, N: 1000},
+		{Name: "Map.GetRelation", Desc: "random, 1000 entities", F: worldRelationUnchecked_1000, N: 1000},
 	}
 }
 
