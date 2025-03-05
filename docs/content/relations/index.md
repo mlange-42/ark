@@ -32,7 +32,7 @@ and hence can be queried like components, with the usual efficiency.
 This is achieved by creating separate archetypes
 for relations with different target entities.
 
-## Relation components
+## Relations components
 
 To use entity relations, create components that have *embedded* an {{< api ecs RelationMarker >}} as their first member:
 
@@ -42,15 +42,15 @@ type ChildOf struct {
 }
 ```
 
-That's all to make a component be treated as an entity relation by Ark.
-Thus, we have created a relation type. When added to an entity, a target entity for the relation must be specified.
+That's all to make a component be treated as an entity relationship by Ark.
+The component can contain further variables, but the marker must be the first one.
 
 ## Creating relations
 
 Most methods of `MapX` (e.g. {{< api ecs Map2 >}}) provide var-args for specifying relationship targets.
-These are of type {{< api Relation >}}, which is an interface that can be given in multiple different ways:
+These are of type {{< api Relation >}}, which is an interface with multiple implementations:
 
-{{< api Rel >}} (type {{< api RelationType >}}) is safe, but a some run-time overhead for component ID lookup at creation
+{{< api Rel >}} (type {{< api RelationType >}}) is safe, but has some run-time overhead for component ID lookup during creation.
 
 {{< api RelIdx >}} (type {{< api RelationIndex >}}) is fast but less safe.
 
