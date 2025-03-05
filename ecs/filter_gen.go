@@ -6,7 +6,7 @@ package ecs
 type Filter0 struct {
 	world         *World
 	ids           []ID
-	filter        Filter
+	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
@@ -21,7 +21,7 @@ func NewFilter0(world *World) *Filter0 {
 	return &Filter0{
 		world:  world,
 		ids:    ids,
-		filter: NewFilter(ids...),
+		filter: newFilter(ids...),
 		cache:  maxCacheID,
 	}
 }
@@ -110,7 +110,7 @@ func (f *Filter0) checkCached() {
 type Filter1[A any] struct {
 	world         *World
 	ids           []ID
-	filter        Filter
+	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
@@ -127,7 +127,7 @@ func NewFilter1[A any](world *World) *Filter1[A] {
 	return &Filter1[A]{
 		world:  world,
 		ids:    ids,
-		filter: NewFilter(ids...),
+		filter: newFilter(ids...),
 		cache:  maxCacheID,
 	}
 }
@@ -227,7 +227,7 @@ func (f *Filter1[A]) checkCached() {
 type Filter2[A any, B any] struct {
 	world         *World
 	ids           []ID
-	filter        Filter
+	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
@@ -245,7 +245,7 @@ func NewFilter2[A any, B any](world *World) *Filter2[A, B] {
 	return &Filter2[A, B]{
 		world:  world,
 		ids:    ids,
-		filter: NewFilter(ids...),
+		filter: newFilter(ids...),
 		cache:  maxCacheID,
 	}
 }
@@ -345,7 +345,7 @@ func (f *Filter2[A, B]) checkCached() {
 type Filter3[A any, B any, C any] struct {
 	world         *World
 	ids           []ID
-	filter        Filter
+	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
@@ -364,7 +364,7 @@ func NewFilter3[A any, B any, C any](world *World) *Filter3[A, B, C] {
 	return &Filter3[A, B, C]{
 		world:  world,
 		ids:    ids,
-		filter: NewFilter(ids...),
+		filter: newFilter(ids...),
 		cache:  maxCacheID,
 	}
 }
@@ -464,7 +464,7 @@ func (f *Filter3[A, B, C]) checkCached() {
 type Filter4[A any, B any, C any, D any] struct {
 	world         *World
 	ids           []ID
-	filter        Filter
+	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
@@ -484,7 +484,7 @@ func NewFilter4[A any, B any, C any, D any](world *World) *Filter4[A, B, C, D] {
 	return &Filter4[A, B, C, D]{
 		world:  world,
 		ids:    ids,
-		filter: NewFilter(ids...),
+		filter: newFilter(ids...),
 		cache:  maxCacheID,
 	}
 }
@@ -584,7 +584,7 @@ func (f *Filter4[A, B, C, D]) checkCached() {
 type Filter5[A any, B any, C any, D any, E any] struct {
 	world         *World
 	ids           []ID
-	filter        Filter
+	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
@@ -605,7 +605,7 @@ func NewFilter5[A any, B any, C any, D any, E any](world *World) *Filter5[A, B, 
 	return &Filter5[A, B, C, D, E]{
 		world:  world,
 		ids:    ids,
-		filter: NewFilter(ids...),
+		filter: newFilter(ids...),
 		cache:  maxCacheID,
 	}
 }
@@ -705,7 +705,7 @@ func (f *Filter5[A, B, C, D, E]) checkCached() {
 type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	world         *World
 	ids           []ID
-	filter        Filter
+	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
@@ -727,7 +727,7 @@ func NewFilter6[A any, B any, C any, D any, E any, F any](world *World) *Filter6
 	return &Filter6[A, B, C, D, E, F]{
 		world:  world,
 		ids:    ids,
-		filter: NewFilter(ids...),
+		filter: newFilter(ids...),
 		cache:  maxCacheID,
 	}
 }
@@ -827,7 +827,7 @@ func (f *Filter6[A, B, C, D, E, F]) checkCached() {
 type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world         *World
 	ids           []ID
-	filter        Filter
+	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
@@ -850,7 +850,7 @@ func NewFilter7[A any, B any, C any, D any, E any, F any, G any](world *World) *
 	return &Filter7[A, B, C, D, E, F, G]{
 		world:  world,
 		ids:    ids,
-		filter: NewFilter(ids...),
+		filter: newFilter(ids...),
 		cache:  maxCacheID,
 	}
 }
@@ -950,7 +950,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) checkCached() {
 type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world         *World
 	ids           []ID
-	filter        Filter
+	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
@@ -974,7 +974,7 @@ func NewFilter8[A any, B any, C any, D any, E any, F any, G any, H any](world *W
 	return &Filter8[A, B, C, D, E, F, G, H]{
 		world:  world,
 		ids:    ids,
-		filter: NewFilter(ids...),
+		filter: newFilter(ids...),
 		cache:  maxCacheID,
 	}
 }

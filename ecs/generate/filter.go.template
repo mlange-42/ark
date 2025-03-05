@@ -16,7 +16,7 @@ package ecs
 type Filter{{.}}{{$generics}} struct {
 	world         *World
 	ids           []ID
-	filter        Filter
+	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
 	cache         cacheID
@@ -35,7 +35,7 @@ func NewFilter{{.}}{{$generics}}(world *World) *Filter{{.}}{{$genericsShort}} {
 	return &Filter{{.}}{{$genericsShort}}{
 		world:  world,
 		ids:    ids,
-		filter: NewFilter(ids...),
+		filter: newFilter(ids...),
 		cache:  maxCacheID,
 	}
 }

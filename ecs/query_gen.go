@@ -13,7 +13,7 @@ type cursor struct {
 // Use a [NewFilter0] to create one.
 type Query0 struct {
 	world      *World
-	filter     Filter
+	filter     filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -23,7 +23,7 @@ type Query0 struct {
 	components []*componentStorage
 }
 
-func newQuery0(world *World, filter Filter, relations []RelationID, cacheID cacheID) Query0 {
+func newQuery0(world *World, filter filter, relations []RelationID, cacheID cacheID) Query0 {
 	components := make([]*componentStorage, 0)
 
 	var cache *cacheEntry
@@ -145,7 +145,7 @@ func (q *Query0) setTable(index int, table *table) {
 // Use a [NewFilter1] to create one.
 type Query1[A any] struct {
 	world      *World
-	filter     Filter
+	filter     filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -156,7 +156,7 @@ type Query1[A any] struct {
 	columnA    *column
 }
 
-func newQuery1[A any](world *World, filter Filter, ids []ID, relations []RelationID, cacheID cacheID) Query1[A] {
+func newQuery1[A any](world *World, filter filter, ids []ID, relations []RelationID, cacheID cacheID) Query1[A] {
 	components := make([]*componentStorage, 1)
 	for i := range 1 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -293,7 +293,7 @@ func (q *Query1[A]) setTable(index int, table *table) {
 // Use a [NewFilter2] to create one.
 type Query2[A any, B any] struct {
 	world      *World
-	filter     Filter
+	filter     filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -305,7 +305,7 @@ type Query2[A any, B any] struct {
 	columnB    *column
 }
 
-func newQuery2[A any, B any](world *World, filter Filter, ids []ID, relations []RelationID, cacheID cacheID) Query2[A, B] {
+func newQuery2[A any, B any](world *World, filter filter, ids []ID, relations []RelationID, cacheID cacheID) Query2[A, B] {
 	components := make([]*componentStorage, 2)
 	for i := range 2 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -445,7 +445,7 @@ func (q *Query2[A, B]) setTable(index int, table *table) {
 // Use a [NewFilter3] to create one.
 type Query3[A any, B any, C any] struct {
 	world      *World
-	filter     Filter
+	filter     filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -458,7 +458,7 @@ type Query3[A any, B any, C any] struct {
 	columnC    *column
 }
 
-func newQuery3[A any, B any, C any](world *World, filter Filter, ids []ID, relations []RelationID, cacheID cacheID) Query3[A, B, C] {
+func newQuery3[A any, B any, C any](world *World, filter filter, ids []ID, relations []RelationID, cacheID cacheID) Query3[A, B, C] {
 	components := make([]*componentStorage, 3)
 	for i := range 3 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -601,7 +601,7 @@ func (q *Query3[A, B, C]) setTable(index int, table *table) {
 // Use a [NewFilter4] to create one.
 type Query4[A any, B any, C any, D any] struct {
 	world      *World
-	filter     Filter
+	filter     filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -615,7 +615,7 @@ type Query4[A any, B any, C any, D any] struct {
 	columnD    *column
 }
 
-func newQuery4[A any, B any, C any, D any](world *World, filter Filter, ids []ID, relations []RelationID, cacheID cacheID) Query4[A, B, C, D] {
+func newQuery4[A any, B any, C any, D any](world *World, filter filter, ids []ID, relations []RelationID, cacheID cacheID) Query4[A, B, C, D] {
 	components := make([]*componentStorage, 4)
 	for i := range 4 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -761,7 +761,7 @@ func (q *Query4[A, B, C, D]) setTable(index int, table *table) {
 // Use a [NewFilter5] to create one.
 type Query5[A any, B any, C any, D any, E any] struct {
 	world      *World
-	filter     Filter
+	filter     filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -776,7 +776,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnE    *column
 }
 
-func newQuery5[A any, B any, C any, D any, E any](world *World, filter Filter, ids []ID, relations []RelationID, cacheID cacheID) Query5[A, B, C, D, E] {
+func newQuery5[A any, B any, C any, D any, E any](world *World, filter filter, ids []ID, relations []RelationID, cacheID cacheID) Query5[A, B, C, D, E] {
 	components := make([]*componentStorage, 5)
 	for i := range 5 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -925,7 +925,7 @@ func (q *Query5[A, B, C, D, E]) setTable(index int, table *table) {
 // Use a [NewFilter6] to create one.
 type Query6[A any, B any, C any, D any, E any, F any] struct {
 	world      *World
-	filter     Filter
+	filter     filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -941,7 +941,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnF    *column
 }
 
-func newQuery6[A any, B any, C any, D any, E any, F any](world *World, filter Filter, ids []ID, relations []RelationID, cacheID cacheID) Query6[A, B, C, D, E, F] {
+func newQuery6[A any, B any, C any, D any, E any, F any](world *World, filter filter, ids []ID, relations []RelationID, cacheID cacheID) Query6[A, B, C, D, E, F] {
 	components := make([]*componentStorage, 6)
 	for i := range 6 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -1093,7 +1093,7 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int, table *table) {
 // Use a [NewFilter7] to create one.
 type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world      *World
-	filter     Filter
+	filter     filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -1110,7 +1110,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnG    *column
 }
 
-func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, filter Filter, ids []ID, relations []RelationID, cacheID cacheID) Query7[A, B, C, D, E, F, G] {
+func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, filter filter, ids []ID, relations []RelationID, cacheID cacheID) Query7[A, B, C, D, E, F, G] {
 	components := make([]*componentStorage, 7)
 	for i := range 7 {
 		components[i] = &world.storage.components[ids[i].id]
@@ -1265,7 +1265,7 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int, table *table) {
 // Use a [NewFilter8] to create one.
 type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world      *World
-	filter     Filter
+	filter     filter
 	relations  []RelationID
 	lock       uint8
 	cursor     cursor
@@ -1283,7 +1283,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnH    *column
 }
 
-func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, filter Filter, ids []ID, relations []RelationID, cacheID cacheID) Query8[A, B, C, D, E, F, G, H] {
+func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, filter filter, ids []ID, relations []RelationID, cacheID cacheID) Query8[A, B, C, D, E, F, G, H] {
 	components := make([]*componentStorage, 8)
 	for i := range 8 {
 		components[i] = &world.storage.components[ids[i].id]

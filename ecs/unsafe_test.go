@@ -161,7 +161,7 @@ func TestUnsafeEntityDump(t *testing.T) {
 
 	//assert.Equal(t, w.Ids(e1), []ID{})
 
-	query := w2.Unsafe().Query(NewFilter())
+	query := NewFilter(&w2).Query()
 	assert.Equal(t, query.Count(), 3)
 	query.Close()
 }
@@ -180,8 +180,8 @@ func TestUnsafeEntityDumpEmpty(t *testing.T) {
 	assert.True(t, w2.Alive(e1))
 	assert.True(t, w2.Alive(e2))
 
-	query := w2.Unsafe().Query(NewFilter())
-	assert.Equal(t, query.Count(), 2)
+	query := NewFilter(&w2).Query()
+	assert.Equal(t, 2, query.Count())
 	query.Close()
 }
 

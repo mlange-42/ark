@@ -105,12 +105,6 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 	u.world.exchange(entity, add, remove, nil, relations)
 }
 
-// Query returns a new query matching the given filter and entity relation targets.
-// This is a synonym for [Filter.Query].
-func (u Unsafe) Query(f Filter, relations ...RelationID) Query {
-	return newQuery(u.world, f, relations)
-}
-
 // DumpEntities dumps entity information into an [EntityDump] object.
 // This dump can be used with [Unsafe.LoadEntities] to set the World's entity state.
 //
@@ -118,8 +112,8 @@ func (u Unsafe) Query(f Filter, relations ...RelationID) Query {
 func (u Unsafe) DumpEntities() EntityDump {
 	alive := []uint32{}
 
-	filter := NewFilter()
-	query := u.Query(filter)
+	filter := NewFilter(u.world)
+	query := filter.Query()
 	for query.Next() {
 		alive = append(alive, uint32(query.Entity().id))
 	}
