@@ -9,8 +9,8 @@ import (
 
 func TestEntity(t *testing.T) {
 	e := newEntity(100)
-	assert.EqualValues(t, 100, e.id)
-	assert.EqualValues(t, 0, e.gen)
+	assert.EqualValues(t, 100, e.ID())
+	assert.EqualValues(t, 0, e.Gen())
 }
 
 func TestEntityIndex(t *testing.T) {
