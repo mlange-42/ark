@@ -8,23 +8,19 @@ import (
 	"github.com/mlange-42/ark/ecs"
 )
 
-// Farm label component.
-type Farm struct{}
+// ####################### Components ###########################
+
+// Farm component.
+type Farm struct{ ID int }
 
 // Weight component for animals.
-type Weight struct {
-	Kilograms float64
-}
+type Weight struct{ Kilograms float64 }
 
 // IsInFarm component for animals.
-type IsInFarm struct {
-	ecs.RelationMarker
-}
+type IsInFarm struct{ ecs.RelationMarker }
 
 // IsOfSpecies component for animals.
-type IsOfSpecies struct {
-	ecs.RelationMarker
-}
+type IsOfSpecies struct{ ecs.RelationMarker }
 
 func TestMain(t *testing.T) {
 
@@ -44,18 +40,18 @@ func TestMain(t *testing.T) {
 
 	// ####################### Initialization ###########################
 
-	// Create species
+	// Create species.
 	cow := world.NewEntity()
 	pig := world.NewEntity()
 
-	// Create farms
+	// Create farms.
 	farms := []ecs.Entity{}
-	for range 10 {
-		farm := farmMap.NewEntity(&Farm{})
+	for i := range 10 {
+		farm := farmMap.NewEntity(&Farm{i})
 		farms = append(farms, farm)
 	}
 
-	// Populate farms
+	// Populate farms.
 	for _, farm := range farms {
 		// How many animals?
 		numCows := rand.IntN(50)
@@ -84,19 +80,25 @@ func TestMain(t *testing.T) {
 		weight.Kilograms += rand.Float64() * 10
 	}
 
-	// Print total weight of animals of each farm.
-	// Iterate farms
+	// Print total weight of the pigs in each farm.
+	// Iterate farms.
 	farmQuery := farmFilter.Query()
 	for farmQuery.Next() {
-		farm := farmQuery.Entity()
+		farm := farmQuery.Get()
+		farmEntity := farmQuery.Entity()
+
 		totalWeight := 0.0
-		// Iterate animals in the farm.
-		animalQuery := animalFilter.Query(ecs.Rel[IsInFarm](farm))
+
+		// Iterate pigs in the farm.
+		animalQuery := animalFilter.Query(
+			ecs.Rel[IsInFarm](farmEntity), // This farm.
+			ecs.Rel[IsOfSpecies](pig),     // Pigs only.
+		)
 		for animalQuery.Next() {
 			weight, _, _ := animalQuery.Get()
 			totalWeight += weight.Kilograms
 		}
 		// Print the farm's result.
-		fmt.Printf("Farm %v: %.0fkg\n", farm, totalWeight)
+		fmt.Printf("Farm %d: %.0fkg\n", farm.ID, totalWeight)
 	}
 }

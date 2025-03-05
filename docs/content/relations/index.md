@@ -160,3 +160,6 @@ To conclude this chapter, here is a longer example that uses Ark's entity relati
 to represent animals of different species in multiple farms.
 
 {{< code relations_example_test.go >}}
+
+Note that this examples uses the safe and clear, but slower generic variant to specify relationship targets.
+As an optimization, {{< api RelIdx >}} could be used instead of {{< api Rel >}}, particularly for queries.
