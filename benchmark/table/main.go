@@ -25,7 +25,7 @@ func main() {
 
 	benchmark.RunBenchmarks("Query", benchesQuery(), benchmark.ToMarkdown)
 	benchmark.RunBenchmarks("World access", benchesWorld(), benchmark.ToMarkdown)
-	//benchmark.RunBenchmarks("Entities", benchesEntities(), benchmark.ToMarkdown)
+	benchmark.RunBenchmarks("Entities", benchesEntities(), benchmark.ToMarkdown)
 	//benchmark.RunBenchmarks("Entities, batched", benchesEntitiesBatch(), benchmark.ToMarkdown)
 	//benchmark.RunBenchmarks("Components", benchesComponents(), benchmark.ToMarkdown)
 	//benchmark.RunBenchmarks("Components, batched", benchesComponentsBatch(), benchmark.ToMarkdown)
