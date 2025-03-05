@@ -27,7 +27,7 @@ For some numbers for comparison, see the [Benchmarks](../benchmarks).
 The largest potential for optimizing queries is the clever design of components.
 The aim should be that queries access only data that is actually required,
 while at the same time reducing the amount of accessed components.
-Accessing fewer data means fewer cache misses, while accessing fewer components avoids lookups.
+Accessing fewer data means fewer cache misses, while accessing fewer components reduces array indexing.
 To access only data that it actually required primarily means that the accessed components should contain only data that is used by the query.
 
 A component should only contain closely related data that is mostly or always accessed together.
@@ -45,7 +45,7 @@ This way, the filter is not checked against archetypes during query iteration.
 Instead, the archetypes relevant for the filter are cached,
 and checks are only required when new archetypes are created.
 
-For details, see the section on caching in chapter [Filters & queries](../queries#filter-caching).
+For details, see the section on [caching](../queries#filter-caching) in chapter [Filters & queries](../queries).
 
 ## World access
 
@@ -60,7 +60,7 @@ Thus, is it more efficient to randomly access among e.g. 1000 entities compared 
 As an example, say we have 1000 parent entities, 100k child entities, and don't use [Entity relationships](../relations).
 Here, it would be better to use a query over the children and access the parent of each child by world access. We jump around between 1000 entities.
 Alternatively, we could query the parents and access the children of each parent by world access.
-The number of accesses through the world would be the same, but we would jump between 100k entities,
+The number of accesses through the world would be the same, but we would jump around between 100k entities,
 which would be slower.
 
 ## Component operations
@@ -76,7 +76,7 @@ Different components are a great way to represent different states of otherwise 
 For example, it is completely valid to build a [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine)
 to model behavior, using components to represent states.
 However, each state transition results in moving an entity and its components between archetypes.
-Thus, when transitions occur frequently (say faster than every 20 ticks),
+Thus, when transitions occur frequently (faster than approx. every 20 ticks),
 different components are not the most efficient way to represent states.
 Alternatively, states could be represented by a variable in a single component,
 avoiding the overhead of moving entities between archetypes,
