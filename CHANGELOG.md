@@ -11,6 +11,7 @@
 - Adds `ExchangeX.RemoveBatch` batch operation (#100)
 - Adds `ExchangeX.ExchangeBatch` and `ExchangeX.ExchangeBatchFn` batch operations (#101)
 - Adds `Map.SetRelationBatch` and `MapX.SetRelationsBatch` (#102)
+- Adds `World.NewEntities` (#136)
 - Initial world capacity is optional, 2nd value for relation archetype initial capacity (#109)
 - Filters have permanent and ad-hoc relation targets (#113)
 - Filters can be registered to the cache to speed up query iteration (#114, #116, #122)

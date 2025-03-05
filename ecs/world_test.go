@@ -105,6 +105,28 @@ func TestWorldRemoveEntity(t *testing.T) {
 	assert.Panics(t, func() { w.RemoveEntity(e) })
 }
 
+func TestWorldNewEntities(t *testing.T) {
+	n := 100
+	w := NewWorld(16)
+
+	cnt := 0
+	w.NewEntities(n, func(entity Entity) {
+		assert.EqualValues(t, cnt+2, entity.ID())
+		cnt++
+	})
+	assert.Equal(t, n, cnt)
+
+	w.NewEntities(n, nil)
+
+	filter := NewFilter()
+	query := filter.Query(&w)
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+}
+
 func TestWorldRemoveEntities(t *testing.T) {
 	n := 12
 	w := NewWorld(16)
