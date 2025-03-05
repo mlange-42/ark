@@ -23,3 +23,24 @@ jobs:
       - name: Run benchmarks
         run: |
           go test -benchmem -run=^$ -bench ^.*$ ./...
+
+  tables:
+    name: Benchmark Tables
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.24.x'
+      - name: Install dependencies
+        run: go get .
+      - name: Benchmark tables
+        run: |
+          cd ./benchmark
+          go run ./table | tee BENCHMARKS.md
+      - name: Archive benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark/BENCHMARKS.md
+          path: BENCHMARKS.md
