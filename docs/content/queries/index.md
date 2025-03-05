@@ -90,7 +90,7 @@ Instead, use {{< api ecs Map.Has >}}, {{< api ecs Map.Get >}} or similar methods
 
 ## Filter caching
 
-Although queries are highly performant, a huge number of archetypes (k´like hundreds or thousands) may cause a slowdown.
+Although queries are highly performant, a huge number of archetypes (like hundreds or thousands) may cause a slowdown.
 To prevent this slowdown, filters can be registered to the world's filter cache via
 {{< api ecs Filter2.Register >}}:
 
@@ -102,4 +102,4 @@ Instead, filters are only evaluated when a new archetype is created.
 
 When a registered filter is not required anymore, it can be unregistered with
 {{< api ecs Filter2.Unregister >}}.
-However, this is rarely required as (registered) filters are usually used over an entire simulation run.
+However, this is rarely required as (registered) filters are usually used over an entire game session or simulation run.
