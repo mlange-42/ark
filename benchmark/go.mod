@@ -1,13 +1,13 @@
-module github.com/mlange-42/ark/profile
+module github.com/mlange-42/ark/benchmark
 
 go 1.24.0
 
 require (
-	github.com/mlange-42/ark v0.0.0
+	github.com/mlange-42/ark v0.2.0
 	github.com/pkg/profile v1.7.0
 )
 
-replace github.com/mlange-42/ark v0.0.0 => ..
+replace github.com/mlange-42/ark v0.2.0 => ..
 
 require (
 	github.com/felixge/fgprof v0.9.3 // indirect
