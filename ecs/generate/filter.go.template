@@ -119,7 +119,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}{{end}}
 	}
-	return newQuery{{.}}{{$genericsShort}}(f.world, f.filter{{if .}}, f.ids{{end}}, f.tempRelations, f.cache, f.components)
+	return newQuery{{.}}{{$genericsShort}}(f.world, &f.filter{{if .}}, f.ids{{end}}, f.tempRelations, f.cache, f.components)
 }
 
 // Batch creates a [Batch] from this filter.
