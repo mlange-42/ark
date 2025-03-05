@@ -1,6 +1,5 @@
 package main
 
-/*
 import (
 	"testing"
 
@@ -59,4 +58,3 @@ func componentID(b *testing.B) {
 
 	assert.Equal(b, origID, id)
 }
-*/
