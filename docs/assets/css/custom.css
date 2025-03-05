@@ -13,6 +13,11 @@ html {
   font-stretch: 112.5%;
 }
 
+.content .font-small table {
+  font-size: 16px;
+  font-weight: 300;
+}
+
 /* themed images */
 html:not(.dark) .dark {
   display: none !important;

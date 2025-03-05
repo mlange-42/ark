@@ -28,6 +28,10 @@ jobs:
         run: |
           cd ./docs/content/
           go test -v ./...
+      - name: Run benchmark tables
+        run: |
+          cd benchmark
+          go run ./table | tee ../docs/content/generated/_benchmarks.md
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
