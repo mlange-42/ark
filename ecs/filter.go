@@ -5,15 +5,17 @@ package ecs
 // It is significantly slower than type-safe generic filters like [Filter2],
 // and should only be used when component types are not known at compile time.
 type Filter struct {
+	world      *World
 	mask       Mask
 	without    Mask
 	hasWithout bool
 }
 
 // NewFilter creates a new [Filter] matching the given components.
-func NewFilter(ids ...ID) Filter {
+func NewFilter(world *World, ids ...ID) Filter {
 	return Filter{
-		mask: NewMask(ids...),
+		world: world,
+		mask:  NewMask(ids...),
 	}
 }
 
@@ -35,8 +37,8 @@ func (f Filter) Exclusive() Filter {
 
 // Query returns a new query matching this filter and the given entity relation targets.
 // This is a synonym for [Unsafe.Query].
-func (f Filter) Query(world *World, relations ...RelationID) Query {
-	return newQuery(world, f, relations)
+func (f Filter) Query(relations ...RelationID) Query {
+	return newQuery(f.world, f, relations)
 }
 
 func (f *Filter) matches(mask *Mask) bool {
