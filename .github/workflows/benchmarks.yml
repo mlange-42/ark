@@ -42,5 +42,5 @@ jobs:
       - name: Archive benchmark results
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark/BENCHMARKS.md
-          path: BENCHMARKS.md
+          path: benchmark/BENCHMARKS.md
+          name: BENCHMARKS.md
