@@ -22,8 +22,6 @@ func benchesEntities() []benchmark.Benchmark {
 }
 
 func entitiesIsZero_2(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	e := w.NewEntity()
 	z := ecs.Entity{}
