@@ -76,7 +76,7 @@ As with `With`, `Without` can be called multiple times:
 
 ### Exclusive
 
-{{< api ecs Filter2.Without >}} (and related methods) make the filter exclusive on the given components,
+{{< api ecs Filter2.Exclusive >}} (and related methods) make the filter exclusive on the given components,
 i.e. is excludes all other components:
 
 {{< code-func queries_test.go TestQueriesExclusive >}}
