@@ -179,5 +179,5 @@ func (t *table) Matches(relations []RelationID) bool {
 }
 
 func (t *table) Len() int {
-	return t.entities.Len()
+	return int(t.entities.Len())
 }

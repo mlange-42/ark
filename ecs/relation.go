@@ -138,6 +138,9 @@ type relationEntities []Entity
 
 func (r relationEntities) toRelation(world *World, id ID, out []RelationID) []RelationID {
 	out = out[:0]
+	if len(r) == 0 {
+		return out
+	}
 	for _, rel := range r {
 		world.storage.checkRelationTarget(rel)
 		world.storage.checkRelationComponent(id)
