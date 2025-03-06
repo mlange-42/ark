@@ -108,6 +108,7 @@ func (r RelationIndex) targetEntity() Entity {
 type relations []Relation
 
 func (r relations) toRelations(world *World, ids []ID, base []RelationID, out []RelationID) []RelationID {
+	// TODO: can this be made more efficient?
 	out = out[:0]
 	out = append(out, base...)
 	for _, rel := range r {
