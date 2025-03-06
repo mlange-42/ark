@@ -70,7 +70,6 @@ func (a *archetype) GetTable(storage *storage, relations []RelationID) (*table, 
 	if !a.HasRelations() {
 		return &storage.tables[a.tables[0]], true
 	}
-
 	index := a.componentsMap[relations[0].component.id]
 	tables, ok := a.relationTables[index][relations[0].target.id]
 	if !ok {
@@ -86,10 +85,7 @@ func (a *archetype) GetTable(storage *storage, relations []RelationID) (*table, 
 }
 
 func (a *archetype) GetTables(relations []RelationID) []tableID {
-	if !a.HasRelations() {
-		return a.tables
-	}
-	if len(relations) == 0 {
+	if !a.HasRelations() || len(relations) == 0 {
 		return a.tables
 	}
 	index := a.componentsMap[relations[0].component.id]
