@@ -12,6 +12,10 @@ func benchesEntities() []benchmark.Benchmark {
 		{Name: "Entity.IsZero", Desc: "", F: entitiesIsZero2, N: 2},
 
 		{Name: "World.NewEntity", Desc: "memory already alloc.", F: entitiesCreate1000, N: 1000},
+
+		{Name: "Map1.NewEntityFn w/ 1 Comp", Desc: "memory already alloc.", F: entitiesCreateFn1Comp1000, N: 1000},
+		{Name: "Map5.NewEntityFn w/ 5 Comps", Desc: "memory already alloc.", F: entitiesCreateFn5Comp1000, N: 1000},
+
 		{Name: "Map1.NewEntity w/ 1 Comp", Desc: "memory already alloc.", F: entitiesCreate1Comp1000, N: 1000},
 		{Name: "Map5.NewEntity w/ 5 Comps", Desc: "memory already alloc.", F: entitiesCreate5Comp1000, N: 1000},
 
@@ -42,10 +46,33 @@ func entitiesCreate1000(b *testing.B) {
 	w := ecs.NewWorld()
 	filter := ecs.NewFilter0(&w)
 
+	w.NewEntities(1000, nil)
+	w.RemoveEntities(filter.Batch(), nil)
+
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
 		for j := 0; j < 1000; j++ {
 			_ = w.NewEntity()
+		}
+		b.StopTimer()
+		w.RemoveEntities(filter.Batch(), nil)
+	}
+}
+
+func entitiesCreateFn1Comp1000(b *testing.B) {
+	b.StopTimer()
+
+	w := ecs.NewWorld()
+	builder := ecs.NewMap1[comp1](&w)
+	filter := ecs.NewFilter0(&w)
+
+	builder.NewBatchFn(1000, nil)
+	w.RemoveEntities(filter.Batch(), nil)
+
+	for i := 0; i < b.N; i++ {
+		b.StartTimer()
+		for j := 0; j < 1000; j++ {
+			_ = builder.NewEntityFn(nil)
 		}
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
@@ -58,6 +85,30 @@ func entitiesCreate1Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
 	builder := ecs.NewMap1[comp1](&w)
 	filter := ecs.NewFilter0(&w)
+
+	builder.NewBatchFn(1000, nil)
+	w.RemoveEntities(filter.Batch(), nil)
+
+	c1 := comp1{}
+	for i := 0; i < b.N; i++ {
+		b.StartTimer()
+		for j := 0; j < 1000; j++ {
+			_ = builder.NewEntity(&c1)
+		}
+		b.StopTimer()
+		w.RemoveEntities(filter.Batch(), nil)
+	}
+}
+
+func entitiesCreateFn5Comp1000(b *testing.B) {
+	b.StopTimer()
+
+	w := ecs.NewWorld()
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
+	filter := ecs.NewFilter0(&w)
+
+	builder.NewBatchFn(1000, nil)
+	w.RemoveEntities(filter.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
@@ -76,10 +127,19 @@ func entitiesCreate5Comp1000(b *testing.B) {
 	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
 	filter := ecs.NewFilter0(&w)
 
+	c1 := comp1{}
+	c2 := comp2{}
+	c3 := comp3{}
+	c4 := comp4{}
+	c5 := comp5{}
+
+	builder.NewBatchFn(1000, nil)
+	w.RemoveEntities(filter.Batch(), nil)
+
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
 		for j := 0; j < 1000; j++ {
-			_ = builder.NewEntityFn(nil)
+			_ = builder.NewEntity(&c1, &c2, &c3, &c4, &c5)
 		}
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
