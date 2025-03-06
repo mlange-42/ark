@@ -12,7 +12,6 @@ type column struct {
 	isRelation bool           // whether this column is for a relation component
 	target     Entity         // target entity if for a relation component
 	itemSize   uintptr        // memory size of items
-	len        uint32         // number of items
 }
 
 // newColumn creates a new column for a given type and capacity.
@@ -27,7 +26,6 @@ func newColumn(tp reflect.Type, isRelation bool, target Entity, capacity uint32)
 		itemSize:   sizeOf(tp),
 		isRelation: isRelation,
 		target:     target,
-		len:        0,
 	}
 }
 
@@ -36,8 +34,8 @@ func (c *column) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*c.itemSize)
 }
 
-func (c *column) SetLast(other *column, count uint32) {
-	start := c.len - count
+func (c *column) SetLast(other *column, ownLen uint32, count uint32) {
+	start := ownLen - count
 	src := other.Get(0)
 	dst := c.Get(uintptr(start))
 	copyPtr(src, dst, c.itemSize*uintptr(count))
@@ -76,17 +74,15 @@ func (c *column) ZeroRange(start, len uint32, zero unsafe.Pointer) {
 	}
 }
 
-func (c *column) Reset(zero unsafe.Pointer) {
-	len := c.len
-	if c.len == 0 {
+func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
+	if ownLen == 0 {
 		return
 	}
-	c.len = 0
 	if zero == nil {
 		return
 	}
-	if len <= 64 { // A coarse estimate where manually zeroing is faster
-		c.ZeroRange(0, len, zero)
+	if ownLen <= 64 { // A coarse estimate where manually zeroing is faster
+		c.ZeroRange(0, ownLen, zero)
 	} else {
 		c.data.SetZero()
 	}

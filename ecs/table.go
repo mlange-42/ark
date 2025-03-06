@@ -20,6 +20,7 @@ type table struct {
 	ids         []ID         // components IDs in the same order as in the archetype
 	columns     []column     // columns in dense order
 	relationIDs []RelationID // all relation IDs and targets of the table
+	len         uint32
 	cap         uint32
 
 	zeroValue   []byte         // zero value with the size of the largest item type, for fast zeroing
@@ -72,7 +73,7 @@ func (t *table) HasRelations() bool {
 }
 
 func (t *table) Add(entity Entity) uint32 {
-	idx := t.entities.len
+	idx := t.len
 	t.Alloc(1)
 	t.entities.Set(idx, unsafe.Pointer(&entity))
 	return idx
@@ -109,17 +110,14 @@ func (t *table) SetEntity(index uint32, entity Entity) {
 // Alloc allocates memory for the given number of entities.
 func (t *table) Alloc(n uint32) {
 	t.Extend(n)
-	t.entities.len += n
-	for i := range t.columns {
-		t.columns[i].len += n
-	}
+	t.len += n
 }
 
 // Extend the table to be able to store the given number of additional entities.
 // Has no effect of the table's capacity is already sufficient.
 // If the capacity needs to be increased, it will be doubled until it is sufficient.
 func (t *table) Extend(by uint32) {
-	required := t.entities.len + by
+	required := t.len + by
 	if t.cap >= required {
 		return
 	}
@@ -144,7 +142,7 @@ func (t *table) Extend(by uint32) {
 // Remove swap-removes the entity at the given index.
 // Returns whether a swap was necessary.
 func (t *table) Remove(index uint32) bool {
-	lastIndex := uintptr(t.Len() - 1)
+	lastIndex := uintptr(t.len - 1)
 	swapped := index != uint32(lastIndex)
 
 	if swapped {
@@ -153,7 +151,6 @@ func (t *table) Remove(index uint32) bool {
 		dst := unsafe.Add(t.entities.pointer, uintptr(index)*sz)
 		copyPtr(src, dst, uintptr(sz))
 	}
-	t.entities.len--
 
 	for i := range t.columns {
 		column := &t.columns[i]
@@ -163,30 +160,32 @@ func (t *table) Remove(index uint32) bool {
 			dst := unsafe.Add(column.pointer, uintptr(index)*sz)
 			copyPtr(src, dst, uintptr(sz))
 		}
-		column.len--
 		column.Zero(lastIndex, t.zeroPointer)
 	}
+
+	t.len--
 	return swapped
 }
 
 func (t *table) Reset() {
-	t.entities.Reset(nil)
+	t.entities.Reset(t.len, nil)
 	for c := range t.columns {
-		t.columns[c].Reset(t.zeroPointer)
+		t.columns[c].Reset(t.len, t.zeroPointer)
 	}
+	t.len = 0
 }
 
 func (t *table) AddAll(other *table, count uint32) {
 	t.Alloc(count)
-	t.entities.SetLast(&other.entities, count)
+	t.entities.SetLast(&other.entities, t.len, count)
 	for c := range t.columns {
-		t.columns[c].SetLast(&other.columns[c], count)
+		t.columns[c].SetLast(&other.columns[c], t.len, count)
 	}
 }
 
 func (t *table) AddAllEntities(other *table, count uint32) {
 	t.Alloc(count)
-	t.entities.SetLast(&other.entities, count)
+	t.entities.SetLast(&other.entities, t.len, count)
 }
 
 func (t *table) MatchesExact(relations []RelationID) bool {
@@ -224,5 +223,5 @@ func (t *table) Matches(relations []RelationID) bool {
 }
 
 func (t *table) Len() int {
-	return int(t.entities.len)
+	return int(t.len)
 }

@@ -164,7 +164,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 		if mask.Get(id) {
 			oldCol := oldTable.GetColumn(id)
 			newCol := newTable.GetColumn(id)
-			newCol.SetLast(oldCol, uint32(oldLen))
+			newCol.SetLast(oldCol, newTable.len, uint32(oldLen))
 		}
 	}
 	if addComps != nil {
