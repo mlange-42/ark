@@ -186,13 +186,12 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 		aTypes[j], _ = storage.registry.ComponentType(id.id)
 	}
 
-	var numArches int32
 	cap := 0
 	count := 0
 	memory := 0
 	var tableStats []stats.Table
 	if a.tables != nil {
-		tableStats = make([]stats.Table, numArches)
+		tableStats = make([]stats.Table, len(a.tables))
 		for i, id := range a.tables {
 			table := &storage.tables[id]
 			tableStats[i] = table.Stats(&storage.registry)

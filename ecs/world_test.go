@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"fmt"
 	"math/rand/v2"
 	"runtime"
 	"testing"
@@ -423,4 +424,11 @@ func TestWorldPointerStressTest(t *testing.T) {
 		entities = entities[:0]
 		runtime.GC()
 	}
+}
+
+func TestStats(t *testing.T) {
+	w := NewWorld()
+
+	stats := w.Stats()
+	fmt.Println(stats.String())
 }
