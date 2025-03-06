@@ -178,7 +178,7 @@ func (a *archetype) Reset(storage *storage) {
 }
 
 // Stats generates statistics for an archetype.
-func (a *archetype) Stats(storage *storage) stats.Node {
+func (a *archetype) Stats(storage *storage) stats.Archetype {
 	ids := a.components
 	aCompCount := len(ids)
 	aTypes := make([]reflect.Type, aCompCount)
@@ -186,18 +186,17 @@ func (a *archetype) Stats(storage *storage) stats.Node {
 		aTypes[j], _ = storage.registry.ComponentType(id.id)
 	}
 
-	arches := a.tables
 	var numArches int32
 	cap := 0
 	count := 0
 	memory := 0
-	var archStats []stats.Archetype
-	if arches != nil {
-		archStats = make([]stats.Archetype, numArches)
-		for i, id := range arches {
+	var tableStats []stats.Table
+	if a.tables != nil {
+		tableStats = make([]stats.Table, numArches)
+		for i, id := range a.tables {
 			table := &storage.tables[id]
-			archStats[i] = table.Stats(&storage.registry)
-			stats := &archStats[i]
+			tableStats[i] = table.Stats(&storage.registry)
+			stats := &tableStats[i]
 			cap += stats.Capacity
 			count += stats.Size
 			memory += stats.Memory
@@ -211,51 +210,52 @@ func (a *archetype) Stats(storage *storage) stats.Node {
 		memPerEntity += int(aTypes[j].Size())
 	}
 
-	return stats.Node{
-		ArchetypeCount:       int(numArches),
-		ActiveArchetypeCount: len(a.freeTables),
-		HasRelation:          a.HasRelations(),
-		Components:           aCompCount,
-		ComponentIDs:         intIDs,
-		ComponentTypes:       aTypes,
-		Memory:               memory,
-		MemoryPerEntity:      memPerEntity,
-		Size:                 count,
-		Capacity:             cap,
-		Archetypes:           archStats,
+	return stats.Archetype{
+		FreeTables:      len(a.freeTables),
+		HasRelation:     a.HasRelations(),
+		Components:      aCompCount,
+		ComponentIDs:    intIDs,
+		ComponentTypes:  aTypes,
+		Memory:          memory,
+		MemoryPerEntity: memPerEntity,
+		Size:            count,
+		Capacity:        cap,
+		Tables:          tableStats,
 	}
 }
 
 // UpdateStats updates statistics for an archetype.
-func (a *archetype) UpdateStats(stats *stats.Node, storage *storage) {
+func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
 	arches := a.tables
 
 	cap := 0
 	count := 0
 	memory := 0
 
-	cntOld := int32(len(stats.Archetypes))
+	cntOld := int32(len(stats.Tables))
 	cntNew := int32(len(arches))
+	if cntNew < cntOld {
+		stats.Tables = stats.Tables[:cntNew]
+	}
 	var i int32
 	for i = 0; i < cntOld; i++ {
-		arch := &stats.Archetypes[i]
+		tableStats := &stats.Tables[i]
 		table := &storage.tables[arches[i]]
-		table.UpdateStats(stats, arch, &storage.registry)
-		cap += arch.Capacity
-		count += arch.Size
-		memory += arch.Memory
+		table.UpdateStats(stats, tableStats, &storage.registry)
+		cap += tableStats.Capacity
+		count += tableStats.Size
+		memory += tableStats.Memory
 	}
 	for i = cntOld; i < cntNew; i++ {
 		table := &storage.tables[arches[i]]
-		arch := table.Stats(&storage.registry)
-		stats.Archetypes = append(stats.Archetypes, arch)
-		cap += arch.Capacity
-		count += arch.Size
-		memory += arch.Memory
+		tableStats := table.Stats(&storage.registry)
+		stats.Tables = append(stats.Tables, tableStats)
+		cap += tableStats.Capacity
+		count += tableStats.Size
+		memory += tableStats.Memory
 	}
 
-	stats.ArchetypeCount = int(cntNew)
-	stats.ActiveArchetypeCount = len(a.freeTables)
+	stats.FreeTables = len(a.freeTables)
 	stats.Capacity = cap
 	stats.Size = count
 	stats.Memory = memory

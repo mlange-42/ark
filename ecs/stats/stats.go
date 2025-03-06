@@ -17,8 +17,8 @@ type World struct {
 	ComponentTypes []reflect.Type
 	// Locked state of the world.
 	Locked bool
-	// Node statistics.
-	Nodes []Node
+	// Archetype statistics.
+	Archetypes []Archetype
 	// Memory used by entities and components.
 	Memory int
 	// Number of cached filters.
@@ -37,13 +37,11 @@ type Entities struct {
 	Capacity int
 }
 
-// Node provide statistics for an archetype graph node.
-type Node struct {
-	// Total number of archetypes, incl. inactive.
-	ArchetypeCount int
-	// Number of active archetypes.
-	ActiveArchetypeCount int
-	// Whether the node contains relation archetypes.
+// Archetype statistics.
+type Archetype struct {
+	// Number of free tables.
+	FreeTables int
+	// Whether the archetype contains relation tables.
 	HasRelation bool
 	// Number of components.
 	Components int
@@ -55,19 +53,19 @@ type Node struct {
 	MemoryPerEntity int
 	// Total reserved memory for entities and components, in bytes.
 	Memory int
-	// Number of entities in the archetypes of this node.
+	// Number of entities in the tables of this archetype.
 	Size int
-	// Sum of capacity of the archetypes in this node.
+	// Sum of capacity of the tables in this archetype.
 	Capacity int
-	// Archetype statistics.
-	Archetypes []Archetype
+	// Table statistics.
+	Tables []Table
 }
 
-// Archetype provide statistics for an archetype.
-type Archetype struct {
-	// Number of entities in the archetype.
+// Table statistics.
+type Table struct {
+	// Number of entities in the table.
 	Size int
-	// Capacity of the archetype.
+	// Capacity of the table.
 	Capacity int
 	// Total reserved memory for entities and components, in bytes.
 	Memory int
@@ -77,8 +75,8 @@ func (s *World) String() string {
 	b := strings.Builder{}
 
 	fmt.Fprintf(
-		&b, "World -- Components: %d, Nodes: %d, Filters: %d, Memory: %.1f kB, Locked: %t\n",
-		s.ComponentCount, len(s.Nodes), s.CachedFilters, float64(s.Memory)/1024.0, s.Locked,
+		&b, "World -- Components: %d, Archetypes: %d, Filters: %d, Memory: %.1f kB, Locked: %t\n",
+		s.ComponentCount, len(s.Archetypes), s.CachedFilters, float64(s.Memory)/1024.0, s.Locked,
 	)
 
 	typeNames := make([]string, len(s.ComponentTypes))
@@ -88,8 +86,8 @@ func (s *World) String() string {
 	fmt.Fprintf(&b, "  Components: %s\n", strings.Join(typeNames, ", "))
 	fmt.Fprint(&b, s.Entities.String())
 
-	for i := range s.Nodes {
-		fmt.Fprint(&b, s.Nodes[i].String())
+	for i := range s.Archetypes {
+		fmt.Fprint(&b, s.Archetypes[i].String())
 	}
 
 	return b.String()
@@ -99,14 +97,14 @@ func (s *Entities) String() string {
 	return fmt.Sprintf("Entities -- Used: %d, Recycled: %d, Total: %d, Capacity: %d\n", s.Used, s.Recycled, s.Total, s.Capacity)
 }
 
-func (s *Node) String() string {
+func (s *Archetype) String() string {
 	typeNames := make([]string, len(s.ComponentTypes))
 	for i, tp := range s.ComponentTypes {
 		typeNames[i] = tp.Name()
 	}
 
 	return fmt.Sprintf(
-		"Node -- Components: %2d, Entities: %6d, Capacity: %6d, Memory: %7.1f kB, Per entity: %4d B\n  Components: %s\n",
+		"Archetype -- Components: %2d, Entities: %6d, Capacity: %6d, Memory: %7.1f kB, Per entity: %4d B\n  Components: %s\n",
 		s.Components, s.Size, s.Capacity, float64(s.Memory)/1024.0, s.MemoryPerEntity, strings.Join(typeNames, ", "),
 	)
 }

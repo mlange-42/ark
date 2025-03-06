@@ -153,19 +153,19 @@ func (w *World) Stats() *stats.World {
 
 	memory := cap(w.storage.entities)*int(entityIndexSize) + w.storage.entityPool.TotalCap()*int(entitySize)
 
-	cntOld := int32(len(w.stats.Nodes))
+	cntOld := int32(len(w.stats.Archetypes))
 	cntNew := int32(len(w.storage.archetypes))
 	var i int32
 	for i = 0; i < cntOld; i++ {
 		node := &w.storage.archetypes[i]
-		nodeStats := &w.stats.Nodes[i]
+		nodeStats := &w.stats.Archetypes[i]
 		node.UpdateStats(nodeStats, &w.storage)
 		memory += nodeStats.Memory
 	}
 	for i = cntOld; i < cntNew; i++ {
 		node := &w.storage.archetypes[i]
-		w.stats.Nodes = append(w.stats.Nodes, node.Stats(&w.storage))
-		memory += w.stats.Nodes[i].Memory
+		w.stats.Archetypes = append(w.stats.Archetypes, node.Stats(&w.storage))
+		memory += w.stats.Archetypes[i].Memory
 	}
 
 	w.stats.ComponentCount = compCount

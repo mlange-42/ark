@@ -12,7 +12,7 @@ func TestStats(t *testing.T) {
 		ComponentCount: 1,
 		ComponentTypes: []reflect.Type{reflect.TypeOf(1)},
 		Locked:         false,
-		Nodes: []Node{
+		Archetypes: []Archetype{
 			{
 				Size:           1,
 				Capacity:       128,

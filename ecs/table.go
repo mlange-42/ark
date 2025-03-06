@@ -229,7 +229,7 @@ func (t *table) Len() int {
 }
 
 // Stats generates statistics for a table.
-func (t *table) Stats(reg *componentRegistry) stats.Archetype {
+func (t *table) Stats(reg *componentRegistry) stats.Table {
 	ids := t.ids
 	aCompCount := len(ids)
 	aTypes := make([]reflect.Type, aCompCount)
@@ -244,7 +244,7 @@ func (t *table) Stats(reg *componentRegistry) stats.Archetype {
 	}
 	memory := cap * (int(entitySize) + memPerEntity)
 
-	return stats.Archetype{
+	return stats.Table{
 		Size:     int(t.Len()),
 		Capacity: cap,
 		Memory:   memory,
@@ -252,7 +252,7 @@ func (t *table) Stats(reg *componentRegistry) stats.Archetype {
 }
 
 // UpdateStats updates statistics for a table.
-func (t *table) UpdateStats(node *stats.Node, stats *stats.Archetype, reg *componentRegistry) {
+func (t *table) UpdateStats(node *stats.Archetype, stats *stats.Table, reg *componentRegistry) {
 	cap := int(t.cap)
 	memory := cap * (int(entitySize) + node.MemoryPerEntity)
 
