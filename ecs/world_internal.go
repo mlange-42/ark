@@ -8,7 +8,8 @@ import (
 func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []RelationID) Entity {
 	w.checkLocked()
 
-	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations)
+	mask := Mask{}
+	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 	entity, idx := w.storage.createEntity(newTable.id)
 
 	if comps != nil {
@@ -26,7 +27,8 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []Rela
 func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, relations []RelationID) {
 	w.checkLocked()
 
-	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations)
+	mask := Mask{}
+	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 
 	startIdx := newTable.Len()
 	w.storage.createEntities(newTable, count)
@@ -47,7 +49,8 @@ func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, rel
 func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableID, int) {
 	w.checkLocked()
 
-	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations)
+	mask := Mask{}
+	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 
 	startIdx := newTable.Len()
 	w.storage.createEntities(newTable, count)
@@ -73,12 +76,10 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 	oldTable := &w.storage.tables[index.table]
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
-	mask := oldArchetype.mask
-	w.storage.getExchangeMask(&mask, add, rem)
-
 	oldIDs := oldArchetype.components
 
-	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations)
+	mask := Mask{}
+	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	newIndex := newTable.Add(entity)
 
 	for _, id := range oldIDs {
@@ -142,12 +143,10 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) (tableID, int, int) {
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
-	mask := oldArchetype.mask
-	w.storage.getExchangeMask(&mask, add, rem)
-
 	oldIDs := oldArchetype.components
 
-	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations)
+	mask := Mask{}
+	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	startIdx := uintptr(newTable.Len())
 	count := uintptr(oldLen)
 
