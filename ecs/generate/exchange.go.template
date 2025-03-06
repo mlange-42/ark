@@ -57,6 +57,19 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...
 	}, ex.relations)
 }
 
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}}), rel ...Relation) {
+	if !ex.world.Alive(entity) {
+		panic("can't add components to a dead entity")
+	}
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
+}
+
 // Remove the components previously specified with [Exchange{{.}}.Removes] from the given entity.
 func (ex *Exchange{{.}}{{$genericsShort}}) Remove(entity Entity) {
 	ex.world.exchange(entity, nil, ex.remove, nil, nil)
@@ -71,6 +84,18 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, re
 		unsafe.Pointer({{.}}),
 		{{- end}}
 	}, ex.relations)
+}
+
+// Exchange performs the exchange on the given entity, adding the provided components
+// and removing those previously specified with [Exchange{{.}}.Removes].
+// It runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeFn(entity Entity, fn func({{$args}}), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -155,6 +180,17 @@ func (ex *Exchange{{.}}{{$genericsShort}}) exchangeBatchFn(batch *Batch, fn func
 	} else {
 		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
 	}
+}
+
+func (ex *Exchange{{.}}{{$genericsShort}}) runCallback(entity Entity, fn func({{$args}})) {
+	index := &ex.world.storage.entities[entity.id]
+	table := &ex.world.storage.tables[index.table]
+	row := uintptr(index.row)
+	fn(
+		{{- range $i, $v := $upper}}
+		(*{{$v}})(table.GetColumn(ex.ids[{{$i}}]).Get(row)),
+		{{- end}}
+	)
 }
 
 {{end -}}

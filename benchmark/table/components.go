@@ -206,18 +206,16 @@ func componentsExchange1_1000(b *testing.B) {
 		entities = append(entities, entity)
 	})
 
-	c2 := comp2{}
-
 	// Run once to allocate memory
 	for _, e := range entities {
-		ex2.Exchange(e, &c2)
+		ex2.ExchangeFn(e, nil)
 	}
 	ex1.ExchangeBatchFn(filter.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
 		for _, e := range entities {
-			ex2.Exchange(e, &c2)
+			ex2.ExchangeFn(e, nil)
 		}
 		b.StopTimer()
 		ex1.ExchangeBatchFn(filter.Batch(), nil)
@@ -238,18 +236,16 @@ func componentsExchange1of5_1000(b *testing.B) {
 		entities = append(entities, entity)
 	})
 
-	c2 := comp2{}
-
 	// Run once to allocate memory
 	for _, e := range entities {
-		ex2.Exchange(e, &c2)
+		ex2.ExchangeFn(e, nil)
 	}
 	ex1.ExchangeBatchFn(filter.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
 		for _, e := range entities {
-			ex2.Exchange(e, &c2)
+			ex2.ExchangeFn(e, nil)
 		}
 		b.StopTimer()
 		ex1.ExchangeBatchFn(filter.Batch(), nil)
