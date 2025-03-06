@@ -104,7 +104,7 @@ func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$return}} {
 	m.world.storage.checkHasComponent(entity, m.ids[{{.}}])
 	{{- end}}
 
-	index := m.world.storage.entities[entity.id]
+	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
 	return {{range $i, $v := $upper}}{{if $i}},
@@ -132,6 +132,25 @@ func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...Relati
 		unsafe.Pointer({{.}}),
 		{{- end}}
 	}, m.relations)
+}
+
+// AddFn adds the mapped component to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}}), rel ...Relation) {
+	if !m.world.Alive(entity) {
+		panic("can't add components to a dead entity")
+	}
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			{{- range $upper}}
+			(*{{.}})(m.storage{{.}}.columns[index.table].Get(row)),
+			{{- end}}
+		)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.

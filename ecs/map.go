@@ -68,6 +68,19 @@ func (m *Map[T]) Add(entity Entity, comp *T, rel ...Entity) {
 	m.world.exchange(entity, []ID{m.id}, nil, []unsafe.Pointer{unsafe.Pointer(comp)}, m.relations)
 }
 
+// AddFn adds the mapped component to the given entity and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map[T]) AddFn(entity Entity, fn func(a *T), rel ...Entity) {
+	if !m.world.Alive(entity) {
+		panic("can't add a component to a dead entity")
+	}
+	m.relations = relationEntities(rel).toRelation(m.world, m.id, m.relations)
+	m.world.exchange(entity, []ID{m.id}, nil, nil, m.relations)
+	if fn != nil {
+		fn(m.GetUnchecked(entity))
+	}
+}
+
 // Remove the mapped component from the given entity.
 func (m *Map[T]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
