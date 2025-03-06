@@ -32,6 +32,21 @@ func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -103,7 +118,8 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
 	}, m.relations)
 }
 
-// AddFn adds the mapped component to the given entity and runs a callback instead of using components for initialization.
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
 func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
@@ -253,6 +269,22 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -331,7 +363,8 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 	}, m.relations)
 }
 
-// AddFn adds the mapped component to the given entity and runs a callback instead of using components for initialization.
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
 func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
@@ -489,6 +522,23 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -574,7 +624,8 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
 	}, m.relations)
 }
 
-// AddFn adds the mapped component to the given entity and runs a callback instead of using components for initialization.
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
 func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
@@ -740,6 +791,24 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) En
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -832,7 +901,8 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 	}, m.relations)
 }
 
-// AddFn adds the mapped component to the given entity and runs a callback instead of using components for initialization.
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
 func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
@@ -1006,6 +1076,25 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -1105,7 +1194,8 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 	}, m.relations)
 }
 
-// AddFn adds the mapped component to the given entity and runs a callback instead of using components for initialization.
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
 func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
@@ -1287,6 +1377,26 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -1393,7 +1503,8 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 	}, m.relations)
 }
 
-// AddFn adds the mapped component to the given entity and runs a callback instead of using components for initialization.
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
 func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
@@ -1583,6 +1694,27 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -1696,7 +1828,8 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 	}, m.relations)
 }
 
-// AddFn adds the mapped component to the given entity and runs a callback instead of using components for initialization.
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
 func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")
@@ -1894,6 +2027,28 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -2014,7 +2169,8 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 	}, m.relations)
 }
 
-// AddFn adds the mapped component to the given entity and runs a callback instead of using components for initialization.
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
 func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	if !m.world.Alive(entity) {
 		panic("can't add components to a dead entity")

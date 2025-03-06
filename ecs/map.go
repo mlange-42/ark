@@ -26,6 +26,17 @@ func (m *Map[T]) NewEntity(comp *T, rel ...Entity) Entity {
 	return m.world.newEntityWith([]ID{m.id}, []unsafe.Pointer{unsafe.Pointer(comp)}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map[T]) NewEntityFn(fn func(a *T), rel ...Entity) Entity {
+	m.relations = relationEntities(rel).toRelation(m.world, m.id, m.relations)
+	entity := m.world.newEntityWith([]ID{m.id}, nil, m.relations)
+	if fn != nil {
+		fn(m.GetUnchecked(entity))
+	}
+	return entity
+}
+
 // Get returns the mapped component for the given entity.
 func (m *Map[T]) Get(entity Entity) *T {
 	if !m.world.Alive(entity) {
