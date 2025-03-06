@@ -13,6 +13,7 @@ func TestMap1(t *testing.T) {
 	w := NewWorld(4)
 
 	mapper := NewMap1[CompA](&w)
+	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
 	for range n {
@@ -21,6 +22,18 @@ func TestMap1(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{})
 		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
 	}
 
 	for _, e := range entities {
@@ -41,6 +54,9 @@ func TestMap1(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA) {})
 	})
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
@@ -266,6 +282,7 @@ func TestMap2(t *testing.T) {
 	w := NewWorld(4)
 
 	mapper := NewMap2[CompA, CompB](&w)
+	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
 	for range n {
@@ -274,6 +291,18 @@ func TestMap2(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{})
 		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
 	}
 
 	for _, e := range entities {
@@ -294,6 +323,9 @@ func TestMap2(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB) {})
 	})
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
@@ -519,6 +551,7 @@ func TestMap3(t *testing.T) {
 	w := NewWorld(4)
 
 	mapper := NewMap3[CompA, CompB, CompC](&w)
+	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
 	for range n {
@@ -527,6 +560,18 @@ func TestMap3(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{})
 		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
 	}
 
 	for _, e := range entities {
@@ -547,6 +592,9 @@ func TestMap3(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC) {})
 	})
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
@@ -772,6 +820,7 @@ func TestMap4(t *testing.T) {
 	w := NewWorld(4)
 
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
 	for range n {
@@ -780,6 +829,18 @@ func TestMap4(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
 	}
 
 	for _, e := range entities {
@@ -800,6 +861,9 @@ func TestMap4(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD) {})
 	})
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
@@ -1025,6 +1089,7 @@ func TestMap5(t *testing.T) {
 	w := NewWorld(4)
 
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
+	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
 	for range n {
@@ -1033,6 +1098,18 @@ func TestMap5(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
 	}
 
 	for _, e := range entities {
@@ -1053,6 +1130,9 @@ func TestMap5(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {})
 	})
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
@@ -1278,6 +1358,7 @@ func TestMap6(t *testing.T) {
 	w := NewWorld(4)
 
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
+	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
 	for range n {
@@ -1286,6 +1367,18 @@ func TestMap6(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
 	}
 
 	for _, e := range entities {
@@ -1306,6 +1399,9 @@ func TestMap6(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {})
 	})
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
@@ -1531,6 +1627,7 @@ func TestMap7(t *testing.T) {
 	w := NewWorld(4)
 
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
 	for range n {
@@ -1539,6 +1636,18 @@ func TestMap7(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
 	}
 
 	for _, e := range entities {
@@ -1559,6 +1668,9 @@ func TestMap7(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {})
 	})
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
@@ -1784,6 +1896,7 @@ func TestMap8(t *testing.T) {
 	w := NewWorld(4)
 
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
 	for range n {
@@ -1792,6 +1905,18 @@ func TestMap8(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
 	}
 
 	for _, e := range entities {
@@ -1812,6 +1937,9 @@ func TestMap8(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {})
 	})
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})

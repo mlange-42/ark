@@ -31,6 +31,13 @@ func TestExchange{{.}}(t *testing.T) {
 	ex.Exchange(e, {{$mapArgs}})
 	assert.False(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
+	
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+	ex.ExchangeFn(e, func({{$args}}){
+		a.X = 100
+	})
+	assert.False(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
 }
 
 func TestExchange{{.}}Add(t *testing.T) {
@@ -43,6 +50,14 @@ func TestExchange{{.}}Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, {{$mapArgs}})
+	assert.True(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
+	
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+	
+	ex.AddFn(e, func({{$args}}){
+		a.X = 100
+	})
 	assert.True(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
 }

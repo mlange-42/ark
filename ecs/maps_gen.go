@@ -32,6 +32,21 @@ func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -77,7 +92,7 @@ func (m *Map1[A]) Get(entity Entity) *A {
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 
-	index := m.world.storage.entities[entity.id]
+	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
 	return (*A)(m.storageA.columns[index.table].Get(row))
@@ -94,13 +109,24 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+		)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -138,9 +164,6 @@ func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...
 
 // Remove the mapped components from the given entity.
 func (m *Map1[A]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -237,6 +260,22 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -286,7 +325,7 @@ func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
 
-	index := m.world.storage.entities[entity.id]
+	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -305,14 +344,26 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+		)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -353,9 +404,6 @@ func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B)
 
 // Remove the mapped components from the given entity.
 func (m *Map2[A, B]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -456,6 +504,23 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -509,7 +574,7 @@ func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
 	m.world.storage.checkHasComponent(entity, m.ids[1])
 	m.world.storage.checkHasComponent(entity, m.ids[2])
 
-	index := m.world.storage.entities[entity.id]
+	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -530,15 +595,28 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
 	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+		)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -582,9 +660,6 @@ func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b 
 
 // Remove the mapped components from the given entity.
 func (m *Map3[A, B, C]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -689,6 +764,24 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) En
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -746,7 +839,7 @@ func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
 	m.world.storage.checkHasComponent(entity, m.ids[2])
 	m.world.storage.checkHasComponent(entity, m.ids[3])
 
-	index := m.world.storage.entities[entity.id]
+	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -769,9 +862,6 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -779,6 +869,23 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
 	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+		)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -825,9 +932,6 @@ func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A,
 
 // Remove the mapped components from the given entity.
 func (m *Map4[A, B, C, D]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -936,6 +1040,25 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -997,7 +1120,7 @@ func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
 	m.world.storage.checkHasComponent(entity, m.ids[3])
 	m.world.storage.checkHasComponent(entity, m.ids[4])
 
-	index := m.world.storage.entities[entity.id]
+	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -1022,9 +1145,6 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -1033,6 +1153,24 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
 	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+		)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1082,9 +1220,6 @@ func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a 
 
 // Remove the mapped components from the given entity.
 func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -1197,6 +1332,26 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -1262,7 +1417,7 @@ func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E
 	m.world.storage.checkHasComponent(entity, m.ids[4])
 	m.world.storage.checkHasComponent(entity, m.ids[5])
 
-	index := m.world.storage.entities[entity.id]
+	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -1289,9 +1444,6 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -1301,6 +1453,25 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
 	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+		)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1353,9 +1524,6 @@ func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity,
 
 // Remove the mapped components from the given entity.
 func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -1472,6 +1640,27 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -1541,7 +1730,7 @@ func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D,
 	m.world.storage.checkHasComponent(entity, m.ids[5])
 	m.world.storage.checkHasComponent(entity, m.ids[6])
 
-	index := m.world.storage.entities[entity.id]
+	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -1570,9 +1759,6 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -1583,6 +1769,26 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
 	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+		)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1638,9 +1844,6 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Enti
 
 // Remove the mapped components from the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -1761,6 +1964,28 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 	}, m.relations)
 }
 
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
 // NewBatch creates a batch of new entities with the mapped components.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
@@ -1834,7 +2059,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, 
 	m.world.storage.checkHasComponent(entity, m.ids[6])
 	m.world.storage.checkHasComponent(entity, m.ids[7])
 
-	index := m.world.storage.entities[entity.id]
+	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
 	return (*A)(m.storageA.columns[index.table].Get(row)),
@@ -1865,9 +2090,6 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -1879,6 +2101,27 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 		unsafe.Pointer(g),
 		unsafe.Pointer(h),
 	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+		)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1937,9 +2180,6 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity E
 
 // Remove the mapped components from the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 

@@ -23,6 +23,8 @@
 - `ExchangeX.Removes` can be called multiple times in chains (#124)
 - `FilterX.Relations` can be called multiple times in chains (#129)
 - Adds methods `Entity.ID` and `Entity.Gen` for debugging purposes (#134)
+- Adds `MapX.NewEntityFn`, `MapX.AddFn`, `Map.NewEntityFn` and `Map.AddFn` (#145)
+- Adds `ExchangeX.AddFn` and `ExchangeX.ExchangeFn` (#145)
 
 ### Documentation
 

@@ -393,7 +393,7 @@ func TestWorldPointerStressTest(t *testing.T) {
 
 	mapper := NewMap[PointerComp](&w)
 
-	count := 0
+	count := 1
 	var entities []Entity
 
 	for i := 0; i < 1000; i++ {

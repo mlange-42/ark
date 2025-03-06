@@ -42,6 +42,16 @@ func (ex *Exchange1[A]) Add(entity Entity, a *A, rel ...Relation) {
 	}, ex.relations)
 }
 
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
+}
+
 // Remove the components previously specified with [Exchange1.Removes] from the given entity.
 func (ex *Exchange1[A]) Remove(entity Entity) {
 	ex.world.exchange(entity, nil, ex.remove, nil, nil)
@@ -54,6 +64,18 @@ func (ex *Exchange1[A]) Exchange(entity Entity, a *A, rel ...Relation) {
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, ex.relations)
+}
+
+// Exchange performs the exchange on the given entity, adding the provided components
+// and removing those previously specified with [Exchange1.Removes].
+// It runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange1[A]) ExchangeFn(entity Entity, fn func(a *A), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -131,6 +153,15 @@ func (ex *Exchange1[A]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *
 	}
 }
 
+func (ex *Exchange1[A]) runCallback(entity Entity, fn func(a *A)) {
+	index := &ex.world.storage.entities[entity.id]
+	table := &ex.world.storage.tables[index.table]
+	row := uintptr(index.row)
+	fn(
+		(*A)(table.GetColumn(ex.ids[0]).Get(row)),
+	)
+}
+
 // Exchange2 allows to exchange components of entities.
 // It adds the given components. Use [Exchange2.Removes]
 // to set components to be removed.
@@ -171,6 +202,16 @@ func (ex *Exchange2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 	}, ex.relations)
 }
 
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
+}
+
 // Remove the components previously specified with [Exchange2.Removes] from the given entity.
 func (ex *Exchange2[A, B]) Remove(entity Entity) {
 	ex.world.exchange(entity, nil, ex.remove, nil, nil)
@@ -184,6 +225,18 @@ func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B, rel ...Relation) 
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
 	}, ex.relations)
+}
+
+// Exchange performs the exchange on the given entity, adding the provided components
+// and removing those previously specified with [Exchange2.Removes].
+// It runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange2[A, B]) ExchangeFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -265,6 +318,16 @@ func (ex *Exchange2[A, B]) exchangeBatchFn(batch *Batch, fn func(entity Entity, 
 	}
 }
 
+func (ex *Exchange2[A, B]) runCallback(entity Entity, fn func(a *A, b *B)) {
+	index := &ex.world.storage.entities[entity.id]
+	table := &ex.world.storage.tables[index.table]
+	row := uintptr(index.row)
+	fn(
+		(*A)(table.GetColumn(ex.ids[0]).Get(row)),
+		(*B)(table.GetColumn(ex.ids[1]).Get(row)),
+	)
+}
+
 // Exchange3 allows to exchange components of entities.
 // It adds the given components. Use [Exchange3.Removes]
 // to set components to be removed.
@@ -307,6 +370,16 @@ func (ex *Exchange3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relati
 	}, ex.relations)
 }
 
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
+}
+
 // Remove the components previously specified with [Exchange3.Removes] from the given entity.
 func (ex *Exchange3[A, B, C]) Remove(entity Entity) {
 	ex.world.exchange(entity, nil, ex.remove, nil, nil)
@@ -321,6 +394,18 @@ func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C, rel ...R
 		unsafe.Pointer(b),
 		unsafe.Pointer(c),
 	}, ex.relations)
+}
+
+// Exchange performs the exchange on the given entity, adding the provided components
+// and removing those previously specified with [Exchange3.Removes].
+// It runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange3[A, B, C]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -406,6 +491,17 @@ func (ex *Exchange3[A, B, C]) exchangeBatchFn(batch *Batch, fn func(entity Entit
 	}
 }
 
+func (ex *Exchange3[A, B, C]) runCallback(entity Entity, fn func(a *A, b *B, c *C)) {
+	index := &ex.world.storage.entities[entity.id]
+	table := &ex.world.storage.tables[index.table]
+	row := uintptr(index.row)
+	fn(
+		(*A)(table.GetColumn(ex.ids[0]).Get(row)),
+		(*B)(table.GetColumn(ex.ids[1]).Get(row)),
+		(*C)(table.GetColumn(ex.ids[2]).Get(row)),
+	)
+}
+
 // Exchange4 allows to exchange components of entities.
 // It adds the given components. Use [Exchange4.Removes]
 // to set components to be removed.
@@ -450,6 +546,16 @@ func (ex *Exchange4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel 
 	}, ex.relations)
 }
 
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
+}
+
 // Remove the components previously specified with [Exchange4.Removes] from the given entity.
 func (ex *Exchange4[A, B, C, D]) Remove(entity Entity) {
 	ex.world.exchange(entity, nil, ex.remove, nil, nil)
@@ -465,6 +571,18 @@ func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D,
 		unsafe.Pointer(c),
 		unsafe.Pointer(d),
 	}, ex.relations)
+}
+
+// Exchange performs the exchange on the given entity, adding the provided components
+// and removing those previously specified with [Exchange4.Removes].
+// It runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange4[A, B, C, D]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -554,6 +672,18 @@ func (ex *Exchange4[A, B, C, D]) exchangeBatchFn(batch *Batch, fn func(entity En
 	}
 }
 
+func (ex *Exchange4[A, B, C, D]) runCallback(entity Entity, fn func(a *A, b *B, c *C, d *D)) {
+	index := &ex.world.storage.entities[entity.id]
+	table := &ex.world.storage.tables[index.table]
+	row := uintptr(index.row)
+	fn(
+		(*A)(table.GetColumn(ex.ids[0]).Get(row)),
+		(*B)(table.GetColumn(ex.ids[1]).Get(row)),
+		(*C)(table.GetColumn(ex.ids[2]).Get(row)),
+		(*D)(table.GetColumn(ex.ids[3]).Get(row)),
+	)
+}
+
 // Exchange5 allows to exchange components of entities.
 // It adds the given components. Use [Exchange5.Removes]
 // to set components to be removed.
@@ -600,6 +730,16 @@ func (ex *Exchange5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 	}, ex.relations)
 }
 
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
+}
+
 // Remove the components previously specified with [Exchange5.Removes] from the given entity.
 func (ex *Exchange5[A, B, C, D, E]) Remove(entity Entity) {
 	ex.world.exchange(entity, nil, ex.remove, nil, nil)
@@ -616,6 +756,18 @@ func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d 
 		unsafe.Pointer(d),
 		unsafe.Pointer(e),
 	}, ex.relations)
+}
+
+// Exchange performs the exchange on the given entity, adding the provided components
+// and removing those previously specified with [Exchange5.Removes].
+// It runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange5[A, B, C, D, E]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -709,6 +861,19 @@ func (ex *Exchange5[A, B, C, D, E]) exchangeBatchFn(batch *Batch, fn func(entity
 	}
 }
 
+func (ex *Exchange5[A, B, C, D, E]) runCallback(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E)) {
+	index := &ex.world.storage.entities[entity.id]
+	table := &ex.world.storage.tables[index.table]
+	row := uintptr(index.row)
+	fn(
+		(*A)(table.GetColumn(ex.ids[0]).Get(row)),
+		(*B)(table.GetColumn(ex.ids[1]).Get(row)),
+		(*C)(table.GetColumn(ex.ids[2]).Get(row)),
+		(*D)(table.GetColumn(ex.ids[3]).Get(row)),
+		(*E)(table.GetColumn(ex.ids[4]).Get(row)),
+	)
+}
+
 // Exchange6 allows to exchange components of entities.
 // It adds the given components. Use [Exchange6.Removes]
 // to set components to be removed.
@@ -757,6 +922,16 @@ func (ex *Exchange6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D
 	}, ex.relations)
 }
 
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
+}
+
 // Remove the components previously specified with [Exchange6.Removes] from the given entity.
 func (ex *Exchange6[A, B, C, D, E, F]) Remove(entity Entity) {
 	ex.world.exchange(entity, nil, ex.remove, nil, nil)
@@ -774,6 +949,18 @@ func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C,
 		unsafe.Pointer(e),
 		unsafe.Pointer(f),
 	}, ex.relations)
+}
+
+// Exchange performs the exchange on the given entity, adding the provided components
+// and removing those previously specified with [Exchange6.Removes].
+// It runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange6[A, B, C, D, E, F]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -871,6 +1058,20 @@ func (ex *Exchange6[A, B, C, D, E, F]) exchangeBatchFn(batch *Batch, fn func(ent
 	}
 }
 
+func (ex *Exchange6[A, B, C, D, E, F]) runCallback(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F)) {
+	index := &ex.world.storage.entities[entity.id]
+	table := &ex.world.storage.tables[index.table]
+	row := uintptr(index.row)
+	fn(
+		(*A)(table.GetColumn(ex.ids[0]).Get(row)),
+		(*B)(table.GetColumn(ex.ids[1]).Get(row)),
+		(*C)(table.GetColumn(ex.ids[2]).Get(row)),
+		(*D)(table.GetColumn(ex.ids[3]).Get(row)),
+		(*E)(table.GetColumn(ex.ids[4]).Get(row)),
+		(*F)(table.GetColumn(ex.ids[5]).Get(row)),
+	)
+}
+
 // Exchange7 allows to exchange components of entities.
 // It adds the given components. Use [Exchange7.Removes]
 // to set components to be removed.
@@ -921,6 +1122,16 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d
 	}, ex.relations)
 }
 
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
+}
+
 // Remove the components previously specified with [Exchange7.Removes] from the given entity.
 func (ex *Exchange7[A, B, C, D, E, F, G]) Remove(entity Entity) {
 	ex.world.exchange(entity, nil, ex.remove, nil, nil)
@@ -939,6 +1150,18 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c 
 		unsafe.Pointer(f),
 		unsafe.Pointer(g),
 	}, ex.relations)
+}
+
+// Exchange performs the exchange on the given entity, adding the provided components
+// and removing those previously specified with [Exchange7.Removes].
+// It runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1040,6 +1263,21 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) exchangeBatchFn(batch *Batch, fn func(
 	}
 }
 
+func (ex *Exchange7[A, B, C, D, E, F, G]) runCallback(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G)) {
+	index := &ex.world.storage.entities[entity.id]
+	table := &ex.world.storage.tables[index.table]
+	row := uintptr(index.row)
+	fn(
+		(*A)(table.GetColumn(ex.ids[0]).Get(row)),
+		(*B)(table.GetColumn(ex.ids[1]).Get(row)),
+		(*C)(table.GetColumn(ex.ids[2]).Get(row)),
+		(*D)(table.GetColumn(ex.ids[3]).Get(row)),
+		(*E)(table.GetColumn(ex.ids[4]).Get(row)),
+		(*F)(table.GetColumn(ex.ids[5]).Get(row)),
+		(*G)(table.GetColumn(ex.ids[6]).Get(row)),
+	)
+}
+
 // Exchange8 allows to exchange components of entities.
 // It adds the given components. Use [Exchange8.Removes]
 // to set components to be removed.
@@ -1092,6 +1330,16 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C
 	}, ex.relations)
 }
 
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
+}
+
 // Remove the components previously specified with [Exchange8.Removes] from the given entity.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
 	ex.world.exchange(entity, nil, ex.remove, nil, nil)
@@ -1111,6 +1359,18 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B,
 		unsafe.Pointer(g),
 		unsafe.Pointer(h),
 	}, ex.relations)
+}
+
+// Exchange performs the exchange on the given entity, adding the provided components
+// and removing those previously specified with [Exchange8.Removes].
+// It runs a callback instead of using components for initialization.
+// The callback can be nil.
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	if fn != nil {
+		ex.runCallback(entity, fn)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1214,4 +1474,20 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) exchangeBatchFn(batch *Batch, fn fu
 	} else {
 		ex.world.exchangeBatch(batch, ex.ids, nil, nil, ex.relations, process)
 	}
+}
+
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) runCallback(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H)) {
+	index := &ex.world.storage.entities[entity.id]
+	table := &ex.world.storage.tables[index.table]
+	row := uintptr(index.row)
+	fn(
+		(*A)(table.GetColumn(ex.ids[0]).Get(row)),
+		(*B)(table.GetColumn(ex.ids[1]).Get(row)),
+		(*C)(table.GetColumn(ex.ids[2]).Get(row)),
+		(*D)(table.GetColumn(ex.ids[3]).Get(row)),
+		(*E)(table.GetColumn(ex.ids[4]).Get(row)),
+		(*F)(table.GetColumn(ex.ids[5]).Get(row)),
+		(*G)(table.GetColumn(ex.ids[6]).Get(row)),
+		(*H)(table.GetColumn(ex.ids[7]).Get(row)),
+	)
 }
