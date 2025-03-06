@@ -109,9 +109,6 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -121,9 +118,6 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
@@ -170,9 +164,6 @@ func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...
 
 // Remove the mapped components from the given entity.
 func (m *Map1[A]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -353,9 +344,6 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -366,9 +354,6 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
@@ -419,9 +404,6 @@ func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B)
 
 // Remove the mapped components from the given entity.
 func (m *Map2[A, B]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -613,9 +595,6 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -627,9 +606,6 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
@@ -684,9 +660,6 @@ func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b 
 
 // Remove the mapped components from the given entity.
 func (m *Map3[A, B, C]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -889,9 +862,6 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -904,9 +874,6 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
@@ -965,9 +932,6 @@ func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A,
 
 // Remove the mapped components from the given entity.
 func (m *Map4[A, B, C, D]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -1181,9 +1145,6 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -1197,9 +1158,6 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
@@ -1262,9 +1220,6 @@ func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a 
 
 // Remove the mapped components from the given entity.
 func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -1489,9 +1444,6 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -1506,9 +1458,6 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
@@ -1575,9 +1524,6 @@ func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity,
 
 // Remove the mapped components from the given entity.
 func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -1813,9 +1759,6 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -1831,9 +1774,6 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
@@ -1904,9 +1844,6 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Enti
 
 // Remove the mapped components from the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
@@ -2153,9 +2090,6 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 
 // Add the mapped components to the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
@@ -2172,9 +2106,6 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
-	if !m.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
@@ -2249,9 +2180,6 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity E
 
 // Remove the mapped components from the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't remove components from a dead entity")
-	}
 	m.world.exchange(entity, nil, m.ids, nil, nil)
 }
 
