@@ -75,7 +75,7 @@ func (s *World) String() string {
 	b := strings.Builder{}
 
 	fmt.Fprintf(
-		&b, "World -- Comps: %d, Archetypes: %d, Filters: %d, Memory: %.1f kB, Locked: %t\n",
+		&b, "World     -- Components: %d, Archetypes: %d, Filters: %d, Memory: %.1f kB, Locked: %t\n",
 		s.ComponentCount, len(s.Archetypes), s.CachedFilters, float64(s.Memory)/1024.0, s.Locked,
 	)
 
@@ -83,7 +83,7 @@ func (s *World) String() string {
 	for i, tp := range s.ComponentTypes {
 		typeNames[i] = tp.Name()
 	}
-	fmt.Fprintf(&b, "  Components: %s\n", strings.Join(typeNames, ", "))
+	fmt.Fprintf(&b, "             Components: %s\n", strings.Join(typeNames, ", "))
 	fmt.Fprint(&b, s.Entities.String())
 
 	for i := range s.Archetypes {
@@ -94,7 +94,7 @@ func (s *World) String() string {
 }
 
 func (s *Entities) String() string {
-	return fmt.Sprintf("Entities -- Used: %d, Recycled: %d, Total: %d, Capacity: %d\n", s.Used, s.Recycled, s.Total, s.Capacity)
+	return fmt.Sprintf("Entities  -- Used: %d, Recycled: %d, Total: %d, Capacity: %d\n", s.Used, s.Recycled, s.Total, s.Capacity)
 }
 
 func (s *Archetype) String() string {
@@ -104,7 +104,7 @@ func (s *Archetype) String() string {
 	}
 
 	return fmt.Sprintf(
-		"Archetype -- Tables: %4d, Comps: %2d, Entities: %6d, Cap: %6d, Mem: %7.1f kB, Per entity: %4d B\n  Components: %s\n",
+		"Archetype -- Tables: %4d, Comps: %2d, Entities: %6d, Cap: %6d, Mem: %7.1f kB, Per entity: %4d B\n             Components: %s\n",
 		len(s.Tables), s.Components, s.Size, s.Capacity, float64(s.Memory)/1024.0, s.MemoryPerEntity, strings.Join(typeNames, ", "),
 	)
 }
