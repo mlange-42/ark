@@ -1,7 +1,6 @@
 package ecs
 
 import (
-	"fmt"
 	"unsafe"
 )
 
@@ -57,10 +56,10 @@ func newStorage(capacity ...int) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []RelationID) *table {
+func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []RelationID, outMask *Mask) *table {
 	startNode := s.archetypes[oldTable.archetype].node
 
-	node := s.graph.Find(startNode, add, remove)
+	node := s.graph.Find(startNode, add, remove, outMask)
 	var arch *archetype
 	if archID, ok := node.GetArchetype(); ok {
 		arch = &s.archetypes[archID]
@@ -69,10 +68,15 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		node.archetype = arch.id
 	}
 
-	allRelation := appendNew(oldTable.relationIDs, relations...)
-	table, ok := arch.GetTable(s, allRelation)
+	var allRelations []RelationID
+	if len(relations) > 0 {
+		allRelations = appendNew(oldTable.relationIDs, relations...)
+	} else {
+		allRelations = oldTable.relationIDs
+	}
+	table, ok := arch.GetTable(s, allRelations)
 	if !ok {
-		table = s.createTable(arch, allRelation)
+		table = s.createTable(arch, allRelations)
 	}
 	return table
 }
@@ -267,21 +271,6 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 
 	s.cache.addTable(s, table)
 	return table
-}
-
-func (s *storage) getExchangeMask(mask *Mask, add []ID, rem []ID) {
-	for _, comp := range rem {
-		if !mask.Get(comp) {
-			panic(fmt.Sprintf("entity does not have a component of type %v, can't remove", s.registry.Types[comp.id]))
-		}
-		mask.Set(comp, false)
-	}
-	for _, comp := range add {
-		if mask.Get(comp) {
-			panic(fmt.Sprintf("entity already has component of type %v, can't add", s.registry.Types[comp.id]))
-		}
-		mask.Set(comp, true)
-	}
 }
 
 // Removes empty archetypes that have a target relation to the given entity.

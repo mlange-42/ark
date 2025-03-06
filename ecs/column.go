@@ -12,8 +12,6 @@ type column struct {
 	isRelation bool           // whether this column is for a relation component
 	target     Entity         // target entity if for a relation component
 	itemSize   uintptr        // memory size of items
-	len        uint32         // number of items
-	cap        uint32         // capacity
 }
 
 // newColumn creates a new column for a given type and capacity.
@@ -28,19 +26,7 @@ func newColumn(tp reflect.Type, isRelation bool, target Entity, capacity uint32)
 		itemSize:   sizeOf(tp),
 		isRelation: isRelation,
 		target:     target,
-		len:        0,
-		cap:        capacity,
 	}
-}
-
-// Len returns the number of components in the column.
-func (c *column) Len() uint32 {
-	return c.len
-}
-
-// Cap returns the current capacity of the column.
-func (c *column) Cap() uint32 {
-	return c.cap
 }
 
 // Get returns a pointer to the component at the given index.
@@ -48,29 +34,8 @@ func (c *column) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*c.itemSize)
 }
 
-// Add adds a component to the column.
-func (c *column) Add(comp unsafe.Pointer) (unsafe.Pointer, uint32) {
-	c.Extend(1)
-	c.len++
-	return c.Set(c.len-1, comp), c.len - 1
-}
-
-// Alloc allocates memory for the given number of components.
-func (c *column) Alloc(n uint32) {
-	c.Extend(n)
-	c.len += n
-}
-
-func (c *column) AddAll(other *column, count uint32) {
-	oldLen := c.len
-	c.Alloc(count)
-	src := other.Get(0)
-	dst := c.Get(uintptr(oldLen))
-	copyPtr(src, dst, c.itemSize*uintptr(count))
-}
-
-func (c *column) SetLast(other *column, count uint32) {
-	start := c.len - count
+func (c *column) SetLast(other *column, ownLen uint32, count uint32) {
+	start := ownLen - count
 	src := other.Get(0)
 	dst := c.Get(uintptr(start))
 	copyPtr(src, dst, c.itemSize*uintptr(count))
@@ -85,41 +50,6 @@ func (c *column) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
 
 	copyPtr(comp, dst, uintptr(c.itemSize))
 	return dst
-}
-
-// Remove swap-removes the component at the given index.
-// Returns whether a swap was necessary.
-func (c *column) Remove(index uint32, zero unsafe.Pointer) bool {
-	lastIndex := uintptr(c.len - 1)
-	swapped := index != uint32(lastIndex)
-
-	if swapped && c.itemSize != 0 {
-		src := unsafe.Add(c.pointer, lastIndex*c.itemSize)
-		dst := unsafe.Add(c.pointer, uintptr(index)*c.itemSize)
-		copyPtr(src, dst, uintptr(c.itemSize))
-	}
-	c.len--
-	if zero != nil {
-		c.Zero(lastIndex, zero)
-	}
-	return swapped
-}
-
-// Extend the column to be able to store the given number of additional components.
-// Has no effect of the column's capacity is already sufficient.
-// If the capacity needs to be increased, it will be doubled until it is sufficient.
-func (c *column) Extend(by uint32) {
-	required := c.Len() + by
-	if c.cap >= required {
-		return
-	}
-	for c.cap < required {
-		c.cap *= 2
-	}
-	old := c.data
-	c.data = reflect.New(reflect.ArrayOf(int(c.cap), old.Type().Elem())).Elem()
-	c.pointer = c.data.Addr().UnsafePointer()
-	reflect.Copy(c.data, old)
 }
 
 // Zero resets the memory at the given index.
@@ -144,17 +74,15 @@ func (c *column) ZeroRange(start, len uint32, zero unsafe.Pointer) {
 	}
 }
 
-func (c *column) Reset(zero unsafe.Pointer) {
-	len := c.len
-	if c.len == 0 {
+func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
+	if ownLen == 0 {
 		return
 	}
-	c.len = 0
 	if zero == nil {
 		return
 	}
-	if len <= 64 { // A coarse estimate where manually zeroing is faster
-		c.ZeroRange(0, len, zero)
+	if ownLen <= 64 { // A coarse estimate where manually zeroing is faster
+		c.ZeroRange(0, ownLen, zero)
 	} else {
 		c.data.SetZero()
 	}

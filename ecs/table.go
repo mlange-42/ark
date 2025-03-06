@@ -3,6 +3,7 @@ package ecs
 import (
 	"fmt"
 	"math"
+	"reflect"
 	"unsafe"
 )
 
@@ -19,6 +20,8 @@ type table struct {
 	ids         []ID         // components IDs in the same order as in the archetype
 	columns     []column     // columns in dense order
 	relationIDs []RelationID // all relation IDs and targets of the table
+	len         uint32
+	cap         uint32
 
 	zeroValue   []byte         // zero value with the size of the largest item type, for fast zeroing
 	zeroPointer unsafe.Pointer // pointer to the zero value, for fast zeroing
@@ -54,6 +57,7 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 		zeroValue:   zeroValue,
 		zeroPointer: zeroPointer,
 		relationIDs: relationIDs,
+		cap:         capacity,
 	}
 }
 
@@ -69,11 +73,9 @@ func (t *table) HasRelations() bool {
 }
 
 func (t *table) Add(entity Entity) uint32 {
-	_, idx := t.entities.Add(unsafe.Pointer(&entity))
-
-	for i := range t.columns {
-		t.columns[i].Alloc(1)
-	}
+	idx := t.len
+	t.Alloc(1)
+	t.entities.Set(idx, unsafe.Pointer(&entity))
 	return idx
 }
 
@@ -107,41 +109,83 @@ func (t *table) SetEntity(index uint32, entity Entity) {
 
 // Alloc allocates memory for the given number of entities.
 func (t *table) Alloc(n uint32) {
-	t.entities.Alloc(n)
+	t.Extend(n)
+	t.len += n
+}
+
+// Extend the table to be able to store the given number of additional entities.
+// Has no effect of the table's capacity is already sufficient.
+// If the capacity needs to be increased, it will be doubled until it is sufficient.
+func (t *table) Extend(by uint32) {
+	required := t.len + by
+	if t.cap >= required {
+		return
+	}
+	for t.cap < required {
+		t.cap *= 2
+	}
+
+	old := t.entities.data
+	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), old.Type().Elem())).Elem()
+	t.entities.pointer = t.entities.data.Addr().UnsafePointer()
+	reflect.Copy(t.entities.data, old)
+
 	for i := range t.columns {
-		t.columns[i].Alloc(n)
+		column := &t.columns[i]
+		old := column.data
+		column.data = reflect.New(reflect.ArrayOf(int(t.cap), old.Type().Elem())).Elem()
+		column.pointer = column.data.Addr().UnsafePointer()
+		reflect.Copy(column.data, old)
 	}
 }
 
+// Remove swap-removes the entity at the given index.
+// Returns whether a swap was necessary.
 func (t *table) Remove(index uint32) bool {
-	swapped := t.entities.Remove(index, nil)
-	for i := range t.columns {
-		t.columns[i].Remove(index, t.zeroPointer)
+	lastIndex := uintptr(t.len - 1)
+	swapped := index != uint32(lastIndex)
+
+	if swapped {
+		sz := t.entities.itemSize
+		src := unsafe.Add(t.entities.pointer, lastIndex*sz)
+		dst := unsafe.Add(t.entities.pointer, uintptr(index)*sz)
+		copyPtr(src, dst, uintptr(sz))
 	}
+
+	for i := range t.columns {
+		column := &t.columns[i]
+		if swapped {
+			sz := column.itemSize
+			src := unsafe.Add(column.pointer, lastIndex*sz)
+			dst := unsafe.Add(column.pointer, uintptr(index)*sz)
+			copyPtr(src, dst, uintptr(sz))
+		}
+		column.Zero(lastIndex, t.zeroPointer)
+	}
+
+	t.len--
 	return swapped
 }
 
 func (t *table) Reset() {
-	t.entities.Reset(nil)
+	t.entities.Reset(t.len, nil)
 	for c := range t.columns {
-		t.columns[c].Reset(t.zeroPointer)
+		t.columns[c].Reset(t.len, t.zeroPointer)
 	}
+	t.len = 0
 }
 
 func (t *table) AddAll(other *table, count uint32) {
-	t.entities.AddAll(&other.entities, count)
+	t.Alloc(count)
+	t.entities.SetLast(&other.entities, t.len, count)
 	for c := range t.columns {
-		t.columns[c].AddAll(&other.columns[c], count)
+		t.columns[c].SetLast(&other.columns[c], t.len, count)
 	}
 }
 
-func (t *table) AddAllEntities(other *table, count uint32, allocColumns bool) {
-	t.entities.AddAll(&other.entities, count)
-	if allocColumns {
-		for c := range t.columns {
-			t.columns[c].Alloc(uint32(count))
-		}
-	}
+func (t *table) AddAllEntities(other *table, count uint32) {
+	t.Alloc(count)
+	t.entities.SetLast(&other.entities, t.len, count)
 }
 
 func (t *table) MatchesExact(relations []RelationID) bool {
@@ -179,5 +223,5 @@ func (t *table) Matches(relations []RelationID) bool {
 }
 
 func (t *table) Len() int {
-	return int(t.entities.Len())
+	return int(t.len)
 }

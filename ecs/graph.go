@@ -37,20 +37,20 @@ func newGraph() graph {
 	}
 }
 
-func (g *graph) Find(start nodeID, add []ID, remove []ID) *node {
+func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *Mask) *node {
 	startNode := &g.nodes[start]
 	curr := startNode
-	mask := startNode.mask
+	*outMask = startNode.mask
 
 	for _, id := range remove {
-		if !mask.Get(id) {
+		if !outMask.Get(id) {
 			panic(fmt.Sprintf("entity does not have component with ID %d", id.id))
 		}
-		mask.Set(id, false)
+		outMask.Set(id, false)
 		if next, ok := curr.neighbors.Get(id.id); ok {
 			curr = &g.nodes[next]
 		} else {
-			next := g.findOrCreate(&mask)
+			next := g.findOrCreate(outMask)
 			next.neighbors.Set(id.id, curr.id)
 			curr.neighbors.Set(id.id, next.id)
 			curr = next
@@ -58,18 +58,18 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID) *node {
 	}
 
 	for _, id := range add {
-		if mask.Get(id) {
+		if outMask.Get(id) {
 			panic(fmt.Sprintf("entity already has component with ID %d, or it was added twice", id.id))
 		}
 		if startNode.mask.Get(id) {
 			panic(fmt.Sprintf("component with ID %d added and removed in the same exchange operation", id.id))
 		}
 
-		mask.Set(id, true)
+		outMask.Set(id, true)
 		if next, ok := curr.neighbors.Get(id.id); ok {
 			curr = &g.nodes[next]
 		} else {
-			next := g.findOrCreate(&mask)
+			next := g.findOrCreate(outMask)
 			next.neighbors.Set(id.id, curr.id)
 			curr.neighbors.Set(id.id, next.id)
 			curr = next
