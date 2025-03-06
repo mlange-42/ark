@@ -62,3 +62,25 @@ func TestTableMatches(t *testing.T) {
 		table.MatchesExact([]RelationID{{component: posID, target: Entity{2, 0}}})
 	})
 }
+
+func TestTableReset(t *testing.T) {
+	w := NewWorld(1024)
+	posID := ComponentID[Position](&w)
+	velID := ComponentID[Velocity](&w)
+	labelID := ComponentID[Label](&w)
+
+	compMap := make([]int16, MaskTotalBits)
+	compMap[0] = 0
+	compMap[1] = 1
+	compMap[2] = 1
+	table := newTable(0, 0, 8, &w.storage.registry, []ID{posID, velID, labelID}, compMap, make([]bool, 3), make([]Entity, 3), []RelationID{})
+
+	table.Reset()
+
+	for i := range 75 {
+		table.Add(Entity{entityID(i + 2), 0})
+	}
+	assert.EqualValues(t, 75, table.len)
+	table.Reset()
+	assert.EqualValues(t, 0, table.len)
+}
