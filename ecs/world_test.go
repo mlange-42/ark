@@ -443,12 +443,12 @@ func TestStats(t *testing.T) {
 	posChildMap.NewBatchFn(50, nil, RelIdx(1, p1), RelIdx(2, p2))
 	posChildMap.NewBatchFn(50, nil, RelIdx(1, p3), RelIdx(2, p2))
 
-	stats := w.Stats()
+	_ = w.Stats()
 
 	posVelHeadMap.NewBatchFn(250, nil)
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p3), RelIdx(2, p2))
+	posChildMap.NewBatchFn(50, nil, RelIdx(1, p2), RelIdx(2, p3))
 
-	stats = w.Stats()
+	stats := w.Stats()
 	fmt.Println(stats.String())
 
 	w.RemoveEntities(filter.Batch(), nil)
