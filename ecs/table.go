@@ -70,11 +70,9 @@ func (t *table) HasRelations() bool {
 }
 
 func (t *table) Add(entity Entity) uint32 {
-	_, idx := t.entities.Add(unsafe.Pointer(&entity))
-
-	for i := range t.columns {
-		t.columns[i].Alloc(1)
-	}
+	idx := t.entities.len
+	t.Alloc(1)
+	t.entities.Set(idx, unsafe.Pointer(&entity))
 	return idx
 }
 
@@ -108,9 +106,10 @@ func (t *table) SetEntity(index uint32, entity Entity) {
 
 // Alloc allocates memory for the given number of entities.
 func (t *table) Alloc(n uint32) {
-	t.entities.Alloc(n)
+	t.Extend(n)
+	t.entities.len += n
 	for i := range t.columns {
-		t.columns[i].Alloc(n)
+		t.columns[i].len += n
 	}
 }
 
@@ -136,7 +135,7 @@ func (t *table) Extend(by uint32) {
 	for i := range t.columns {
 		column := &t.columns[i]
 		old := column.data
-		t.entities.data = reflect.New(reflect.ArrayOf(int(cap), old.Type().Elem())).Elem()
+		column.data = reflect.New(reflect.ArrayOf(int(cap), old.Type().Elem())).Elem()
 		column.pointer = column.data.Addr().UnsafePointer()
 		reflect.Copy(column.data, old)
 		column.cap = cap
@@ -179,19 +178,16 @@ func (t *table) Reset() {
 }
 
 func (t *table) AddAll(other *table, count uint32) {
-	t.entities.AddAll(&other.entities, count)
+	t.Alloc(count)
+	t.entities.SetLast(&other.entities, count)
 	for c := range t.columns {
-		t.columns[c].AddAll(&other.columns[c], count)
+		t.columns[c].SetLast(&other.columns[c], count)
 	}
 }
 
-func (t *table) AddAllEntities(other *table, count uint32, allocColumns bool) {
-	t.entities.AddAll(&other.entities, count)
-	if allocColumns {
-		for c := range t.columns {
-			t.columns[c].Alloc(uint32(count))
-		}
-	}
+func (t *table) AddAllEntities(other *table, count uint32) {
+	t.Alloc(count)
+	t.entities.SetLast(&other.entities, count)
 }
 
 func (t *table) MatchesExact(relations []RelationID) bool {

@@ -160,7 +160,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 		index.row = uint32(idx)
 	}
 
-	newTable.AddAllEntities(oldTable, uint32(oldLen), true)
+	newTable.AddAllEntities(oldTable, uint32(oldLen))
 	for _, id := range oldIDs {
 		if mask.Get(id) {
 			oldCol := oldTable.GetColumn(id)

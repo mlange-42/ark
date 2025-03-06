@@ -38,27 +38,6 @@ func (c *column) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*c.itemSize)
 }
 
-// Add adds a component to the column.
-func (c *column) Add(comp unsafe.Pointer) (unsafe.Pointer, uint32) {
-	c.Extend(1)
-	c.len++
-	return c.Set(c.len-1, comp), c.len - 1
-}
-
-// Alloc allocates memory for the given number of components.
-func (c *column) Alloc(n uint32) {
-	c.Extend(n)
-	c.len += n
-}
-
-func (c *column) AddAll(other *column, count uint32) {
-	oldLen := c.len
-	c.Alloc(count)
-	src := other.Get(0)
-	dst := c.Get(uintptr(oldLen))
-	copyPtr(src, dst, c.itemSize*uintptr(count))
-}
-
 func (c *column) SetLast(other *column, count uint32) {
 	start := c.len - count
 	src := other.Get(0)
@@ -75,23 +54,6 @@ func (c *column) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
 
 	copyPtr(comp, dst, uintptr(c.itemSize))
 	return dst
-}
-
-// Extend the column to be able to store the given number of additional components.
-// Has no effect of the column's capacity is already sufficient.
-// If the capacity needs to be increased, it will be doubled until it is sufficient.
-func (c *column) Extend(by uint32) {
-	required := c.len + by
-	if c.cap >= required {
-		return
-	}
-	for c.cap < required {
-		c.cap *= 2
-	}
-	old := c.data
-	c.data = reflect.New(reflect.ArrayOf(int(c.cap), old.Type().Elem())).Elem()
-	c.pointer = c.data.Addr().UnsafePointer()
-	reflect.Copy(c.data, old)
 }
 
 // Zero resets the memory at the given index.
