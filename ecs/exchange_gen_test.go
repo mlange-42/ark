@@ -20,6 +20,13 @@ func TestExchange1(t *testing.T) {
 	ex.Exchange(e, &CompA{})
 	assert.False(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+	ex.ExchangeFn(e, func(a *CompA) {
+		a.X = 100
+	})
+	assert.False(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
 }
 
 func TestExchange1Add(t *testing.T) {
@@ -32,6 +39,14 @@ func TestExchange1Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{})
+	assert.True(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+
+	ex.AddFn(e, func(a *CompA) {
+		a.X = 100
+	})
 	assert.True(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
 }
@@ -226,6 +241,13 @@ func TestExchange2(t *testing.T) {
 	ex.Exchange(e, &CompA{}, &CompB{})
 	assert.False(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+	ex.ExchangeFn(e, func(a *CompA, b *CompB) {
+		a.X = 100
+	})
+	assert.False(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
 }
 
 func TestExchange2Add(t *testing.T) {
@@ -238,6 +260,14 @@ func TestExchange2Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{})
+	assert.True(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+
+	ex.AddFn(e, func(a *CompA, b *CompB) {
+		a.X = 100
+	})
 	assert.True(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
 }
@@ -432,6 +462,13 @@ func TestExchange3(t *testing.T) {
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{})
 	assert.False(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC) {
+		a.X = 100
+	})
+	assert.False(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
 }
 
 func TestExchange3Add(t *testing.T) {
@@ -444,6 +481,14 @@ func TestExchange3Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{})
+	assert.True(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+
+	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC) {
+		a.X = 100
+	})
 	assert.True(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
 }
@@ -638,6 +683,13 @@ func TestExchange4(t *testing.T) {
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 	assert.False(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD) {
+		a.X = 100
+	})
+	assert.False(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
 }
 
 func TestExchange4Add(t *testing.T) {
@@ -650,6 +702,14 @@ func TestExchange4Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
+	assert.True(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+
+	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD) {
+		a.X = 100
+	})
 	assert.True(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
 }
@@ -844,6 +904,13 @@ func TestExchange5(t *testing.T) {
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	assert.False(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
+		a.X = 100
+	})
+	assert.False(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
 }
 
 func TestExchange5Add(t *testing.T) {
@@ -856,6 +923,14 @@ func TestExchange5Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+	assert.True(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+
+	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
+		a.X = 100
+	})
 	assert.True(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
 }
@@ -1050,6 +1125,13 @@ func TestExchange6(t *testing.T) {
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	assert.False(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
+		a.X = 100
+	})
+	assert.False(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
 }
 
 func TestExchange6Add(t *testing.T) {
@@ -1062,6 +1144,14 @@ func TestExchange6Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+	assert.True(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+
+	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
+		a.X = 100
+	})
 	assert.True(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
 }
@@ -1256,6 +1346,13 @@ func TestExchange7(t *testing.T) {
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	assert.False(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
+		a.X = 100
+	})
+	assert.False(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
 }
 
 func TestExchange7Add(t *testing.T) {
@@ -1268,6 +1365,14 @@ func TestExchange7Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+	assert.True(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+
+	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
+		a.X = 100
+	})
 	assert.True(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
 }
@@ -1462,6 +1567,13 @@ func TestExchange8(t *testing.T) {
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	assert.False(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
+		a.X = 100
+	})
+	assert.False(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
 }
 
 func TestExchange8Add(t *testing.T) {
@@ -1474,6 +1586,14 @@ func TestExchange8Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+	assert.True(t, posMap.HasAll(e))
+	assert.True(t, mapper.HasAll(e))
+
+	e = posMap.NewEntity(&Position{}, &Velocity{})
+
+	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
+		a.X = 100
+	})
 	assert.True(t, posMap.HasAll(e))
 	assert.True(t, mapper.HasAll(e))
 }

@@ -45,9 +45,6 @@ func (ex *Exchange1[A]) Add(entity Entity, a *A, rel ...Relation) {
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (ex *Exchange1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
-	if !ex.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
@@ -208,9 +205,6 @@ func (ex *Exchange2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (ex *Exchange2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
-	if !ex.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
@@ -379,9 +373,6 @@ func (ex *Exchange3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relati
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (ex *Exchange3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
-	if !ex.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
@@ -558,9 +549,6 @@ func (ex *Exchange4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (ex *Exchange4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
-	if !ex.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
@@ -745,9 +733,6 @@ func (ex *Exchange5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (ex *Exchange5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
-	if !ex.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
@@ -940,9 +925,6 @@ func (ex *Exchange6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (ex *Exchange6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
-	if !ex.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
@@ -1143,9 +1125,6 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (ex *Exchange7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
-	if !ex.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
@@ -1354,9 +1333,6 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
-	if !ex.world.Alive(entity) {
-		panic("can't add components to a dead entity")
-	}
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
