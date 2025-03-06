@@ -69,10 +69,15 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		node.archetype = arch.id
 	}
 
-	allRelation := appendNew(oldTable.relationIDs, relations...)
-	table, ok := arch.GetTable(s, allRelation)
+	var allRelations []RelationID
+	if len(relations) > 0 {
+		allRelations = appendNew(oldTable.relationIDs, relations...)
+	} else {
+		allRelations = oldTable.relationIDs
+	}
+	table, ok := arch.GetTable(s, allRelations)
 	if !ok {
-		table = s.createTable(arch, allRelation)
+		table = s.createTable(arch, allRelations)
 	}
 	return table
 }
