@@ -5,6 +5,8 @@ import (
 	"math"
 	"reflect"
 	"unsafe"
+
+	"github.com/mlange-42/ark/ecs/stats"
 )
 
 type tableID uint32
@@ -224,4 +226,37 @@ func (t *table) Matches(relations []RelationID) bool {
 
 func (t *table) Len() int {
 	return int(t.len)
+}
+
+// Stats generates statistics for a table.
+func (t *table) Stats(reg *componentRegistry) stats.Table {
+	ids := t.ids
+	aCompCount := len(ids)
+	aTypes := make([]reflect.Type, aCompCount)
+	for j, id := range ids {
+		aTypes[j], _ = reg.ComponentType(id.id)
+	}
+
+	cap := int(t.cap)
+	memPerEntity := 0
+	for i := range t.columns {
+		memPerEntity += int(t.columns[i].itemSize)
+	}
+	memory := cap * (int(entitySize) + memPerEntity)
+
+	return stats.Table{
+		Size:     int(t.Len()),
+		Capacity: cap,
+		Memory:   memory,
+	}
+}
+
+// UpdateStats updates statistics for a table.
+func (t *table) UpdateStats(node *stats.Archetype, stats *stats.Table, reg *componentRegistry) {
+	cap := int(t.cap)
+	memory := cap * (int(entitySize) + node.MemoryPerEntity)
+
+	stats.Size = int(t.Len())
+	stats.Capacity = cap
+	stats.Memory = memory
 }

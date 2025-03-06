@@ -6,6 +6,7 @@ type entityID uint32
 
 var entityType = typeOf[Entity]()
 var entitySize = sizeOf(entityType)
+var entityIndexSize = sizeOf(typeOf[entityIndex]())
 
 //var wildcard = Entity{1, 0}
 

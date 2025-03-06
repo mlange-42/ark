@@ -2,7 +2,10 @@ package ecs
 
 import (
 	"math"
+	"reflect"
 	"slices"
+
+	"github.com/mlange-42/ark/ecs/stats"
 )
 
 type archetypeID uint32
@@ -172,4 +175,88 @@ func (a *archetype) Reset(storage *storage) {
 			delete(m, key)
 		}
 	}
+}
+
+// Stats generates statistics for an archetype.
+func (a *archetype) Stats(storage *storage) stats.Archetype {
+	ids := a.components
+	aCompCount := len(ids)
+	aTypes := make([]reflect.Type, aCompCount)
+	for j, id := range ids {
+		aTypes[j], _ = storage.registry.ComponentType(id.id)
+	}
+
+	cap := 0
+	count := 0
+	memory := 0
+	var tableStats []stats.Table
+	if a.tables != nil {
+		tableStats = make([]stats.Table, len(a.tables))
+		for i, id := range a.tables {
+			table := &storage.tables[id]
+			tableStats[i] = table.Stats(&storage.registry)
+			stats := &tableStats[i]
+			cap += stats.Capacity
+			count += stats.Size
+			memory += stats.Memory
+		}
+	}
+
+	memPerEntity := 0
+	intIDs := make([]uint8, len(ids))
+	for j, id := range ids {
+		intIDs[j] = id.id
+		memPerEntity += int(aTypes[j].Size())
+	}
+
+	return stats.Archetype{
+		FreeTables:      len(a.freeTables),
+		NumRelations:    int(a.numRelations),
+		Components:      aCompCount,
+		ComponentIDs:    intIDs,
+		ComponentTypes:  aTypes,
+		Memory:          memory,
+		MemoryPerEntity: memPerEntity,
+		Size:            count,
+		Capacity:        cap,
+		Tables:          tableStats,
+	}
+}
+
+// UpdateStats updates statistics for an archetype.
+func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
+	arches := a.tables
+
+	cap := 0
+	count := 0
+	memory := 0
+
+	cntOld := int32(len(stats.Tables))
+	cntNew := int32(len(arches))
+	if cntNew < cntOld {
+		stats.Tables = stats.Tables[:cntNew]
+		cntOld = cntNew
+	}
+	var i int32
+	for i = 0; i < cntOld; i++ {
+		tableStats := &stats.Tables[i]
+		table := &storage.tables[arches[i]]
+		table.UpdateStats(stats, tableStats, &storage.registry)
+		cap += tableStats.Capacity
+		count += tableStats.Size
+		memory += tableStats.Memory
+	}
+	for i = cntOld; i < cntNew; i++ {
+		table := &storage.tables[arches[i]]
+		tableStats := table.Stats(&storage.registry)
+		stats.Tables = append(stats.Tables, tableStats)
+		cap += tableStats.Capacity
+		count += tableStats.Size
+		memory += tableStats.Memory
+	}
+
+	stats.FreeTables = len(a.freeTables)
+	stats.Capacity = cap
+	stats.Size = count
+	stats.Memory = memory
 }

@@ -1,10 +1,17 @@
 package ecs
 
+import (
+	"reflect"
+
+	"github.com/mlange-42/ark/ecs/stats"
+)
+
 // World is the central type holding entity and component data, as well as resources.
 type World struct {
 	storage   storage
 	resources Resources
 	locks     lock
+	stats     *stats.World
 }
 
 // NewWorld creates a new [World].
@@ -19,6 +26,7 @@ func NewWorld(initialCapacity ...int) World {
 		storage:   newStorage(initialCapacity...),
 		resources: newResources(),
 		locks:     lock{},
+		stats:     &stats.World{},
 	}
 }
 
@@ -126,4 +134,46 @@ func (w *World) Reset() {
 	w.storage.Reset()
 	w.locks.Reset()
 	w.resources.reset()
+}
+
+// Stats reports statistics for inspecting the World.
+//
+// The underlying [stats.World] object is re-used and updated between calls.
+// The returned pointer should thus not be stored for later analysis.
+// Rather, the required data should be extracted immediately.
+func (w *World) Stats() *stats.World {
+	w.stats.Entities = stats.Entities{
+		Used:     w.storage.entityPool.Len(),
+		Total:    w.storage.entityPool.Cap(),
+		Recycled: w.storage.entityPool.Available(),
+		Capacity: w.storage.entityPool.TotalCap(),
+	}
+
+	compCount := len(w.storage.registry.Components)
+	types := append([]reflect.Type{}, w.storage.registry.Types[:compCount]...)
+
+	memory := cap(w.storage.entities)*int(entityIndexSize) + w.storage.entityPool.TotalCap()*int(entitySize)
+
+	cntOld := int32(len(w.stats.Archetypes))
+	cntNew := int32(len(w.storage.archetypes))
+	var i int32
+	for i = 0; i < cntOld; i++ {
+		node := &w.storage.archetypes[i]
+		nodeStats := &w.stats.Archetypes[i]
+		node.UpdateStats(nodeStats, &w.storage)
+		memory += nodeStats.Memory
+	}
+	for i = cntOld; i < cntNew; i++ {
+		node := &w.storage.archetypes[i]
+		w.stats.Archetypes = append(w.stats.Archetypes, node.Stats(&w.storage))
+		memory += w.stats.Archetypes[i].Memory
+	}
+
+	w.stats.ComponentCount = compCount
+	w.stats.ComponentTypes = types
+	w.stats.Locked = w.IsLocked()
+	w.stats.Memory = memory
+	w.stats.CachedFilters = len(w.storage.cache.filters)
+
+	return w.stats
 }
