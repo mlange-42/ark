@@ -3,6 +3,7 @@ package ecs
 import (
 	"fmt"
 	"math"
+	"reflect"
 	"unsafe"
 )
 
@@ -113,10 +114,59 @@ func (t *table) Alloc(n uint32) {
 	}
 }
 
-func (t *table) Remove(index uint32) bool {
-	swapped := t.entities.Remove(index, nil)
+// Extend the table to be able to store the given number of additional entities.
+// Has no effect of the table's capacity is already sufficient.
+// If the capacity needs to be increased, it will be doubled until it is sufficient.
+func (t *table) Extend(by uint32) {
+	required := t.entities.len + by
+	cap := t.entities.cap
+	if cap >= required {
+		return
+	}
+	for cap < required {
+		cap *= 2
+	}
+
+	old := t.entities.data
+	t.entities.data = reflect.New(reflect.ArrayOf(int(cap), old.Type().Elem())).Elem()
+	t.entities.pointer = t.entities.data.Addr().UnsafePointer()
+	reflect.Copy(t.entities.data, old)
+	t.entities.cap = cap
+
 	for i := range t.columns {
-		t.columns[i].Remove(index, t.zeroPointer)
+		column := &t.columns[i]
+		old := column.data
+		t.entities.data = reflect.New(reflect.ArrayOf(int(cap), old.Type().Elem())).Elem()
+		column.pointer = column.data.Addr().UnsafePointer()
+		reflect.Copy(column.data, old)
+		column.cap = cap
+	}
+}
+
+// Remove swap-removes the entity at the given index.
+// Returns whether a swap was necessary.
+func (t *table) Remove(index uint32) bool {
+	lastIndex := uintptr(t.Len() - 1)
+	swapped := index != uint32(lastIndex)
+
+	if swapped {
+		sz := t.entities.itemSize
+		src := unsafe.Add(t.entities.pointer, lastIndex*sz)
+		dst := unsafe.Add(t.entities.pointer, uintptr(index)*sz)
+		copyPtr(src, dst, uintptr(sz))
+	}
+	t.entities.len--
+
+	for i := range t.columns {
+		column := &t.columns[i]
+		if swapped {
+			sz := column.itemSize
+			src := unsafe.Add(column.pointer, lastIndex*sz)
+			dst := unsafe.Add(column.pointer, uintptr(index)*sz)
+			copyPtr(src, dst, uintptr(sz))
+		}
+		column.len--
+		column.Zero(lastIndex, t.zeroPointer)
 	}
 	return swapped
 }
@@ -179,5 +229,5 @@ func (t *table) Matches(relations []RelationID) bool {
 }
 
 func (t *table) Len() int {
-	return int(t.entities.Len())
+	return int(t.entities.len)
 }

@@ -137,7 +137,7 @@ func (q *Query0) setTable(index int, table *table) {
 	q.cursor.table = index
 	q.table = table
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
 // Query1 is a query for 1 components.
@@ -282,7 +282,7 @@ func (q *Query1[A]) setTable(index int, table *table) {
 	q.table = table
 	q.columnA = q.components[0].columns[q.table.id]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
 // Query2 is a query for 2 components.
@@ -431,7 +431,7 @@ func (q *Query2[A, B]) setTable(index int, table *table) {
 	q.columnA = q.components[0].columns[q.table.id]
 	q.columnB = q.components[1].columns[q.table.id]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
 // Query3 is a query for 3 components.
@@ -584,7 +584,7 @@ func (q *Query3[A, B, C]) setTable(index int, table *table) {
 	q.columnB = q.components[1].columns[q.table.id]
 	q.columnC = q.components[2].columns[q.table.id]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
 // Query4 is a query for 4 components.
@@ -741,7 +741,7 @@ func (q *Query4[A, B, C, D]) setTable(index int, table *table) {
 	q.columnC = q.components[2].columns[q.table.id]
 	q.columnD = q.components[3].columns[q.table.id]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
 // Query5 is a query for 5 components.
@@ -902,7 +902,7 @@ func (q *Query5[A, B, C, D, E]) setTable(index int, table *table) {
 	q.columnD = q.components[3].columns[q.table.id]
 	q.columnE = q.components[4].columns[q.table.id]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
 // Query6 is a query for 6 components.
@@ -1067,7 +1067,7 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int, table *table) {
 	q.columnE = q.components[4].columns[q.table.id]
 	q.columnF = q.components[5].columns[q.table.id]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
 // Query7 is a query for 7 components.
@@ -1236,7 +1236,7 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int, table *table) {
 	q.columnF = q.components[5].columns[q.table.id]
 	q.columnG = q.components[6].columns[q.table.id]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
 // Query8 is a query for 8 components.
@@ -1409,5 +1409,5 @@ func (q *Query8[A, B, C, D, E, F, G, H]) setTable(index int, table *table) {
 	q.columnG = q.components[6].columns[q.table.id]
 	q.columnH = q.components[7].columns[q.table.id]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }

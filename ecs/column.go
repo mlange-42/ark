@@ -33,16 +33,6 @@ func newColumn(tp reflect.Type, isRelation bool, target Entity, capacity uint32)
 	}
 }
 
-// Len returns the number of components in the column.
-func (c *column) Len() uint32 {
-	return c.len
-}
-
-// Cap returns the current capacity of the column.
-func (c *column) Cap() uint32 {
-	return c.cap
-}
-
 // Get returns a pointer to the component at the given index.
 func (c *column) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*c.itemSize)
@@ -87,29 +77,11 @@ func (c *column) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
 	return dst
 }
 
-// Remove swap-removes the component at the given index.
-// Returns whether a swap was necessary.
-func (c *column) Remove(index uint32, zero unsafe.Pointer) bool {
-	lastIndex := uintptr(c.len - 1)
-	swapped := index != uint32(lastIndex)
-
-	if swapped && c.itemSize != 0 {
-		src := unsafe.Add(c.pointer, lastIndex*c.itemSize)
-		dst := unsafe.Add(c.pointer, uintptr(index)*c.itemSize)
-		copyPtr(src, dst, uintptr(c.itemSize))
-	}
-	c.len--
-	if zero != nil {
-		c.Zero(lastIndex, zero)
-	}
-	return swapped
-}
-
 // Extend the column to be able to store the given number of additional components.
 // Has no effect of the column's capacity is already sufficient.
 // If the capacity needs to be increased, it will be doubled until it is sufficient.
 func (c *column) Extend(by uint32) {
-	required := c.Len() + by
+	required := c.len + by
 	if c.cap >= required {
 		return
 	}

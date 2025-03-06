@@ -175,7 +175,7 @@ func (q *Query{{.}}{{$genericsShort}}) setTable(index int, table *table) {
 	q.column{{$v}} = q.components[{{$i}}].columns[q.table.id]
 	{{- end}}
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
 {{end -}}

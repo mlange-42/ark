@@ -17,79 +17,60 @@ func TestColumnPointer(t *testing.T) {
 
 func TestColumnAddRemove(t *testing.T) {
 	posType := reflect.TypeOf(Position{})
-	zeroValue := make([]byte, sizeOf(posType))
-	zeroPointer := unsafe.Pointer(&zeroValue[0])
 
 	column := newColumn(posType, false, Entity{}, 8)
 
-	assert.EqualValues(t, 8, column.Cap())
-	assert.EqualValues(t, 0, column.Len())
+	assert.EqualValues(t, 8, column.cap)
+	assert.EqualValues(t, 0, column.len)
 
 	column.Add(unsafe.Pointer(&Position{1, 2}))
 	column.Add(unsafe.Pointer(&Position{3, 4}))
 	column.Add(unsafe.Pointer(&Position{0, 0}))
 	column.Set(2, unsafe.Pointer(&Position{5, 6}))
 
-	assert.EqualValues(t, 8, column.Cap())
-	assert.EqualValues(t, 3, column.Len())
+	assert.EqualValues(t, 8, column.cap)
+	assert.EqualValues(t, 3, column.len)
 
 	pos := (*Position)(column.Get(2))
 	assert.Equal(t, Position{5, 6}, *pos)
 
-	swapped := column.Remove(0, zeroPointer)
-	assert.True(t, swapped)
-	assert.EqualValues(t, 2, column.Len())
-
 	pos = (*Position)(column.Get(0))
-	assert.Equal(t, Position{5, 6}, *pos)
-
-	swapped = column.Remove(1, zeroPointer)
-	assert.False(t, swapped)
-	assert.EqualValues(t, 1, column.Len())
+	assert.Equal(t, Position{1, 2}, *pos)
 
 	for range 8 {
 		column.Add(unsafe.Pointer(&Position{1, 2}))
 	}
-	assert.EqualValues(t, 16, column.Cap())
-	assert.EqualValues(t, 9, column.Len())
+	assert.EqualValues(t, 16, column.cap)
+	assert.EqualValues(t, 11, column.len)
 }
 
 func TestColumnAddRemoveLabel(t *testing.T) {
 	labelType := reflect.TypeOf(Label{})
-	var zeroPointer unsafe.Pointer
 
 	column := newColumn(labelType, false, Entity{}, 8)
 
-	assert.EqualValues(t, 8, column.Cap())
-	assert.EqualValues(t, 0, column.Len())
+	assert.EqualValues(t, 8, column.cap)
+	assert.EqualValues(t, 0, column.len)
 
 	column.Add(unsafe.Pointer(&Label{}))
 	column.Add(unsafe.Pointer(&Label{}))
 	column.Add(unsafe.Pointer(&Label{}))
 	column.Set(2, unsafe.Pointer(&Label{}))
 
-	assert.EqualValues(t, 8, column.Cap())
-	assert.EqualValues(t, 3, column.Len())
+	assert.EqualValues(t, 8, column.cap)
+	assert.EqualValues(t, 3, column.len)
 
 	pos := (*Label)(column.Get(2))
 	assert.Equal(t, Label{}, *pos)
 
-	swapped := column.Remove(0, zeroPointer)
-	assert.True(t, swapped)
-	assert.EqualValues(t, 2, column.Len())
-
 	pos = (*Label)(column.Get(0))
 	assert.Equal(t, Label{}, *pos)
-
-	swapped = column.Remove(1, zeroPointer)
-	assert.False(t, swapped)
-	assert.EqualValues(t, 1, column.Len())
 
 	for range 8 {
 		column.Add(unsafe.Pointer(&Label{}))
 	}
-	assert.EqualValues(t, 16, column.Cap())
-	assert.EqualValues(t, 9, column.Len())
+	assert.EqualValues(t, 16, column.cap)
+	assert.EqualValues(t, 11, column.len)
 }
 
 func TestColumnReset(t *testing.T) {

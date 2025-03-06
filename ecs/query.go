@@ -166,5 +166,5 @@ func (q *Query) setTable(index int, table *table) {
 	q.cursor.table = index
 	q.table = table
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.entities.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
