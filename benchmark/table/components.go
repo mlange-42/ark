@@ -34,18 +34,16 @@ func componentsAdd1_1000(b *testing.B) {
 		entities = append(entities, entity)
 	})
 
-	c1 := comp1{}
-
 	// Run once to allocate memory
 	for _, e := range entities {
-		mapper.Add(e, &c1)
+		mapper.AddFn(e, nil)
 	}
 	mapper.RemoveBatch(filter.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
 		for _, e := range entities {
-			mapper.Add(e, &c1)
+			mapper.AddFn(e, nil)
 		}
 		b.StopTimer()
 		mapper.RemoveBatch(filter.Batch(), nil)
@@ -64,22 +62,16 @@ func componentsAdd5_1000(b *testing.B) {
 		entities = append(entities, entity)
 	})
 
-	c1 := comp1{}
-	c2 := comp2{}
-	c3 := comp3{}
-	c4 := comp4{}
-	c5 := comp5{}
-
 	// Run once to allocate memory
 	for _, e := range entities {
-		mapper.Add(e, &c1, &c2, &c3, &c4, &c5)
+		mapper.AddFn(e, nil)
 	}
 	mapper.RemoveBatch(filter.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
 		for _, e := range entities {
-			mapper.Add(e, &c1, &c2, &c3, &c4, &c5)
+			mapper.AddFn(e, nil)
 		}
 		b.StopTimer()
 		mapper.RemoveBatch(filter.Batch(), nil)
@@ -99,18 +91,16 @@ func componentsAdd1to5_1000(b *testing.B) {
 		entities = append(entities, entity)
 	})
 
-	c1 := comp1{}
-
 	// Run once to allocate memory
 	for _, e := range entities {
-		mapper.Add(e, &c1)
+		mapper.AddFn(e, nil)
 	}
 	mapper.RemoveBatch(filter.Batch(), nil)
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
 		for _, e := range entities {
-			mapper.Add(e, &c1)
+			mapper.AddFn(e, nil)
 		}
 		b.StopTimer()
 		mapper.RemoveBatch(filter.Batch(), nil)
