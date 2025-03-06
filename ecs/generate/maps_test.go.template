@@ -27,6 +27,7 @@ func TestMap{{.}}(t *testing.T) {
 	w := NewWorld(4)
 
 	mapper := NewMap{{.}}{{$generics}}(&w)
+	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
 	for range n {
@@ -35,6 +36,18 @@ func TestMap{{.}}(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, {{$mapArgs}})
 		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func({{$args}}){
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func({{$args}}){
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
 	}
 
 	for _, e := range entities {
@@ -55,6 +68,9 @@ func TestMap{{.}}(t *testing.T) {
 	})
 	assert.Panics(t, func(){
 		mapper.Add(Entity{}, {{$mapArgs}})
+	})
+	assert.Panics(t, func(){
+		mapper.AddFn(Entity{}, func({{$args}}){})
 	})
 	assert.Panics(t, func(){
 		mapper.Remove(Entity{})
