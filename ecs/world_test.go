@@ -427,8 +427,31 @@ func TestWorldPointerStressTest(t *testing.T) {
 }
 
 func TestStats(t *testing.T) {
-	w := NewWorld()
+	w := NewWorld(128, 32)
+
+	posVelMap := NewMap2[Position, Velocity](&w)
+	posVelHeadMap := NewMap3[Position, Velocity, Heading](&w)
+	posChildMap := NewMap3[Position, ChildOf, ChildOf2](&w)
+	filter := NewFilter0(&w)
+
+	p1 := w.NewEntity()
+	p2 := w.NewEntity()
+	p3 := w.NewEntity()
+
+	posVelMap.NewBatchFn(100, nil)
+
+	posChildMap.NewBatchFn(50, nil, RelIdx(1, p1), RelIdx(2, p2))
+	posChildMap.NewBatchFn(50, nil, RelIdx(1, p3), RelIdx(2, p2))
 
 	stats := w.Stats()
+
+	posVelHeadMap.NewBatchFn(250, nil)
+	posChildMap.NewBatchFn(50, nil, RelIdx(1, p3), RelIdx(2, p2))
+
+	stats = w.Stats()
+	fmt.Println(stats.String())
+
+	w.RemoveEntities(filter.Batch(), nil)
+	stats = w.Stats()
 	fmt.Println(stats.String())
 }

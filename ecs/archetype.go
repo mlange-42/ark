@@ -235,6 +235,7 @@ func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
 	cntNew := int32(len(arches))
 	if cntNew < cntOld {
 		stats.Tables = stats.Tables[:cntNew]
+		cntOld = cntNew
 	}
 	var i int32
 	for i = 0; i < cntOld; i++ {
