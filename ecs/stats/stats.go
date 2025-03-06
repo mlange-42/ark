@@ -41,8 +41,8 @@ type Entities struct {
 type Archetype struct {
 	// Number of free tables.
 	FreeTables int
-	// Whether the archetype contains relation tables.
-	HasRelation bool
+	// Number of relation components in the archetype.
+	NumRelations int
 	// Number of components.
 	Components int
 	// Component IDs.

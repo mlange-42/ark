@@ -211,7 +211,7 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 
 	return stats.Archetype{
 		FreeTables:      len(a.freeTables),
-		HasRelation:     a.HasRelations(),
+		NumRelations:    int(a.numRelations),
 		Components:      aCompCount,
 		ComponentIDs:    intIDs,
 		ComponentTypes:  aTypes,
