@@ -13,7 +13,6 @@ type column struct {
 	target     Entity         // target entity if for a relation component
 	itemSize   uintptr        // memory size of items
 	len        uint32         // number of items
-	cap        uint32         // capacity
 }
 
 // newColumn creates a new column for a given type and capacity.
@@ -29,7 +28,6 @@ func newColumn(tp reflect.Type, isRelation bool, target Entity, capacity uint32)
 		isRelation: isRelation,
 		target:     target,
 		len:        0,
-		cap:        capacity,
 	}
 }
 

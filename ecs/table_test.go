@@ -25,19 +25,17 @@ func TestNewTable(t *testing.T) {
 		table.Add(Entity{entityID(i + 2), 0})
 	}
 	assert.EqualValues(t, 9, table.entities.len)
-	assert.EqualValues(t, 16, table.entities.cap)
+	assert.EqualValues(t, 16, table.cap)
 	for i := range table.columns {
 		assert.EqualValues(t, 9, table.columns[i].len)
-		assert.EqualValues(t, 16, table.columns[i].cap)
 	}
 
 	table2 := newTable(0, 0, 8, &w.storage.registry, []ID{posID, velID}, compMap, make([]bool, 2), make([]Entity, 2), []RelationID{})
 	table2.AddAllEntities(&table, uint32(table.Len()))
 	assert.EqualValues(t, 9, table2.entities.len)
-	assert.EqualValues(t, 16, table2.entities.cap)
+	assert.EqualValues(t, 16, table2.cap)
 	for i := range table2.columns {
 		assert.EqualValues(t, 9, table2.columns[i].len)
-		assert.EqualValues(t, 16, table2.columns[i].cap)
 	}
 }
 

@@ -20,6 +20,7 @@ type table struct {
 	ids         []ID         // components IDs in the same order as in the archetype
 	columns     []column     // columns in dense order
 	relationIDs []RelationID // all relation IDs and targets of the table
+	cap         uint32
 
 	zeroValue   []byte         // zero value with the size of the largest item type, for fast zeroing
 	zeroPointer unsafe.Pointer // pointer to the zero value, for fast zeroing
@@ -55,6 +56,7 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 		zeroValue:   zeroValue,
 		zeroPointer: zeroPointer,
 		relationIDs: relationIDs,
+		cap:         capacity,
 	}
 }
 
@@ -118,27 +120,24 @@ func (t *table) Alloc(n uint32) {
 // If the capacity needs to be increased, it will be doubled until it is sufficient.
 func (t *table) Extend(by uint32) {
 	required := t.entities.len + by
-	cap := t.entities.cap
-	if cap >= required {
+	if t.cap >= required {
 		return
 	}
-	for cap < required {
-		cap *= 2
+	for t.cap < required {
+		t.cap *= 2
 	}
 
 	old := t.entities.data
-	t.entities.data = reflect.New(reflect.ArrayOf(int(cap), old.Type().Elem())).Elem()
+	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), old.Type().Elem())).Elem()
 	t.entities.pointer = t.entities.data.Addr().UnsafePointer()
 	reflect.Copy(t.entities.data, old)
-	t.entities.cap = cap
 
 	for i := range t.columns {
 		column := &t.columns[i]
 		old := column.data
-		column.data = reflect.New(reflect.ArrayOf(int(cap), old.Type().Elem())).Elem()
+		column.data = reflect.New(reflect.ArrayOf(int(t.cap), old.Type().Elem())).Elem()
 		column.pointer = column.data.Addr().UnsafePointer()
 		reflect.Copy(column.data, old)
-		column.cap = cap
 	}
 }
 
