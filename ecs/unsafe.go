@@ -23,7 +23,7 @@ func (u Unsafe) NewEntityRel(ids []ID, relations ...RelationID) Entity {
 
 // Get returns a pointer to the given component of an [Entity].
 //
-// ⚠️ Important: The obtained pointer should not be stored persistently!
+// ⚠️ Do not store the obtained pointer outside of the current context!
 //
 // Panics if the entity does not have the given component.
 // Panics when called for a removed (and potentially recycled) entity.
@@ -34,7 +34,7 @@ func (u Unsafe) Get(entity Entity, comp ID) unsafe.Pointer {
 // GetUnchecked returns a pointer to the given component of an [Entity].
 // In contrast to [Unsafe.Get], it does not check whether the entity is alive.
 //
-// ⚠️ Important: The obtained pointer should not be stored persistently!
+// ⚠️ Do not store the obtained pointer outside of the current context!
 //
 // Panics if the entity does not have the given component.
 func (u Unsafe) GetUnchecked(entity Entity, comp ID) unsafe.Pointer {
