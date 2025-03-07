@@ -106,6 +106,9 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 }
 
 // IDs returns all component IDs of an entity.
+//
+// ⚠️ Do not modify the returned value under any circumstances!
+// For efficiency, the original IDs slice of the entity's archetype is returned.
 func (u Unsafe) IDs(entity Entity) []ID {
 	if !u.world.Alive(entity) {
 		panic("can't get component IDs of a dead entity")

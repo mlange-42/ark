@@ -29,15 +29,14 @@ type table struct {
 	zeroPointer unsafe.Pointer // pointer to the zero value, for fast zeroing
 }
 
-func newTable(id tableID, archetype archetypeID, capacity uint32, reg *componentRegistry,
-	ids []ID, componentsMap []int16, isRelation []bool, targets []Entity, relationIDs []RelationID) table {
+func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []RelationID) table {
 
 	entities := newColumn(entityType, false, Entity{}, capacity)
-	columns := make([]column, len(ids))
+	columns := make([]column, len(archetype.components))
 
 	var maxSize uintptr = entitySize
-	for i, id := range ids {
-		columns[i] = newColumn(reg.Types[id.id], isRelation[i], targets[i], capacity)
+	for i, id := range archetype.components {
+		columns[i] = newColumn(reg.Types[id.id], archetype.isRelation[i], targets[i], capacity)
 		if columns[i].itemSize > maxSize {
 			maxSize = columns[i].itemSize
 		}
@@ -51,10 +50,10 @@ func newTable(id tableID, archetype archetypeID, capacity uint32, reg *component
 
 	return table{
 		id:          id,
-		archetype:   archetype,
-		components:  componentsMap,
+		archetype:   archetype.id,
+		components:  archetype.componentsMap,
 		entities:    entities,
-		ids:         ids,
+		ids:         archetype.components,
 		columns:     columns,
 		zeroValue:   zeroValue,
 		zeroPointer: zeroPointer,
