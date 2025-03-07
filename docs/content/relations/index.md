@@ -50,9 +50,9 @@ The component can contain further variables, but the marker must be the first on
 Most methods of `MapX` (e.g. {{< api ecs Map2 >}}) provide var-args for specifying relationship targets.
 These are of type {{< api Relation >}}, which is an interface with multiple implementations:
 
-{{< api Rel >}} (type {{< api RelationType >}}) is safe, but has some run-time overhead for component ID lookup during creation.
+{{< api Rel >}} is safe, but has some run-time overhead for component ID lookup during creation.
 
-{{< api RelIdx >}} (type {{< api RelationIndex >}}) is fast but less safe.
+{{< api RelIdx >}} is fast but less safe.
 
 See the examples below for their usage.
 

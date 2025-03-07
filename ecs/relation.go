@@ -1,6 +1,6 @@
 package ecs
 
-var relationType = typeOf[RelationMarker]()
+var relationTp = typeOf[RelationMarker]()
 
 // RelationMarker is a marker for entity relation components.
 // It must be embedded as first field of a component that represent an entity relation
@@ -11,11 +11,11 @@ var relationType = typeOf[RelationMarker]()
 type RelationMarker struct{}
 
 // Relation is the common interface for specifying relation targets.
-// It is implemented by [RelationIndex], [RelationType] and [RelationID].
+// It is implemented by [Rel], [RelIdx] and [RelID].
 //
-//   - [RelationType] is safe, but has some run-time overhead for component [ID] lookup.
-//   - [RelationIndex] is fast but less safe.
-//   - [RelationID] is used in the [Unsafe] API.
+//   - [Rel] is safe, but has some run-time overhead for component [ID] lookup.
+//   - [RelIdx] is fast but less safe.
+//   - [RelID] is used in the [Unsafe] API.
 type Relation interface {
 	id(ids []ID, world *World) ID
 	targetEntity() Entity
@@ -30,7 +30,9 @@ type RelationID struct {
 	target    Entity
 }
 
-// RelID creates a new [RelationID].
+// RelID creates a new [Relation] for a component ID.
+//
+// It is used in Ark's unsafe, ID-based API.
 func RelID(id ID, target Entity) RelationID {
 	return RelationID{
 		component: id,
@@ -48,59 +50,67 @@ func (r RelationID) targetEntity() Entity {
 	return r.target
 }
 
-// RelationType specifies an entity relation target by component type.
+// relationType specifies an entity relation target by component type.
 // Create with [Rel].
 //
-// It can be used as a safer but slower alternative to [RelationIndex].
-type RelationType[C any] struct {
+// It can be used as a safer but slower alternative to [relationIndex].
+type relationType[C any] struct {
 	target Entity
 }
 
-// Rel creates a new [RelationType].
-func Rel[C any](target Entity) RelationType[C] {
-	return RelationType[C]{
+// Rel creates a new [Relation] for a component type.
+//
+// It can be used as a safer but slower alternative to [RelIdx].
+func Rel[C any](target Entity) Relation {
+	return relationType[C]{
 		target: target,
 	}
 }
 
 // id returns the component ID of this RelationID.
-func (r RelationType[C]) id(ids []ID, world *World) ID {
+func (r relationType[C]) id(ids []ID, world *World) ID {
 	return ComponentID[C](world)
 }
 
 // targetEntity returns the target [Entity] of this RelationID.
-func (r RelationType[C]) targetEntity() Entity {
+func (r relationType[C]) targetEntity() Entity {
 	return r.target
 }
 
-// RelationIndex specifies an entity relation target by component index.
+// relationIndex specifies an entity relation target by component index.
 // Create with [RelIdx].
 //
-// It can be used as faster but less safe alternative to [RelationType].
+// It can be used as faster but less safe alternative to [Rel].
 //
 // Note that the index refers to the position of the component in the generics
 // of e.g. a [Map2] or [Filter2].
 // This should not be confused with component [ID] as obtained by [ComponentID]!
-type RelationIndex struct {
+type relationIndex struct {
 	index  uint8
 	target Entity
 }
 
-// RelIdx creates a new [RelationIndex].
-func RelIdx(index int, target Entity) RelationIndex {
-	return RelationIndex{
+// RelIdx creates a new [Relation] for a component index.
+//
+// It can be used as faster but less safe alternative to [Rel].
+//
+// Note that the index refers to the position of the component in the generics
+// of e.g. a [Map2] or [Filter2].
+// This should not be confused with component [ID] as obtained by [ComponentID]!
+func RelIdx(index int, target Entity) Relation {
+	return relationIndex{
 		index:  uint8(index),
 		target: target,
 	}
 }
 
 // id returns the component ID of this RelationIndex.
-func (r RelationIndex) id(ids []ID, world *World) ID {
+func (r relationIndex) id(ids []ID, world *World) ID {
 	return ids[r.index]
 }
 
 // targetEntity returns the target [Entity] of this RelationIndex.
-func (r RelationIndex) targetEntity() Entity {
+func (r relationIndex) targetEntity() Entity {
 	return r.target
 }
 
