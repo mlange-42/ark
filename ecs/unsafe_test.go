@@ -134,6 +134,21 @@ func TestUnsafeExchange(t *testing.T) {
 	})
 }
 
+func TestUnsafeIDs(t *testing.T) {
+	w := NewWorld(16)
+	u := w.Unsafe()
+
+	posID := ComponentID[Position](&w)
+	velID := ComponentID[Velocity](&w)
+
+	e := u.NewEntity(posID, velID)
+	assert.Equal(t, []ID{posID, velID}, u.IDs(e))
+
+	assert.Panics(t, func() {
+		u.IDs(Entity{})
+	})
+}
+
 func TestUnsafeEntityDump(t *testing.T) {
 	w := NewWorld(1024)
 
