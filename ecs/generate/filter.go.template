@@ -86,6 +86,9 @@ func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...Relation) *Filter{{.}}{
 {{- end}}
 
 // Register this filter to the world's filter cache.
+//
+// Registering filters is optional.
+// It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter{{.}}{{$genericsShort}}) Register() *Filter{{.}}{{$genericsShort}} {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
