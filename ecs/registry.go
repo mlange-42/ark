@@ -112,5 +112,5 @@ func (r *componentRegistry) isRelation(tp reflect.Type) bool {
 		return false
 	}
 	field := tp.Field(0)
-	return field.Type == relationType && field.Name == relationType.Name()
+	return field.Type == relationTp && field.Name == relationTp.Name()
 }

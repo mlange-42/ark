@@ -8,7 +8,7 @@ import (
 
 func TestRel(t *testing.T) {
 	r := RelIdx(1, Entity{5, 0})
-	assert.Equal(t, RelationIndex{1, Entity{5, 0}}, r)
+	assert.Equal(t, relationIndex{1, Entity{5, 0}}, r)
 }
 
 func TestRelID(t *testing.T) {
