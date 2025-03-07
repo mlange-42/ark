@@ -38,10 +38,10 @@ func newStorage(capacity ...int) storage {
 		componentsMap[i] = -1
 	}
 
-	tables := make([]table, 0, 128)
-	tables = append(tables, newTable(0, 0, uint32(config.initialCapacity), &reg, []ID{}, componentsMap, []bool{}, []Entity{}, []RelationID{}))
 	archetypes := make([]archetype, 0, 128)
 	archetypes = append(archetypes, newArchetype(0, 0, &Mask{}, []ID{}, []tableID{0}, &reg))
+	tables := make([]table, 0, 128)
+	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, []Entity{}, []RelationID{}))
 	return storage{
 		config:     config,
 		registry:   reg,
@@ -252,9 +252,8 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 			cap = s.config.initialCapacityRelations
 		}
 		s.tables = append(s.tables, newTable(
-			newTableID, archetype.id, uint32(cap), &s.registry,
-			archetype.components, archetype.componentsMap,
-			archetype.isRelation, targets, relations))
+			newTableID, archetype, uint32(cap), &s.registry,
+			targets, relations))
 	}
 	archetype.AddTable(&s.tables[newTableID])
 
