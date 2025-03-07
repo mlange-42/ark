@@ -39,7 +39,7 @@ func newStorage(capacity ...int) storage {
 	}
 
 	archetypes := make([]archetype, 0, 128)
-	archetypes = append(archetypes, newArchetype(0, 0, &Mask{}, []ID{}, []tableID{0}, &reg))
+	archetypes = append(archetypes, newArchetype(0, 0, &bitMask{}, []ID{}, []tableID{0}, &reg))
 	tables := make([]table, 0, 128)
 	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, []Entity{}, []RelationID{}))
 	return storage{
@@ -56,7 +56,7 @@ func newStorage(capacity ...int) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []RelationID, outMask *Mask) *table {
+func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []RelationID, outMask *bitMask) *table {
 	startNode := s.archetypes[oldTable.archetype].node
 
 	node := s.graph.Find(startNode, add, remove, outMask)

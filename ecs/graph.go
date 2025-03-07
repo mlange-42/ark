@@ -7,11 +7,11 @@ type nodeID uint32
 type node struct {
 	id        nodeID
 	archetype archetypeID
-	mask      Mask
+	mask      bitMask
 	neighbors idMap[nodeID]
 }
 
-func newNode(id nodeID, archetype archetypeID, mask Mask) node {
+func newNode(id nodeID, archetype archetypeID, mask bitMask) node {
 	return node{
 		id:        id,
 		archetype: archetype,
@@ -32,12 +32,12 @@ type graph struct {
 func newGraph() graph {
 	return graph{
 		nodes: []node{
-			newNode(0, 0, NewMask()),
+			newNode(0, 0, newMask()),
 		},
 	}
 }
 
-func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *Mask) *node {
+func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *node {
 	startNode := &g.nodes[start]
 	curr := startNode
 	*outMask = startNode.mask
@@ -78,7 +78,7 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *Mask) *node {
 	return curr
 }
 
-func (g *graph) findOrCreate(mask *Mask) *node {
+func (g *graph) findOrCreate(mask *bitMask) *node {
 	for i := range g.nodes {
 		if g.nodes[i].mask.Equals(mask) {
 			return &g.nodes[i]

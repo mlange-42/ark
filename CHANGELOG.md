@@ -7,6 +7,7 @@
 - Relation component marker renamed from `ecs.Relation` to `ecs.RelationMarker` (#120)
 - Relation target syntax changed, `ecs.Rel` is now `ecs.RelIdx` (#120)
 - World argument in unsafe/ID-based filter moved from method `Query` to filter constructor (#137)
+- Removes `Mask` (makes it private/internal) (#158)
 
 ### Features
 

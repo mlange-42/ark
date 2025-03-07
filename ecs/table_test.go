@@ -12,7 +12,7 @@ func TestNewTable(t *testing.T) {
 	posID := ComponentID[Position](&w)
 	velID := ComponentID[Velocity](&w)
 
-	arch := newArchetype(0, 0, &Mask{}, []ID{posID, velID}, []tableID{0}, &w.storage.registry)
+	arch := newArchetype(0, 0, &bitMask{}, []ID{posID, velID}, []tableID{0}, &w.storage.registry)
 	table := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 2), []RelationID{})
 
 	assert.Equal(t, 2, len(table.columns))
@@ -43,7 +43,7 @@ func TestTableMatches(t *testing.T) {
 	compMap[2] = 1
 	compMap[3] = 2
 
-	arch := newArchetype(0, 0, &Mask{}, []ID{posID, velID, childID}, []tableID{0}, &w.storage.registry)
+	arch := newArchetype(0, 0, &bitMask{}, []ID{posID, velID, childID}, []tableID{0}, &w.storage.registry)
 	table := newTable(0, &arch, 8, &w.storage.registry,
 		[]Entity{{}, {}, {2, 0}},
 		[]RelationID{{component: childID, target: Entity{2, 0}}},
@@ -66,7 +66,7 @@ func TestTableReset(t *testing.T) {
 	velID := ComponentID[Velocity](&w)
 	labelID := ComponentID[Label](&w)
 
-	arch := newArchetype(0, 0, &Mask{}, []ID{posID, velID, labelID}, []tableID{0}, &w.storage.registry)
+	arch := newArchetype(0, 0, &bitMask{}, []ID{posID, velID, labelID}, []tableID{0}, &w.storage.registry)
 	table := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 3), []RelationID{})
 
 	table.Reset()

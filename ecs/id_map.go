@@ -17,14 +17,14 @@ type idMap[T any] struct {
 	zeroValue T
 	chunks    [][]T
 	chunkUsed []uint8
-	used      Mask
+	used      bitMask
 }
 
 // newIDMap creates a new idMap
 func newIDMap[T any]() idMap[T] {
 	return idMap[T]{
 		chunks:    make([][]T, idMapChunks),
-		used:      Mask{},
+		used:      bitMask{},
 		chunkUsed: make([]uint8, idMapChunks),
 	}
 }
