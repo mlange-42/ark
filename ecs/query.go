@@ -47,6 +47,8 @@ func (q *Query) Entity() Entity {
 }
 
 // Get returns the queried components of the current entity.
+//
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
 func (q *Query) Get(comp ID) unsafe.Pointer {
 	q.world.checkQueryGet(&q.cursor)
 	return q.table.Get(comp, uintptr(q.cursor.index))
@@ -89,13 +91,9 @@ func (q *Query) Count() int {
 	return count
 }
 
-// IDs returns the component IDs for the archetype of the [Entity] at the iterator's current position.
-//
-// Returns a copy of the archetype's component IDs slice, for safety.
-// This means that the result can be manipulated safely,
-// but also that calling the method may incur some significant cost.
-func (q *Query) IDs() []ID {
-	return append([]ID{}, q.table.ids...)
+// IDs returns the IDs of all component of the current [Entity]n.
+func (q *Query) IDs() IDs {
+	return newIDs(q.table.ids)
 }
 
 // Close closes the Query and unlocks the world.

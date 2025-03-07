@@ -38,6 +38,8 @@ func (m *Map[T]) NewEntityFn(fn func(a *T), rel ...Entity) Entity {
 }
 
 // Get returns the mapped component for the given entity.
+//
+// ⚠️ Do not store the obtained pointer outside of the current context.
 func (m *Map[T]) Get(entity Entity) *T {
 	if !m.world.Alive(entity) {
 		panic("can't get a component of a dead entity")
@@ -48,6 +50,8 @@ func (m *Map[T]) Get(entity Entity) *T {
 // GetUnchecked returns the mapped component for the given entity.
 // In contrast to [Map.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
+//
+// ⚠️ Do not store the obtained pointer outside of the current context.
 func (m *Map[T]) GetUnchecked(entity Entity) *T {
 	m.world.storage.checkHasComponent(entity, m.id)
 	index := m.world.storage.entities[entity.id]
