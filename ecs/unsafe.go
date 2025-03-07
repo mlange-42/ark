@@ -105,6 +105,16 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 	u.world.exchange(entity, add, remove, nil, relations)
 }
 
+// IDs returns all component IDs of an entity.
+func (u Unsafe) IDs(entity Entity) []ID {
+	if !u.world.Alive(entity) {
+		panic("can't get component IDs of a dead entity")
+	}
+	index := u.world.storage.entities[entity.id]
+	ids := u.world.storage.tables[index.table].ids
+	return append([]ID(nil), ids...)
+}
+
 // DumpEntities dumps entity information into an [EntityDump] object.
 // This dump can be used with [Unsafe.LoadEntities] to set the World's entity state.
 //
