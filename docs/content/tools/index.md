@@ -11,3 +11,4 @@ If you wrote a tool and want it to be included here, please [open an issue](http
 
 - [ark-serde](https://github.com/mlange-42/ark-serde) provides JSON serialization and deserialization for Ark's World.
 - [ark-tools](https://github.com/mlange-42/ark-model) provides systems, a scheduler, and other useful stuff for Ark.
+- [ark-pixel](https://github.com/mlange-42/ark-pixel) provides OpenGL graphics and live plots via the [Pixel](https://github.com/gopxl/pixel) game engine.
