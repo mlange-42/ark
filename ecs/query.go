@@ -48,7 +48,7 @@ func (q *Query) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query) Get(comp ID) unsafe.Pointer {
 	q.world.checkQueryGet(&q.cursor)
 	return q.table.Get(comp, uintptr(q.cursor.index))

@@ -196,7 +196,7 @@ func (q *Query1[A]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query1[A]) Get() *A {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index))
@@ -344,7 +344,7 @@ func (q *Query2[A, B]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query2[A, B]) Get() (*A, *B) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -496,7 +496,7 @@ func (q *Query3[A, B, C]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -652,7 +652,7 @@ func (q *Query4[A, B, C, D]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -812,7 +812,7 @@ func (q *Query5[A, B, C, D, E]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -976,7 +976,7 @@ func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -1144,7 +1144,7 @@ func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -1316,7 +1316,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),

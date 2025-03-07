@@ -83,7 +83,7 @@ func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 {{if . -}}
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop).
+// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 	q.world.checkQueryGet(&q.cursor)
 	return {{range $i, $v := $upper}}{{if $i}},

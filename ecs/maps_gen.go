@@ -80,7 +80,7 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Rel
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map1[A]) Get(entity Entity) *A {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -92,7 +92,7 @@ func (m *Map1[A]) Get(entity Entity) *A {
 // In contrast to [Map1.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 
@@ -316,7 +316,7 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), r
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -328,7 +328,7 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 // In contrast to [Map2.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -568,7 +568,7 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B,
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -580,7 +580,7 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 // In contrast to [Map3.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -836,7 +836,7 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b 
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -848,7 +848,7 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 // In contrast to [Map4.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -1120,7 +1120,7 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A,
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -1132,7 +1132,7 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 // In contrast to [Map5.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -1420,7 +1420,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a 
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -1432,7 +1432,7 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 // In contrast to [Map6.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -1736,7 +1736,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity,
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -1748,7 +1748,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 // In contrast to [Map7.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -2068,7 +2068,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Enti
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -2080,7 +2080,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 // In contrast to [Map8.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context.
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
