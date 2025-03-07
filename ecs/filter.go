@@ -37,25 +37,25 @@ func (f Filter) Query(relations ...RelationID) Query {
 }
 
 type filter struct {
-	mask       Mask
-	without    Mask
+	mask       bitMask
+	without    bitMask
 	hasWithout bool
 }
 
 func newFilter(ids ...ID) filter {
 	return filter{
-		mask: NewMask(ids...),
+		mask: newMask(ids...),
 	}
 }
 
-func (f *filter) matches(mask *Mask) bool {
+func (f *filter) matches(mask *bitMask) bool {
 	return mask.Contains(&f.mask) && (!f.hasWithout || !mask.ContainsAny(&f.without))
 }
 
 // Without specifies components to exclude.
 // Resets previous excludes.
 func (f filter) Without(ids ...ID) filter {
-	f.without = NewMask(ids...)
+	f.without = newMask(ids...)
 	f.hasWithout = true
 	return f
 }

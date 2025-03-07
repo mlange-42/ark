@@ -8,7 +8,7 @@ import (
 func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []RelationID) Entity {
 	w.checkLocked()
 
-	mask := Mask{}
+	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 	entity, idx := w.storage.createEntity(newTable.id)
 
@@ -27,7 +27,7 @@ func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []Rela
 func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, relations []RelationID) {
 	w.checkLocked()
 
-	mask := Mask{}
+	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 
 	startIdx := newTable.Len()
@@ -49,7 +49,7 @@ func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, rel
 func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableID, int) {
 	w.checkLocked()
 
-	mask := Mask{}
+	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 
 	startIdx := newTable.Len()
@@ -78,7 +78,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 
 	oldIDs := oldArchetype.components
 
-	mask := Mask{}
+	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	newIndex := newTable.Add(entity)
 
@@ -145,7 +145,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 
 	oldIDs := oldArchetype.components
 
-	mask := Mask{}
+	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	startIdx := uintptr(newTable.Len())
 	count := uintptr(oldLen)

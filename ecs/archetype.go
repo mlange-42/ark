@@ -16,7 +16,7 @@ const maxArchetypeID = math.MaxUint32
 type archetype struct {
 	id             archetypeID
 	node           nodeID
-	mask           Mask
+	mask           bitMask
 	components     []ID                     // components IDs of the archetype in arbitrary order
 	componentsMap  []int16                  // mapping from component IDs to column indices; -1 indicates none
 	isRelation     []bool                   // whether columns are relations components, indexed by column index
@@ -30,7 +30,7 @@ type tableIDs struct {
 	tables []tableID
 }
 
-func newArchetype(id archetypeID, node nodeID, mask *Mask, components []ID, tables []tableID, reg *componentRegistry) archetype {
+func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
 	componentsMap := make([]int16, MaskTotalBits)
 	for i := range MaskTotalBits {
 		componentsMap[i] = -1
