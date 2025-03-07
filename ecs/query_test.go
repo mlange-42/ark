@@ -51,7 +51,7 @@ func TestQuery(t *testing.T) {
 		_ = query.Get(compA)
 		assert.True(t, query.Has(compA))
 		assert.False(t, query.Has(posID))
-		assert.Equal(t, []ID{{0}, {1}, {2}}, query.IDs())
+		assert.Equal(t, []ID{{0}, {1}, {2}}, query.IDs().data)
 		cnt++
 	}
 	assert.Equal(t, cnt, n)
