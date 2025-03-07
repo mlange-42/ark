@@ -16,6 +16,27 @@ func id8(id uint8) ID {
 	return ID{id}
 }
 
+// IDs is an immutable list of [ID] values.
+type IDs struct {
+	data []ID
+}
+
+func newIDs(ids []ID) IDs {
+	return IDs{
+		data: ids,
+	}
+}
+
+// Get returns the ID at the given index.
+func (ids *IDs) Get(index int) ID {
+	return ids.data[index]
+}
+
+// Len returns the number of IDs.
+func (ids *IDs) Len() int {
+	return len(ids.data)
+}
+
 // ResID is the resource identifier.
 // It is not relevant when using the default generic API.
 type ResID struct {

@@ -142,7 +142,12 @@ func TestUnsafeIDs(t *testing.T) {
 	velID := ComponentID[Velocity](&w)
 
 	e := u.NewEntity(posID, velID)
-	assert.Equal(t, []ID{posID, velID}, u.IDs(e))
+	ids := u.IDs(e)
+	assert.Equal(t, []ID{posID, velID}, ids.data)
+
+	assert.Equal(t, 2, ids.Len())
+	assert.Equal(t, posID, ids.Get(0))
+	assert.Equal(t, velID, ids.Get(1))
 
 	assert.Panics(t, func() {
 		u.IDs(Entity{})
