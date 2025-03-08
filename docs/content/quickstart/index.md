@@ -30,4 +30,4 @@ If you ask **"What is ECS?"**, take a look at the great [**ECS FAQ**](https://gi
 
 To learn how to use Ark, read the following chapters,
 browse the [API documentation](https://pkg.go.dev/github.com/mlange-42/ark),
-or take a look at the {{< repo "tree/main/_examples" examples >}} in the {{< repo "" "GitHub repository" >}}.
+or take a look at the {{< repo "tree/main/examples" examples >}} in the {{< repo "" "GitHub repository" >}}.

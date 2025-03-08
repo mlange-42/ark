@@ -19,11 +19,11 @@ It is the successor of [Arche](https://github.com/mlange-42/arche).
 
 ## Features
 
-- Designed for performance and highly optimized.
-- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/ark).
-- Entity relationships as first-class feature.
-- Fast batch operations for mass manipulation.
-- No systems. Just queries. Use your own structure (or the [Tools](#tools)).
+- Designed for performance and highly optimized. See the [Benchmarks](https://mlange-42.github.io/ark/benchmarks/).
+- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/ark), and a comprehensive [User guide](https://mlange-42.github.io/ark/).
+- [Entity relationships](https://mlange-42.github.io/ark/relations/) as a first-class feature.
+- Fast [batch operations](https://mlange-42.github.io/ark/batch/) for mass manipulation.
+- No systems. Just queries. Use your own structure (or the [Tools](https://github.com/mlange-42/ark#tools)).
 - World serialization and deserialization with [ark-serde](https://github.com/mlange-42/ark-serde).
 
 ## Installation
@@ -38,7 +38,7 @@ go get github.com/mlange-42/ark
 
 Below is the classical Position/Velocity example that every ECS shows in the docs.
 
-See the [User Guide](https://mlange-42.github.io/ark/), [API docs](https://pkg.go.dev/github.com/mlange-42/ark) and [examples](https://github.com/mlange-42/ark/tree/main/_examples) for details.
+See the [User Guide](https://mlange-42.github.io/ark/), [API docs](https://pkg.go.dev/github.com/mlange-42/ark) and [examples](https://github.com/mlange-42/ark/tree/main/examples) for details.
 
 ```go
 package main

@@ -14,5 +14,5 @@ cd ark
 2. Run examples from the project's root directory like this:
 
 ```
-go run ./_examples/<example>
+go run ./examples/<example>
 ```
