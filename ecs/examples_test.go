@@ -65,6 +65,55 @@ func ExampleMap() {
 	mapper := ecs.NewMap[Position](&world)
 
 	// Create an entity.
-	_ = mapper.NewEntity(&Position{X: 100, Y: 100})
+	entity := mapper.NewEntity(&Position{X: 100, Y: 100})
+
+	// Remove component from the entity.
+	mapper.Remove(entity)
+	// Add component to the entity.
+	mapper.Add(entity, &Position{X: 100, Y: 100})
+	// Output:
+}
+
+func ExampleMap2() {
+	world := ecs.NewWorld()
+
+	// Create a component mapper.
+	mapper := ecs.NewMap2[Position, Velocity](&world)
+
+	// Create an entity.
+	entity := mapper.NewEntity(&Position{X: 100, Y: 100}, &Velocity{X: 1, Y: -1})
+
+	// Remove components from the entity.
+	mapper.Remove(entity)
+	// Add components to the entity.
+	mapper.Add(entity, &Position{X: 100, Y: 100}, &Velocity{X: 1, Y: -1})
+	// Output:
+}
+
+func ExampleExchange2() {
+	world := ecs.NewWorld()
+
+	// Create a component mapper.
+	mapper := ecs.NewMap[Altitude](&world)
+
+	// Create an exchange helper.
+	// Adds Position and Velocity, removes Altitude.
+	exchange := ecs.NewExchange2[Position, Velocity](&world).
+		Removes(ecs.C[Altitude]())
+
+	// Create an entity with an Altitude component.
+	entity := mapper.NewEntity(&Altitude{Z: 10_000})
+
+	// Remove Altitude and add Position and Velocity.
+	exchange.Exchange(entity, &Position{X: 100, Y: 100}, &Velocity{X: 1, Y: -1})
+
+	// Create another entity.
+	entity = mapper.NewEntity(&Altitude{Z: 10_000})
+
+	// Remove Altitude.
+	exchange.Remove(entity)
+
+	// Add Position and Velocity.
+	exchange.Add(entity, &Position{X: 100, Y: 100}, &Velocity{X: 1, Y: -1})
 	// Output:
 }
