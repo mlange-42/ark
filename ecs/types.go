@@ -16,7 +16,7 @@ func id8(id uint8) ID {
 	return ID{id}
 }
 
-// Index returns the internal component index of this Index.
+// Index returns the internal component index of this component ID.
 func (id ID) Index() uint8 {
 	return id.id
 }
@@ -46,6 +46,11 @@ func (ids *IDs) Len() int {
 // It is not relevant when using the default generic API.
 type ResID struct {
 	id uint8
+}
+
+// Index returns the internal component index of this resource ID.
+func (id ResID) Index() uint8 {
+	return id.id
 }
 
 // Batch is like a filter for batch processing of entities.
