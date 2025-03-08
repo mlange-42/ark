@@ -18,6 +18,8 @@ import "unsafe"
 // Exchange{{.}} allows to exchange components of entities.
 // It adds the given components. Use [Exchange{{.}}.Removes]
 // to set components to be removed.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Exchange{{.}}{{$generics}} struct {
 	world     *World
 	ids       []ID

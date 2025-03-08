@@ -7,6 +7,8 @@ import "unsafe"
 // Exchange1 allows to exchange components of entities.
 // It adds the given components. Use [Exchange1.Removes]
 // to set components to be removed.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Exchange1[A any] struct {
 	world     *World
 	ids       []ID
@@ -173,6 +175,8 @@ func (ex *Exchange1[A]) runCallback(entity Entity, fn func(a *A)) {
 // Exchange2 allows to exchange components of entities.
 // It adds the given components. Use [Exchange2.Removes]
 // to set components to be removed.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Exchange2[A any, B any] struct {
 	world     *World
 	ids       []ID
@@ -347,6 +351,8 @@ func (ex *Exchange2[A, B]) runCallback(entity Entity, fn func(a *A, b *B)) {
 // Exchange3 allows to exchange components of entities.
 // It adds the given components. Use [Exchange3.Removes]
 // to set components to be removed.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Exchange3[A any, B any, C any] struct {
 	world     *World
 	ids       []ID
@@ -529,6 +535,8 @@ func (ex *Exchange3[A, B, C]) runCallback(entity Entity, fn func(a *A, b *B, c *
 // Exchange4 allows to exchange components of entities.
 // It adds the given components. Use [Exchange4.Removes]
 // to set components to be removed.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Exchange4[A any, B any, C any, D any] struct {
 	world     *World
 	ids       []ID
@@ -719,6 +727,8 @@ func (ex *Exchange4[A, B, C, D]) runCallback(entity Entity, fn func(a *A, b *B, 
 // Exchange5 allows to exchange components of entities.
 // It adds the given components. Use [Exchange5.Removes]
 // to set components to be removed.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Exchange5[A any, B any, C any, D any, E any] struct {
 	world     *World
 	ids       []ID
@@ -917,6 +927,8 @@ func (ex *Exchange5[A, B, C, D, E]) runCallback(entity Entity, fn func(a *A, b *
 // Exchange6 allows to exchange components of entities.
 // It adds the given components. Use [Exchange6.Removes]
 // to set components to be removed.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Exchange6[A any, B any, C any, D any, E any, F any] struct {
 	world     *World
 	ids       []ID
@@ -1123,6 +1135,8 @@ func (ex *Exchange6[A, B, C, D, E, F]) runCallback(entity Entity, fn func(a *A, 
 // Exchange7 allows to exchange components of entities.
 // It adds the given components. Use [Exchange7.Removes]
 // to set components to be removed.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Exchange7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world     *World
 	ids       []ID
@@ -1337,6 +1351,8 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) runCallback(entity Entity, fn func(a *
 // Exchange8 allows to exchange components of entities.
 // It adds the given components. Use [Exchange8.Removes]
 // to set components to be removed.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Exchange8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world     *World
 	ids       []ID

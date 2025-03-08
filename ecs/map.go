@@ -3,6 +3,8 @@ package ecs
 import "unsafe"
 
 // Map is a mapper to access and manipulate components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Map[T any] struct {
 	world     *World
 	id        ID

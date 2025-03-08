@@ -13,6 +13,8 @@ package ecs
 {{- end}}
 
 // Filter{{.}} is a filter for {{.}} components.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Filter{{.}}{{$generics}} struct {
 	world         *World
 	ids           []ID

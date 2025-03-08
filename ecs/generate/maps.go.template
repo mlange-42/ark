@@ -16,6 +16,8 @@ import "unsafe"
 {{- $mask := join "id" ", id" "" $upper -}}
 
 // Map{{.}} is a mapper to access {{.}} components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Map{{.}}{{$generics}} struct {
 	world    *World
 	ids      []ID

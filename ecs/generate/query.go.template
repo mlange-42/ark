@@ -26,6 +26,8 @@ type cursor struct {
 
 // Query{{.}} is a query for {{.}} components.
 // Use a [NewFilter{{.}}] to create one.
+//
+// Queries are one-time use iterators and must be re-created each time before iterating.
 type Query{{.}}{{$generics}} struct {
 	world      *World
 	filter     *filter
