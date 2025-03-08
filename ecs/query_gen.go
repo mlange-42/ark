@@ -10,7 +10,7 @@ type cursor struct {
 }
 
 // Query0 is a query for 0 components.
-// Use a [NewFilter0] to create one.
+// Use a [Filter0] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
 //
@@ -145,7 +145,7 @@ func (q *Query0) setTable(index int, table *table) {
 }
 
 // Query1 is a query for 1 components.
-// Use a [NewFilter1] to create one.
+// Use a [Filter1] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
 //
@@ -296,7 +296,7 @@ func (q *Query1[A]) setTable(index int, table *table) {
 }
 
 // Query2 is a query for 2 components.
-// Use a [NewFilter2] to create one.
+// Use a [Filter2] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
 type Query2[A any, B any] struct {
@@ -449,7 +449,7 @@ func (q *Query2[A, B]) setTable(index int, table *table) {
 }
 
 // Query3 is a query for 3 components.
-// Use a [NewFilter3] to create one.
+// Use a [Filter3] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
 //
@@ -608,7 +608,7 @@ func (q *Query3[A, B, C]) setTable(index int, table *table) {
 }
 
 // Query4 is a query for 4 components.
-// Use a [NewFilter4] to create one.
+// Use a [Filter4] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
 //
@@ -771,7 +771,7 @@ func (q *Query4[A, B, C, D]) setTable(index int, table *table) {
 }
 
 // Query5 is a query for 5 components.
-// Use a [NewFilter5] to create one.
+// Use a [Filter5] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
 //
@@ -938,7 +938,7 @@ func (q *Query5[A, B, C, D, E]) setTable(index int, table *table) {
 }
 
 // Query6 is a query for 6 components.
-// Use a [NewFilter6] to create one.
+// Use a [Filter6] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
 //
@@ -1109,7 +1109,7 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int, table *table) {
 }
 
 // Query7 is a query for 7 components.
-// Use a [NewFilter7] to create one.
+// Use a [Filter7] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
 //
@@ -1284,7 +1284,7 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int, table *table) {
 }
 
 // Query8 is a query for 8 components.
-// Use a [NewFilter8] to create one.
+// Use a [Filter8] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
 //

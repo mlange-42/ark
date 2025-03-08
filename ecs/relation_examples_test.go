@@ -42,3 +42,37 @@ func ExampleRelationMarker() {
 	// Output: {5 0} {3 0}
 	// {4 0} {3 0}
 }
+
+func ExampleRel() {
+	world := ecs.NewWorld()
+
+	// Create relation targets / parents
+	parent1 := world.NewEntity()
+	parent2 := world.NewEntity()
+
+	// Create a component mapper.
+	mapper := ecs.NewMap2[Position, ChildOf](&world)
+
+	// Create an entity, setting a relation target.
+	entity := mapper.NewEntity(&Position{}, &ChildOf{}, ecs.Rel[ChildOf](parent1))
+
+	// Change the entity's relation target.
+	mapper.SetRelations(entity, ecs.Rel[ChildOf](parent2))
+}
+
+func ExampleRelIdx() {
+	world := ecs.NewWorld()
+
+	// Create relation targets / parents
+	parent1 := world.NewEntity()
+	parent2 := world.NewEntity()
+
+	// Create a component mapper.
+	mapper := ecs.NewMap2[Position, ChildOf](&world)
+
+	// Create an entity, setting a relation target.
+	entity := mapper.NewEntity(&Position{}, &ChildOf{}, ecs.RelIdx(1, parent1))
+
+	// Change the entity's relation target.
+	mapper.SetRelations(entity, ecs.RelIdx(1, parent2))
+}
