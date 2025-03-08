@@ -66,7 +66,7 @@ func (q *Query0) Entity() Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query0) Close() {
 	q.cursor.archetype = -2
@@ -213,7 +213,7 @@ func (q *Query1[A]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query1[A]) Close() {
 	q.cursor.archetype = -2
@@ -364,7 +364,7 @@ func (q *Query2[A, B]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query2[A, B]) Close() {
 	q.cursor.archetype = -2
@@ -519,7 +519,7 @@ func (q *Query3[A, B, C]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query3[A, B, C]) Close() {
 	q.cursor.archetype = -2
@@ -678,7 +678,7 @@ func (q *Query4[A, B, C, D]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query4[A, B, C, D]) Close() {
 	q.cursor.archetype = -2
@@ -841,7 +841,7 @@ func (q *Query5[A, B, C, D, E]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query5[A, B, C, D, E]) Close() {
 	q.cursor.archetype = -2
@@ -1008,7 +1008,7 @@ func (q *Query6[A, B, C, D, E, F]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.cursor.archetype = -2
@@ -1179,7 +1179,7 @@ func (q *Query7[A, B, C, D, E, F, G]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.cursor.archetype = -2
@@ -1354,7 +1354,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.cursor.archetype = -2
