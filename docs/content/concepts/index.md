@@ -44,6 +44,10 @@ When dealing with stored entities, it may be required to check whether they are 
 
 {{< code-func concepts_test.go TestEntityAlive >}}
 
+In Ark, entities are returned to a pool when they are removed from the world.
+These entities can be recycled, with the same ID ({{< api ecs Entity.ID Entity.ID >}}), but an incremented generation ({{< api ecs Entity.Gen Entity.Gen >}}).
+This allows to determine whether an entity held by the user is still alive, despite it was potentially recycled.
+
 ## Components
 
 Components contain the data, or state variables, associated with an entity.

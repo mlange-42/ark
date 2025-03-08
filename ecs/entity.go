@@ -16,6 +16,10 @@ var entityIndexSize = sizeOf(typeOf[entityIndex]())
 // For stored entities, it may be necessary to check their alive status with [World.Alive].
 //
 // ⚠️ Always store entities by value, never by pointer!
+//
+// In Ark, entities are returned to a pool when they are removed from the world.
+// These entities can be recycled, with the same ID ([Entity.ID]), but an incremented generation ([Entity.Gen]).
+// This allows to determine whether an entity hold by the user is still alive, despite it was potentially recycled.
 type Entity struct {
 	id  entityID // Entity ID
 	gen uint32   // Entity generation
