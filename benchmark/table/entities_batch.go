@@ -9,9 +9,9 @@ import (
 
 func benchesEntitiesBatch() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
-		{Name: "World.NewEntities", Desc: "1000, memory already allocated", F: entitiesBatchCreate1000, N: 1000},
-		{Name: "Map1.NewBatchFn w/ 1 Comp", Desc: "1000, memory already allocated", F: entitiesBatchCreate1Comp1000, N: 1000},
-		{Name: "Map5.NewBatchFn w/ 5 Comps", Desc: "1000, memory already allocated", F: entitiesBatchCreate5Comp1000, N: 1000},
+		{Name: "World.NewEntities", Desc: "1000, memory already alloc.", F: entitiesBatchCreate1000, N: 1000},
+		{Name: "Map1.NewBatchFn w/ 1 Comp", Desc: "1000, memory already alloc.", F: entitiesBatchCreate1Comp1000, N: 1000},
+		{Name: "Map5.NewBatchFn w/ 5 Comps", Desc: "1000, memory already alloc.", F: entitiesBatchCreate5Comp1000, N: 1000},
 
 		{Name: "World.RemoveEntities", Desc: "1000", F: entitiesBatchRemove1000, N: 1000},
 		{Name: "World.RemoveEntities w/ 1 Comp", Desc: "1000", F: entitiesBatchRemove1Comp1000, N: 1000},
