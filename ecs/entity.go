@@ -10,7 +10,12 @@ var entityIndexSize = sizeOf(typeOf[entityIndex]())
 
 //var wildcard = Entity{1, 0}
 
-// Entity identifier.
+// Entity is an identifier for entities.
+//
+// Can be stored safely in components, resources or elsewhere.
+// For stored entities, it may be necessary to check their alive status with [World.Alive].
+//
+// ⚠️ Always store entities by value, never by pointer!
 type Entity struct {
 	id  entityID // Entity ID
 	gen uint32   // Entity generation
