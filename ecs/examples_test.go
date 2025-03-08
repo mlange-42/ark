@@ -2,6 +2,14 @@ package ecs_test
 
 import "github.com/mlange-42/ark/ecs"
 
+type Position struct {
+	X, Y float64
+}
+
+type Velocity struct {
+	X, Y float64
+}
+
 type Grid struct {
 	Width  int
 	Height int

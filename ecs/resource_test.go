@@ -26,7 +26,7 @@ func TestResource(t *testing.T) {
 
 func ExampleResource() {
 	// Create a world.
-	world := ecs.NewWorld(1024)
+	world := ecs.NewWorld()
 
 	// Create a resource.
 	gridResource := NewGrid(100, 100)
