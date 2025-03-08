@@ -203,8 +203,6 @@ func (ex *Exchange1[A]) runCallback(entity Entity, fn func(a *A)) {
 // to set components to be removed.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
-//
-// See [Exchange2] for a usage example.
 type Exchange2[A any, B any] struct {
 	world     *World
 	ids       []ID

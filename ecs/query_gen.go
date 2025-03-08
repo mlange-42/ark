@@ -299,8 +299,6 @@ func (q *Query1[A]) setTable(index int, table *table) {
 // Use a [NewFilter2] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
-//
-// See [Query2] for a usage example.
 type Query2[A any, B any] struct {
 	world      *World
 	filter     *filter

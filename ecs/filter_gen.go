@@ -255,8 +255,6 @@ func (f *Filter1[A]) checkCached() {
 // Used to create [Query2] iterators.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
-//
-// See [Filter2] for a usage example.
 type Filter2[A any, B any] struct {
 	world         *World
 	ids           []ID

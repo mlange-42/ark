@@ -57,3 +57,14 @@ func ExampleQuery2() {
 	}
 	// Output:
 }
+
+func ExampleMap() {
+	world := ecs.NewWorld()
+
+	// Create a component mapper.
+	mapper := ecs.NewMap[Position](&world)
+
+	// Create an entity.
+	_ = mapper.NewEntity(&Position{X: 100, Y: 100})
+	// Output:
+}

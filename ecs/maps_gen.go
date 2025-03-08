@@ -271,8 +271,6 @@ func (m *Map1[A]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ..
 // Map2 is a mapper to access 2 components of an entity.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
-//
-// See [Map2] for a usage example.
 type Map2[A any, B any] struct {
 	world     *World
 	ids       []ID

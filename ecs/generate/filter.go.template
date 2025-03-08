@@ -16,8 +16,10 @@ package ecs
 // Used to create [Query{{.}}] iterators.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+{{- if ne . 2 }}
 //
 // See [Filter2] for a usage example.
+{{- end}}
 type Filter{{.}}{{$generics}} struct {
 	world         *World
 	ids           []ID
