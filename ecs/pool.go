@@ -102,7 +102,7 @@ func (p *entityPool) Available() int {
 // This implementation uses an implicit list.
 type bitPool struct {
 	length    uint16
-	bits      [MaskTotalBits]uint8
+	bits      [maskTotalBits]uint8
 	next      uint8
 	available uint8
 }
@@ -120,10 +120,10 @@ func (p *bitPool) Get() uint8 {
 
 // Allocates and returns a new bit. For internal use.
 func (p *bitPool) getNew() uint8 {
-	if p.length >= MaskTotalBits {
+	if p.length >= maskTotalBits {
 		panic(fmt.Sprintf("run out of the maximum of %d bits. "+
 			"This is likely caused by unclosed queries that lock the world. "+
-			"Make sure that all queries finish their iteration or are closed manually", MaskTotalBits))
+			"Make sure that all queries finish their iteration or are closed manually", maskTotalBits))
 	}
 	b := uint8(p.length)
 	p.bits[p.length] = b

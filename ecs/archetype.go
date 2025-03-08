@@ -31,8 +31,8 @@ type tableIDs struct {
 }
 
 func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
-	componentsMap := make([]int16, MaskTotalBits)
-	for i := range MaskTotalBits {
+	componentsMap := make([]int16, maskTotalBits)
+	for i := range maskTotalBits {
 		componentsMap[i] = -1
 	}
 	for i, id := range components {

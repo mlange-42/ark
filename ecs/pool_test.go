@@ -110,7 +110,7 @@ func TestEntityPoolStochastic(t *testing.T) {
 func TestBitPool(t *testing.T) {
 	p := bitPool{}
 
-	for i := 0; i < MaskTotalBits; i++ {
+	for i := 0; i < maskTotalBits; i++ {
 		assert.Equal(t, i, int(p.Get()))
 	}
 
@@ -127,7 +127,7 @@ func TestBitPool(t *testing.T) {
 
 	p.Reset()
 
-	for i := 0; i < MaskTotalBits; i++ {
+	for i := 0; i < maskTotalBits; i++ {
 		assert.Equal(t, i, int(p.Get()))
 	}
 

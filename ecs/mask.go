@@ -6,9 +6,9 @@ import (
 	"math/bits"
 )
 
-// MaskTotalBits is the size of a [bitMask] in bits.
+// maskTotalBits is the size of a [bitMask] in bits.
 // It is the maximum number of component types that may exist in any [World].
-const MaskTotalBits = 256
+const maskTotalBits = 256
 const wordSize = 64
 
 // bitMask is a 256 bit bit-mask.

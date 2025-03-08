@@ -2,7 +2,7 @@ package ecs
 
 // Manages locks by mask bits.
 //
-// The number of simultaneous locks at a given time is limited to [MaskTotalBits].
+// The number of simultaneous locks at a given time is limited to 256 (64 with build tag tiny).
 type lock struct {
 	locks   bitMask // The actual locks.
 	bitPool bitPool // The bit pool for getting and recycling bits.

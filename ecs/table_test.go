@@ -38,7 +38,7 @@ func TestTableMatches(t *testing.T) {
 	velID := ComponentID[Velocity](&w)
 	childID := ComponentID[ChildOf](&w)
 
-	compMap := make([]int16, MaskTotalBits)
+	compMap := make([]int16, maskTotalBits)
 	compMap[1] = 0
 	compMap[2] = 1
 	compMap[3] = 2
