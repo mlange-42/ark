@@ -18,6 +18,8 @@ import "unsafe"
 // Exchange{{.}} allows to exchange components of entities.
 // It adds the given components. Use [Exchange{{.}}.Removes]
 // to set components to be removed.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Exchange{{.}}{{$generics}} struct {
 	world     *World
 	ids       []ID
@@ -59,6 +61,8 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}}), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
@@ -83,10 +87,12 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, re
 	}, ex.relations)
 }
 
-// Exchange performs the exchange on the given entity, adding the provided components
+// ExchangeFn performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange{{.}}.Removes].
 // It runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeFn(entity Entity, fn func({{$args}}), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
@@ -107,6 +113,8 @@ func (ex *Exchange{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, false, rel...)
 }
@@ -143,6 +151,8 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatch(batch *Batch, {{$args}}
 
 // ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, true, rel...)
 }

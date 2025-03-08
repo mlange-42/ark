@@ -98,7 +98,7 @@ func (q *Query) IDs() IDs {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query) Close() {
 	q.cursor.archetype = -2

@@ -5,6 +5,8 @@ package ecs
 import "unsafe"
 
 // Map1 is a mapper to access 1 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Map1[A any] struct {
 	world     *World
 	ids       []ID
@@ -34,6 +36,8 @@ func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
@@ -57,6 +61,8 @@ func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
@@ -80,7 +86,7 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Rel
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) Get(entity Entity) *A {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -92,7 +98,7 @@ func (m *Map1[A]) Get(entity Entity) *A {
 // In contrast to [Map1.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 
@@ -121,6 +127,8 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
@@ -143,6 +151,8 @@ func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 
@@ -233,6 +243,8 @@ func (m *Map1[A]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ..
 }
 
 // Map2 is a mapper to access 2 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Map2[A any, B any] struct {
 	world     *World
 	ids       []ID
@@ -266,6 +278,8 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
@@ -291,6 +305,8 @@ func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
@@ -316,7 +332,7 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), r
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -328,7 +344,7 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 // In contrast to [Map2.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -361,6 +377,8 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
@@ -385,6 +403,8 @@ func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 
@@ -477,6 +497,8 @@ func (m *Map2[A, B]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel
 }
 
 // Map3 is a mapper to access 3 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Map3[A any, B any, C any] struct {
 	world     *World
 	ids       []ID
@@ -514,6 +536,8 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
@@ -541,6 +565,8 @@ func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
@@ -568,7 +594,7 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B,
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -580,7 +606,7 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 // In contrast to [Map3.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -617,6 +643,8 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
@@ -643,6 +671,8 @@ func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 
@@ -737,6 +767,8 @@ func (m *Map3[A, B, C]) SetRelationsBatch(batch *Batch, fn func(entity Entity), 
 }
 
 // Map4 is a mapper to access 4 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Map4[A any, B any, C any, D any] struct {
 	world     *World
 	ids       []ID
@@ -778,6 +810,8 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) En
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
@@ -807,6 +841,8 @@ func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Re
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
@@ -836,7 +872,7 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b 
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -848,7 +884,7 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 // In contrast to [Map4.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -889,6 +925,8 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
@@ -917,6 +955,8 @@ func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ..
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 
@@ -1013,6 +1053,8 @@ func (m *Map4[A, B, C, D]) SetRelationsBatch(batch *Batch, fn func(entity Entity
 }
 
 // Map5 is a mapper to access 5 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Map5[A any, B any, C any, D any, E any] struct {
 	world     *World
 	ids       []ID
@@ -1058,6 +1100,8 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
@@ -1089,6 +1133,8 @@ func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, 
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
@@ -1120,7 +1166,7 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A,
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -1132,7 +1178,7 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 // In contrast to [Map5.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -1177,6 +1223,8 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
@@ -1207,6 +1255,8 @@ func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 
@@ -1305,6 +1355,8 @@ func (m *Map5[A, B, C, D, E]) SetRelationsBatch(batch *Batch, fn func(entity Ent
 }
 
 // Map6 is a mapper to access 6 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Map6[A any, B any, C any, D any, E any, F any] struct {
 	world     *World
 	ids       []ID
@@ -1354,6 +1406,8 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
@@ -1387,6 +1441,8 @@ func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
@@ -1420,7 +1476,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a 
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -1432,7 +1488,7 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 // In contrast to [Map6.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -1481,6 +1537,8 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
@@ -1513,6 +1571,8 @@ func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, 
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 
@@ -1613,6 +1673,8 @@ func (m *Map6[A, B, C, D, E, F]) SetRelationsBatch(batch *Batch, fn func(entity 
 }
 
 // Map7 is a mapper to access 7 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Map7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world     *World
 	ids       []ID
@@ -1666,6 +1728,8 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
@@ -1701,6 +1765,8 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, 
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
@@ -1736,7 +1802,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity,
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -1748,7 +1814,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 // In contrast to [Map7.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -1801,6 +1867,8 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
@@ -1835,6 +1903,8 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 
@@ -1937,6 +2007,8 @@ func (m *Map7[A, B, C, D, E, F, G]) SetRelationsBatch(batch *Batch, fn func(enti
 }
 
 // Map8 is a mapper to access 8 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
 type Map8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world     *World
 	ids       []ID
@@ -1994,6 +2066,8 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
@@ -2031,6 +2105,8 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
@@ -2068,7 +2144,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Enti
 
 // Get returns the mapped components for the given entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
@@ -2080,7 +2156,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 // In contrast to [Map8.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context!
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 	m.world.storage.checkHasComponent(entity, m.ids[1])
@@ -2137,6 +2213,8 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
@@ -2173,6 +2251,8 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, 
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 

@@ -11,6 +11,8 @@ type cursor struct {
 
 // Query0 is a query for 0 components.
 // Use a [NewFilter0] to create one.
+//
+// Queries are one-time use iterators and must be re-created each time before iterating.
 type Query0 struct {
 	world      *World
 	filter     *filter
@@ -64,7 +66,7 @@ func (q *Query0) Entity() Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query0) Close() {
 	q.cursor.archetype = -2
@@ -142,6 +144,8 @@ func (q *Query0) setTable(index int, table *table) {
 
 // Query1 is a query for 1 components.
 // Use a [NewFilter1] to create one.
+//
+// Queries are one-time use iterators and must be re-created each time before iterating.
 type Query1[A any] struct {
 	world      *World
 	filter     *filter
@@ -196,7 +200,7 @@ func (q *Query1[A]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
+// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
 func (q *Query1[A]) Get() *A {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index))
@@ -209,7 +213,7 @@ func (q *Query1[A]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query1[A]) Close() {
 	q.cursor.archetype = -2
@@ -289,6 +293,8 @@ func (q *Query1[A]) setTable(index int, table *table) {
 
 // Query2 is a query for 2 components.
 // Use a [NewFilter2] to create one.
+//
+// Queries are one-time use iterators and must be re-created each time before iterating.
 type Query2[A any, B any] struct {
 	world      *World
 	filter     *filter
@@ -344,7 +350,7 @@ func (q *Query2[A, B]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
+// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
 func (q *Query2[A, B]) Get() (*A, *B) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -358,7 +364,7 @@ func (q *Query2[A, B]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query2[A, B]) Close() {
 	q.cursor.archetype = -2
@@ -440,6 +446,8 @@ func (q *Query2[A, B]) setTable(index int, table *table) {
 
 // Query3 is a query for 3 components.
 // Use a [NewFilter3] to create one.
+//
+// Queries are one-time use iterators and must be re-created each time before iterating.
 type Query3[A any, B any, C any] struct {
 	world      *World
 	filter     *filter
@@ -496,7 +504,7 @@ func (q *Query3[A, B, C]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
+// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
 func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -511,7 +519,7 @@ func (q *Query3[A, B, C]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query3[A, B, C]) Close() {
 	q.cursor.archetype = -2
@@ -595,6 +603,8 @@ func (q *Query3[A, B, C]) setTable(index int, table *table) {
 
 // Query4 is a query for 4 components.
 // Use a [NewFilter4] to create one.
+//
+// Queries are one-time use iterators and must be re-created each time before iterating.
 type Query4[A any, B any, C any, D any] struct {
 	world      *World
 	filter     *filter
@@ -652,7 +662,7 @@ func (q *Query4[A, B, C, D]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
+// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
 func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -668,7 +678,7 @@ func (q *Query4[A, B, C, D]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query4[A, B, C, D]) Close() {
 	q.cursor.archetype = -2
@@ -754,6 +764,8 @@ func (q *Query4[A, B, C, D]) setTable(index int, table *table) {
 
 // Query5 is a query for 5 components.
 // Use a [NewFilter5] to create one.
+//
+// Queries are one-time use iterators and must be re-created each time before iterating.
 type Query5[A any, B any, C any, D any, E any] struct {
 	world      *World
 	filter     *filter
@@ -812,7 +824,7 @@ func (q *Query5[A, B, C, D, E]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
+// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
 func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -829,7 +841,7 @@ func (q *Query5[A, B, C, D, E]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query5[A, B, C, D, E]) Close() {
 	q.cursor.archetype = -2
@@ -917,6 +929,8 @@ func (q *Query5[A, B, C, D, E]) setTable(index int, table *table) {
 
 // Query6 is a query for 6 components.
 // Use a [NewFilter6] to create one.
+//
+// Queries are one-time use iterators and must be re-created each time before iterating.
 type Query6[A any, B any, C any, D any, E any, F any] struct {
 	world      *World
 	filter     *filter
@@ -976,7 +990,7 @@ func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
+// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
 func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -994,7 +1008,7 @@ func (q *Query6[A, B, C, D, E, F]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.cursor.archetype = -2
@@ -1084,6 +1098,8 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int, table *table) {
 
 // Query7 is a query for 7 components.
 // Use a [NewFilter7] to create one.
+//
+// Queries are one-time use iterators and must be re-created each time before iterating.
 type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world      *World
 	filter     *filter
@@ -1144,7 +1160,7 @@ func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
+// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
 func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -1163,7 +1179,7 @@ func (q *Query7[A, B, C, D, E, F, G]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.cursor.archetype = -2
@@ -1255,6 +1271,8 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int, table *table) {
 
 // Query8 is a query for 8 components.
 // Use a [NewFilter8] to create one.
+//
+// Queries are one-time use iterators and must be re-created each time before iterating.
 type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world      *World
 	filter     *filter
@@ -1316,7 +1334,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
 
 // Get returns the queried components of the current entity.
 //
-// ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
+// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
 func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) {
 	q.world.checkQueryGet(&q.cursor)
 	return (*A)(q.columnA.Get(q.cursor.index)),
@@ -1336,7 +1354,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) GetRelation(index int) Entity {
 
 // Close closes the Query and unlocks the world.
 //
-// Automatically called when iteration finishes.
+// Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.cursor.archetype = -2
