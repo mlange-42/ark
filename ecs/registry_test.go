@@ -13,10 +13,10 @@ func TestComponentRegistry(t *testing.T) {
 	posType := reflect.TypeOf((*Position)(nil)).Elem()
 	rotType := reflect.TypeOf((*Velocity)(nil)).Elem()
 
-	reg.registerComponent(posType, MaskTotalBits)
+	reg.registerComponent(posType, maskTotalBits)
 	assert.Equal(t, []uint8{uint8(0)}, reg.IDs)
 
-	reg.registerComponent(rotType, MaskTotalBits)
+	reg.registerComponent(rotType, maskTotalBits)
 	reg.unregisterLastComponent()
 	assert.Equal(t, []uint8{uint8(0)}, reg.IDs)
 

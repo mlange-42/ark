@@ -17,7 +17,7 @@ type Resources struct {
 func newResources() Resources {
 	return Resources{
 		registry:  newRegistry(),
-		resources: make([]any, MaskTotalBits),
+		resources: make([]any, maskTotalBits),
 	}
 }
 

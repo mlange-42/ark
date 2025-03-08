@@ -2,7 +2,7 @@ package ecs
 
 const (
 	idMapChunkSize = 16
-	idMapChunks    = MaskTotalBits / idMapChunkSize
+	idMapChunks    = maskTotalBits / idMapChunkSize
 )
 
 // idMap maps component IDs to values.
@@ -12,7 +12,7 @@ const (
 //
 // The memory footprint is reduced by using chunks, and only allocating chunks if they contain a key.
 //
-// The range of keys is limited from 0 to [MaskTotalBits]-1.
+// The range of keys is limited from 0 to [maskTotalBits]-1.
 type idMap[T any] struct {
 	zeroValue T
 	chunks    [][]T

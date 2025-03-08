@@ -7,8 +7,8 @@ import (
 )
 
 func TestIDMap(t *testing.T) {
-	big1 := uint8(MaskTotalBits - 20)
-	big2 := uint8(MaskTotalBits - 3)
+	big1 := uint8(maskTotalBits - 20)
+	big2 := uint8(maskTotalBits - 3)
 
 	m := newIDMap[*Entity]()
 
@@ -53,8 +53,8 @@ func TestIDMap(t *testing.T) {
 }
 
 func TestIDMapPointers(t *testing.T) {
-	big1 := uint8(MaskTotalBits - 20)
-	big2 := uint8(MaskTotalBits - 3)
+	big1 := uint8(maskTotalBits - 20)
+	big2 := uint8(maskTotalBits - 3)
 
 	m := newIDMap[Entity]()
 
@@ -101,10 +101,10 @@ func TestIDMapPointers(t *testing.T) {
 func BenchmarkIdMapping_IDMap(b *testing.B) {
 	b.StopTimer()
 
-	entities := [MaskTotalBits]Entity{}
+	entities := [maskTotalBits]Entity{}
 	m := newIDMap[*Entity]()
 
-	for i := 0; i < MaskTotalBits; i++ {
+	for i := 0; i < maskTotalBits; i++ {
 		entities[i] = Entity{entityID(i), 0}
 		m.Set(uint8(i), &entities[i])
 	}
@@ -113,7 +113,7 @@ func BenchmarkIdMapping_IDMap(b *testing.B) {
 
 	var ptr *Entity = nil
 	for i := 0; i < b.N; i++ {
-		ptr, _ = m.Get(uint8(i % MaskTotalBits))
+		ptr, _ = m.Get(uint8(i % maskTotalBits))
 	}
 	_ = ptr
 }
@@ -121,10 +121,10 @@ func BenchmarkIdMapping_IDMap(b *testing.B) {
 func BenchmarkIdMapping_Array(b *testing.B) {
 	b.StopTimer()
 
-	entities := [MaskTotalBits]Entity{}
-	m := [MaskTotalBits]*Entity{}
+	entities := [maskTotalBits]Entity{}
+	m := [maskTotalBits]*Entity{}
 
-	for i := 0; i < MaskTotalBits; i++ {
+	for i := 0; i < maskTotalBits; i++ {
 		entities[i] = Entity{entityID(i), 0}
 		m[i] = &entities[i]
 	}
@@ -133,7 +133,7 @@ func BenchmarkIdMapping_Array(b *testing.B) {
 
 	var ptr *Entity = nil
 	for i := 0; i < b.N; i++ {
-		ptr = m[i%MaskTotalBits]
+		ptr = m[i%maskTotalBits]
 	}
 	_ = ptr
 }
@@ -141,10 +141,10 @@ func BenchmarkIdMapping_Array(b *testing.B) {
 func BenchmarkIdMapping_HashMap(b *testing.B) {
 	b.StopTimer()
 
-	entities := [MaskTotalBits]Entity{}
-	m := make(map[uint8]*Entity, MaskTotalBits)
+	entities := [maskTotalBits]Entity{}
+	m := make(map[uint8]*Entity, maskTotalBits)
 
-	for i := 0; i < MaskTotalBits; i++ {
+	for i := 0; i < maskTotalBits; i++ {
 		entities[i] = Entity{entityID(i), 0}
 		m[uint8(i)] = &entities[i]
 	}
@@ -153,7 +153,7 @@ func BenchmarkIdMapping_HashMap(b *testing.B) {
 
 	var ptr *Entity = nil
 	for i := 0; i < b.N; i++ {
-		ptr = m[uint8(i%MaskTotalBits)]
+		ptr = m[uint8(i%maskTotalBits)]
 	}
 	_ = ptr
 }
@@ -161,10 +161,10 @@ func BenchmarkIdMapping_HashMap(b *testing.B) {
 func BenchmarkIdMapping_HashMapEntity(b *testing.B) {
 	b.StopTimer()
 
-	entities := [MaskTotalBits]Entity{}
-	m := make(map[Entity]*Entity, MaskTotalBits)
+	entities := [maskTotalBits]Entity{}
+	m := make(map[Entity]*Entity, maskTotalBits)
 
-	for i := 0; i < MaskTotalBits; i++ {
+	for i := 0; i < maskTotalBits; i++ {
 		entities[i] = Entity{entityID(i), 0}
 		m[Entity{entityID(i), 0}] = &entities[i]
 	}
@@ -173,7 +173,7 @@ func BenchmarkIdMapping_HashMapEntity(b *testing.B) {
 
 	var ptr *Entity = nil
 	for i := 0; i < b.N; i++ {
-		ptr = m[Entity{entityID(i % MaskTotalBits), 0}]
+		ptr = m[Entity{entityID(i % maskTotalBits), 0}]
 	}
 	_ = ptr
 }

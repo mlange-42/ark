@@ -17,7 +17,7 @@ type registry struct {
 func newRegistry() registry {
 	return registry{
 		Components: map[reflect.Type]uint8{},
-		Types:      make([]reflect.Type, MaskTotalBits),
+		Types:      make([]reflect.Type, maskTotalBits),
 		Used:       bitMask{},
 		IDs:        []uint8{},
 	}
@@ -29,7 +29,7 @@ func (r *registry) ComponentID(tp reflect.Type) (uint8, bool) {
 	if id, ok := r.Components[tp]; ok {
 		return id, false
 	}
-	return r.registerComponent(tp, MaskTotalBits), true
+	return r.registerComponent(tp, maskTotalBits), true
 }
 
 // ComponentType returns the type of a component by ID.
@@ -78,7 +78,7 @@ type componentRegistry struct {
 func newComponentRegistry() componentRegistry {
 	return componentRegistry{
 		registry:   newRegistry(),
-		IsRelation: make([]bool, MaskTotalBits),
+		IsRelation: make([]bool, maskTotalBits),
 	}
 }
 
@@ -88,7 +88,7 @@ func (r *componentRegistry) ComponentID(tp reflect.Type) (uint8, bool) {
 	if id, ok := r.Components[tp]; ok {
 		return id, false
 	}
-	return r.registerComponent(tp, MaskTotalBits), true
+	return r.registerComponent(tp, maskTotalBits), true
 }
 
 // registerComponent registers a components and assigns an ID for it.

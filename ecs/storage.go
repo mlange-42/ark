@@ -33,8 +33,8 @@ func newStorage(capacity ...int) storage {
 	for i := range reservedEntities {
 		entities[i] = entityIndex{table: maxTableID, row: 0}
 	}
-	componentsMap := make([]int16, MaskTotalBits)
-	for i := range MaskTotalBits {
+	componentsMap := make([]int16, maskTotalBits)
+	for i := range maskTotalBits {
 		componentsMap[i] = -1
 	}
 
@@ -52,7 +52,7 @@ func newStorage(capacity ...int) storage {
 		graph:      newGraph(),
 		archetypes: archetypes,
 		tables:     tables,
-		components: make([]componentStorage, 0, MaskTotalBits),
+		components: make([]componentStorage, 0, maskTotalBits),
 	}
 }
 
