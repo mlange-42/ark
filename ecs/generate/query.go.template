@@ -28,6 +28,8 @@ type cursor struct {
 // Use a [NewFilter{{.}}] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
+//
+// See [Query2] for a usage example.
 type Query{{.}}{{$generics}} struct {
 	world      *World
 	filter     *filter

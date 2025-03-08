@@ -13,8 +13,11 @@ package ecs
 {{- end}}
 
 // Filter{{.}} is a filter for {{.}} components.
+// Used to create [Query{{.}}] iterators.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Filter2] for a usage example.
 type Filter{{.}}{{$generics}} struct {
 	world         *World
 	ids           []ID

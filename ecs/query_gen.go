@@ -13,6 +13,8 @@ type cursor struct {
 // Use a [NewFilter0] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
+//
+// See [Query2] for a usage example.
 type Query0 struct {
 	world      *World
 	filter     *filter
@@ -146,6 +148,8 @@ func (q *Query0) setTable(index int, table *table) {
 // Use a [NewFilter1] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
+//
+// See [Query2] for a usage example.
 type Query1[A any] struct {
 	world      *World
 	filter     *filter
@@ -295,6 +299,8 @@ func (q *Query1[A]) setTable(index int, table *table) {
 // Use a [NewFilter2] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
+//
+// See [Query2] for a usage example.
 type Query2[A any, B any] struct {
 	world      *World
 	filter     *filter
@@ -448,6 +454,8 @@ func (q *Query2[A, B]) setTable(index int, table *table) {
 // Use a [NewFilter3] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
+//
+// See [Query2] for a usage example.
 type Query3[A any, B any, C any] struct {
 	world      *World
 	filter     *filter
@@ -605,6 +613,8 @@ func (q *Query3[A, B, C]) setTable(index int, table *table) {
 // Use a [NewFilter4] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
+//
+// See [Query2] for a usage example.
 type Query4[A any, B any, C any, D any] struct {
 	world      *World
 	filter     *filter
@@ -766,6 +776,8 @@ func (q *Query4[A, B, C, D]) setTable(index int, table *table) {
 // Use a [NewFilter5] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
+//
+// See [Query2] for a usage example.
 type Query5[A any, B any, C any, D any, E any] struct {
 	world      *World
 	filter     *filter
@@ -931,6 +943,8 @@ func (q *Query5[A, B, C, D, E]) setTable(index int, table *table) {
 // Use a [NewFilter6] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
+//
+// See [Query2] for a usage example.
 type Query6[A any, B any, C any, D any, E any, F any] struct {
 	world      *World
 	filter     *filter
@@ -1100,6 +1114,8 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int, table *table) {
 // Use a [NewFilter7] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
+//
+// See [Query2] for a usage example.
 type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world      *World
 	filter     *filter
@@ -1273,6 +1289,8 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int, table *table) {
 // Use a [NewFilter8] to create one.
 //
 // Queries are one-time use iterators and must be re-created each time before iterating.
+//
+// See [Query2] for a usage example.
 type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world      *World
 	filter     *filter

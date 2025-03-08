@@ -7,6 +7,8 @@ import "unsafe"
 // Map1 is a mapper to access 1 components of an entity.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
 type Map1[A any] struct {
 	world     *World
 	ids       []ID
@@ -269,6 +271,8 @@ func (m *Map1[A]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ..
 // Map2 is a mapper to access 2 components of an entity.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
 type Map2[A any, B any] struct {
 	world     *World
 	ids       []ID
@@ -547,6 +551,8 @@ func (m *Map2[A, B]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel
 // Map3 is a mapper to access 3 components of an entity.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
 type Map3[A any, B any, C any] struct {
 	world     *World
 	ids       []ID
@@ -841,6 +847,8 @@ func (m *Map3[A, B, C]) SetRelationsBatch(batch *Batch, fn func(entity Entity), 
 // Map4 is a mapper to access 4 components of an entity.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
 type Map4[A any, B any, C any, D any] struct {
 	world     *World
 	ids       []ID
@@ -1151,6 +1159,8 @@ func (m *Map4[A, B, C, D]) SetRelationsBatch(batch *Batch, fn func(entity Entity
 // Map5 is a mapper to access 5 components of an entity.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
 type Map5[A any, B any, C any, D any, E any] struct {
 	world     *World
 	ids       []ID
@@ -1477,6 +1487,8 @@ func (m *Map5[A, B, C, D, E]) SetRelationsBatch(batch *Batch, fn func(entity Ent
 // Map6 is a mapper to access 6 components of an entity.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
 type Map6[A any, B any, C any, D any, E any, F any] struct {
 	world     *World
 	ids       []ID
@@ -1819,6 +1831,8 @@ func (m *Map6[A, B, C, D, E, F]) SetRelationsBatch(batch *Batch, fn func(entity 
 // Map7 is a mapper to access 7 components of an entity.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
 type Map7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world     *World
 	ids       []ID
@@ -2177,6 +2191,8 @@ func (m *Map7[A, B, C, D, E, F, G]) SetRelationsBatch(batch *Batch, fn func(enti
 // Map8 is a mapper to access 8 components of an entity.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
 type Map8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world     *World
 	ids       []ID
