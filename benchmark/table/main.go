@@ -8,7 +8,7 @@ import (
 	"github.com/shirou/gopsutil/v4/cpu"
 )
 
-const version = "v0.3.0-dev"
+const version = "v0.3.0"
 
 func main() {
 	fmt.Printf("Last run: %s  \n", time.Now().Format(time.RFC1123))
