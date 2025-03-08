@@ -16,6 +16,11 @@ func id8(id uint8) ID {
 	return ID{id}
 }
 
+// Index returns the internal component index of this Index.
+func (id ID) Index() uint8 {
+	return id.id
+}
+
 // IDs is an immutable list of [ID] values.
 type IDs struct {
 	data []ID
