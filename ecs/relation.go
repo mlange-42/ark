@@ -3,14 +3,14 @@ package ecs
 var relationTp = typeOf[RelationMarker]()
 
 // RelationMarker is a marker for entity relation components.
-// It must be embedded as first field of a component that represent an entity relation
+// It must be embedded as first field of a component that represent an entity relationship
 // (see the example).
 //
 // Entity relations allow for fast queries using entity relationships.
 // E.g. to iterate over all entities that are the child of a certain parent entity.
 type RelationMarker struct{}
 
-// Relation is the common interface for specifying relation targets.
+// Relation is the common interface for specifying relationship targets.
 // It is implemented by [Rel], [RelIdx] and [RelID].
 //
 //   - [Rel] is safe, but has some run-time overhead for component [ID] lookup.
@@ -81,10 +81,6 @@ func (r relationType[C]) targetEntity() Entity {
 // Create with [RelIdx].
 //
 // It can be used as faster but less safe alternative to [Rel].
-//
-// Note that the index refers to the position of the component in the generics
-// of e.g. a [Map2] or [Filter2].
-// This should not be confused with component [ID] as obtained by [ComponentID]!
 type relationIndex struct {
 	index  uint8
 	target Entity

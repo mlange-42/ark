@@ -1,34 +1,45 @@
-package ecs
+package ecs_test
 
 import (
 	"testing"
 
+	"github.com/mlange-42/ark/ecs"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestResource(t *testing.T) {
-	w := NewWorld(1024)
-	get := NewResource[Position](&w)
+	w := ecs.NewWorld(1024)
+	get := ecs.NewResource[Grid](&w)
 
 	assert.False(t, get.Has())
-	get.Add(&Position{100, 101})
+	gridResource := NewGrid(100, 200)
+	get.Add(&gridResource)
 
 	assert.True(t, get.Has())
-	res := get.Get()
+	grid := get.Get()
 
-	assert.Equal(t, Position{100, 101}, *res)
+	assert.Equal(t, Grid{100, 200}, *grid)
 
 	get.Remove()
 	assert.False(t, get.Has())
 }
 
 func ExampleResource() {
-	world := NewWorld(1024)
-	resAccess := NewResource[Position](&world)
+	// Create a world.
+	world := ecs.NewWorld()
 
-	resAccess.Add(&Position{})
+	// Create a resource.
+	gridResource := NewGrid(100, 100)
+	// Add it to the world.
+	ecs.AddResource(&world, &gridResource)
 
-	res := resAccess.Get()
-	res.X, res.Y = 10, 5
+	// Resource access in systems.
+	// Create and store a resource accessor.
+	gridAccess := ecs.NewResource[Grid](&world)
+
+	// Use the resource.
+	grid := gridAccess.Get()
+	entity := grid.Get(13, 42)
+	_ = entity
 	// Output:
 }

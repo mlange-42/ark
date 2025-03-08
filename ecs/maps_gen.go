@@ -27,6 +27,9 @@ func NewMap1[A any](world *World) Map1[A] {
 }
 
 // NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
@@ -36,6 +39,9 @@ func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
@@ -52,6 +58,9 @@ func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
 }
 
 // NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
@@ -61,6 +70,9 @@ func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Relation) {
@@ -118,6 +130,9 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 }
 
 // Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
@@ -127,6 +142,9 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
@@ -142,6 +160,9 @@ func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
@@ -151,6 +172,9 @@ func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...Relation) {
@@ -268,6 +292,9 @@ func NewMap2[A any, B any](world *World) Map2[A, B] {
 }
 
 // NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
@@ -278,6 +305,9 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
@@ -295,6 +325,9 @@ func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
 }
 
 // NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
@@ -305,6 +338,9 @@ func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), rel ...Relation) {
@@ -367,6 +403,9 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 }
 
 // Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
@@ -377,6 +416,9 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
@@ -393,6 +435,9 @@ func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) 
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
@@ -403,6 +448,9 @@ func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), rel ...Relation) {
@@ -525,6 +573,9 @@ func NewMap3[A any, B any, C any](world *World) Map3[A, B, C] {
 }
 
 // NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
@@ -536,6 +587,9 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) Entity {
@@ -554,6 +608,9 @@ func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) 
 }
 
 // NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
@@ -565,6 +622,9 @@ func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
@@ -632,6 +692,9 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 }
 
 // Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
@@ -643,6 +706,9 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
@@ -660,6 +726,9 @@ func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...R
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
@@ -671,6 +740,9 @@ func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
@@ -798,6 +870,9 @@ func NewMap4[A any, B any, C any, D any](world *World) Map4[A, B, C, D] {
 }
 
 // NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
@@ -810,6 +885,9 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) En
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...Relation) Entity {
@@ -829,6 +907,9 @@ func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...R
 }
 
 // NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
@@ -841,6 +922,9 @@ func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Re
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
@@ -913,6 +997,9 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 }
 
 // Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
@@ -925,6 +1012,9 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
@@ -943,6 +1033,9 @@ func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D),
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
@@ -955,6 +1048,9 @@ func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ..
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
@@ -1087,6 +1183,9 @@ func NewMap5[A any, B any, C any, D any, E any](world *World) Map5[A, B, C, D, E
 }
 
 // NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
@@ -1100,6 +1199,9 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) Entity {
@@ -1120,6 +1222,9 @@ func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E),
 }
 
 // NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
@@ -1133,6 +1238,9 @@ func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, 
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
@@ -1210,6 +1318,9 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 }
 
 // Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
@@ -1223,6 +1334,9 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
@@ -1242,6 +1356,9 @@ func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
@@ -1255,6 +1372,9 @@ func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
@@ -1392,6 +1512,9 @@ func NewMap6[A any, B any, C any, D any, E any, F any](world *World) Map6[A, B, 
 }
 
 // NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
@@ -1406,6 +1529,9 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) Entity {
@@ -1427,6 +1553,9 @@ func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *
 }
 
 // NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
@@ -1441,6 +1570,9 @@ func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
@@ -1523,6 +1655,9 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 }
 
 // Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
@@ -1537,6 +1672,9 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
@@ -1557,6 +1695,9 @@ func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, 
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
@@ -1571,6 +1712,9 @@ func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, 
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
@@ -1713,6 +1857,9 @@ func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) Map7
 }
 
 // NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
@@ -1728,6 +1875,9 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) Entity {
@@ -1750,6 +1900,9 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, 
 }
 
 // NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
@@ -1765,6 +1918,9 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, 
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
@@ -1852,6 +2008,9 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 }
 
 // Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
@@ -1867,6 +2026,9 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
@@ -1888,6 +2050,9 @@ func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
@@ -1903,6 +2068,9 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
@@ -2050,6 +2218,9 @@ func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *Worl
 }
 
 // NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
@@ -2066,6 +2237,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) Entity {
@@ -2089,6 +2263,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *
 }
 
 // NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
@@ -2105,6 +2282,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
 // The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
@@ -2197,6 +2377,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 }
 
 // Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
@@ -2213,6 +2396,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
@@ -2235,6 +2421,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, 
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
@@ -2251,6 +2440,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, 
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {

@@ -1,7 +1,6 @@
 package ecs
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -73,21 +72,4 @@ func TestResourcesReset(t *testing.T) {
 	rot, ok = res.Get(rotID).(*Heading)
 	assert.True(t, ok)
 	assert.Equal(t, Heading{50}, *rot)
-}
-
-func ExampleResources() {
-	world := NewWorld(1024)
-
-	resID := ResourceID[Position](&world)
-
-	myRes := Position{100, 100}
-	world.Resources().Add(resID, &myRes)
-
-	res := (world.Resources().Get(resID)).(*Position)
-	fmt.Println(res)
-
-	if world.Resources().Has(resID) {
-		world.Resources().Remove(resID)
-	}
-	// Output: &{100 100}
 }

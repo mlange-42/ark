@@ -38,14 +38,12 @@ Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wik
 
 ## Ark's Features
 
-- Designed for performance and highly optimized.
-- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/ark).
-- Entity relationships as first-class feature.
-- Fast batch operations for mass manipulation.
+- Designed for performance and highly optimized. See the [Benchmarks](https://mlange-42.github.io/ark/benchmarks/).
+- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/ark), and a comprehensive [User guide](https://mlange-42.github.io/ark/).
+- [Entity relationships](https://mlange-42.github.io/ark/relations/) as a first-class feature.
+- Fast [batch operations](https://mlange-42.github.io/ark/batch/) for mass manipulation.
 - No systems. Just queries. Use your own structure (or the [Tools](https://github.com/mlange-42/ark#tools)).
 - World serialization and deserialization with [ark-serde](https://github.com/mlange-42/ark-serde).
-
-For more information, see the [GitHub repository](https://github.com/mlange-42/ark) and [API docs](https://pkg.go.dev/github.com/mlange-42/ark).
 
 ## Contributing
 

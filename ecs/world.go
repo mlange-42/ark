@@ -17,7 +17,7 @@ type World struct {
 // NewWorld creates a new [World].
 //
 // Accepts zero, one or two arguments.
-// The first argument is the initial capacity of the world.
+// The first argument is the initial capacity of the world, and of normal archetypes.
 // The second argument is the initial capacity of relation archetypes.
 // If only one argument is provided, it is used for both capacities.
 // If no arguments are provided, the defaults are 1024 and 128, respectively.
@@ -57,6 +57,10 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 }
 
 // Alive return whether the given entity is alive.
+//
+// In Ark, entities are returned to a pool when they are removed from the world.
+// These entities can be recycled, with the same ID ([Entity.ID]), but an incremented generation ([Entity.Gen]).
+// This allows to determine whether an entity held by the user is still alive, despite it was potentially recycled.
 func (w *World) Alive(entity Entity) bool {
 	return w.storage.entityPool.Alive(entity)
 }
