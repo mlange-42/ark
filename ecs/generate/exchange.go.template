@@ -20,6 +20,10 @@ import "unsafe"
 // to set components to be removed.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+{{- if ne . 2 }}
+//
+// See [Exchange2] for a usage example.
+{{- end}}
 type Exchange{{.}}{{$generics}} struct {
 	world     *World
 	ids       []ID

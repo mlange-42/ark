@@ -111,8 +111,9 @@ func (w *World) IsLocked() bool {
 }
 
 // Resources of the world.
-//
 // Resources are component-like data that is not associated to an entity, but unique to the world.
+//
+// See also [Resource], [AddResource] and [GetResource].
 func (w *World) Resources() *Resources {
 	return &w.resources
 }

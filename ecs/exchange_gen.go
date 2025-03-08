@@ -9,6 +9,8 @@ import "unsafe"
 // to set components to be removed.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Exchange2] for a usage example.
 type Exchange1[A any] struct {
 	world     *World
 	ids       []ID
@@ -401,6 +403,8 @@ func (ex *Exchange2[A, B]) runCallback(entity Entity, fn func(a *A, b *B)) {
 // to set components to be removed.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Exchange2] for a usage example.
 type Exchange3[A any, B any, C any] struct {
 	world     *World
 	ids       []ID
@@ -609,6 +613,8 @@ func (ex *Exchange3[A, B, C]) runCallback(entity Entity, fn func(a *A, b *B, c *
 // to set components to be removed.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Exchange2] for a usage example.
 type Exchange4[A any, B any, C any, D any] struct {
 	world     *World
 	ids       []ID
@@ -825,6 +831,8 @@ func (ex *Exchange4[A, B, C, D]) runCallback(entity Entity, fn func(a *A, b *B, 
 // to set components to be removed.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Exchange2] for a usage example.
 type Exchange5[A any, B any, C any, D any, E any] struct {
 	world     *World
 	ids       []ID
@@ -1049,6 +1057,8 @@ func (ex *Exchange5[A, B, C, D, E]) runCallback(entity Entity, fn func(a *A, b *
 // to set components to be removed.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Exchange2] for a usage example.
 type Exchange6[A any, B any, C any, D any, E any, F any] struct {
 	world     *World
 	ids       []ID
@@ -1281,6 +1291,8 @@ func (ex *Exchange6[A, B, C, D, E, F]) runCallback(entity Entity, fn func(a *A, 
 // to set components to be removed.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Exchange2] for a usage example.
 type Exchange7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world     *World
 	ids       []ID
@@ -1521,6 +1533,8 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) runCallback(entity Entity, fn func(a *
 // to set components to be removed.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Exchange2] for a usage example.
 type Exchange8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world     *World
 	ids       []ID
