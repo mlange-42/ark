@@ -148,6 +148,8 @@ func TestUnsafeIDs(t *testing.T) {
 	assert.Equal(t, 2, ids.Len())
 	assert.Equal(t, posID, ids.Get(0))
 	assert.Equal(t, velID, ids.Get(1))
+	assert.Equal(t, posID.Index(), ids.Get(0).Index())
+	assert.Equal(t, velID.Index(), ids.Get(1).Index())
 
 	assert.Panics(t, func() {
 		u.IDs(Entity{})

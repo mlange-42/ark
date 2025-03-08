@@ -30,6 +30,7 @@
 - Adds `ExchangeX.AddFn` and `ExchangeX.ExchangeFn` (#145)
 - Adds `World.Stats` for extracting world statistics (#147)
 - Adds `Unsafe.IDs` to get all component IDs of an entity (#149)
+- Adds methods `ID.Index` and `ResID.Index` (#159)
 
 ### Documentation
 

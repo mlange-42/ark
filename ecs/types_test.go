@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type Position struct {
@@ -71,6 +73,13 @@ type CompG struct {
 
 type CompH struct {
 	X, Y float64
+}
+
+func TestID(t *testing.T) {
+	id := ID{12}
+	assert.EqualValues(t, 12, id.Index())
+	rid := ResID{13}
+	assert.EqualValues(t, 13, rid.Index())
 }
 
 func TestTypeSizes(t *testing.T) {
