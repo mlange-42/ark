@@ -28,6 +28,8 @@ func (m *Map[T]) NewEntity(comp *T, rel ...Entity) Entity {
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) NewEntityFn(fn func(a *T), rel ...Entity) Entity {
 	m.relations = relationEntities(rel).toRelation(m.world, m.id, m.relations)
 	entity := m.world.newEntityWith([]ID{m.id}, nil, m.relations)
@@ -85,6 +87,8 @@ func (m *Map[T]) Add(entity Entity, comp *T, rel ...Entity) {
 
 // AddFn adds the mapped component to the given entity and runs a callback instead of using a component for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) AddFn(entity Entity, fn func(a *T), rel ...Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't add a component to a dead entity")

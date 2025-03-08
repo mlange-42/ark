@@ -44,6 +44,8 @@ func (ex *Exchange1[A]) Add(entity Entity, a *A, rel ...Relation) {
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
@@ -66,10 +68,12 @@ func (ex *Exchange1[A]) Exchange(entity Entity, a *A, rel ...Relation) {
 	}, ex.relations)
 }
 
-// Exchange performs the exchange on the given entity, adding the provided components
+// ExchangeFn performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange1.Removes].
 // It runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) ExchangeFn(entity Entity, fn func(a *A), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
@@ -88,6 +92,8 @@ func (ex *Exchange1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, false, rel...)
 }
@@ -122,6 +128,8 @@ func (ex *Exchange1[A]) ExchangeBatch(batch *Batch, a *A, rel ...Relation) {
 
 // ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, true, rel...)
 }
@@ -204,6 +212,8 @@ func (ex *Exchange2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
@@ -227,10 +237,12 @@ func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B, rel ...Relation) 
 	}, ex.relations)
 }
 
-// Exchange performs the exchange on the given entity, adding the provided components
+// ExchangeFn performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange2.Removes].
 // It runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) ExchangeFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
@@ -250,6 +262,8 @@ func (ex *Exchange2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, false, rel...)
 }
@@ -285,6 +299,8 @@ func (ex *Exchange2[A, B]) ExchangeBatch(batch *Batch, a *A, b *B, rel ...Relati
 
 // ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, true, rel...)
 }
@@ -372,6 +388,8 @@ func (ex *Exchange3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relati
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
@@ -396,10 +414,12 @@ func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C, rel ...R
 	}, ex.relations)
 }
 
-// Exchange performs the exchange on the given entity, adding the provided components
+// ExchangeFn performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange3.Removes].
 // It runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
@@ -420,6 +440,8 @@ func (ex *Exchange3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Re
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, false, rel...)
 }
@@ -456,6 +478,8 @@ func (ex *Exchange3[A, B, C]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, rel 
 
 // ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, true, rel...)
 }
@@ -548,6 +572,8 @@ func (ex *Exchange4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel 
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
@@ -573,10 +599,12 @@ func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D,
 	}, ex.relations)
 }
 
-// Exchange performs the exchange on the given entity, adding the provided components
+// ExchangeFn performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange4.Removes].
 // It runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
@@ -598,6 +626,8 @@ func (ex *Exchange4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, 
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, false, rel...)
 }
@@ -635,6 +665,8 @@ func (ex *Exchange4[A, B, C, D]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d
 
 // ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, true, rel...)
 }
@@ -732,6 +764,8 @@ func (ex *Exchange5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
@@ -758,10 +792,12 @@ func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d 
 	}, ex.relations)
 }
 
-// Exchange performs the exchange on the given entity, adding the provided components
+// ExchangeFn performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange5.Removes].
 // It runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
@@ -784,6 +820,8 @@ func (ex *Exchange5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, false, rel...)
 }
@@ -822,6 +860,8 @@ func (ex *Exchange5[A, B, C, D, E]) ExchangeBatch(batch *Batch, a *A, b *B, c *C
 
 // ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, true, rel...)
 }
@@ -924,6 +964,8 @@ func (ex *Exchange6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
@@ -951,10 +993,12 @@ func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C,
 	}, ex.relations)
 }
 
-// Exchange performs the exchange on the given entity, adding the provided components
+// ExchangeFn performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange6.Removes].
 // It runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
@@ -978,6 +1022,8 @@ func (ex *Exchange6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, 
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, false, rel...)
 }
@@ -1017,6 +1063,8 @@ func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatch(batch *Batch, a *A, b *B, c
 
 // ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, true, rel...)
 }
@@ -1124,6 +1172,8 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
@@ -1152,10 +1202,12 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c 
 	}, ex.relations)
 }
 
-// Exchange performs the exchange on the given entity, adding the provided components
+// ExchangeFn performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange7.Removes].
 // It runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
@@ -1180,6 +1232,8 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, false, rel...)
 }
@@ -1220,6 +1274,8 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatch(batch *Batch, a *A, b *B
 
 // ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, true, rel...)
 }
@@ -1332,6 +1388,8 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
@@ -1361,10 +1419,12 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B,
 	}, ex.relations)
 }
 
-// Exchange performs the exchange on the given entity, adding the provided components
+// ExchangeFn performs the exchange on the given entity, adding the provided components
 // and removing those previously specified with [Exchange8.Removes].
 // It runs a callback instead of using components for initialization.
 // The callback can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
@@ -1390,6 +1450,8 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, 
 
 // AddBatchFn adds the mapped components to all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, false, rel...)
 }
@@ -1431,6 +1493,8 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatch(batch *Batch, a *A, b
 
 // ExchangeBatchFn performs the exchange on all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	ex.exchangeBatchFn(batch, fn, true, rel...)
 }
