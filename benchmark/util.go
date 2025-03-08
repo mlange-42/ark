@@ -31,8 +31,8 @@ func RunBenchmarks(title string, benches []Benchmark, format func([]Benchmark) s
 func ToMarkdown(benches []Benchmark) string {
 	b := strings.Builder{}
 
-	b.WriteString(fmt.Sprintf("| %-32s | %-12s | %-28s |\n", "Operation", "Time", "Remark"))
-	b.WriteString(fmt.Sprintf("|%s|%s:|%s|\n", strings.Repeat("-", 34), strings.Repeat("-", 13), strings.Repeat("-", 30)))
+	b.WriteString(fmt.Sprintf("| %-38s | %-12s | %-28s |\n", "Operation", "Time", "Remark"))
+	b.WriteString(fmt.Sprintf("|%s|%s:|%s|\n", strings.Repeat("-", 40), strings.Repeat("-", 13), strings.Repeat("-", 30)))
 
 	for i := range benches {
 		bench := &benches[i]
@@ -46,7 +46,7 @@ func ToMarkdown(benches []Benchmark) string {
 		}
 
 		t := fmt.Sprintf("%.1f %s", bench.T*factor, units)
-		b.WriteString(fmt.Sprintf("| %-32s | %12s | %-28s |\n", bench.Name, t, bench.Desc))
+		b.WriteString(fmt.Sprintf("| %-38s | %12s | %-28s |\n", bench.Name, t, bench.Desc))
 	}
 	b.WriteString("\n")
 

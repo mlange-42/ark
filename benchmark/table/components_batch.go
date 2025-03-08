@@ -9,16 +9,16 @@ import (
 
 func benchesComponentsBatch() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
-		{Name: "Map1.AddBatchFn 1 Comp", Desc: "1000, memory already allocated", F: componentsBatchAdd1_1000, N: 1000},
-		{Name: "Map5.AddBatchFn 5 Comps", Desc: "1000, memory already allocated", F: componentsBatchAdd5_1000, N: 1000},
-		{Name: "Map1.AddBatchFn 1 to 5 Comps", Desc: "1000, memory already allocated", F: componentsBatchAdd1to5_1000, N: 1000},
+		{Name: "Map1.AddBatchFn 1 Comp", Desc: "1000, memory already alloc.", F: componentsBatchAdd1_1000, N: 1000},
+		{Name: "Map5.AddBatchFn 5 Comps", Desc: "1000, memory already alloc.", F: componentsBatchAdd5_1000, N: 1000},
+		{Name: "Map1.AddBatchFn 1 to 5 Comps", Desc: "1000, memory already alloc.", F: componentsBatchAdd1to5_1000, N: 1000},
 
-		{Name: "Map1.RemoveBatch 1 Comp", Desc: "1000, memory already allocated", F: componentsBatchRemove1_1000, N: 1000},
-		{Name: "Map5.RemoveBatch 5 Comps", Desc: "1000, memory already allocated", F: componentsBatchRemove5_1000, N: 1000},
-		{Name: "Map1.RemoveBatch 1 of 5 Comps", Desc: "1000, memory already allocated", F: componentsBatchRemove1of5_1000, N: 1000},
+		{Name: "Map1.RemoveBatch 1 Comp", Desc: "1000, memory already alloc.", F: componentsBatchRemove1_1000, N: 1000},
+		{Name: "Map5.RemoveBatch 5 Comps", Desc: "1000, memory already alloc.", F: componentsBatchRemove5_1000, N: 1000},
+		{Name: "Map1.RemoveBatch 1 of 5 Comps", Desc: "1000, memory already alloc.", F: componentsBatchRemove1of5_1000, N: 1000},
 
-		{Name: "Exchange1.ExchangeBatchFn 1 Comp", Desc: "1000, memory already allocated", F: componentsBatchExchange1_1000, N: 1000},
-		{Name: "Exchange1.ExchangeBatchFn 1 of 5 Comps", Desc: "1000, memory already allocated", F: componentsBatchExchange1of5_1000, N: 1000},
+		{Name: "Exchange1.ExchangeBatchFn 1 Comp", Desc: "1000, memory already alloc.", F: componentsBatchExchange1_1000, N: 1000},
+		{Name: "Exchange1.ExchangeBatchFn 1 of 5 Comps", Desc: "1000, memory already alloc.", F: componentsBatchExchange1of5_1000, N: 1000},
 	}
 }
 
