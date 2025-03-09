@@ -14,7 +14,7 @@ type RelationMarker struct{}
 // It is implemented by [Rel], [RelIdx] and [RelID].
 //
 //   - [Rel] is safe, but has some run-time overhead for component [ID] lookup.
-//   - [RelIdx] is fast but less safe.
+//   - [RelIdx] is fast but more error-prone.
 //   - [RelID] is used in the [Unsafe] API.
 type Relation interface {
 	id(ids []ID, world *World) ID
@@ -80,7 +80,7 @@ func (r relationType[C]) targetEntity() Entity {
 // relationIndex specifies an entity relation target by component index.
 // Create with [RelIdx].
 //
-// It can be used as faster but less safe alternative to [Rel].
+// It can be used as faster but more error-prone alternative to [Rel].
 type relationIndex struct {
 	index  uint8
 	target Entity
