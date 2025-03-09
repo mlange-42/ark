@@ -151,17 +151,20 @@ func (t *table) Remove(index uint32) bool {
 		src := unsafe.Add(t.entities.pointer, lastIndex*sz)
 		dst := unsafe.Add(t.entities.pointer, uintptr(index)*sz)
 		copyPtr(src, dst, uintptr(sz))
-	}
 
-	for i := range t.columns {
-		column := &t.columns[i]
-		if swapped {
+		for i := range t.columns {
+			column := &t.columns[i]
 			sz := column.itemSize
 			src := unsafe.Add(column.pointer, lastIndex*sz)
 			dst := unsafe.Add(column.pointer, uintptr(index)*sz)
 			copyPtr(src, dst, uintptr(sz))
+			column.Zero(lastIndex, t.zeroPointer)
 		}
-		column.Zero(lastIndex, t.zeroPointer)
+	} else {
+		for i := range t.columns {
+			column := &t.columns[i]
+			column.Zero(lastIndex, t.zeroPointer)
+		}
 	}
 
 	t.len--
