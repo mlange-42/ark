@@ -90,6 +90,10 @@ func (m *Map[T]) NewBatchFn(count int, fn func(entity Entity, comp *T), target .
 
 // Get returns the mapped component for the given entity.
 //
+// Panics if the entity does not have the mapped component,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map.Has] to check whether the entity has the mapped component.
+//
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) Get(entity Entity) *T {
 	if !m.world.Alive(entity) {
@@ -101,6 +105,10 @@ func (m *Map[T]) Get(entity Entity) *T {
 // GetUnchecked returns the mapped component for the given entity.
 // In contrast to [Map.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity does not have the mapped component,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map.Has] to check whether the entity has the mapped component.
 //
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) GetUnchecked(entity Entity) *T {
