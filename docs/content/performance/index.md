@@ -1,7 +1,7 @@
 +++
 title = 'Performance tips'
 type = "docs"
-weight = 80
+weight = 90
 description = "Tips for getting the best performance with Ark."
 +++
 Ark is highly optimized and can compete with other mature ECS implementations in terms of performance.

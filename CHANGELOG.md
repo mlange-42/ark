@@ -2,6 +2,10 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.3.0...main)
 
+### Documentation
+
+- Adds user guide section on Ark's error handling philosophy (#170)
+
 ### Bugfixes
 
 - Fail with a more informative error when creating entities with missing relation targets (#169)
