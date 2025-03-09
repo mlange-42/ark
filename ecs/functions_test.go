@@ -41,9 +41,11 @@ func TestRegisterComponents(t *testing.T) {
 	assert.Equal(t, id(1), ComponentID[Velocity](&world))
 
 	world.lock()
-	assert.Panics(t, func() {
-		ComponentID[Heading](&world)
-	})
+	assert.PanicsWithValue(t,
+		"attempt to register a new component in a locked world",
+		func() {
+			ComponentID[Heading](&world)
+		})
 }
 
 func TestComponentInfo(t *testing.T) {

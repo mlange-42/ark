@@ -14,5 +14,5 @@ func TestStorage(t *testing.T) {
 	s.AddComponent(0)
 	s.AddComponent(1)
 
-	assert.Panics(t, func() { s.AddComponent(3) })
+	assert.PanicsWithValue(t, "components can only be added to a storage sequentially", func() { s.AddComponent(3) })
 }

@@ -103,7 +103,7 @@ func TestWorldRemoveEntity(t *testing.T) {
 	w.RemoveEntity(e)
 	assert.False(t, w.Alive(e))
 
-	assert.Panics(t, func() { w.RemoveEntity(e) })
+	assert.PanicsWithValue(t, "can't remove a dead entity", func() { w.RemoveEntity(e) })
 }
 
 func TestWorldNewEntities(t *testing.T) {
@@ -338,9 +338,7 @@ func TestWorldLock(t *testing.T) {
 
 	l1 := w.lock()
 	assert.True(t, w.IsLocked())
-	assert.Panics(t, func() {
-		w.checkLocked()
-	})
+	assert.PanicsWithValue(t, "attempt to modify a locked world", func() { w.checkLocked() })
 
 	l2 := w.lock()
 	assert.True(t, w.IsLocked())
