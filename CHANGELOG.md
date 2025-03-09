@@ -5,6 +5,7 @@
 ### Documentation
 
 - Adds user guide section on Ark's error handling philosophy (#170)
+- Adds information on uninformative `Map.Get` errors to API docs (#171)
 
 ### Bugfixes
 

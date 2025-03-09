@@ -100,6 +100,10 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Rel
 
 // Get returns the mapped components for the given entity.
 //
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map1.HasAll] to check whether the entity has all mapped components.
+//
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) Get(entity Entity) *A {
 	if !m.world.Alive(entity) {
@@ -111,6 +115,10 @@ func (m *Map1[A]) Get(entity Entity) *A {
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map1.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map1.HasAll] to check whether the entity has all mapped components.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
@@ -370,6 +378,10 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), r
 
 // Get returns the mapped components for the given entity.
 //
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map2.HasAll] to check whether the entity has all mapped components.
+//
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 	if !m.world.Alive(entity) {
@@ -381,6 +393,10 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map2.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map2.HasAll] to check whether the entity has all mapped components.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
@@ -658,6 +674,10 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B,
 
 // Get returns the mapped components for the given entity.
 //
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map3.HasAll] to check whether the entity has all mapped components.
+//
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 	if !m.world.Alive(entity) {
@@ -669,6 +689,10 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map3.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map3.HasAll] to check whether the entity has all mapped components.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
@@ -962,6 +986,10 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b 
 
 // Get returns the mapped components for the given entity.
 //
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map4.HasAll] to check whether the entity has all mapped components.
+//
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 	if !m.world.Alive(entity) {
@@ -973,6 +1001,10 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map4.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map4.HasAll] to check whether the entity has all mapped components.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
@@ -1282,6 +1314,10 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A,
 
 // Get returns the mapped components for the given entity.
 //
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map5.HasAll] to check whether the entity has all mapped components.
+//
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 	if !m.world.Alive(entity) {
@@ -1293,6 +1329,10 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map5.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map5.HasAll] to check whether the entity has all mapped components.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
@@ -1618,6 +1658,10 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a 
 
 // Get returns the mapped components for the given entity.
 //
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map6.HasAll] to check whether the entity has all mapped components.
+//
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	if !m.world.Alive(entity) {
@@ -1629,6 +1673,10 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map6.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map6.HasAll] to check whether the entity has all mapped components.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
@@ -1970,6 +2018,10 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity,
 
 // Get returns the mapped components for the given entity.
 //
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map7.HasAll] to check whether the entity has all mapped components.
+//
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	if !m.world.Alive(entity) {
@@ -1981,6 +2033,10 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map7.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map7.HasAll] to check whether the entity has all mapped components.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
@@ -2338,6 +2394,10 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Enti
 
 // Get returns the mapped components for the given entity.
 //
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map8.HasAll] to check whether the entity has all mapped components.
+//
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
 	if !m.world.Alive(entity) {
@@ -2349,6 +2409,10 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map8.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map8.HasAll] to check whether the entity has all mapped components.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
