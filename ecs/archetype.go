@@ -73,6 +73,9 @@ func (a *archetype) GetTable(storage *storage, relations []RelationID) (*table, 
 	if !a.HasRelations() {
 		return &storage.tables[a.tables[0]], true
 	}
+	if len(relations) != int(a.numRelations) {
+		panic("relations must be fully specified")
+	}
 	index := a.componentsMap[relations[0].component.id]
 	tables, ok := a.relationTables[index][relations[0].target.id]
 	if !ok {
