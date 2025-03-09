@@ -31,7 +31,13 @@ func TestGraph(t *testing.T) {
 	assert.Equal(t, newMask(id(0)), node.mask)
 
 	mask = bitMask{}
-	assert.Panics(t, func() { g.Find(node.id, []ID{}, []ID{id(3)}, &mask) })
-	assert.Panics(t, func() { g.Find(node.id, []ID{id(0)}, []ID{}, &mask) })
-	assert.Panics(t, func() { g.Find(node.id, []ID{id(0)}, []ID{id(0)}, &mask) })
+	assert.PanicsWithValue(t,
+		"entity does not have component with ID 3",
+		func() { g.Find(node.id, []ID{}, []ID{id(3)}, &mask) })
+	assert.PanicsWithValue(t,
+		"entity already has component with ID 0, or it was added twice",
+		func() { g.Find(node.id, []ID{id(0)}, []ID{}, &mask) })
+	assert.PanicsWithValue(t,
+		"component with ID 0 added and removed in the same exchange operation",
+		func() { g.Find(node.id, []ID{id(0)}, []ID{id(0)}, &mask) })
 }
