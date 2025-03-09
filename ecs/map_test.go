@@ -245,9 +245,16 @@ func TestMapRelation(t *testing.T) {
 
 	deadParent := w.NewEntity()
 	w.RemoveEntity(deadParent)
-	assert.Panics(t, func() {
-		childMap.SetRelation(e, deadParent)
-	})
+	assert.PanicsWithValue(t,
+		"can't use a dead entity as relation target, except for the zero entity",
+		func() {
+			childMap.SetRelation(e, deadParent)
+		})
+	assert.PanicsWithValue(t,
+		"relations must be fully specified",
+		func() {
+			childMap.NewEntity(&ChildOf{})
+		})
 }
 
 func TestMapRelationBatch(t *testing.T) {
