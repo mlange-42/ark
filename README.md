@@ -7,6 +7,7 @@
 [![User Guide](https://img.shields.io/badge/user_guide-%23007D9C?logo=go&logoColor=white&labelColor=gray)](https://mlange-42.github.io/ark/)
 [![Go Reference](https://img.shields.io/badge/reference-%23007D9C?logo=go&logoColor=white&labelColor=gray)](https://pkg.go.dev/github.com/mlange-42/ark)
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/ark)
+[![DOI:10.5281/zenodo.14994239](https://img.shields.io/badge/10.5281%2Fzenodo.14994239-blue?label=doi)](https://doi.org/10.5281/zenodo.14994239)
 [![MIT license](https://img.shields.io/badge/MIT-brightgreen?label=license)](https://github.com/mlange-42/ark/blob/main/LICENSE)
 
 Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) (ECS) for [Go](https://go.dev/).
@@ -101,6 +102,10 @@ func main() {
 - [ark-serde](https://github.com/mlange-42/ark-serde) provides JSON serialization and deserialization for Ark's World.
 - [ark-tools](https://github.com/mlange-42/ark-tools) provides systems, a scheduler, and other useful stuff for Ark.
 - [ark-pixel](https://github.com/mlange-42/ark-pixel) provides OpenGL graphics and live plots via the [Pixel](https://github.com/gopxl/pixel) game engine.
+
+## Cite as
+
+Lange, M. (2025): Ark &ndash; An archetype-based Entity Component System for Go. DOI: [10.5281/zenodo.14994239](https://doi.org/10.5281/zenodo.14994239),  GitHub repository: https://github.com/mlange-42/ark
 
 ## License
 

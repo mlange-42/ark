@@ -28,6 +28,9 @@ next = "/quickstart"
 <a href="https://github.com/mlange-42/ark" style="display:inline-block">
 <img alt="GitHub" src="https://img.shields.io/badge/github-repo-blue?logo=github" style="margin:0;"></img></a>
 
+<a href="https://doi.org/10.5281/zenodo.14994239" style="display:inline-block">
+<img alt="Zenodo DOI: 10.5281/zenodo.14994239" src="https://img.shields.io/badge/10.5281%2Fzenodo.14994239-blue?label=doi" style="margin:0;"></img></a>
+
 <a href="https://github.com/mlange-42/ark/blob/main/LICENSE" style="display:inline-block">
 <img alt="MIT license" src="https://img.shields.io/badge/MIT-brightgreen?label=license" style="margin:0;"></img></a>
 
@@ -44,6 +47,10 @@ Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wik
 - Fast [batch operations](https://mlange-42.github.io/ark/batch/) for mass manipulation.
 - No systems. Just queries. Use your own structure (or the [Tools](https://github.com/mlange-42/ark#tools)).
 - World serialization and deserialization with [ark-serde](https://github.com/mlange-42/ark-serde).
+
+## Cite as
+
+Lange, M. (2025): Ark &ndash; An archetype-based Entity Component System for Go. DOI: [10.5281/zenodo.14994239](https://doi.org/10.5281/zenodo.14994239),  GitHub repository: https://github.com/mlange-42/ark
 
 ## Contributing
 
