@@ -28,6 +28,7 @@ func TestMap(t *testing.T) {
 
 	posMap.Remove(e1)
 	assert.False(t, posMap.Has(e1))
+	assert.Panics(t, func() { posMap.Get(e1) })
 
 	e2 := posMap.NewEntityFn(func(a *Position) {
 		a.X = 100

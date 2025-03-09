@@ -129,6 +129,8 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity
 
 // Get returns the mapped components for the given entity.
 //
+// Panics if the entity does not have this component.
+//
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$return}} {
 	if !m.world.Alive(entity) {
