@@ -437,14 +437,23 @@ func TestStats(t *testing.T) {
 	p3 := w.NewEntity()
 
 	posVelMap.NewBatchFn(100, nil)
-
 	posChildMap.NewBatchFn(50, nil, RelIdx(1, p1), RelIdx(2, p2))
 	posChildMap.NewBatchFn(50, nil, RelIdx(1, p3), RelIdx(2, p2))
 
+	w.RemoveEntities(filter.Batch(), nil)
 	_ = w.Stats()
+
+	p1 = w.NewEntity()
+	p2 = w.NewEntity()
+	p3 = w.NewEntity()
+
+	posVelMap.NewBatchFn(100, nil)
+	posChildMap.NewBatchFn(50, nil, RelIdx(1, p1), RelIdx(2, p2))
+	posChildMap.NewBatchFn(50, nil, RelIdx(1, p3), RelIdx(2, p2))
 
 	posVelHeadMap.NewBatchFn(250, nil)
 	posChildMap.NewBatchFn(50, nil, RelIdx(1, p2), RelIdx(2, p3))
+	_ = w.Stats()
 
 	stats := w.Stats()
 	fmt.Println(stats.String())
