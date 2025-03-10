@@ -16,7 +16,7 @@ func benchesWorld() []benchmark.Benchmark {
 		{Name: "Map.HasUnchecked", Desc: "random, 1000 entities", F: worldHasUnchecked1000, N: 1000},
 		{Name: "World.Alive", Desc: "random, 1000 entities", F: worldAlive1000, N: 1000},
 		{Name: "Map.GetRelation", Desc: "random, 1000 entities", F: worldRelation1000, N: 1000},
-		{Name: "Map.GetRelation", Desc: "random, 1000 entities", F: worldRelationUnchecked1000, N: 1000},
+		{Name: "Map.GetRelationUnchecked", Desc: "random, 1000 entities", F: worldRelationUnchecked1000, N: 1000},
 	}
 }
 
