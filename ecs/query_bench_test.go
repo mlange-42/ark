@@ -38,6 +38,23 @@ func BenchmarkPosVelQueryCached_1000(b *testing.B) {
 	}
 }
 
+func BenchmarkPosVelQueryIter_1000(b *testing.B) {
+	n := 1000
+	world := NewWorld(128)
+
+	mapper := NewMap2[Position, Velocity](&world)
+	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
+
+	filter := NewFilter2[Position, Velocity](&world)
+	for b.Loop() {
+		query := filter.Query()
+		for r := range query.iter() {
+			r.A.X += r.B.X
+			r.A.Y += r.B.Y
+		}
+	}
+}
+
 func BenchmarkPosVelQueryUnsafe_1000(b *testing.B) {
 	n := 1000
 	world := NewWorld(128)
