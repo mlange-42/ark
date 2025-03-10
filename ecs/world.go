@@ -158,26 +158,31 @@ func (w *World) Stats() *stats.World {
 	types := append([]reflect.Type{}, w.storage.registry.Types[:compCount]...)
 
 	memory := cap(w.storage.entities)*int(entityIndexSize) + w.storage.entityPool.TotalCap()*int(entitySize)
+	memoryUsed := w.storage.entityPool.Len() * int(entityIndexSize+entitySize)
 
 	cntOld := int32(len(w.stats.Archetypes))
 	cntNew := int32(len(w.storage.archetypes))
 	var i int32
 	for i = 0; i < cntOld; i++ {
-		node := &w.storage.archetypes[i]
-		nodeStats := &w.stats.Archetypes[i]
-		node.UpdateStats(nodeStats, &w.storage)
-		memory += nodeStats.Memory
+		arch := &w.storage.archetypes[i]
+		archStats := &w.stats.Archetypes[i]
+		arch.UpdateStats(archStats, &w.storage)
+		memory += archStats.Memory
+		memoryUsed += archStats.MemoryUsed
 	}
 	for i = cntOld; i < cntNew; i++ {
-		node := &w.storage.archetypes[i]
-		w.stats.Archetypes = append(w.stats.Archetypes, node.Stats(&w.storage))
-		memory += w.stats.Archetypes[i].Memory
+		arch := &w.storage.archetypes[i]
+		w.stats.Archetypes = append(w.stats.Archetypes, arch.Stats(&w.storage))
+		archStats := &w.stats.Archetypes[i]
+		memory += archStats.Memory
+		memoryUsed += archStats.MemoryUsed
 	}
 
 	w.stats.ComponentCount = compCount
 	w.stats.ComponentTypes = types
 	w.stats.Locked = w.IsLocked()
 	w.stats.Memory = memory
+	w.stats.MemoryUsed = memoryUsed
 	w.stats.CachedFilters = len(w.storage.cache.filters)
 
 	return w.stats

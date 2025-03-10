@@ -9,7 +9,7 @@ import (
 
 func TestColumnPointer(t *testing.T) {
 	posType := reflect.TypeOf(Position{})
-	column := newColumn(posType, false, Entity{}, 8)
+	column := newColumn(posType, sizeOf(posType), false, Entity{}, 8)
 
 	assert.Equal(t, uintptr(column.pointer), uintptr(column.data.Addr().UnsafePointer()))
 }

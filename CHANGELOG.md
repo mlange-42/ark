@@ -5,6 +5,7 @@
 ### Features
 
 - Adds `QueryX.Count` (#175)
+- World stats contain separate reserved/used memory fields (#177)
 
 ### Documentation
 
