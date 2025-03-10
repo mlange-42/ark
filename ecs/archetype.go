@@ -205,9 +205,7 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 	count := 0
 	memory := 0
 	memoryUsed := 0
-	var tableStats []stats.Table
-
-	tableStats = make([]stats.Table, len(a.tables))
+	tableStats := make([]stats.Table, len(a.tables))
 	for i, id := range a.tables {
 		table := &storage.tables[id]
 		tableStats[i] = table.Stats(memPerEntity, &storage.registry)
