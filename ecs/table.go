@@ -17,7 +17,7 @@ const maxTableID = math.MaxUint32
 type table struct {
 	id          tableID
 	archetype   archetypeID
-	components  []int16      // mapping from component IDs to column indices
+	components  []*column    // mapping from component IDs to columns
 	entities    column       // column for entities
 	ids         []ID         // components IDs in the same order as in the archetype
 	columns     []column     // columns in dense order
@@ -31,16 +31,18 @@ type table struct {
 
 func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []RelationID) table {
 
-	entities := newColumn(entityType, entitySize, false, Entity{}, capacity)
+	entities := newColumn(0, entityType, entitySize, false, Entity{}, capacity)
 	columns := make([]column, len(archetype.components))
 
+	components := make([]*column, maskTotalBits)
 	var maxSize uintptr = entitySize
 	for i, id := range archetype.components {
 		itemSize := uintptr(archetype.itemSizes[i])
-		columns[i] = newColumn(reg.Types[id.id], itemSize, archetype.isRelation[i], targets[i], capacity)
+		columns[i] = newColumn(uint32(i), reg.Types[id.id], itemSize, archetype.isRelation[i], targets[i], capacity)
 		if itemSize > maxSize {
 			maxSize = columns[i].itemSize
 		}
+		components[id.id] = &columns[i]
 	}
 	var zeroValue []byte
 	var zeroPointer unsafe.Pointer
@@ -52,7 +54,7 @@ func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentR
 	return table{
 		id:          id,
 		archetype:   archetype.id,
-		components:  archetype.componentsMap,
+		components:  components,
 		entities:    entities,
 		ids:         archetype.components,
 		columns:     columns,
@@ -82,11 +84,11 @@ func (t *table) Add(entity Entity) uint32 {
 }
 
 func (t *table) Get(component ID, index uintptr) unsafe.Pointer {
-	return t.columns[t.components[component.id]].Get(index)
+	return t.components[component.id].Get(index)
 }
 
 func (t *table) Has(component ID) bool {
-	return t.components[component.id] >= 0
+	return t.components[component.id] != nil
 }
 
 func (t *table) GetEntity(index uintptr) Entity {
@@ -94,15 +96,15 @@ func (t *table) GetEntity(index uintptr) Entity {
 }
 
 func (t *table) GetRelation(component ID) Entity {
-	return t.columns[t.components[component.id]].target
+	return t.components[component.id].target
 }
 
 func (t *table) GetColumn(component ID) *column {
-	return &t.columns[t.components[component.id]]
+	return t.components[component.id]
 }
 
 func (t *table) Set(component ID, index uint32, comp unsafe.Pointer) {
-	t.columns[t.components[component.id]].Set(index, comp)
+	t.components[component.id].Set(index, comp)
 }
 
 func (t *table) SetEntity(index uint32, entity Entity) {
@@ -198,14 +200,14 @@ func (t *table) MatchesExact(relations []RelationID) bool {
 		panic("relation targets must be fully specified")
 	}
 	for _, rel := range relations {
-		index := t.components[rel.component.id]
-		if !t.columns[index].isRelation {
+		column := t.components[rel.component.id]
+		if !column.isRelation {
 			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
 		}
 		//if rel.target == wildcard {
 		//	panic("relation targets must be fully specified, no wildcard allowed")
 		//}
-		if rel.target != t.columns[index].target {
+		if rel.target != column.target {
 			return false
 		}
 	}
@@ -220,7 +222,7 @@ func (t *table) Matches(relations []RelationID) bool {
 		//if rel.target == wildcard {
 		//	continue
 		//}
-		if rel.target != t.columns[t.components[rel.component.id]].target {
+		if rel.target != t.components[rel.component.id].target {
 			return false
 		}
 	}
