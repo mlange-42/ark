@@ -144,7 +144,6 @@ func (s *storage) has(entity Entity, component ID) bool {
 }
 
 func (s *storage) hasUnchecked(entity Entity, component ID) bool {
-	s.checkHasComponent(entity, component)
 	index := s.entities[entity.id]
 	return s.tables[index.table].Has(component)
 }
