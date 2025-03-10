@@ -47,7 +47,25 @@ jobs:
       run: |
         go test -tags tiny -v -covermode atomic -coverprofile="coverage.out" -coverpkg=./ecs ./...
         go tool cover -func="coverage.out"
-      
+
+  test_debug:
+    name: Run tests (debug)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.24.x'
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        go get .
+    - name: Run Unit tests
+      run: |
+        go test -tags debug -v -covermode atomic -coverprofile="coverage.out" -coverpkg=./ecs ./...
+        go tool cover -func="coverage.out"
+
   lint:
     name: Run linters
     runs-on: ubuntu-latest
