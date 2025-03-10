@@ -15,6 +15,7 @@
 ### Performance
 
 - Optimize table creation and world stats by re-use of item sizes from archetypes (#177)
+- Optimize table column lookup, speeding up component operations and unsafe queries (#178)
 
 ### Bugfixes
 

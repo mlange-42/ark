@@ -17,7 +17,7 @@ const maxTableID = math.MaxUint32
 type table struct {
 	id          tableID
 	archetype   archetypeID
-	components  []*column    // mapping from component IDs to column indices
+	components  []*column    // mapping from component IDs to columns
 	entities    column       // column for entities
 	ids         []ID         // components IDs in the same order as in the archetype
 	columns     []column     // columns in dense order
