@@ -24,6 +24,21 @@ jobs:
         run: |
           go test -benchmem -run=^$ -bench ^.*$ ./...
 
+  internal_tiny:
+    name: Benchmarks (tiny)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.24.x'
+      - name: Install dependencies
+        run: go get .
+      - name: Run benchmarks
+        run: |
+          go test -tags tiny -benchmem -run=^$ -bench ^.*$ ./...
+
   tables:
     name: Benchmark Tables
     runs-on: ubuntu-latest
@@ -44,3 +59,24 @@ jobs:
         with:
           path: benchmark/BENCHMARKS.md
           name: BENCHMARKS.md
+
+  tables_tiny:
+    name: Benchmark Tables (tiny)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.24.x'
+      - name: Install dependencies
+        run: go get .
+      - name: Benchmark tables
+        run: |
+          cd ./benchmark
+          go run -tags tiny ./table | tee BENCHMARKS.md
+      - name: Archive benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          path: benchmark/BENCHMARKS.md
+          name: BENCHMARKS-tiny.md
