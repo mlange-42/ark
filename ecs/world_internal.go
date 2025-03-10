@@ -72,17 +72,15 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 		return
 	}
 
-	index := &w.storage.entities[entity.id]
+	index := w.storage.entities[entity.id]
 	oldTable := &w.storage.tables[index.table]
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
-	oldIDs := oldArchetype.components
-
-	mask := bitMask{}
+	mask := oldArchetype.mask
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	newIndex := newTable.Add(entity)
 
-	for _, id := range oldIDs {
+	for _, id := range oldArchetype.components {
 		if mask.Get(id) {
 			comp := oldTable.Get(id, uintptr(index.row))
 			newTable.Set(id, newIndex, comp)
@@ -145,7 +143,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 
 	oldIDs := oldArchetype.components
 
-	mask := bitMask{}
+	mask := oldArchetype.mask
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	startIdx := uintptr(newTable.Len())
 	count := uintptr(oldLen)

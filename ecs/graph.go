@@ -40,7 +40,6 @@ func newGraph() graph {
 func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *node {
 	startNode := &g.nodes[start]
 	curr := startNode
-	*outMask = startNode.mask
 
 	for _, id := range remove {
 		if !outMask.Get(id) {
