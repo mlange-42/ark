@@ -329,11 +329,11 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []Relat
 		targets[i] = oldTable.columns[i].target
 	}
 	for _, rel := range relations {
-		index := oldTable.components[rel.component.id]
-		if rel.target == targets[index] {
+		column := oldTable.components[rel.component.id]
+		if rel.target == targets[column.index] {
 			continue
 		}
-		targets[index] = rel.target
+		targets[column.index] = rel.target
 	}
 
 	result := make([]RelationID, 0, len(oldTable.relationIDs))
@@ -357,11 +357,11 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([
 	for _, rel := range relations {
 		// Validity of the target is checked when creating a new table.
 		// Whether the component is a relation is checked when creating a new table.
-		index := oldTable.components[rel.component.id]
-		if rel.target == targets[index] {
+		column := oldTable.components[rel.component.id]
+		if rel.target == targets[column.index] {
 			continue
 		}
-		targets[index] = rel.target
+		targets[column.index] = rel.target
 		changed = true
 	}
 	if !changed {

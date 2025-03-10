@@ -9,18 +9,20 @@ import (
 type column struct {
 	data       reflect.Value  // data buffer
 	pointer    unsafe.Pointer // pointer to the first element
-	isRelation bool           // whether this column is for a relation component
 	target     Entity         // target entity if for a relation component
 	itemSize   uintptr        // memory size of items
+	index      uint32         // index of the column in the containing table
+	isRelation bool           // whether this column is for a relation component
 }
 
 // newColumn creates a new column for a given type and capacity.
-func newColumn(tp reflect.Type, itemSize uintptr, isRelation bool, target Entity, capacity uint32) column {
+func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool, target Entity, capacity uint32) column {
 	// TODO: should be use a slice instead of an array here?
 	data := reflect.New(reflect.ArrayOf(int(capacity), tp)).Elem()
 	pointer := data.Addr().UnsafePointer()
 
 	return column{
+		index:      index,
 		data:       data,
 		pointer:    pointer,
 		itemSize:   itemSize,

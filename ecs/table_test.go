@@ -16,8 +16,8 @@ func TestNewTable(t *testing.T) {
 	table := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 2), []RelationID{})
 
 	assert.Equal(t, 2, len(table.columns))
-	assert.EqualValues(t, 0, table.components[posID.id])
-	assert.EqualValues(t, 1, table.components[velID.id])
+	assert.EqualValues(t, 0, table.components[posID.id].index)
+	assert.EqualValues(t, 1, table.components[velID.id].index)
 
 	for i := range 9 {
 		table.Add(Entity{entityID(i + 2), 0})
