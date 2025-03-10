@@ -19,8 +19,10 @@ type World struct {
 	Locked bool
 	// Archetype statistics.
 	Archetypes []Archetype
-	// Memory used by entities and components.
+	// Memory reserved for entities and components, in bytes.
 	Memory int
+	// Memory actually used for alive entities and their components components, in bytes.
+	MemoryUsed int
 	// Number of cached filters.
 	CachedFilters int
 }
@@ -51,8 +53,10 @@ type Archetype struct {
 	ComponentTypes []reflect.Type
 	// Memory for components per entity, in bytes.
 	MemoryPerEntity int
-	// Total reserved memory for entities and components, in bytes.
+	// Memory reserved for entities and components, in bytes.
 	Memory int
+	// Memory actually used for alive entities and their components components, in bytes.
+	MemoryUsed int
 	// Number of entities in the tables of this archetype.
 	Size int
 	// Sum of capacity of the tables in this archetype.
@@ -67,8 +71,10 @@ type Table struct {
 	Size int
 	// Capacity of the table.
 	Capacity int
-	// Total reserved memory for entities and components, in bytes.
+	// Memory reserved for entities and components, in bytes.
 	Memory int
+	// Memory actually used for alive entities and their components components, in bytes.
+	MemoryUsed int
 }
 
 func (s *World) String() string {

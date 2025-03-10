@@ -31,13 +31,14 @@ type table struct {
 
 func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []RelationID) table {
 
-	entities := newColumn(entityType, false, Entity{}, capacity)
+	entities := newColumn(entityType, entitySize, false, Entity{}, capacity)
 	columns := make([]column, len(archetype.components))
 
 	var maxSize uintptr = entitySize
 	for i, id := range archetype.components {
-		columns[i] = newColumn(reg.Types[id.id], archetype.isRelation[i], targets[i], capacity)
-		if columns[i].itemSize > maxSize {
+		itemSize := uintptr(archetype.itemSizes[i])
+		columns[i] = newColumn(reg.Types[id.id], itemSize, archetype.isRelation[i], targets[i], capacity)
+		if itemSize > maxSize {
 			maxSize = columns[i].itemSize
 		}
 	}
@@ -231,34 +232,23 @@ func (t *table) Len() int {
 }
 
 // Stats generates statistics for a table.
-func (t *table) Stats(reg *componentRegistry) stats.Table {
-	ids := t.ids
-	aCompCount := len(ids)
-	aTypes := make([]reflect.Type, aCompCount)
-	for j, id := range ids {
-		aTypes[j], _ = reg.ComponentType(id.id)
-	}
-
+func (t *table) Stats(memPerEntity int, reg *componentRegistry) stats.Table {
 	cap := int(t.cap)
-	memPerEntity := 0
-	for i := range t.columns {
-		memPerEntity += int(t.columns[i].itemSize)
-	}
-	memory := cap * (int(entitySize) + memPerEntity)
 
 	return stats.Table{
-		Size:     int(t.Len()),
-		Capacity: cap,
-		Memory:   memory,
+		Size:       int(t.Len()),
+		Capacity:   cap,
+		Memory:     cap * memPerEntity,
+		MemoryUsed: t.Len() * memPerEntity,
 	}
 }
 
 // UpdateStats updates statistics for a table.
-func (t *table) UpdateStats(node *stats.Archetype, stats *stats.Table, reg *componentRegistry) {
+func (t *table) UpdateStats(memPerEntity int, stats *stats.Table, reg *componentRegistry) {
 	cap := int(t.cap)
-	memory := cap * (int(entitySize) + node.MemoryPerEntity)
 
 	stats.Size = int(t.Len())
 	stats.Capacity = cap
-	stats.Memory = memory
+	stats.Memory = cap * memPerEntity
+	stats.MemoryUsed = t.Len() * memPerEntity
 }

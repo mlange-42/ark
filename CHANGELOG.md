@@ -5,11 +5,16 @@
 ### Features
 
 - Adds `QueryX.Count` (#175)
+- World stats contain separate reserved/used memory fields (#177)
 
 ### Documentation
 
 - Adds user guide section on Ark's error handling philosophy (#170)
 - Adds information on uninformative `Map.Get` errors to API docs (#171)
+
+### Performance
+
+- Optimize table creation and world stats by re-use of item sizes from archetypes (#177)
 
 ### Bugfixes
 
