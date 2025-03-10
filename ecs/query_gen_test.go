@@ -29,6 +29,7 @@ func TestQuery1(t *testing.T) {
 	// normal filter
 	filter := NewFilter1[CompA](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -41,6 +42,7 @@ func TestQuery1(t *testing.T) {
 	// filter without
 	filter = NewFilter1[CompA](&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -53,6 +55,7 @@ func TestQuery1(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter1[CompA](&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -65,6 +68,7 @@ func TestQuery1(t *testing.T) {
 	// filter with
 	filter = NewFilter1[CompA](&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -89,6 +93,7 @@ func TestQuery1Empty(t *testing.T) {
 
 	filter := NewFilter1[CompA](&w)
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Get() })
 	assert.Panics(t, func() { query.Entity() })
@@ -124,6 +129,7 @@ func TestQuery1Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter1[ChildOf](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -136,6 +142,7 @@ func TestQuery1Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter1[ChildOf](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -149,6 +156,7 @@ func TestQuery1Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter1[ChildOf](&w)
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -180,6 +188,7 @@ func TestQuery1Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter1[ChildOf](&w).Register()
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -193,6 +202,7 @@ func TestQuery1Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter1[ChildOf](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -207,6 +217,7 @@ func TestQuery1Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter1[ChildOf](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -251,6 +262,7 @@ func TestQuery2(t *testing.T) {
 	// normal filter
 	filter := NewFilter2[CompA, CompB](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -263,6 +275,7 @@ func TestQuery2(t *testing.T) {
 	// filter without
 	filter = NewFilter2[CompA, CompB](&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -275,6 +288,7 @@ func TestQuery2(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter2[CompA, CompB](&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -287,6 +301,7 @@ func TestQuery2(t *testing.T) {
 	// filter with
 	filter = NewFilter2[CompA, CompB](&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -311,6 +326,7 @@ func TestQuery2Empty(t *testing.T) {
 
 	filter := NewFilter2[CompA, CompB](&w)
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Get() })
 	assert.Panics(t, func() { query.Entity() })
@@ -346,6 +362,7 @@ func TestQuery2Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter2[ChildOf, CompB](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -358,6 +375,7 @@ func TestQuery2Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter2[ChildOf, CompB](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -371,6 +389,7 @@ func TestQuery2Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter2[ChildOf, CompB](&w)
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -402,6 +421,7 @@ func TestQuery2Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter2[ChildOf, CompB](&w).Register()
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -415,6 +435,7 @@ func TestQuery2Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter2[ChildOf, CompB](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -429,6 +450,7 @@ func TestQuery2Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter2[ChildOf, CompB](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -473,6 +495,7 @@ func TestQuery3(t *testing.T) {
 	// normal filter
 	filter := NewFilter3[CompA, CompB, CompC](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -485,6 +508,7 @@ func TestQuery3(t *testing.T) {
 	// filter without
 	filter = NewFilter3[CompA, CompB, CompC](&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -497,6 +521,7 @@ func TestQuery3(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter3[CompA, CompB, CompC](&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -509,6 +534,7 @@ func TestQuery3(t *testing.T) {
 	// filter with
 	filter = NewFilter3[CompA, CompB, CompC](&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -533,6 +559,7 @@ func TestQuery3Empty(t *testing.T) {
 
 	filter := NewFilter3[CompA, CompB, CompC](&w)
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Get() })
 	assert.Panics(t, func() { query.Entity() })
@@ -568,6 +595,7 @@ func TestQuery3Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter3[ChildOf, CompB, CompC](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -580,6 +608,7 @@ func TestQuery3Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter3[ChildOf, CompB, CompC](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -593,6 +622,7 @@ func TestQuery3Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter3[ChildOf, CompB, CompC](&w)
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -624,6 +654,7 @@ func TestQuery3Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter3[ChildOf, CompB, CompC](&w).Register()
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -637,6 +668,7 @@ func TestQuery3Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter3[ChildOf, CompB, CompC](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -651,6 +683,7 @@ func TestQuery3Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter3[ChildOf, CompB, CompC](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -695,6 +728,7 @@ func TestQuery4(t *testing.T) {
 	// normal filter
 	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -707,6 +741,7 @@ func TestQuery4(t *testing.T) {
 	// filter without
 	filter = NewFilter4[CompA, CompB, CompC, CompD](&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -719,6 +754,7 @@ func TestQuery4(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter4[CompA, CompB, CompC, CompD](&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -731,6 +767,7 @@ func TestQuery4(t *testing.T) {
 	// filter with
 	filter = NewFilter4[CompA, CompB, CompC, CompD](&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -755,6 +792,7 @@ func TestQuery4Empty(t *testing.T) {
 
 	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Get() })
 	assert.Panics(t, func() { query.Entity() })
@@ -790,6 +828,7 @@ func TestQuery4Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter4[ChildOf, CompB, CompC, CompD](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -802,6 +841,7 @@ func TestQuery4Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -815,6 +855,7 @@ func TestQuery4Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w)
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -846,6 +887,7 @@ func TestQuery4Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter4[ChildOf, CompB, CompC, CompD](&w).Register()
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -859,6 +901,7 @@ func TestQuery4Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -873,6 +916,7 @@ func TestQuery4Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -917,6 +961,7 @@ func TestQuery5(t *testing.T) {
 	// normal filter
 	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -929,6 +974,7 @@ func TestQuery5(t *testing.T) {
 	// filter without
 	filter = NewFilter5[CompA, CompB, CompC, CompD, CompE](&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -941,6 +987,7 @@ func TestQuery5(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter5[CompA, CompB, CompC, CompD, CompE](&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -953,6 +1000,7 @@ func TestQuery5(t *testing.T) {
 	// filter with
 	filter = NewFilter5[CompA, CompB, CompC, CompD, CompE](&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -977,6 +1025,7 @@ func TestQuery5Empty(t *testing.T) {
 
 	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Get() })
 	assert.Panics(t, func() { query.Entity() })
@@ -1012,6 +1061,7 @@ func TestQuery5Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1024,6 +1074,7 @@ func TestQuery5Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1037,6 +1088,7 @@ func TestQuery5Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w)
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1068,6 +1120,7 @@ func TestQuery5Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w).Register()
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1081,6 +1134,7 @@ func TestQuery5Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1095,6 +1149,7 @@ func TestQuery5Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1139,6 +1194,7 @@ func TestQuery6(t *testing.T) {
 	// normal filter
 	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1151,6 +1207,7 @@ func TestQuery6(t *testing.T) {
 	// filter without
 	filter = NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1163,6 +1220,7 @@ func TestQuery6(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1175,6 +1233,7 @@ func TestQuery6(t *testing.T) {
 	// filter with
 	filter = NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1199,6 +1258,7 @@ func TestQuery6Empty(t *testing.T) {
 
 	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Get() })
 	assert.Panics(t, func() { query.Entity() })
@@ -1234,6 +1294,7 @@ func TestQuery6Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1246,6 +1307,7 @@ func TestQuery6Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1259,6 +1321,7 @@ func TestQuery6Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1290,6 +1353,7 @@ func TestQuery6Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Register()
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1303,6 +1367,7 @@ func TestQuery6Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1317,6 +1382,7 @@ func TestQuery6Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1361,6 +1427,7 @@ func TestQuery7(t *testing.T) {
 	// normal filter
 	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1373,6 +1440,7 @@ func TestQuery7(t *testing.T) {
 	// filter without
 	filter = NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1385,6 +1453,7 @@ func TestQuery7(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1397,6 +1466,7 @@ func TestQuery7(t *testing.T) {
 	// filter with
 	filter = NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1421,6 +1491,7 @@ func TestQuery7Empty(t *testing.T) {
 
 	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Get() })
 	assert.Panics(t, func() { query.Entity() })
@@ -1456,6 +1527,7 @@ func TestQuery7Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1468,6 +1540,7 @@ func TestQuery7Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1481,6 +1554,7 @@ func TestQuery7Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1512,6 +1586,7 @@ func TestQuery7Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Register()
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1525,6 +1600,7 @@ func TestQuery7Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1539,6 +1615,7 @@ func TestQuery7Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1583,6 +1660,7 @@ func TestQuery8(t *testing.T) {
 	// normal filter
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1595,6 +1673,7 @@ func TestQuery8(t *testing.T) {
 	// filter without
 	filter = NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1607,6 +1686,7 @@ func TestQuery8(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1619,6 +1699,7 @@ func TestQuery8(t *testing.T) {
 	// filter with
 	filter = NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1643,6 +1724,7 @@ func TestQuery8Empty(t *testing.T) {
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Get() })
 	assert.Panics(t, func() { query.Entity() })
@@ -1678,6 +1760,7 @@ func TestQuery8Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1690,6 +1773,7 @@ func TestQuery8Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1703,6 +1787,7 @@ func TestQuery8Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1734,6 +1819,7 @@ func TestQuery8Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Register()
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1747,6 +1833,7 @@ func TestQuery8Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1761,6 +1848,7 @@ func TestQuery8Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1799,6 +1887,7 @@ func TestQuery0(t *testing.T) {
 	// normal filter
 	filter := NewFilter0(&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1810,6 +1899,7 @@ func TestQuery0(t *testing.T) {
 	// filter without
 	filter = NewFilter0(&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1821,6 +1911,7 @@ func TestQuery0(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter0(&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1832,6 +1923,7 @@ func TestQuery0(t *testing.T) {
 	// filter with
 	filter = NewFilter0(&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -1853,6 +1945,7 @@ func TestQuery0Empty(t *testing.T) {
 
 	filter := NewFilter0(&w).Without(C[Position]())
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Entity() })
 
@@ -1890,6 +1983,7 @@ func TestQuery0Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter0(&w)
 	query := filter.Query()
+	assert.Equal(t, 3*n+3, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -1901,6 +1995,7 @@ func TestQuery0Relations(t *testing.T) {
 	// registered filter
 	filter = NewFilter0(&w).Register()
 	query = filter.Query()
+	assert.Equal(t, 3*n+3, query.Count())
 
 	cnt = 0
 	for query.Next() {
