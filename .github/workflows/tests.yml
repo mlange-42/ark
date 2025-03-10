@@ -49,7 +49,7 @@ jobs:
         go tool cover -func="coverage.out"
 
   test_debug:
-    name: Run tests (tiny)
+    name: Run tests (debug)
     runs-on: ubuntu-latest
     steps:
     - name: Set up Go
