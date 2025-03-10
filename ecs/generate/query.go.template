@@ -24,13 +24,6 @@ type cursor struct {
 {{- $mask = join "id" ", id" "" $upper -}}
 {{- end}}
 
-type queryResult{{.}}{{$generics}} struct {
-	Entity Entity
-	{{- range $upper}}
-	{{.}}  *{{.}}
-	{{- end}}
-}
-
 // Query{{.}} is a query for {{.}} components.
 // Use a [Filter{{.}}] to create one.
 //

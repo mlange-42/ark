@@ -9,10 +9,6 @@ type cursor struct {
 	maxIndex  int64
 }
 
-type queryResult0 struct {
-	Entity Entity
-}
-
 // Query0 is a query for 0 components.
 // Use a [Filter0] to create one.
 //
@@ -159,11 +155,6 @@ func (q *Query0) setTable(index int, table *table) {
 	q.table = table
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
-}
-
-type queryResult1[A any] struct {
-	Entity Entity
-	A      *A
 }
 
 // Query1 is a query for 1 components.
@@ -330,12 +321,6 @@ func (q *Query1[A]) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-type queryResult2[A any, B any] struct {
-	Entity Entity
-	A      *A
-	B      *B
-}
-
 // Query2 is a query for 2 components.
 // Use a [Filter2] to create one.
 //
@@ -500,13 +485,6 @@ func (q *Query2[A, B]) setTable(index int, table *table) {
 	q.columnB = q.components[1].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
-}
-
-type queryResult3[A any, B any, C any] struct {
-	Entity Entity
-	A      *A
-	B      *B
-	C      *C
 }
 
 // Query3 is a query for 3 components.
@@ -679,14 +657,6 @@ func (q *Query3[A, B, C]) setTable(index int, table *table) {
 	q.columnC = q.components[2].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
-}
-
-type queryResult4[A any, B any, C any, D any] struct {
-	Entity Entity
-	A      *A
-	B      *B
-	C      *C
-	D      *D
 }
 
 // Query4 is a query for 4 components.
@@ -863,15 +833,6 @@ func (q *Query4[A, B, C, D]) setTable(index int, table *table) {
 	q.columnD = q.components[3].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
-}
-
-type queryResult5[A any, B any, C any, D any, E any] struct {
-	Entity Entity
-	A      *A
-	B      *B
-	C      *C
-	D      *D
-	E      *E
 }
 
 // Query5 is a query for 5 components.
@@ -1052,16 +1013,6 @@ func (q *Query5[A, B, C, D, E]) setTable(index int, table *table) {
 	q.columnE = q.components[4].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
-}
-
-type queryResult6[A any, B any, C any, D any, E any, F any] struct {
-	Entity Entity
-	A      *A
-	B      *B
-	C      *C
-	D      *D
-	E      *E
-	F      *F
 }
 
 // Query6 is a query for 6 components.
@@ -1246,17 +1197,6 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int, table *table) {
 	q.columnF = q.components[5].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
-}
-
-type queryResult7[A any, B any, C any, D any, E any, F any, G any] struct {
-	Entity Entity
-	A      *A
-	B      *B
-	C      *C
-	D      *D
-	E      *E
-	F      *F
-	G      *G
 }
 
 // Query7 is a query for 7 components.
@@ -1445,18 +1385,6 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int, table *table) {
 	q.columnG = q.components[6].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
-}
-
-type queryResult8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
-	Entity Entity
-	A      *A
-	B      *B
-	C      *C
-	D      *D
-	E      *E
-	F      *F
-	G      *G
-	H      *H
 }
 
 // Query8 is a query for 8 components.
