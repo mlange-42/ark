@@ -48,10 +48,10 @@ func BenchmarkPosVelQueryIter_1000(b *testing.B) {
 	filter := NewFilter2[Position, Velocity](&world)
 	for b.Loop() {
 		query := filter.Query()
-		for r := range query.iter() {
+		query.iter(func(r *queryResult2[Position, Velocity]) {
 			r.A.X += r.B.X
 			r.A.Y += r.B.Y
-		}
+		})
 	}
 }
 
