@@ -102,6 +102,19 @@ func (q *Query{{.}}{{$genericsShort}}) GetRelation(index int) Entity {
 }
 {{- end}}
 
+// Count counts the entities matching this query.
+//
+// Has some overhead of iterating through archetypes.
+// However, this is still much faster than manual counting via iteration.
+//
+// Does not iterate or close the query.
+func (q *Query{{.}}{{$genericsShort}}) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
+	}
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
+}
+
 // Close closes the Query and unlocks the world.
 //
 // Automatically called when iteration completes.

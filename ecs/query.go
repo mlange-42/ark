@@ -66,29 +66,7 @@ func (q *Query) GetRelation(comp ID) Entity {
 
 // Count returns the number of entities matching this query.
 func (q *Query) Count() int {
-	count := 0
-	for i := range q.world.storage.archetypes {
-		archetype := &q.world.storage.archetypes[i]
-		if !q.filter.matches(&archetype.mask) {
-			continue
-		}
-
-		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
-			count += table.Len()
-			continue
-		}
-
-		tables := archetype.GetTables(q.relations)
-		for _, tab := range tables {
-			table := &q.world.storage.tables[tab]
-			if !table.Matches(q.relations) {
-				continue
-			}
-			count += table.Len()
-		}
-	}
-	return count
+	return countQuery(&q.world.storage, &q.filter, q.relations)
 }
 
 // IDs returns the IDs of all component of the current [Entity]n.

@@ -66,6 +66,19 @@ func (q *Query0) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
+// Count counts the entities matching this query.
+//
+// Has some overhead of iterating through archetypes.
+// However, this is still much faster than manual counting via iteration.
+//
+// Does not iterate or close the query.
+func (q *Query0) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
+	}
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
+}
+
 // Close closes the Query and unlocks the world.
 //
 // Automatically called when iteration completes.
@@ -213,6 +226,19 @@ func (q *Query1[A]) Get() *A {
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query1[A]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
+}
+
+// Count counts the entities matching this query.
+//
+// Has some overhead of iterating through archetypes.
+// However, this is still much faster than manual counting via iteration.
+//
+// Does not iterate or close the query.
+func (q *Query1[A]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
+	}
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 // Close closes the Query and unlocks the world.
@@ -364,6 +390,19 @@ func (q *Query2[A, B]) Get() (*A, *B) {
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query2[A, B]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
+}
+
+// Count counts the entities matching this query.
+//
+// Has some overhead of iterating through archetypes.
+// However, this is still much faster than manual counting via iteration.
+//
+// Does not iterate or close the query.
+func (q *Query2[A, B]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
+	}
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 // Close closes the Query and unlocks the world.
@@ -521,6 +560,19 @@ func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query3[A, B, C]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
+}
+
+// Count counts the entities matching this query.
+//
+// Has some overhead of iterating through archetypes.
+// However, this is still much faster than manual counting via iteration.
+//
+// Does not iterate or close the query.
+func (q *Query3[A, B, C]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
+	}
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 // Close closes the Query and unlocks the world.
@@ -682,6 +734,19 @@ func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query4[A, B, C, D]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
+}
+
+// Count counts the entities matching this query.
+//
+// Has some overhead of iterating through archetypes.
+// However, this is still much faster than manual counting via iteration.
+//
+// Does not iterate or close the query.
+func (q *Query4[A, B, C, D]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
+	}
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 // Close closes the Query and unlocks the world.
@@ -847,6 +912,19 @@ func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query5[A, B, C, D, E]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
+}
+
+// Count counts the entities matching this query.
+//
+// Has some overhead of iterating through archetypes.
+// However, this is still much faster than manual counting via iteration.
+//
+// Does not iterate or close the query.
+func (q *Query5[A, B, C, D, E]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
+	}
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 // Close closes the Query and unlocks the world.
@@ -1016,6 +1094,19 @@ func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query6[A, B, C, D, E, F]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
+}
+
+// Count counts the entities matching this query.
+//
+// Has some overhead of iterating through archetypes.
+// However, this is still much faster than manual counting via iteration.
+//
+// Does not iterate or close the query.
+func (q *Query6[A, B, C, D, E, F]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
+	}
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 // Close closes the Query and unlocks the world.
@@ -1189,6 +1280,19 @@ func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query7[A, B, C, D, E, F, G]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
+}
+
+// Count counts the entities matching this query.
+//
+// Has some overhead of iterating through archetypes.
+// However, this is still much faster than manual counting via iteration.
+//
+// Does not iterate or close the query.
+func (q *Query7[A, B, C, D, E, F, G]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
+	}
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 // Close closes the Query and unlocks the world.
@@ -1366,6 +1470,19 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) 
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query8[A, B, C, D, E, F, G, H]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
+}
+
+// Count counts the entities matching this query.
+//
+// Has some overhead of iterating through archetypes.
+// However, this is still much faster than manual counting via iteration.
+//
+// Does not iterate or close the query.
+func (q *Query8[A, B, C, D, E, F, G, H]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
+	}
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 // Close closes the Query and unlocks the world.

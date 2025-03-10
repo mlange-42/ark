@@ -42,6 +42,7 @@ func TestQuery{{.}}(t *testing.T) {
 	// normal filter
 	filter := NewFilter{{.}}{{$generics}}(&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -54,6 +55,7 @@ func TestQuery{{.}}(t *testing.T) {
 	// filter without
 	filter = NewFilter{{.}}{{$generics}}(&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -66,6 +68,7 @@ func TestQuery{{.}}(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter{{.}}{{$generics}}(&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -78,6 +81,7 @@ func TestQuery{{.}}(t *testing.T) {
 	// filter with
 	filter = NewFilter{{.}}{{$generics}}(&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -102,6 +106,7 @@ func TestQuery{{.}}Empty(t *testing.T) {
 
 	filter := NewFilter{{.}}{{$generics}}(&w)
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 	
 	assert.Panics(t, func() { query.Get() })
 	assert.Panics(t, func() { query.Entity() })
@@ -137,6 +142,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter{{.}}{{$genericsRel}}(&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -149,6 +155,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -162,6 +169,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter{{.}}{{$genericsRel}}(&w)
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -193,6 +201,7 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter{{.}}{{$genericsRel}}(&w).Register()
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -206,6 +215,7 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -220,6 +230,7 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -260,6 +271,7 @@ func TestQuery0(t *testing.T) {
 	// normal filter
 	filter := NewFilter0(&w)
 	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -271,6 +283,7 @@ func TestQuery0(t *testing.T) {
 	// filter without
 	filter = NewFilter0(&w).Without(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -282,6 +295,7 @@ func TestQuery0(t *testing.T) {
 	// filter exclusive
 	filter = NewFilter0(&w).Exclusive()
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -293,6 +307,7 @@ func TestQuery0(t *testing.T) {
 	// filter with
 	filter = NewFilter0(&w).With(C[Position]())
 	query = filter.Query()
+	assert.Equal(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -314,6 +329,7 @@ func TestQuery0Empty(t *testing.T) {
 
 	filter := NewFilter0(&w).Without(C[Position]())
 	query := filter.Query()
+	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Entity() })
 
@@ -351,6 +367,7 @@ func TestQuery0Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter0(&w)
 	query := filter.Query()
+	assert.Equal(t, 3*n+3, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -362,6 +379,7 @@ func TestQuery0Relations(t *testing.T) {
 	// registered filter
 	filter = NewFilter0(&w).Register()
 	query = filter.Query()
+	assert.Equal(t, 3*n+3, query.Count())
 
 	cnt = 0
 	for query.Next() {

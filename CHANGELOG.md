@@ -2,6 +2,10 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.3.0...main)
 
+### Features
+
+- Adds `QueryX.Count` (#175)
+
 ### Documentation
 
 - Adds user guide section on Ark's error handling philosophy (#170)
