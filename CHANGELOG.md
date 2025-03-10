@@ -12,6 +12,10 @@
 - Adds user guide section on Ark's error handling philosophy (#170)
 - Adds information on uninformative `Map.Get` errors to API docs (#171)
 
+### Performance
+
+- Optimize table creation and world stats by re-use of item sizes from archetypes (#177)
+
 ### Bugfixes
 
 - Fail with a more informative error when creating entities with missing relation targets (#169)
