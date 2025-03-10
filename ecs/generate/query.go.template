@@ -193,72 +193,11 @@ func (q *Query{{.}}{{$genericsShort}}) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-func (q *Query{{.}}{{$genericsShort}}) iter(yield func(*queryResult{{.}}{{$genericsShort}})) {
-	if q.cache != nil {
-		for _, tableID := range q.cache.tables {
-			table := &q.world.storage.tables[tableID]
-			if table.Len() == 0 {
-				continue
-			}
-			if !table.Matches(q.relations) {
-				continue
-			}
-			{{- range $i, $v := $upper}}
-			column{{$v}} := q.components[{{$i}}].columns[tableID]
-			{{- end}}
-
-			len := uintptr(table.Len())
-			result := queryResult{{.}}{{$genericsShort}}{}
-			for i := range len {
-				result.Entity = table.GetEntity(i)
-				{{- range $upper}}
-				result.{{.}} = (*{{.}})(column{{.}}.Get(i))
-				{{- end}}
-				yield(&result)
-			}
-		}
-	} else {
-		for arch := range q.world.storage.archetypes {
-			archetype := &q.world.storage.archetypes[arch]
-			if !q.filter.matches(&archetype.mask) {
-				continue
-			}
-
-			var tables []tableID
-			if !archetype.HasRelations() {
-				if q.world.storage.tables[archetype.tables[0]].Len() == 0 {
-					continue
-				}
-				tables = archetype.tables
-			} else {
-				tables = archetype.GetTables(q.relations)
-			}
-
-			for _, tableID := range tables {
-				table := &q.world.storage.tables[tableID]
-				if table.Len() == 0 {
-					continue
-				}
-				if !table.Matches(q.relations) {
-					continue
-				}
-				{{- range $i, $v := $upper}}
-				column{{$v}} := q.components[{{$i}}].columns[tableID]
-				{{- end}}
-
-				len := uintptr(table.Len())
-				result := queryResult{{.}}{{$genericsShort}}{}
-				for i := range len {
-					result.Entity = table.GetEntity(i)
-					{{- range $upper}}
-					result.{{.}} = (*{{.}})(column{{.}}.Get(i))
-					{{- end}}
-					yield(&result)
-				}
-			}
-		}
+func (q *Query{{.}}{{$genericsShort}}) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
 	}
-	q.Close()
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 {{end -}}
 {{end -}}

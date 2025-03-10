@@ -148,60 +148,11 @@ func (q *Query0) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-func (q *Query0) iter(yield func(*queryResult0)) {
-	if q.cache != nil {
-		for _, tableID := range q.cache.tables {
-			table := &q.world.storage.tables[tableID]
-			if table.Len() == 0 {
-				continue
-			}
-			if !table.Matches(q.relations) {
-				continue
-			}
-
-			len := uintptr(table.Len())
-			result := queryResult0{}
-			for i := range len {
-				result.Entity = table.GetEntity(i)
-				yield(&result)
-			}
-		}
-	} else {
-		for arch := range q.world.storage.archetypes {
-			archetype := &q.world.storage.archetypes[arch]
-			if !q.filter.matches(&archetype.mask) {
-				continue
-			}
-
-			var tables []tableID
-			if !archetype.HasRelations() {
-				if q.world.storage.tables[archetype.tables[0]].Len() == 0 {
-					continue
-				}
-				tables = archetype.tables
-			} else {
-				tables = archetype.GetTables(q.relations)
-			}
-
-			for _, tableID := range tables {
-				table := &q.world.storage.tables[tableID]
-				if table.Len() == 0 {
-					continue
-				}
-				if !table.Matches(q.relations) {
-					continue
-				}
-
-				len := uintptr(table.Len())
-				result := queryResult0{}
-				for i := range len {
-					result.Entity = table.GetEntity(i)
-					yield(&result)
-				}
-			}
-		}
+func (q *Query0) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
 	}
-	q.Close()
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 type queryResult1[A any] struct {
@@ -360,64 +311,11 @@ func (q *Query1[A]) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-func (q *Query1[A]) iter(yield func(*queryResult1[A])) {
-	if q.cache != nil {
-		for _, tableID := range q.cache.tables {
-			table := &q.world.storage.tables[tableID]
-			if table.Len() == 0 {
-				continue
-			}
-			if !table.Matches(q.relations) {
-				continue
-			}
-			columnA := q.components[0].columns[tableID]
-
-			len := uintptr(table.Len())
-			result := queryResult1[A]{}
-			for i := range len {
-				result.Entity = table.GetEntity(i)
-				result.A = (*A)(columnA.Get(i))
-				yield(&result)
-			}
-		}
-	} else {
-		for arch := range q.world.storage.archetypes {
-			archetype := &q.world.storage.archetypes[arch]
-			if !q.filter.matches(&archetype.mask) {
-				continue
-			}
-
-			var tables []tableID
-			if !archetype.HasRelations() {
-				if q.world.storage.tables[archetype.tables[0]].Len() == 0 {
-					continue
-				}
-				tables = archetype.tables
-			} else {
-				tables = archetype.GetTables(q.relations)
-			}
-
-			for _, tableID := range tables {
-				table := &q.world.storage.tables[tableID]
-				if table.Len() == 0 {
-					continue
-				}
-				if !table.Matches(q.relations) {
-					continue
-				}
-				columnA := q.components[0].columns[tableID]
-
-				len := uintptr(table.Len())
-				result := queryResult1[A]{}
-				for i := range len {
-					result.Entity = table.GetEntity(i)
-					result.A = (*A)(columnA.Get(i))
-					yield(&result)
-				}
-			}
-		}
+func (q *Query1[A]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
 	}
-	q.Close()
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 type queryResult2[A any, B any] struct {
@@ -579,68 +477,11 @@ func (q *Query2[A, B]) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-func (q *Query2[A, B]) iter(yield func(*queryResult2[A, B])) {
-	if q.cache != nil {
-		for _, tableID := range q.cache.tables {
-			table := &q.world.storage.tables[tableID]
-			if table.Len() == 0 {
-				continue
-			}
-			if !table.Matches(q.relations) {
-				continue
-			}
-			columnA := q.components[0].columns[tableID]
-			columnB := q.components[1].columns[tableID]
-
-			len := uintptr(table.Len())
-			result := queryResult2[A, B]{}
-			for i := range len {
-				result.Entity = table.GetEntity(i)
-				result.A = (*A)(columnA.Get(i))
-				result.B = (*B)(columnB.Get(i))
-				yield(&result)
-			}
-		}
-	} else {
-		for arch := range q.world.storage.archetypes {
-			archetype := &q.world.storage.archetypes[arch]
-			if !q.filter.matches(&archetype.mask) {
-				continue
-			}
-
-			var tables []tableID
-			if !archetype.HasRelations() {
-				if q.world.storage.tables[archetype.tables[0]].Len() == 0 {
-					continue
-				}
-				tables = archetype.tables
-			} else {
-				tables = archetype.GetTables(q.relations)
-			}
-
-			for _, tableID := range tables {
-				table := &q.world.storage.tables[tableID]
-				if table.Len() == 0 {
-					continue
-				}
-				if !table.Matches(q.relations) {
-					continue
-				}
-				columnA := q.components[0].columns[tableID]
-				columnB := q.components[1].columns[tableID]
-
-				len := uintptr(table.Len())
-				result := queryResult2[A, B]{}
-				for i := range len {
-					result.Entity = table.GetEntity(i)
-					result.A = (*A)(columnA.Get(i))
-					result.B = (*B)(columnB.Get(i))
-					yield(&result)
-				}
-			}
-		}
+func (q *Query2[A, B]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
 	}
-	q.Close()
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 type queryResult3[A any, B any, C any] struct {
@@ -809,72 +650,11 @@ func (q *Query3[A, B, C]) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-func (q *Query3[A, B, C]) iter(yield func(*queryResult3[A, B, C])) {
-	if q.cache != nil {
-		for _, tableID := range q.cache.tables {
-			table := &q.world.storage.tables[tableID]
-			if table.Len() == 0 {
-				continue
-			}
-			if !table.Matches(q.relations) {
-				continue
-			}
-			columnA := q.components[0].columns[tableID]
-			columnB := q.components[1].columns[tableID]
-			columnC := q.components[2].columns[tableID]
-
-			len := uintptr(table.Len())
-			result := queryResult3[A, B, C]{}
-			for i := range len {
-				result.Entity = table.GetEntity(i)
-				result.A = (*A)(columnA.Get(i))
-				result.B = (*B)(columnB.Get(i))
-				result.C = (*C)(columnC.Get(i))
-				yield(&result)
-			}
-		}
-	} else {
-		for arch := range q.world.storage.archetypes {
-			archetype := &q.world.storage.archetypes[arch]
-			if !q.filter.matches(&archetype.mask) {
-				continue
-			}
-
-			var tables []tableID
-			if !archetype.HasRelations() {
-				if q.world.storage.tables[archetype.tables[0]].Len() == 0 {
-					continue
-				}
-				tables = archetype.tables
-			} else {
-				tables = archetype.GetTables(q.relations)
-			}
-
-			for _, tableID := range tables {
-				table := &q.world.storage.tables[tableID]
-				if table.Len() == 0 {
-					continue
-				}
-				if !table.Matches(q.relations) {
-					continue
-				}
-				columnA := q.components[0].columns[tableID]
-				columnB := q.components[1].columns[tableID]
-				columnC := q.components[2].columns[tableID]
-
-				len := uintptr(table.Len())
-				result := queryResult3[A, B, C]{}
-				for i := range len {
-					result.Entity = table.GetEntity(i)
-					result.A = (*A)(columnA.Get(i))
-					result.B = (*B)(columnB.Get(i))
-					result.C = (*C)(columnC.Get(i))
-					yield(&result)
-				}
-			}
-		}
+func (q *Query3[A, B, C]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
 	}
-	q.Close()
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 type queryResult4[A any, B any, C any, D any] struct {
@@ -1048,76 +828,11 @@ func (q *Query4[A, B, C, D]) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-func (q *Query4[A, B, C, D]) iter(yield func(*queryResult4[A, B, C, D])) {
-	if q.cache != nil {
-		for _, tableID := range q.cache.tables {
-			table := &q.world.storage.tables[tableID]
-			if table.Len() == 0 {
-				continue
-			}
-			if !table.Matches(q.relations) {
-				continue
-			}
-			columnA := q.components[0].columns[tableID]
-			columnB := q.components[1].columns[tableID]
-			columnC := q.components[2].columns[tableID]
-			columnD := q.components[3].columns[tableID]
-
-			len := uintptr(table.Len())
-			result := queryResult4[A, B, C, D]{}
-			for i := range len {
-				result.Entity = table.GetEntity(i)
-				result.A = (*A)(columnA.Get(i))
-				result.B = (*B)(columnB.Get(i))
-				result.C = (*C)(columnC.Get(i))
-				result.D = (*D)(columnD.Get(i))
-				yield(&result)
-			}
-		}
-	} else {
-		for arch := range q.world.storage.archetypes {
-			archetype := &q.world.storage.archetypes[arch]
-			if !q.filter.matches(&archetype.mask) {
-				continue
-			}
-
-			var tables []tableID
-			if !archetype.HasRelations() {
-				if q.world.storage.tables[archetype.tables[0]].Len() == 0 {
-					continue
-				}
-				tables = archetype.tables
-			} else {
-				tables = archetype.GetTables(q.relations)
-			}
-
-			for _, tableID := range tables {
-				table := &q.world.storage.tables[tableID]
-				if table.Len() == 0 {
-					continue
-				}
-				if !table.Matches(q.relations) {
-					continue
-				}
-				columnA := q.components[0].columns[tableID]
-				columnB := q.components[1].columns[tableID]
-				columnC := q.components[2].columns[tableID]
-				columnD := q.components[3].columns[tableID]
-
-				len := uintptr(table.Len())
-				result := queryResult4[A, B, C, D]{}
-				for i := range len {
-					result.Entity = table.GetEntity(i)
-					result.A = (*A)(columnA.Get(i))
-					result.B = (*B)(columnB.Get(i))
-					result.C = (*C)(columnC.Get(i))
-					result.D = (*D)(columnD.Get(i))
-					yield(&result)
-				}
-			}
-		}
+func (q *Query4[A, B, C, D]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
 	}
-	q.Close()
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 type queryResult5[A any, B any, C any, D any, E any] struct {
@@ -1296,80 +1011,11 @@ func (q *Query5[A, B, C, D, E]) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-func (q *Query5[A, B, C, D, E]) iter(yield func(*queryResult5[A, B, C, D, E])) {
-	if q.cache != nil {
-		for _, tableID := range q.cache.tables {
-			table := &q.world.storage.tables[tableID]
-			if table.Len() == 0 {
-				continue
-			}
-			if !table.Matches(q.relations) {
-				continue
-			}
-			columnA := q.components[0].columns[tableID]
-			columnB := q.components[1].columns[tableID]
-			columnC := q.components[2].columns[tableID]
-			columnD := q.components[3].columns[tableID]
-			columnE := q.components[4].columns[tableID]
-
-			len := uintptr(table.Len())
-			result := queryResult5[A, B, C, D, E]{}
-			for i := range len {
-				result.Entity = table.GetEntity(i)
-				result.A = (*A)(columnA.Get(i))
-				result.B = (*B)(columnB.Get(i))
-				result.C = (*C)(columnC.Get(i))
-				result.D = (*D)(columnD.Get(i))
-				result.E = (*E)(columnE.Get(i))
-				yield(&result)
-			}
-		}
-	} else {
-		for arch := range q.world.storage.archetypes {
-			archetype := &q.world.storage.archetypes[arch]
-			if !q.filter.matches(&archetype.mask) {
-				continue
-			}
-
-			var tables []tableID
-			if !archetype.HasRelations() {
-				if q.world.storage.tables[archetype.tables[0]].Len() == 0 {
-					continue
-				}
-				tables = archetype.tables
-			} else {
-				tables = archetype.GetTables(q.relations)
-			}
-
-			for _, tableID := range tables {
-				table := &q.world.storage.tables[tableID]
-				if table.Len() == 0 {
-					continue
-				}
-				if !table.Matches(q.relations) {
-					continue
-				}
-				columnA := q.components[0].columns[tableID]
-				columnB := q.components[1].columns[tableID]
-				columnC := q.components[2].columns[tableID]
-				columnD := q.components[3].columns[tableID]
-				columnE := q.components[4].columns[tableID]
-
-				len := uintptr(table.Len())
-				result := queryResult5[A, B, C, D, E]{}
-				for i := range len {
-					result.Entity = table.GetEntity(i)
-					result.A = (*A)(columnA.Get(i))
-					result.B = (*B)(columnB.Get(i))
-					result.C = (*C)(columnC.Get(i))
-					result.D = (*D)(columnD.Get(i))
-					result.E = (*E)(columnE.Get(i))
-					yield(&result)
-				}
-			}
-		}
+func (q *Query5[A, B, C, D, E]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
 	}
-	q.Close()
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 type queryResult6[A any, B any, C any, D any, E any, F any] struct {
@@ -1553,84 +1199,11 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-func (q *Query6[A, B, C, D, E, F]) iter(yield func(*queryResult6[A, B, C, D, E, F])) {
-	if q.cache != nil {
-		for _, tableID := range q.cache.tables {
-			table := &q.world.storage.tables[tableID]
-			if table.Len() == 0 {
-				continue
-			}
-			if !table.Matches(q.relations) {
-				continue
-			}
-			columnA := q.components[0].columns[tableID]
-			columnB := q.components[1].columns[tableID]
-			columnC := q.components[2].columns[tableID]
-			columnD := q.components[3].columns[tableID]
-			columnE := q.components[4].columns[tableID]
-			columnF := q.components[5].columns[tableID]
-
-			len := uintptr(table.Len())
-			result := queryResult6[A, B, C, D, E, F]{}
-			for i := range len {
-				result.Entity = table.GetEntity(i)
-				result.A = (*A)(columnA.Get(i))
-				result.B = (*B)(columnB.Get(i))
-				result.C = (*C)(columnC.Get(i))
-				result.D = (*D)(columnD.Get(i))
-				result.E = (*E)(columnE.Get(i))
-				result.F = (*F)(columnF.Get(i))
-				yield(&result)
-			}
-		}
-	} else {
-		for arch := range q.world.storage.archetypes {
-			archetype := &q.world.storage.archetypes[arch]
-			if !q.filter.matches(&archetype.mask) {
-				continue
-			}
-
-			var tables []tableID
-			if !archetype.HasRelations() {
-				if q.world.storage.tables[archetype.tables[0]].Len() == 0 {
-					continue
-				}
-				tables = archetype.tables
-			} else {
-				tables = archetype.GetTables(q.relations)
-			}
-
-			for _, tableID := range tables {
-				table := &q.world.storage.tables[tableID]
-				if table.Len() == 0 {
-					continue
-				}
-				if !table.Matches(q.relations) {
-					continue
-				}
-				columnA := q.components[0].columns[tableID]
-				columnB := q.components[1].columns[tableID]
-				columnC := q.components[2].columns[tableID]
-				columnD := q.components[3].columns[tableID]
-				columnE := q.components[4].columns[tableID]
-				columnF := q.components[5].columns[tableID]
-
-				len := uintptr(table.Len())
-				result := queryResult6[A, B, C, D, E, F]{}
-				for i := range len {
-					result.Entity = table.GetEntity(i)
-					result.A = (*A)(columnA.Get(i))
-					result.B = (*B)(columnB.Get(i))
-					result.C = (*C)(columnC.Get(i))
-					result.D = (*D)(columnD.Get(i))
-					result.E = (*E)(columnE.Get(i))
-					result.F = (*F)(columnF.Get(i))
-					yield(&result)
-				}
-			}
-		}
+func (q *Query6[A, B, C, D, E, F]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
 	}
-	q.Close()
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 type queryResult7[A any, B any, C any, D any, E any, F any, G any] struct {
@@ -1819,88 +1392,11 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-func (q *Query7[A, B, C, D, E, F, G]) iter(yield func(*queryResult7[A, B, C, D, E, F, G])) {
-	if q.cache != nil {
-		for _, tableID := range q.cache.tables {
-			table := &q.world.storage.tables[tableID]
-			if table.Len() == 0 {
-				continue
-			}
-			if !table.Matches(q.relations) {
-				continue
-			}
-			columnA := q.components[0].columns[tableID]
-			columnB := q.components[1].columns[tableID]
-			columnC := q.components[2].columns[tableID]
-			columnD := q.components[3].columns[tableID]
-			columnE := q.components[4].columns[tableID]
-			columnF := q.components[5].columns[tableID]
-			columnG := q.components[6].columns[tableID]
-
-			len := uintptr(table.Len())
-			result := queryResult7[A, B, C, D, E, F, G]{}
-			for i := range len {
-				result.Entity = table.GetEntity(i)
-				result.A = (*A)(columnA.Get(i))
-				result.B = (*B)(columnB.Get(i))
-				result.C = (*C)(columnC.Get(i))
-				result.D = (*D)(columnD.Get(i))
-				result.E = (*E)(columnE.Get(i))
-				result.F = (*F)(columnF.Get(i))
-				result.G = (*G)(columnG.Get(i))
-				yield(&result)
-			}
-		}
-	} else {
-		for arch := range q.world.storage.archetypes {
-			archetype := &q.world.storage.archetypes[arch]
-			if !q.filter.matches(&archetype.mask) {
-				continue
-			}
-
-			var tables []tableID
-			if !archetype.HasRelations() {
-				if q.world.storage.tables[archetype.tables[0]].Len() == 0 {
-					continue
-				}
-				tables = archetype.tables
-			} else {
-				tables = archetype.GetTables(q.relations)
-			}
-
-			for _, tableID := range tables {
-				table := &q.world.storage.tables[tableID]
-				if table.Len() == 0 {
-					continue
-				}
-				if !table.Matches(q.relations) {
-					continue
-				}
-				columnA := q.components[0].columns[tableID]
-				columnB := q.components[1].columns[tableID]
-				columnC := q.components[2].columns[tableID]
-				columnD := q.components[3].columns[tableID]
-				columnE := q.components[4].columns[tableID]
-				columnF := q.components[5].columns[tableID]
-				columnG := q.components[6].columns[tableID]
-
-				len := uintptr(table.Len())
-				result := queryResult7[A, B, C, D, E, F, G]{}
-				for i := range len {
-					result.Entity = table.GetEntity(i)
-					result.A = (*A)(columnA.Get(i))
-					result.B = (*B)(columnB.Get(i))
-					result.C = (*C)(columnC.Get(i))
-					result.D = (*D)(columnD.Get(i))
-					result.E = (*E)(columnE.Get(i))
-					result.F = (*F)(columnF.Get(i))
-					result.G = (*G)(columnG.Get(i))
-					yield(&result)
-				}
-			}
-		}
+func (q *Query7[A, B, C, D, E, F, G]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
 	}
-	q.Close()
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
 type queryResult8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
@@ -2094,90 +1590,9 @@ func (q *Query8[A, B, C, D, E, F, G, H]) setTable(index int, table *table) {
 	q.cursor.maxIndex = int64(q.table.Len() - 1)
 }
 
-func (q *Query8[A, B, C, D, E, F, G, H]) iter(yield func(*queryResult8[A, B, C, D, E, F, G, H])) {
-	if q.cache != nil {
-		for _, tableID := range q.cache.tables {
-			table := &q.world.storage.tables[tableID]
-			if table.Len() == 0 {
-				continue
-			}
-			if !table.Matches(q.relations) {
-				continue
-			}
-			columnA := q.components[0].columns[tableID]
-			columnB := q.components[1].columns[tableID]
-			columnC := q.components[2].columns[tableID]
-			columnD := q.components[3].columns[tableID]
-			columnE := q.components[4].columns[tableID]
-			columnF := q.components[5].columns[tableID]
-			columnG := q.components[6].columns[tableID]
-			columnH := q.components[7].columns[tableID]
-
-			len := uintptr(table.Len())
-			result := queryResult8[A, B, C, D, E, F, G, H]{}
-			for i := range len {
-				result.Entity = table.GetEntity(i)
-				result.A = (*A)(columnA.Get(i))
-				result.B = (*B)(columnB.Get(i))
-				result.C = (*C)(columnC.Get(i))
-				result.D = (*D)(columnD.Get(i))
-				result.E = (*E)(columnE.Get(i))
-				result.F = (*F)(columnF.Get(i))
-				result.G = (*G)(columnG.Get(i))
-				result.H = (*H)(columnH.Get(i))
-				yield(&result)
-			}
-		}
-	} else {
-		for arch := range q.world.storage.archetypes {
-			archetype := &q.world.storage.archetypes[arch]
-			if !q.filter.matches(&archetype.mask) {
-				continue
-			}
-
-			var tables []tableID
-			if !archetype.HasRelations() {
-				if q.world.storage.tables[archetype.tables[0]].Len() == 0 {
-					continue
-				}
-				tables = archetype.tables
-			} else {
-				tables = archetype.GetTables(q.relations)
-			}
-
-			for _, tableID := range tables {
-				table := &q.world.storage.tables[tableID]
-				if table.Len() == 0 {
-					continue
-				}
-				if !table.Matches(q.relations) {
-					continue
-				}
-				columnA := q.components[0].columns[tableID]
-				columnB := q.components[1].columns[tableID]
-				columnC := q.components[2].columns[tableID]
-				columnD := q.components[3].columns[tableID]
-				columnE := q.components[4].columns[tableID]
-				columnF := q.components[5].columns[tableID]
-				columnG := q.components[6].columns[tableID]
-				columnH := q.components[7].columns[tableID]
-
-				len := uintptr(table.Len())
-				result := queryResult8[A, B, C, D, E, F, G, H]{}
-				for i := range len {
-					result.Entity = table.GetEntity(i)
-					result.A = (*A)(columnA.Get(i))
-					result.B = (*B)(columnB.Get(i))
-					result.C = (*C)(columnC.Get(i))
-					result.D = (*D)(columnD.Get(i))
-					result.E = (*E)(columnE.Get(i))
-					result.F = (*F)(columnF.Get(i))
-					result.G = (*G)(columnG.Get(i))
-					result.H = (*H)(columnH.Get(i))
-					yield(&result)
-				}
-			}
-		}
+func (q *Query8[A, B, C, D, E, F, G, H]) Count() int {
+	if q.cache == nil {
+		return countQuery(&q.world.storage, q.filter, q.relations)
 	}
-	q.Close()
+	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
