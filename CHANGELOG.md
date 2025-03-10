@@ -11,6 +11,7 @@
 
 - Adds user guide section on Ark's error handling philosophy (#170)
 - Adds information on uninformative `Map.Get` errors to API docs (#171)
+- Adds benchmarks for build tag `tiny` (#180)
 
 ### Performance
 
