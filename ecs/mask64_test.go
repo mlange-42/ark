@@ -61,6 +61,9 @@ func TestMask64(t *testing.T) {
 	assert.False(t, not.Get(id(1)))
 	assert.False(t, not.Get(id(32)))
 
+	assert.True(t, mask.Equals(&mask))
+	assert.False(t, mask.Equals(&bitMask64{}))
+
 	assert.False(t, mask.IsZero())
 	assert.True(t, (&bitMask64{}).IsZero())
 }
