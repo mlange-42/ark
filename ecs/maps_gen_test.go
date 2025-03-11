@@ -39,6 +39,7 @@ func TestMap1(t *testing.T) {
 	for _, e := range entities {
 		_ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{})
 	}
 
 	for _, e := range entities {
@@ -54,6 +55,9 @@ func TestMap1(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA) {})
@@ -308,6 +312,7 @@ func TestMap2(t *testing.T) {
 	for _, e := range entities {
 		_, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{})
 	}
 
 	for _, e := range entities {
@@ -323,6 +328,9 @@ func TestMap2(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB) {})
@@ -577,6 +585,7 @@ func TestMap3(t *testing.T) {
 	for _, e := range entities {
 		_, _, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{}, &CompC{})
 	}
 
 	for _, e := range entities {
@@ -592,6 +601,9 @@ func TestMap3(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC) {})
@@ -846,6 +858,7 @@ func TestMap4(t *testing.T) {
 	for _, e := range entities {
 		_, _, _, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 	}
 
 	for _, e := range entities {
@@ -861,6 +874,9 @@ func TestMap4(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD) {})
@@ -1115,6 +1131,7 @@ func TestMap5(t *testing.T) {
 	for _, e := range entities {
 		_, _, _, _, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	}
 
 	for _, e := range entities {
@@ -1130,6 +1147,9 @@ func TestMap5(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {})
@@ -1384,6 +1404,7 @@ func TestMap6(t *testing.T) {
 	for _, e := range entities {
 		_, _, _, _, _, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	}
 
 	for _, e := range entities {
@@ -1399,6 +1420,9 @@ func TestMap6(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {})
@@ -1653,6 +1677,7 @@ func TestMap7(t *testing.T) {
 	for _, e := range entities {
 		_, _, _, _, _, _, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	}
 
 	for _, e := range entities {
@@ -1668,6 +1693,9 @@ func TestMap7(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {})
@@ -1922,6 +1950,7 @@ func TestMap8(t *testing.T) {
 	for _, e := range entities {
 		_, _, _, _, _, _, _, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	}
 
 	for _, e := range entities {
@@ -1937,6 +1966,9 @@ func TestMap8(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {})
@@ -2191,6 +2223,7 @@ func TestMap9(t *testing.T) {
 	for _, e := range entities {
 		_, _, _, _, _, _, _, _, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
 	}
 
 	for _, e := range entities {
@@ -2206,6 +2239,9 @@ func TestMap9(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {})
@@ -2460,6 +2496,7 @@ func TestMap10(t *testing.T) {
 	for _, e := range entities {
 		_, _, _, _, _, _, _, _, _, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
 	}
 
 	for _, e := range entities {
@@ -2475,6 +2512,9 @@ func TestMap10(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
@@ -2730,6 +2770,7 @@ func TestMap11(t *testing.T) {
 	for _, e := range entities {
 		_, _, _, _, _, _, _, _, _, _, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
 	}
 
 	for _, e := range entities {
@@ -2745,6 +2786,9 @@ func TestMap11(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
@@ -3000,6 +3044,7 @@ func TestMap12(t *testing.T) {
 	for _, e := range entities {
 		_, _, _, _, _, _, _, _, _, _, _, _ = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
 	}
 
 	for _, e := range entities {
@@ -3015,6 +3060,9 @@ func TestMap12(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
+	})
+	assert.Panics(t, func() {
+		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
 	})
 	assert.Panics(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {

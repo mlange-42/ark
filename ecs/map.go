@@ -163,6 +163,17 @@ func (m *Map[T]) AddFn(entity Entity, fn func(a *T), target ...Entity) {
 	}
 }
 
+// Set the mapped component of the given entity to the given values.
+func (m *Map[T]) Set(entity Entity, comp *T) {
+	if !m.world.Alive(entity) {
+		panic("can't set component of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storage.columns[index.table].Set(index.row, unsafe.Pointer(comp))
+}
+
 // AddBatch adds the mapped component to all entities matching the given batch filter.
 //
 // If the mapped component is a relationship (see [RelationMarker]),

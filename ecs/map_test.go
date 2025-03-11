@@ -26,6 +26,10 @@ func TestMap(t *testing.T) {
 	pos = posMap.Get(e1)
 	assert.Equal(t, 100.0, pos.X)
 
+	posMap.Set(e1, &Position{X: -1, Y: -2})
+	pos = posMap.Get(e1)
+	assert.Equal(t, -1.0, pos.X)
+
 	posMap.Remove(e1)
 	assert.False(t, posMap.Has(e1))
 	assert.Panics(t, func() { posMap.Get(e1) })
@@ -49,6 +53,9 @@ func TestMap(t *testing.T) {
 	})
 	assert.Panics(t, func() {
 		posMap.Add(Entity{}, &Position{})
+	})
+	assert.Panics(t, func() {
+		posMap.Set(Entity{}, &Position{})
 	})
 	assert.Panics(t, func() {
 		posMap.AddFn(Entity{}, func(a *Position) {})
