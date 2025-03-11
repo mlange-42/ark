@@ -124,20 +124,7 @@ func (ex *Exchange1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), r
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange1[A]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &ex.world.storage.tables[tableID]
-
-			lock := ex.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			ex.world.unlock(lock)
-		}
-	}
-	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+	removeBatch(ex.world, batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -320,20 +307,7 @@ func (ex *Exchange2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A,
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange2[A, B]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &ex.world.storage.tables[tableID]
-
-			lock := ex.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			ex.world.unlock(lock)
-		}
-	}
-	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+	removeBatch(ex.world, batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -526,20 +500,7 @@ func (ex *Exchange3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a 
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange3[A, B, C]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &ex.world.storage.tables[tableID]
-
-			lock := ex.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			ex.world.unlock(lock)
-		}
-	}
-	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+	removeBatch(ex.world, batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -740,20 +701,7 @@ func (ex *Exchange4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity,
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange4[A, B, C, D]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &ex.world.storage.tables[tableID]
-
-			lock := ex.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			ex.world.unlock(lock)
-		}
-	}
-	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+	removeBatch(ex.world, batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -962,20 +910,7 @@ func (ex *Exchange5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Enti
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange5[A, B, C, D, E]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &ex.world.storage.tables[tableID]
-
-			lock := ex.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			ex.world.unlock(lock)
-		}
-	}
-	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+	removeBatch(ex.world, batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -1192,20 +1127,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity E
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange6[A, B, C, D, E, F]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &ex.world.storage.tables[tableID]
-
-			lock := ex.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			ex.world.unlock(lock)
-		}
-	}
-	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+	removeBatch(ex.world, batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -1430,20 +1352,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entit
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange7[A, B, C, D, E, F, G]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &ex.world.storage.tables[tableID]
-
-			lock := ex.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			ex.world.unlock(lock)
-		}
-	}
-	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+	removeBatch(ex.world, batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -1676,20 +1585,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(en
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &ex.world.storage.tables[tableID]
-
-			lock := ex.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			ex.world.unlock(lock)
-		}
-	}
-	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+	removeBatch(ex.world, batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.

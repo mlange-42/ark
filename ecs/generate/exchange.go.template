@@ -145,20 +145,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(enti
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &ex.world.storage.tables[tableID]
-
-			lock := ex.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			ex.world.unlock(lock)
-		}
-	}
-	ex.world.exchangeBatch(batch, nil, ex.remove, nil, nil, process)
+	removeBatch(ex.world,batch,ex.remove,fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
