@@ -59,6 +59,7 @@ func TestMap{{.}}(t *testing.T) {
 	for _, e := range entities {
 		{{blanks .}} = mapper.Get(e)
 		assert.True(t, mapper.HasAll(e))
+		mapper.Set(e, {{$mapArgs}})
 	}
 
 	for _, e := range entities {
@@ -74,6 +75,9 @@ func TestMap{{.}}(t *testing.T) {
 	})
 	assert.Panics(t, func(){
 		mapper.Add(Entity{}, {{$mapArgs}})
+	})
+	assert.Panics(t, func(){
+		mapper.Set(Entity{}, {{$mapArgs}})
 	})
 	assert.Panics(t, func(){
 		mapper.AddFn(Entity{}, func({{$args}}){})

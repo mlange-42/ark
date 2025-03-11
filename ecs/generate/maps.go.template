@@ -206,6 +206,25 @@ func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}}), re
 	}
 }
 
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map{{.}}{{$genericsShort}}) Set(entity Entity, {{$args}}) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	{{- range $n}}
+	m.world.storage.checkHasComponent(entity, m.ids[{{.}}])
+	{{- end}}
+
+	index := &m.world.storage.entities[entity.id]
+
+	{{- range $i, $v := $upper}}
+	m.storage{{$v}}.columns[index.table].Set(index.row, unsafe.Pointer({{index $lower $i}})) 
+	{{- end}}
+}
+
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),

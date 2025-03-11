@@ -169,6 +169,20 @@ func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 	}
 }
 
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map1[A]) Set(entity Entity, a *A) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+}
+
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
@@ -423,6 +437,22 @@ func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) 
 			(*B)(m.storageB.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map2[A, B]) Set(entity Entity, a *A, b *B) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -697,6 +727,24 @@ func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...R
 			(*C)(m.storageC.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map3[A, B, C]) Set(entity Entity, a *A, b *B, c *C) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
+	m.storageC.columns[index.table].Set(index.row, unsafe.Pointer(c))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -987,6 +1035,26 @@ func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D),
 			(*D)(m.storageD.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map4[A, B, C, D]) Set(entity Entity, a *A, b *B, c *C, d *D) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
+	m.storageC.columns[index.table].Set(index.row, unsafe.Pointer(c))
+	m.storageD.columns[index.table].Set(index.row, unsafe.Pointer(d))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1293,6 +1361,28 @@ func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *
 			(*E)(m.storageE.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map5[A, B, C, D, E]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
+	m.storageC.columns[index.table].Set(index.row, unsafe.Pointer(c))
+	m.storageD.columns[index.table].Set(index.row, unsafe.Pointer(d))
+	m.storageE.columns[index.table].Set(index.row, unsafe.Pointer(e))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1615,6 +1705,30 @@ func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, 
 			(*F)(m.storageF.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map6[A, B, C, D, E, F]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
+	m.storageC.columns[index.table].Set(index.row, unsafe.Pointer(c))
+	m.storageD.columns[index.table].Set(index.row, unsafe.Pointer(d))
+	m.storageE.columns[index.table].Set(index.row, unsafe.Pointer(e))
+	m.storageF.columns[index.table].Set(index.row, unsafe.Pointer(f))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1953,6 +2067,32 @@ func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *
 			(*G)(m.storageG.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map7[A, B, C, D, E, F, G]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
+	m.storageC.columns[index.table].Set(index.row, unsafe.Pointer(c))
+	m.storageD.columns[index.table].Set(index.row, unsafe.Pointer(d))
+	m.storageE.columns[index.table].Set(index.row, unsafe.Pointer(e))
+	m.storageF.columns[index.table].Set(index.row, unsafe.Pointer(f))
+	m.storageG.columns[index.table].Set(index.row, unsafe.Pointer(g))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -2307,6 +2447,34 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, 
 			(*H)(m.storageH.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map8[A, B, C, D, E, F, G, H]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+	m.world.storage.checkHasComponent(entity, m.ids[7])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
+	m.storageC.columns[index.table].Set(index.row, unsafe.Pointer(c))
+	m.storageD.columns[index.table].Set(index.row, unsafe.Pointer(d))
+	m.storageE.columns[index.table].Set(index.row, unsafe.Pointer(e))
+	m.storageF.columns[index.table].Set(index.row, unsafe.Pointer(f))
+	m.storageG.columns[index.table].Set(index.row, unsafe.Pointer(g))
+	m.storageH.columns[index.table].Set(index.row, unsafe.Pointer(h))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -2677,6 +2845,36 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(a *A, b *
 			(*I)(m.storageI.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+	m.world.storage.checkHasComponent(entity, m.ids[7])
+	m.world.storage.checkHasComponent(entity, m.ids[8])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
+	m.storageC.columns[index.table].Set(index.row, unsafe.Pointer(c))
+	m.storageD.columns[index.table].Set(index.row, unsafe.Pointer(d))
+	m.storageE.columns[index.table].Set(index.row, unsafe.Pointer(e))
+	m.storageF.columns[index.table].Set(index.row, unsafe.Pointer(f))
+	m.storageG.columns[index.table].Set(index.row, unsafe.Pointer(g))
+	m.storageH.columns[index.table].Set(index.row, unsafe.Pointer(h))
+	m.storageI.columns[index.table].Set(index.row, unsafe.Pointer(i))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -3063,6 +3261,38 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(a *A,
 			(*J)(m.storageJ.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+	m.world.storage.checkHasComponent(entity, m.ids[7])
+	m.world.storage.checkHasComponent(entity, m.ids[8])
+	m.world.storage.checkHasComponent(entity, m.ids[9])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
+	m.storageC.columns[index.table].Set(index.row, unsafe.Pointer(c))
+	m.storageD.columns[index.table].Set(index.row, unsafe.Pointer(d))
+	m.storageE.columns[index.table].Set(index.row, unsafe.Pointer(e))
+	m.storageF.columns[index.table].Set(index.row, unsafe.Pointer(f))
+	m.storageG.columns[index.table].Set(index.row, unsafe.Pointer(g))
+	m.storageH.columns[index.table].Set(index.row, unsafe.Pointer(h))
+	m.storageI.columns[index.table].Set(index.row, unsafe.Pointer(i))
+	m.storageJ.columns[index.table].Set(index.row, unsafe.Pointer(j))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -3465,6 +3695,40 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(a 
 			(*K)(m.storageK.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+	m.world.storage.checkHasComponent(entity, m.ids[7])
+	m.world.storage.checkHasComponent(entity, m.ids[8])
+	m.world.storage.checkHasComponent(entity, m.ids[9])
+	m.world.storage.checkHasComponent(entity, m.ids[10])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
+	m.storageC.columns[index.table].Set(index.row, unsafe.Pointer(c))
+	m.storageD.columns[index.table].Set(index.row, unsafe.Pointer(d))
+	m.storageE.columns[index.table].Set(index.row, unsafe.Pointer(e))
+	m.storageF.columns[index.table].Set(index.row, unsafe.Pointer(f))
+	m.storageG.columns[index.table].Set(index.row, unsafe.Pointer(g))
+	m.storageH.columns[index.table].Set(index.row, unsafe.Pointer(h))
+	m.storageI.columns[index.table].Set(index.row, unsafe.Pointer(i))
+	m.storageJ.columns[index.table].Set(index.row, unsafe.Pointer(j))
+	m.storageK.columns[index.table].Set(index.row, unsafe.Pointer(k))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -3883,6 +4147,42 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func
 			(*L)(m.storageL.columns[index.table].Get(row)),
 		)
 	}
+}
+
+// Set the mapped components of the given entity to the given values.
+//
+// Requires the entity to already have all the mapped components.
+// This is not a component operation, so it can be performed on a locked world.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L) {
+	if !m.world.Alive(entity) {
+		panic("can't set components of a dead entity")
+	}
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+	m.world.storage.checkHasComponent(entity, m.ids[7])
+	m.world.storage.checkHasComponent(entity, m.ids[8])
+	m.world.storage.checkHasComponent(entity, m.ids[9])
+	m.world.storage.checkHasComponent(entity, m.ids[10])
+	m.world.storage.checkHasComponent(entity, m.ids[11])
+
+	index := &m.world.storage.entities[entity.id]
+	m.storageA.columns[index.table].Set(index.row, unsafe.Pointer(a))
+	m.storageB.columns[index.table].Set(index.row, unsafe.Pointer(b))
+	m.storageC.columns[index.table].Set(index.row, unsafe.Pointer(c))
+	m.storageD.columns[index.table].Set(index.row, unsafe.Pointer(d))
+	m.storageE.columns[index.table].Set(index.row, unsafe.Pointer(e))
+	m.storageF.columns[index.table].Set(index.row, unsafe.Pointer(f))
+	m.storageG.columns[index.table].Set(index.row, unsafe.Pointer(g))
+	m.storageH.columns[index.table].Set(index.row, unsafe.Pointer(h))
+	m.storageI.columns[index.table].Set(index.row, unsafe.Pointer(i))
+	m.storageJ.columns[index.table].Set(index.row, unsafe.Pointer(j))
+	m.storageK.columns[index.table].Set(index.row, unsafe.Pointer(k))
+	m.storageL.columns[index.table].Set(index.row, unsafe.Pointer(l))
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
