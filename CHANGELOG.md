@@ -26,6 +26,10 @@
 - Fail with a more informative error when creating entities with missing relation targets (#169)
 - Fix false-positive debug checks on registered queries and unsafe get (#179)
 
+### Other
+
+- Reduces the maximum number of world locks to 64 to fail earlier on unclosed queries (#185)
+
 ## [[v0.3.0]](https://github.com/mlange-42/ark/compare/v0.2.0...v0.3.0)
 
 ### Breaking changes

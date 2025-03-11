@@ -2,10 +2,10 @@ package ecs
 
 // Manages locks by mask bits.
 //
-// The number of simultaneous locks at a given time is limited to 256 (64 with build tag tiny).
+// The number of simultaneous locks at a given time is limited to 64.
 type lock struct {
-	locks   bitMask // The actual locks.
-	bitPool bitPool // The bit pool for getting and recycling bits.
+	locks   bitMask64 // The actual locks.
+	bitPool bitPool   // The bit pool for getting and recycling bits.
 }
 
 // Lock the world and get the Lock bit for later unlocking.
@@ -31,6 +31,6 @@ func (m *lock) IsLocked() bool {
 
 // Reset the locks and the pool.
 func (m *lock) Reset() {
-	m.locks = bitMask{}
+	m.locks = bitMask64{}
 	m.bitPool.Reset()
 }
