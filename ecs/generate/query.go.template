@@ -47,7 +47,7 @@ type Query{{.}}{{$generics}} struct {
 	{{- end}}
 }
 
-func newQuery{{.}}{{$generics}}(world *World, filter *filter{{if .}}, ids []ID{{end}}, relations []RelationID,
+func newQuery{{.}}{{$generics}}(world *World, filter *filter, relations []RelationID,
 	cacheID cacheID, components []*componentStorage) Query{{.}}{{$genericsShort}} {
 	var cache *cacheEntry
 	if cacheID != maxCacheID {
