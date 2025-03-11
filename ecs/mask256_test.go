@@ -50,6 +50,16 @@ func TestMask256(t *testing.T) {
 
 	assert.True(t, mask.ContainsAny(&other1))
 	assert.False(t, mask.ContainsAny(&other2))
+
+	assert.Equal(t, newMask256(id(1), id(32)), newMask256(id(1), id(32)))
+	assert.NotEqual(t, newMask256(id(1), id(33)), newMask256(id(1), id(32)))
+
+	mask = newMask256(id(1), id(32))
+	not := mask.Not()
+
+	assert.True(t, not.Get(id(0)))
+	assert.False(t, not.Get(id(1)))
+	assert.False(t, not.Get(id(32)))
 }
 
 func TestBitMask256Copy(t *testing.T) {
