@@ -218,20 +218,7 @@ func (m *Map1[A]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map1[A]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -259,21 +246,7 @@ func (m *Map1[A]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map1[A]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map2 is a mapper to access 2 components of an entity.
@@ -504,20 +477,7 @@ func (m *Map2[A, B]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map2[A, B]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -545,21 +505,7 @@ func (m *Map2[A, B]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map2[A, B]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map3 is a mapper to access 3 components of an entity.
@@ -808,20 +754,7 @@ func (m *Map3[A, B, C]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map3[A, B, C]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -849,21 +782,7 @@ func (m *Map3[A, B, C]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map3[A, B, C]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map4 is a mapper to access 4 components of an entity.
@@ -1128,20 +1047,7 @@ func (m *Map4[A, B, C, D]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map4[A, B, C, D]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -1169,21 +1075,7 @@ func (m *Map4[A, B, C, D]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map4[A, B, C, D]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map5 is a mapper to access 5 components of an entity.
@@ -1464,20 +1356,7 @@ func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map5[A, B, C, D, E]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -1505,21 +1384,7 @@ func (m *Map5[A, B, C, D, E]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map5[A, B, C, D, E]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map6 is a mapper to access 6 components of an entity.
@@ -1816,20 +1681,7 @@ func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map6[A, B, C, D, E, F]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -1857,21 +1709,7 @@ func (m *Map6[A, B, C, D, E, F]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map6[A, B, C, D, E, F]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map7 is a mapper to access 7 components of an entity.
@@ -2184,20 +2022,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map7[A, B, C, D, E, F, G]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -2225,21 +2050,7 @@ func (m *Map7[A, B, C, D, E, F, G]) SetRelations(entity Entity, rel ...Relation)
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map7[A, B, C, D, E, F, G]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map8 is a mapper to access 8 components of an entity.
@@ -2568,20 +2379,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map8[A, B, C, D, E, F, G, H]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -2609,21 +2407,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) SetRelations(entity Entity, rel ...Relati
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map8[A, B, C, D, E, F, G, H]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map9 is a mapper to access 9 components of an entity.
@@ -2968,20 +2752,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -3009,21 +2780,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) SetRelations(entity Entity, rel ...Rel
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map10 is a mapper to access 10 components of an entity.
@@ -3384,20 +3141,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -3425,21 +3169,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) SetRelations(entity Entity, rel ..
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map11 is a mapper to access 11 components of an entity.
@@ -3816,20 +3546,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -3857,21 +3574,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) SetRelations(entity Entity, rel
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map12 is a mapper to access 12 components of an entity.
@@ -4264,20 +3967,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -4305,19 +3995,5 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) SetRelations(entity Entity, 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
