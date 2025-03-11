@@ -176,7 +176,7 @@ type Query1[A any] struct {
 	columnA    *column
 }
 
-func newQuery1[A any](world *World, filter *filter, ids []ID, relations []RelationID,
+func newQuery1[A any](world *World, filter *filter, relations []RelationID,
 	cacheID cacheID, components []*componentStorage) Query1[A] {
 	var cache *cacheEntry
 	if cacheID != maxCacheID {
@@ -339,7 +339,7 @@ type Query2[A any, B any] struct {
 	columnB    *column
 }
 
-func newQuery2[A any, B any](world *World, filter *filter, ids []ID, relations []RelationID,
+func newQuery2[A any, B any](world *World, filter *filter, relations []RelationID,
 	cacheID cacheID, components []*componentStorage) Query2[A, B] {
 	var cache *cacheEntry
 	if cacheID != maxCacheID {
@@ -508,7 +508,7 @@ type Query3[A any, B any, C any] struct {
 	columnC    *column
 }
 
-func newQuery3[A any, B any, C any](world *World, filter *filter, ids []ID, relations []RelationID,
+func newQuery3[A any, B any, C any](world *World, filter *filter, relations []RelationID,
 	cacheID cacheID, components []*componentStorage) Query3[A, B, C] {
 	var cache *cacheEntry
 	if cacheID != maxCacheID {
@@ -681,7 +681,7 @@ type Query4[A any, B any, C any, D any] struct {
 	columnD    *column
 }
 
-func newQuery4[A any, B any, C any, D any](world *World, filter *filter, ids []ID, relations []RelationID,
+func newQuery4[A any, B any, C any, D any](world *World, filter *filter, relations []RelationID,
 	cacheID cacheID, components []*componentStorage) Query4[A, B, C, D] {
 	var cache *cacheEntry
 	if cacheID != maxCacheID {
@@ -858,7 +858,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnE    *column
 }
 
-func newQuery5[A any, B any, C any, D any, E any](world *World, filter *filter, ids []ID, relations []RelationID,
+func newQuery5[A any, B any, C any, D any, E any](world *World, filter *filter, relations []RelationID,
 	cacheID cacheID, components []*componentStorage) Query5[A, B, C, D, E] {
 	var cache *cacheEntry
 	if cacheID != maxCacheID {
@@ -1039,7 +1039,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnF    *column
 }
 
-func newQuery6[A any, B any, C any, D any, E any, F any](world *World, filter *filter, ids []ID, relations []RelationID,
+func newQuery6[A any, B any, C any, D any, E any, F any](world *World, filter *filter, relations []RelationID,
 	cacheID cacheID, components []*componentStorage) Query6[A, B, C, D, E, F] {
 	var cache *cacheEntry
 	if cacheID != maxCacheID {
@@ -1224,7 +1224,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnG    *column
 }
 
-func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, filter *filter, ids []ID, relations []RelationID,
+func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, filter *filter, relations []RelationID,
 	cacheID cacheID, components []*componentStorage) Query7[A, B, C, D, E, F, G] {
 	var cache *cacheEntry
 	if cacheID != maxCacheID {
@@ -1413,7 +1413,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnH    *column
 }
 
-func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, filter *filter, ids []ID, relations []RelationID,
+func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, filter *filter, relations []RelationID,
 	cacheID cacheID, components []*componentStorage) Query8[A, B, C, D, E, F, G, H] {
 	var cache *cacheEntry
 	if cacheID != maxCacheID {
