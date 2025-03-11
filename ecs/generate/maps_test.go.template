@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-{{range makeRange 1 8}}
+{{range makeRange 1 12}}
 {{- $n := . -}}
 {{- $upper := upperLetters . -}}
 {{- $lower := lowerLetters . -}}
@@ -21,6 +21,12 @@ import (
 
 {{- $genericsRel := replace $generics "CompA" "ChildOf" -}}
 {{- $mapArgsRel := replace $mapArgs "CompA" "ChildOf" -}}
+
+{{- $nFilter := $n -}}
+{{- if gt $n 8}}{{- $nFilter = 8 -}}{{end -}}
+{{- $upperFilter := upperLetters $nFilter -}}
+{{- $genericsFilter := join "[Comp" ", Comp" "]" $upperFilter -}}
+{{- $genericsRelFilter := replace $genericsFilter "CompA" "ChildOf" -}}
 
 func TestMap{{.}}(t *testing.T) {
 	n := 12
@@ -89,12 +95,12 @@ func TestMap{{.}}NewBatch(t *testing.T) {
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, {{$mapArgs}})
 
-	filter := NewFilter{{.}}{{$generics}}(&w)
+	filter := NewFilter{{$nFilter}}{{$genericsFilter}}(&w)
 	query := filter.Query()
 	cnt := 0
 	var lastEntity Entity
 	for query.Next() {
-		{{blanks .}} = query.Get()
+		{{blanks $nFilter}} = query.Get()
 		lastEntity = query.Entity()
 		cnt++
 	}
@@ -117,12 +123,12 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 		a.Y = 6
 	})
 
-	filter := NewFilter{{.}}{{$generics}}(&w)
+	filter := NewFilter{{$nFilter}}{{$genericsFilter}}(&w)
 	query := filter.Query()
 	cnt := 0
 	var lastEntity Entity
 	for query.Next() {
-		{{blanks .}} = query.Get()
+		{{blanks $nFilter}} = query.Get()
 		lastEntity = query.Entity()
 		cnt++
 	}

@@ -6,6 +6,7 @@
 
 - Adds `QueryX.Count` (#175)
 - World stats contain separate reserved/used memory fields (#177)
+- Provides `MapX` for up to 12 components (#182) 
 
 ### Documentation
 

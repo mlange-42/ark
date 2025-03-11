@@ -5,7 +5,7 @@ package ecs
 
 import "unsafe"
 
-{{range makeRange 1 8}}
+{{range makeRange 1 12}}
 {{- $n := . -}}
 {{- $lower := lowerLetters . -}}
 {{- $upper := upperLetters . -}}
@@ -261,20 +261,7 @@ func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -302,21 +289,7 @@ func (m *Map{{.}}{{$genericsShort}}) SetRelations(entity Entity, rel ...Relation
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map{{.}}{{$genericsShort}}) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 {{end -}}

@@ -218,20 +218,7 @@ func (m *Map1[A]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map1[A]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -259,21 +246,7 @@ func (m *Map1[A]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map1[A]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map2 is a mapper to access 2 components of an entity.
@@ -504,20 +477,7 @@ func (m *Map2[A, B]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map2[A, B]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -545,21 +505,7 @@ func (m *Map2[A, B]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map2[A, B]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map3 is a mapper to access 3 components of an entity.
@@ -808,20 +754,7 @@ func (m *Map3[A, B, C]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map3[A, B, C]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -849,21 +782,7 @@ func (m *Map3[A, B, C]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map3[A, B, C]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map4 is a mapper to access 4 components of an entity.
@@ -1128,20 +1047,7 @@ func (m *Map4[A, B, C, D]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map4[A, B, C, D]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -1169,21 +1075,7 @@ func (m *Map4[A, B, C, D]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map4[A, B, C, D]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map5 is a mapper to access 5 components of an entity.
@@ -1464,20 +1356,7 @@ func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map5[A, B, C, D, E]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -1505,21 +1384,7 @@ func (m *Map5[A, B, C, D, E]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map5[A, B, C, D, E]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map6 is a mapper to access 6 components of an entity.
@@ -1816,20 +1681,7 @@ func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map6[A, B, C, D, E, F]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -1857,21 +1709,7 @@ func (m *Map6[A, B, C, D, E, F]) SetRelations(entity Entity, rel ...Relation) {
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map6[A, B, C, D, E, F]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map7 is a mapper to access 7 components of an entity.
@@ -2184,20 +2022,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map7[A, B, C, D, E, F, G]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -2225,21 +2050,7 @@ func (m *Map7[A, B, C, D, E, F, G]) SetRelations(entity Entity, rel ...Relation)
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map7[A, B, C, D, E, F, G]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
-
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
 // Map8 is a mapper to access 8 components of an entity.
@@ -2568,20 +2379,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map8[A, B, C, D, E, F, G, H]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
-	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := &m.world.storage.tables[tableID]
-
-			lock := m.world.lock()
-			for i := range len {
-				index := uintptr(start + i)
-				fn(table.GetEntity(index))
-			}
-			m.world.unlock(lock)
-		}
-	}
-	m.world.exchangeBatch(batch, nil, m.ids, nil, nil, process)
+	removeBatch(m.world, batch, m.ids, fn)
 }
 
 // GetRelation returns the relation target of an entity for the component at the given index.
@@ -2609,19 +2407,1593 @@ func (m *Map8[A, B, C, D, E, F, G, H]) SetRelations(entity Entity, rel ...Relati
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map8[A, B, C, D, E, F, G, H]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	setRelationsBatch(m.world, batch, fn, m.relations)
+}
+
+// Map9 is a mapper to access 9 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
+type Map9[A any, B any, C any, D any, E any, F any, G any, H any, I any] struct {
+	world     *World
+	ids       []ID
+	storageA  *componentStorage
+	storageB  *componentStorage
+	storageC  *componentStorage
+	storageD  *componentStorage
+	storageE  *componentStorage
+	storageF  *componentStorage
+	storageG  *componentStorage
+	storageH  *componentStorage
+	storageI  *componentStorage
+	relations []RelationID
+}
+
+// NewMap9 creates a new [Map9].
+func NewMap9[A any, B any, C any, D any, E any, F any, G any, H any, I any](world *World) Map9[A, B, C, D, E, F, G, H, I] {
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+		ComponentID[F](world),
+		ComponentID[G](world),
+		ComponentID[H](world),
+		ComponentID[I](world),
+	}
+	return Map9[A, B, C, D, E, F, G, H, I]{
+		world:    world,
+		ids:      ids,
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
+		storageC: &world.storage.components[ids[2].id],
+		storageD: &world.storage.components[ids[3].id],
+		storageE: &world.storage.components[ids[4].id],
+		storageF: &world.storage.components[ids[5].id],
+		storageG: &world.storage.components[ids[6].id],
+		storageH: &world.storage.components[ids[7].id],
+		storageI: &world.storage.components[ids[8].id],
+	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+	}, m.relations)
+}
+
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+			(*I)(m.storageI.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+	columnC := m.storageC.columns[tableID]
+	columnD := m.storageD.columns[tableID]
+	columnE := m.storageE.columns[tableID]
+	columnF := m.storageF.columns[tableID]
+	columnG := m.storageG.columns[tableID]
+	columnH := m.storageH.columns[tableID]
+	columnI := m.storageI.columns[tableID]
+
+	lock := m.world.lock()
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+			(*C)(columnC.Get(index)),
+			(*D)(columnD.Get(index)),
+			(*E)(columnE.Get(index)),
+			(*F)(columnF.Get(index)),
+			(*G)(columnG.Get(index)),
+			(*H)(columnH.Get(index)),
+			(*I)(columnI.Get(index)),
+		)
+	}
+	m.world.unlock(lock)
+}
+
+// Get returns the mapped components for the given entity.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map9.HasAll] to check whether the entity has all mapped components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map9[A, B, C, D, E, F, G, H, I]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// In contrast to [Map9.Get], it does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map9.HasAll] to check whether the entity has all mapped components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map9[A, B, C, D, E, F, G, H, I]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+	m.world.storage.checkHasComponent(entity, m.ids[7])
+	m.world.storage.checkHasComponent(entity, m.ids[8])
+
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.storage.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil &&
+		m.storageC.columns[index.table] != nil &&
+		m.storageD.columns[index.table] != nil &&
+		m.storageE.columns[index.table] != nil &&
+		m.storageF.columns[index.table] != nil &&
+		m.storageG.columns[index.table] != nil &&
+		m.storageH.columns[index.table] != nil &&
+		m.storageI.columns[index.table] != nil
+}
+
+// Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+			(*I)(m.storageI.columns[index.table].Get(row)),
+		)
+	}
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+	}, m.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
 		process = func(tableID tableID, start, len int) {
 			table := &m.world.storage.tables[tableID]
+			columnA := m.storageA.columns[tableID]
+			columnB := m.storageB.columns[tableID]
+			columnC := m.storageC.columns[tableID]
+			columnD := m.storageD.columns[tableID]
+			columnE := m.storageE.columns[tableID]
+			columnF := m.storageF.columns[tableID]
+			columnG := m.storageG.columns[tableID]
+			columnH := m.storageH.columns[tableID]
+			columnI := m.storageI.columns[tableID]
 
 			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
-				fn(table.GetEntity(index))
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+					(*C)(columnC.Get(index)),
+					(*D)(columnD.Get(index)),
+					(*E)(columnE.Get(index)),
+					(*F)(columnF.Get(index)),
+					(*G)(columnG.Get(index)),
+					(*H)(columnH.Get(index)),
+					(*I)(columnI.Get(index)),
+				)
 			}
 			m.world.unlock(lock)
 		}
 	}
-	m.world.setRelationsBatch(batch, m.relations, process)
+	m.world.exchangeBatch(batch, m.ids, nil, nil, m.relations, process)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) Remove(entity Entity) {
+	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// RemoveBatch removes the mapped components from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	removeBatch(m.world, batch, m.ids, fn)
+}
+
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// In contrast to [Map9.GetRelation], it does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) SetRelations(entity Entity, rel ...Relation) {
+	// alive check is done in World.setRelations
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.setRelations(entity, m.relations)
+}
+
+// SetRelationsBatch sets relation targets for all entities matching the given batch filter.
+func (m *Map9[A, B, C, D, E, F, G, H, I]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	setRelationsBatch(m.world, batch, fn, m.relations)
+}
+
+// Map10 is a mapper to access 10 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
+type Map10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any] struct {
+	world     *World
+	ids       []ID
+	storageA  *componentStorage
+	storageB  *componentStorage
+	storageC  *componentStorage
+	storageD  *componentStorage
+	storageE  *componentStorage
+	storageF  *componentStorage
+	storageG  *componentStorage
+	storageH  *componentStorage
+	storageI  *componentStorage
+	storageJ  *componentStorage
+	relations []RelationID
+}
+
+// NewMap10 creates a new [Map10].
+func NewMap10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any](world *World) Map10[A, B, C, D, E, F, G, H, I, J] {
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+		ComponentID[F](world),
+		ComponentID[G](world),
+		ComponentID[H](world),
+		ComponentID[I](world),
+		ComponentID[J](world),
+	}
+	return Map10[A, B, C, D, E, F, G, H, I, J]{
+		world:    world,
+		ids:      ids,
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
+		storageC: &world.storage.components[ids[2].id],
+		storageD: &world.storage.components[ids[3].id],
+		storageE: &world.storage.components[ids[4].id],
+		storageF: &world.storage.components[ids[5].id],
+		storageG: &world.storage.components[ids[6].id],
+		storageH: &world.storage.components[ids[7].id],
+		storageI: &world.storage.components[ids[8].id],
+		storageJ: &world.storage.components[ids[9].id],
+	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+	}, m.relations)
+}
+
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+			(*I)(m.storageI.columns[index.table].Get(row)),
+			(*J)(m.storageJ.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+	columnC := m.storageC.columns[tableID]
+	columnD := m.storageD.columns[tableID]
+	columnE := m.storageE.columns[tableID]
+	columnF := m.storageF.columns[tableID]
+	columnG := m.storageG.columns[tableID]
+	columnH := m.storageH.columns[tableID]
+	columnI := m.storageI.columns[tableID]
+	columnJ := m.storageJ.columns[tableID]
+
+	lock := m.world.lock()
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+			(*C)(columnC.Get(index)),
+			(*D)(columnD.Get(index)),
+			(*E)(columnE.Get(index)),
+			(*F)(columnF.Get(index)),
+			(*G)(columnG.Get(index)),
+			(*H)(columnH.Get(index)),
+			(*I)(columnI.Get(index)),
+			(*J)(columnJ.Get(index)),
+		)
+	}
+	m.world.unlock(lock)
+}
+
+// Get returns the mapped components for the given entity.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map10.HasAll] to check whether the entity has all mapped components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// In contrast to [Map10.Get], it does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map10.HasAll] to check whether the entity has all mapped components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+	m.world.storage.checkHasComponent(entity, m.ids[7])
+	m.world.storage.checkHasComponent(entity, m.ids[8])
+	m.world.storage.checkHasComponent(entity, m.ids[9])
+
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row)),
+		(*J)(m.storageJ.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.storage.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil &&
+		m.storageC.columns[index.table] != nil &&
+		m.storageD.columns[index.table] != nil &&
+		m.storageE.columns[index.table] != nil &&
+		m.storageF.columns[index.table] != nil &&
+		m.storageG.columns[index.table] != nil &&
+		m.storageH.columns[index.table] != nil &&
+		m.storageI.columns[index.table] != nil &&
+		m.storageJ.columns[index.table] != nil
+}
+
+// Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+			(*I)(m.storageI.columns[index.table].Get(row)),
+			(*J)(m.storageJ.columns[index.table].Get(row)),
+		)
+	}
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+	}, m.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &m.world.storage.tables[tableID]
+			columnA := m.storageA.columns[tableID]
+			columnB := m.storageB.columns[tableID]
+			columnC := m.storageC.columns[tableID]
+			columnD := m.storageD.columns[tableID]
+			columnE := m.storageE.columns[tableID]
+			columnF := m.storageF.columns[tableID]
+			columnG := m.storageG.columns[tableID]
+			columnH := m.storageH.columns[tableID]
+			columnI := m.storageI.columns[tableID]
+			columnJ := m.storageJ.columns[tableID]
+
+			lock := m.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+					(*C)(columnC.Get(index)),
+					(*D)(columnD.Get(index)),
+					(*E)(columnE.Get(index)),
+					(*F)(columnF.Get(index)),
+					(*G)(columnG.Get(index)),
+					(*H)(columnH.Get(index)),
+					(*I)(columnI.Get(index)),
+					(*J)(columnJ.Get(index)),
+				)
+			}
+			m.world.unlock(lock)
+		}
+	}
+	m.world.exchangeBatch(batch, m.ids, nil, nil, m.relations, process)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Remove(entity Entity) {
+	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// RemoveBatch removes the mapped components from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	removeBatch(m.world, batch, m.ids, fn)
+}
+
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// In contrast to [Map10.GetRelation], it does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) SetRelations(entity Entity, rel ...Relation) {
+	// alive check is done in World.setRelations
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.setRelations(entity, m.relations)
+}
+
+// SetRelationsBatch sets relation targets for all entities matching the given batch filter.
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	setRelationsBatch(m.world, batch, fn, m.relations)
+}
+
+// Map11 is a mapper to access 11 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
+type Map11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any] struct {
+	world     *World
+	ids       []ID
+	storageA  *componentStorage
+	storageB  *componentStorage
+	storageC  *componentStorage
+	storageD  *componentStorage
+	storageE  *componentStorage
+	storageF  *componentStorage
+	storageG  *componentStorage
+	storageH  *componentStorage
+	storageI  *componentStorage
+	storageJ  *componentStorage
+	storageK  *componentStorage
+	relations []RelationID
+}
+
+// NewMap11 creates a new [Map11].
+func NewMap11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any](world *World) Map11[A, B, C, D, E, F, G, H, I, J, K] {
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+		ComponentID[F](world),
+		ComponentID[G](world),
+		ComponentID[H](world),
+		ComponentID[I](world),
+		ComponentID[J](world),
+		ComponentID[K](world),
+	}
+	return Map11[A, B, C, D, E, F, G, H, I, J, K]{
+		world:    world,
+		ids:      ids,
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
+		storageC: &world.storage.components[ids[2].id],
+		storageD: &world.storage.components[ids[3].id],
+		storageE: &world.storage.components[ids[4].id],
+		storageF: &world.storage.components[ids[5].id],
+		storageG: &world.storage.components[ids[6].id],
+		storageH: &world.storage.components[ids[7].id],
+		storageI: &world.storage.components[ids[8].id],
+		storageJ: &world.storage.components[ids[9].id],
+		storageK: &world.storage.components[ids[10].id],
+	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+		unsafe.Pointer(k),
+	}, m.relations)
+}
+
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+			(*I)(m.storageI.columns[index.table].Get(row)),
+			(*J)(m.storageJ.columns[index.table].Get(row)),
+			(*K)(m.storageK.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+		unsafe.Pointer(k),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+	columnC := m.storageC.columns[tableID]
+	columnD := m.storageD.columns[tableID]
+	columnE := m.storageE.columns[tableID]
+	columnF := m.storageF.columns[tableID]
+	columnG := m.storageG.columns[tableID]
+	columnH := m.storageH.columns[tableID]
+	columnI := m.storageI.columns[tableID]
+	columnJ := m.storageJ.columns[tableID]
+	columnK := m.storageK.columns[tableID]
+
+	lock := m.world.lock()
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+			(*C)(columnC.Get(index)),
+			(*D)(columnD.Get(index)),
+			(*E)(columnE.Get(index)),
+			(*F)(columnF.Get(index)),
+			(*G)(columnG.Get(index)),
+			(*H)(columnH.Get(index)),
+			(*I)(columnI.Get(index)),
+			(*J)(columnJ.Get(index)),
+			(*K)(columnK.Get(index)),
+		)
+	}
+	m.world.unlock(lock)
+}
+
+// Get returns the mapped components for the given entity.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map11.HasAll] to check whether the entity has all mapped components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// In contrast to [Map11.Get], it does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map11.HasAll] to check whether the entity has all mapped components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+	m.world.storage.checkHasComponent(entity, m.ids[7])
+	m.world.storage.checkHasComponent(entity, m.ids[8])
+	m.world.storage.checkHasComponent(entity, m.ids[9])
+	m.world.storage.checkHasComponent(entity, m.ids[10])
+
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row)),
+		(*J)(m.storageJ.columns[index.table].Get(row)),
+		(*K)(m.storageK.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.storage.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil &&
+		m.storageC.columns[index.table] != nil &&
+		m.storageD.columns[index.table] != nil &&
+		m.storageE.columns[index.table] != nil &&
+		m.storageF.columns[index.table] != nil &&
+		m.storageG.columns[index.table] != nil &&
+		m.storageH.columns[index.table] != nil &&
+		m.storageI.columns[index.table] != nil &&
+		m.storageJ.columns[index.table] != nil &&
+		m.storageK.columns[index.table] != nil
+}
+
+// Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+		unsafe.Pointer(k),
+	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+			(*I)(m.storageI.columns[index.table].Get(row)),
+			(*J)(m.storageJ.columns[index.table].Get(row)),
+			(*K)(m.storageK.columns[index.table].Get(row)),
+		)
+	}
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+		unsafe.Pointer(k),
+	}, m.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &m.world.storage.tables[tableID]
+			columnA := m.storageA.columns[tableID]
+			columnB := m.storageB.columns[tableID]
+			columnC := m.storageC.columns[tableID]
+			columnD := m.storageD.columns[tableID]
+			columnE := m.storageE.columns[tableID]
+			columnF := m.storageF.columns[tableID]
+			columnG := m.storageG.columns[tableID]
+			columnH := m.storageH.columns[tableID]
+			columnI := m.storageI.columns[tableID]
+			columnJ := m.storageJ.columns[tableID]
+			columnK := m.storageK.columns[tableID]
+
+			lock := m.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+					(*C)(columnC.Get(index)),
+					(*D)(columnD.Get(index)),
+					(*E)(columnE.Get(index)),
+					(*F)(columnF.Get(index)),
+					(*G)(columnG.Get(index)),
+					(*H)(columnH.Get(index)),
+					(*I)(columnI.Get(index)),
+					(*J)(columnJ.Get(index)),
+					(*K)(columnK.Get(index)),
+				)
+			}
+			m.world.unlock(lock)
+		}
+	}
+	m.world.exchangeBatch(batch, m.ids, nil, nil, m.relations, process)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Remove(entity Entity) {
+	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// RemoveBatch removes the mapped components from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	removeBatch(m.world, batch, m.ids, fn)
+}
+
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// In contrast to [Map11.GetRelation], it does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) SetRelations(entity Entity, rel ...Relation) {
+	// alive check is done in World.setRelations
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.setRelations(entity, m.relations)
+}
+
+// SetRelationsBatch sets relation targets for all entities matching the given batch filter.
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	setRelationsBatch(m.world, batch, fn, m.relations)
+}
+
+// Map12 is a mapper to access 12 components of an entity.
+//
+// Instances should be created during initialization and stored, e.g. in systems.
+//
+// See [Map2] for a usage example.
+type Map12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any, L any] struct {
+	world     *World
+	ids       []ID
+	storageA  *componentStorage
+	storageB  *componentStorage
+	storageC  *componentStorage
+	storageD  *componentStorage
+	storageE  *componentStorage
+	storageF  *componentStorage
+	storageG  *componentStorage
+	storageH  *componentStorage
+	storageI  *componentStorage
+	storageJ  *componentStorage
+	storageK  *componentStorage
+	storageL  *componentStorage
+	relations []RelationID
+}
+
+// NewMap12 creates a new [Map12].
+func NewMap12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any, L any](world *World) Map12[A, B, C, D, E, F, G, H, I, J, K, L] {
+	ids := []ID{
+		ComponentID[A](world),
+		ComponentID[B](world),
+		ComponentID[C](world),
+		ComponentID[D](world),
+		ComponentID[E](world),
+		ComponentID[F](world),
+		ComponentID[G](world),
+		ComponentID[H](world),
+		ComponentID[I](world),
+		ComponentID[J](world),
+		ComponentID[K](world),
+		ComponentID[L](world),
+	}
+	return Map12[A, B, C, D, E, F, G, H, I, J, K, L]{
+		world:    world,
+		ids:      ids,
+		storageA: &world.storage.components[ids[0].id],
+		storageB: &world.storage.components[ids[1].id],
+		storageC: &world.storage.components[ids[2].id],
+		storageD: &world.storage.components[ids[3].id],
+		storageE: &world.storage.components[ids[4].id],
+		storageF: &world.storage.components[ids[5].id],
+		storageG: &world.storage.components[ids[6].id],
+		storageH: &world.storage.components[ids[7].id],
+		storageI: &world.storage.components[ids[8].id],
+		storageJ: &world.storage.components[ids[9].id],
+		storageK: &world.storage.components[ids[10].id],
+		storageL: &world.storage.components[ids[11].id],
+	}
+}
+
+// NewEntity creates a new entity with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+		unsafe.Pointer(k),
+		unsafe.Pointer(l),
+	}, m.relations)
+}
+
+// NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
+// The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) Entity {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+			(*I)(m.storageI.columns[index.table].Get(row)),
+			(*J)(m.storageJ.columns[index.table].Get(row)),
+			(*K)(m.storageK.columns[index.table].Get(row)),
+			(*L)(m.storageL.columns[index.table].Get(row)),
+		)
+	}
+	return entity
+}
+
+// NewBatch creates a batch of new entities with the mapped components.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+		unsafe.Pointer(k),
+		unsafe.Pointer(l),
+	}, m.relations)
+}
+
+// NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
+// The initializer function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	if fn == nil {
+		return
+	}
+
+	table := &m.world.storage.tables[tableID]
+	columnA := m.storageA.columns[tableID]
+	columnB := m.storageB.columns[tableID]
+	columnC := m.storageC.columns[tableID]
+	columnD := m.storageD.columns[tableID]
+	columnE := m.storageE.columns[tableID]
+	columnF := m.storageF.columns[tableID]
+	columnG := m.storageG.columns[tableID]
+	columnH := m.storageH.columns[tableID]
+	columnI := m.storageI.columns[tableID]
+	columnJ := m.storageJ.columns[tableID]
+	columnK := m.storageK.columns[tableID]
+	columnL := m.storageL.columns[tableID]
+
+	lock := m.world.lock()
+	for i := range count {
+		index := uintptr(start + i)
+		fn(
+			table.GetEntity(index),
+			(*A)(columnA.Get(index)),
+			(*B)(columnB.Get(index)),
+			(*C)(columnC.Get(index)),
+			(*D)(columnD.Get(index)),
+			(*E)(columnE.Get(index)),
+			(*F)(columnF.Get(index)),
+			(*G)(columnG.Get(index)),
+			(*H)(columnH.Get(index)),
+			(*I)(columnI.Get(index)),
+			(*J)(columnJ.Get(index)),
+			(*K)(columnK.Get(index)),
+			(*L)(columnL.Get(index)),
+		)
+	}
+	m.world.unlock(lock)
+}
+
+// Get returns the mapped components for the given entity.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map12.HasAll] to check whether the entity has all mapped components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	return m.GetUnchecked(entity)
+}
+
+// GetUnchecked returns the mapped components for the given entity.
+// In contrast to [Map12.Get], it does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+//
+// Panics if the entity is missing any of the mapped components,
+// with a nil pointer dereference error. Use build tag `debug` for improved errors.
+// Use [Map12.HasAll] to check whether the entity has all mapped components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L) {
+	m.world.storage.checkHasComponent(entity, m.ids[0])
+	m.world.storage.checkHasComponent(entity, m.ids[1])
+	m.world.storage.checkHasComponent(entity, m.ids[2])
+	m.world.storage.checkHasComponent(entity, m.ids[3])
+	m.world.storage.checkHasComponent(entity, m.ids[4])
+	m.world.storage.checkHasComponent(entity, m.ids[5])
+	m.world.storage.checkHasComponent(entity, m.ids[6])
+	m.world.storage.checkHasComponent(entity, m.ids[7])
+	m.world.storage.checkHasComponent(entity, m.ids[8])
+	m.world.storage.checkHasComponent(entity, m.ids[9])
+	m.world.storage.checkHasComponent(entity, m.ids[10])
+	m.world.storage.checkHasComponent(entity, m.ids[11])
+
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row)),
+		(*J)(m.storageJ.columns[index.table].Get(row)),
+		(*K)(m.storageK.columns[index.table].Get(row)),
+		(*L)(m.storageL.columns[index.table].Get(row))
+}
+
+// HasAll return whether the given entity has all mapped components.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) HasAll(entity Entity) bool {
+	if !m.world.Alive(entity) {
+		panic("can't check components of a dead entity")
+	}
+	index := m.world.storage.entities[entity.id]
+	return m.storageA.columns[index.table] != nil &&
+		m.storageB.columns[index.table] != nil &&
+		m.storageC.columns[index.table] != nil &&
+		m.storageD.columns[index.table] != nil &&
+		m.storageE.columns[index.table] != nil &&
+		m.storageF.columns[index.table] != nil &&
+		m.storageG.columns[index.table] != nil &&
+		m.storageH.columns[index.table] != nil &&
+		m.storageI.columns[index.table] != nil &&
+		m.storageJ.columns[index.table] != nil &&
+		m.storageK.columns[index.table] != nil &&
+		m.storageL.columns[index.table] != nil
+}
+
+// Add the mapped components to the given entity.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+		unsafe.Pointer(k),
+		unsafe.Pointer(l),
+	}, m.relations)
+}
+
+// AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
+// The callback can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	if fn != nil {
+		index := &m.world.storage.entities[entity.id]
+		row := uintptr(index.row)
+		fn(
+			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*H)(m.storageH.columns[index.table].Get(row)),
+			(*I)(m.storageI.columns[index.table].Get(row)),
+			(*J)(m.storageJ.columns[index.table].Get(row)),
+			(*K)(m.storageK.columns[index.table].Get(row)),
+			(*L)(m.storageL.columns[index.table].Get(row)),
+		)
+	}
+}
+
+// AddBatch adds the mapped components to all entities matching the given batch filter.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
+		unsafe.Pointer(a),
+		unsafe.Pointer(b),
+		unsafe.Pointer(c),
+		unsafe.Pointer(d),
+		unsafe.Pointer(e),
+		unsafe.Pointer(f),
+		unsafe.Pointer(g),
+		unsafe.Pointer(h),
+		unsafe.Pointer(i),
+		unsafe.Pointer(j),
+		unsafe.Pointer(k),
+		unsafe.Pointer(l),
+	}, m.relations, nil)
+}
+
+// AddBatchFn adds the mapped components to all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+//
+// For each mapped component that is a relationships (see [RelationMarker]),
+// a relation target entity must be provided.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+
+	var process func(tableID tableID, start, len int)
+	if fn != nil {
+		process = func(tableID tableID, start, len int) {
+			table := &m.world.storage.tables[tableID]
+			columnA := m.storageA.columns[tableID]
+			columnB := m.storageB.columns[tableID]
+			columnC := m.storageC.columns[tableID]
+			columnD := m.storageD.columns[tableID]
+			columnE := m.storageE.columns[tableID]
+			columnF := m.storageF.columns[tableID]
+			columnG := m.storageG.columns[tableID]
+			columnH := m.storageH.columns[tableID]
+			columnI := m.storageI.columns[tableID]
+			columnJ := m.storageJ.columns[tableID]
+			columnK := m.storageK.columns[tableID]
+			columnL := m.storageL.columns[tableID]
+
+			lock := m.world.lock()
+			for i := range len {
+				index := uintptr(start + i)
+				fn(
+					table.GetEntity(index),
+					(*A)(columnA.Get(index)),
+					(*B)(columnB.Get(index)),
+					(*C)(columnC.Get(index)),
+					(*D)(columnD.Get(index)),
+					(*E)(columnE.Get(index)),
+					(*F)(columnF.Get(index)),
+					(*G)(columnG.Get(index)),
+					(*H)(columnH.Get(index)),
+					(*I)(columnI.Get(index)),
+					(*J)(columnJ.Get(index)),
+					(*K)(columnK.Get(index)),
+					(*L)(columnL.Get(index)),
+				)
+			}
+			m.world.unlock(lock)
+		}
+	}
+	m.world.exchangeBatch(batch, m.ids, nil, nil, m.relations, process)
+}
+
+// Remove the mapped components from the given entity.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Remove(entity Entity) {
+	m.world.exchange(entity, nil, m.ids, nil, nil)
+}
+
+// RemoveBatch removes the mapped components from all entities matching the given batch filter,
+// running the given function on each. The function can be nil.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+	removeBatch(m.world, batch, m.ids, fn)
+}
+
+// GetRelation returns the relation target of an entity for the component at the given index.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) GetRelation(entity Entity, index int) Entity {
+	if !m.world.Alive(entity) {
+		panic("can't get entity relation target for a dead entity")
+	}
+	return m.GetRelationUnchecked(entity, index)
+}
+
+// GetRelationUnchecked returns the relation target of an entity for the component at the given index.
+// In contrast to [Map12.GetRelation], it does not check whether the entity is alive.
+// Can be used as an optimization when it is certain that the entity is alive.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) GetRelationUnchecked(entity Entity, index int) Entity {
+	return m.world.storage.getRelation(entity, m.ids[index])
+}
+
+// SetRelations sets relation targets for the given entity.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) SetRelations(entity Entity, rel ...Relation) {
+	// alive check is done in World.setRelations
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.world.setRelations(entity, m.relations)
+}
+
+// SetRelationsBatch sets relation targets for all entities matching the given batch filter.
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	setRelationsBatch(m.world, batch, fn, m.relations)
 }
