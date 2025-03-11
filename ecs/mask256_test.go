@@ -7,14 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func all(ids ...ID) *bitMask {
-	mask := newMask(ids...)
+func all(ids ...ID) *bitMask256 {
+	mask := newMask256(ids...)
 	return &mask
 }
 
-func TestMask(t *testing.T) {
-	big := uint8(maskTotalBits - 2)
-	mask := newMask(id(1), id(2), id(13), id(27), id8(big))
+func TestMask256(t *testing.T) {
+	big := uint8(mask256TotalBits - 2)
+	mask := newMask256(id(1), id(2), id(13), id(27), id8(big))
 
 	assert.Equal(t, 5, mask.TotalBitsSet())
 
@@ -35,8 +35,8 @@ func TestMask(t *testing.T) {
 	assert.True(t, mask.Get(id(0)))
 	assert.False(t, mask.Get(id(1)))
 
-	other1 := newMask(id(1), id(2), id(32))
-	other2 := newMask(id(0), id(2))
+	other1 := newMask256(id(1), id(2), id(32))
+	other2 := newMask256(id(0), id(2))
 
 	assert.False(t, mask.Contains(&other1))
 	assert.True(t, mask.Contains(&other2))
@@ -44,18 +44,18 @@ func TestMask(t *testing.T) {
 	mask.Reset()
 	assert.Equal(t, 0, mask.TotalBitsSet())
 
-	mask = newMask(id(1), id(2), id(13), id(27))
-	other1 = newMask(id(1), id(32))
-	other2 = newMask(id(0), id(32))
+	mask = newMask256(id(1), id(2), id(13), id(27))
+	other1 = newMask256(id(1), id(32))
+	other2 = newMask256(id(0), id(32))
 
 	assert.True(t, mask.ContainsAny(&other1))
 	assert.False(t, mask.ContainsAny(&other2))
 }
 
-func TestBitMaskCopy(t *testing.T) {
-	big := uint8(maskTotalBits - 2)
+func TestBitMask256Copy(t *testing.T) {
+	big := uint8(mask256TotalBits - 2)
 
-	mask := newMask(id(1), id(2), id(13), id(27), id8(big))
+	mask := newMask256(id(1), id(2), id(13), id(27), id8(big))
 	mask2 := mask
 	mask3 := &mask
 
@@ -71,23 +71,23 @@ func TestBitMaskCopy(t *testing.T) {
 }
 
 func TestBitMask256(t *testing.T) {
-	for i := 0; i < maskTotalBits; i++ {
-		mask := newMask(id(i))
+	for i := 0; i < mask256TotalBits; i++ {
+		mask := newMask256(id(i))
 		assert.Equal(t, 1, mask.TotalBitsSet())
 		assert.True(t, mask.Get(id(i)))
 	}
-	mask := bitMask{}
+	mask := bitMask256{}
 	assert.Equal(t, 0, mask.TotalBitsSet())
 
-	for i := 0; i < maskTotalBits; i++ {
+	for i := 0; i < mask256TotalBits; i++ {
 		mask.Set(id(i), true)
 		assert.Equal(t, i+1, mask.TotalBitsSet())
 		assert.True(t, mask.Get(id(i)))
 	}
 
-	big := int(maskTotalBits - 10)
+	big := int(mask256TotalBits - 10)
 
-	mask = newMask(id(1), id(2), id(13), id(27), id(big), id(big+1), id(big+2))
+	mask = newMask256(id(1), id(2), id(13), id(27), id(big), id(big+1), id(big+2))
 
 	assert.True(t, mask.Contains(all(id(1), id(2), id(big), id(big+1))))
 	assert.False(t, mask.Contains(all(id(1), id(2), id(big), id(big+5))))
@@ -96,29 +96,29 @@ func TestBitMask256(t *testing.T) {
 	assert.False(t, mask.ContainsAny(all(id(6), id(big+3), id(big+5))))
 }
 
-func TestMaskToTypes(t *testing.T) {
+func TestMask256ToTypes(t *testing.T) {
 	w := NewWorld(1024)
 
 	id1 := ComponentID[Position](&w)
 	id2 := ComponentID[Velocity](&w)
 
-	mask := newMask()
+	mask := newMask256()
 	comps := mask.toTypes(&w.storage.registry.registry)
 	assert.Equal(t, []ID{}, comps)
 
-	mask = newMask(id1, id2)
+	mask = newMask256(id1, id2)
 	comps = mask.toTypes(&w.storage.registry.registry)
 	assert.Equal(t, []ID{id1, id2}, comps)
 }
 
-func BenchmarkMaskGet(b *testing.B) {
-	mask := newMask()
-	for i := 0; i < maskTotalBits; i++ {
+func BenchmarkMask256Get(b *testing.B) {
+	mask := newMask256()
+	for i := 0; i < mask256TotalBits; i++ {
 		if rand.Float64() < 0.5 {
 			mask.Set(id(i), true)
 		}
 	}
-	idx := id(rand.Intn(maskTotalBits))
+	idx := id(rand.Intn(mask256TotalBits))
 
 	var v bool
 	for b.Loop() {
@@ -127,14 +127,14 @@ func BenchmarkMaskGet(b *testing.B) {
 	_ = v
 }
 
-func BenchmarkMaskContains(b *testing.B) {
-	mask := newMask()
-	for i := 0; i < maskTotalBits; i++ {
+func BenchmarkMask256Contains(b *testing.B) {
+	mask := newMask256()
+	for i := 0; i < mask256TotalBits; i++ {
 		if rand.Float64() < 0.5 {
 			mask.Set(id(i), true)
 		}
 	}
-	filter := newMask(id(rand.Intn(maskTotalBits)))
+	filter := newMask256(id(rand.Intn(mask256TotalBits)))
 
 	var v bool
 	for b.Loop() {
@@ -143,14 +143,14 @@ func BenchmarkMaskContains(b *testing.B) {
 	_ = v
 }
 
-func BenchmarkMaskContainsAny(b *testing.B) {
-	mask := newMask()
-	for i := 0; i < maskTotalBits; i++ {
+func BenchmarkMask256ContainsAny(b *testing.B) {
+	mask := newMask256()
+	for i := 0; i < mask256TotalBits; i++ {
 		if rand.Float64() < 0.5 {
 			mask.Set(id(i), true)
 		}
 	}
-	filter := newMask(id(rand.Intn(maskTotalBits)))
+	filter := newMask256(id(rand.Intn(mask256TotalBits)))
 
 	var v bool
 	for b.Loop() {
@@ -159,9 +159,9 @@ func BenchmarkMaskContainsAny(b *testing.B) {
 	_ = v
 }
 
-func BenchmarkMaskMatch(b *testing.B) {
-	mask := newMask(id(0), id(1), id(2))
-	bits := newMask(id(0), id(1), id(2))
+func BenchmarkMask256Match(b *testing.B) {
+	mask := newMask256(id(0), id(1), id(2))
+	bits := newMask256(id(0), id(1), id(2))
 	var v bool
 	for b.Loop() {
 		v = bits.Contains(&mask)
@@ -169,9 +169,9 @@ func BenchmarkMaskMatch(b *testing.B) {
 	_ = v
 }
 
-func BenchmarkMaskCopy(b *testing.B) {
-	mask := newMask(id(0), id(1), id(2))
-	var tempMask bitMask
+func BenchmarkMask256Copy(b *testing.B) {
+	mask := newMask256(id(0), id(1), id(2))
+	var tempMask bitMask256
 	for b.Loop() {
 		tempMask = mask
 	}
