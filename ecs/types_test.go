@@ -75,6 +75,22 @@ type CompH struct {
 	X, Y float64
 }
 
+type CompI struct {
+	X, Y float64
+}
+
+type CompJ struct {
+	X, Y float64
+}
+
+type CompK struct {
+	X, Y float64
+}
+
+type CompL struct {
+	X, Y float64
+}
+
 func TestID(t *testing.T) {
 	id := ID{12}
 	assert.EqualValues(t, 12, id.Index())

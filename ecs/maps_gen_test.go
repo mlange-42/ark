@@ -2160,3 +2160,1082 @@ func TestMap8SetRelationsBatch(t *testing.T) {
 		})
 	})
 }
+func TestMap9(t *testing.T) {
+	n := 12
+	w := NewWorld(4)
+
+	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
+	mapA := NewMap[CompA](&w)
+
+	entities := []Entity{}
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
+		entities = append(entities, e)
+		e = w.NewEntity()
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
+		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+	}
+
+	for _, e := range entities {
+		_, _, _, _, _, _, _, _, _ = mapper.Get(e)
+		assert.True(t, mapper.HasAll(e))
+	}
+
+	for _, e := range entities {
+		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
+	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
+}
+
+func TestMap9NewBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
+	}
+	w.RemoveEntity(w.NewEntity())
+	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
+
+	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query := filter.Query()
+	cnt := 0
+	var lastEntity Entity
+	for query.Next() {
+		_, _, _, _, _, _, _, _ = query.Get()
+		lastEntity = query.Entity()
+		cnt++
+	}
+	assert.True(t, mapper.HasAll(lastEntity))
+	assert.Equal(t, n*3, cnt)
+}
+
+func TestMap9NewBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
+	}
+	w.RemoveEntity(w.NewEntity())
+	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {
+		a.X = 5
+		a.Y = 6
+	})
+
+	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query := filter.Query()
+	cnt := 0
+	var lastEntity Entity
+	for query.Next() {
+		_, _, _, _, _, _, _, _ = query.Get()
+		lastEntity = query.Entity()
+		cnt++
+	}
+	assert.True(t, mapper.HasAll(lastEntity))
+	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
+}
+
+func TestMap9Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap9[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, RelIdx(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, RelIdx(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.SetRelations(e)
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
+}
+
+func TestMap9AddBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch(), nil)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}
+
+func TestMap9AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}
+
+func TestMap9SetRelationsBatch(t *testing.T) {
+	n := 24
+	w := NewWorld(16)
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap9[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
+	childMap := NewMap[ChildOf](&w)
+
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, RelIdx(0, parent2))
+
+	filter := NewFilter1[ChildOf](&w)
+
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
+		assert.Equal(t, parent3, childMap.GetRelation(entity))
+	}, RelIdx(0, parent3))
+
+	query := filter.Query(RelIdx(0, parent2))
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	query = filter.Query(RelIdx(0, parent3))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, n, cnt)
+
+	assert.Panics(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
+			assert.Equal(t, parent3, childMap.GetRelation(entity))
+		})
+	})
+}
+func TestMap10(t *testing.T) {
+	n := 12
+	w := NewWorld(4)
+
+	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
+	mapA := NewMap[CompA](&w)
+
+	entities := []Entity{}
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
+		entities = append(entities, e)
+		e = w.NewEntity()
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
+		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+	}
+
+	for _, e := range entities {
+		_, _, _, _, _, _, _, _, _, _ = mapper.Get(e)
+		assert.True(t, mapper.HasAll(e))
+	}
+
+	for _, e := range entities {
+		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
+	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
+		})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
+}
+
+func TestMap10NewBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
+	}
+	w.RemoveEntity(w.NewEntity())
+	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
+
+	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query := filter.Query()
+	cnt := 0
+	var lastEntity Entity
+	for query.Next() {
+		_, _, _, _, _, _, _, _ = query.Get()
+		lastEntity = query.Entity()
+		cnt++
+	}
+	assert.True(t, mapper.HasAll(lastEntity))
+	assert.Equal(t, n*3, cnt)
+}
+
+func TestMap10NewBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
+	}
+	w.RemoveEntity(w.NewEntity())
+	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
+		a.X = 5
+		a.Y = 6
+	})
+
+	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query := filter.Query()
+	cnt := 0
+	var lastEntity Entity
+	for query.Next() {
+		_, _, _, _, _, _, _, _ = query.Get()
+		lastEntity = query.Entity()
+		cnt++
+	}
+	assert.True(t, mapper.HasAll(lastEntity))
+	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
+}
+
+func TestMap10Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap10[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, RelIdx(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, RelIdx(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.SetRelations(e)
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
+}
+
+func TestMap10AddBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch(), nil)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}
+
+func TestMap10AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}
+
+func TestMap10SetRelationsBatch(t *testing.T) {
+	n := 24
+	w := NewWorld(16)
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap10[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
+	childMap := NewMap[ChildOf](&w)
+
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, RelIdx(0, parent2))
+
+	filter := NewFilter1[ChildOf](&w)
+
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
+		assert.Equal(t, parent3, childMap.GetRelation(entity))
+	}, RelIdx(0, parent3))
+
+	query := filter.Query(RelIdx(0, parent2))
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	query = filter.Query(RelIdx(0, parent3))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, n, cnt)
+
+	assert.Panics(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
+			assert.Equal(t, parent3, childMap.GetRelation(entity))
+		})
+	})
+}
+func TestMap11(t *testing.T) {
+	n := 12
+	w := NewWorld(4)
+
+	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
+	mapA := NewMap[CompA](&w)
+
+	entities := []Entity{}
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
+		entities = append(entities, e)
+		e = w.NewEntity()
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
+		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+	}
+
+	for _, e := range entities {
+		_, _, _, _, _, _, _, _, _, _, _ = mapper.Get(e)
+		assert.True(t, mapper.HasAll(e))
+	}
+
+	for _, e := range entities {
+		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
+	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
+		})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
+}
+
+func TestMap11NewBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
+	}
+	w.RemoveEntity(w.NewEntity())
+	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
+
+	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query := filter.Query()
+	cnt := 0
+	var lastEntity Entity
+	for query.Next() {
+		_, _, _, _, _, _, _, _ = query.Get()
+		lastEntity = query.Entity()
+		cnt++
+	}
+	assert.True(t, mapper.HasAll(lastEntity))
+	assert.Equal(t, n*3, cnt)
+}
+
+func TestMap11NewBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
+	}
+	w.RemoveEntity(w.NewEntity())
+	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
+		a.X = 5
+		a.Y = 6
+	})
+
+	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query := filter.Query()
+	cnt := 0
+	var lastEntity Entity
+	for query.Next() {
+		_, _, _, _, _, _, _, _ = query.Get()
+		lastEntity = query.Entity()
+		cnt++
+	}
+	assert.True(t, mapper.HasAll(lastEntity))
+	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
+}
+
+func TestMap11Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap11[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, RelIdx(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, RelIdx(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.SetRelations(e)
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
+}
+
+func TestMap11AddBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch(), nil)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}
+
+func TestMap11AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}
+
+func TestMap11SetRelationsBatch(t *testing.T) {
+	n := 24
+	w := NewWorld(16)
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap11[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
+	childMap := NewMap[ChildOf](&w)
+
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, RelIdx(0, parent2))
+
+	filter := NewFilter1[ChildOf](&w)
+
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
+		assert.Equal(t, parent3, childMap.GetRelation(entity))
+	}, RelIdx(0, parent3))
+
+	query := filter.Query(RelIdx(0, parent2))
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	query = filter.Query(RelIdx(0, parent3))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, n, cnt)
+
+	assert.Panics(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
+			assert.Equal(t, parent3, childMap.GetRelation(entity))
+		})
+	})
+}
+func TestMap12(t *testing.T) {
+	n := 12
+	w := NewWorld(4)
+
+	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
+	mapA := NewMap[CompA](&w)
+
+	entities := []Entity{}
+	for range n {
+		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
+		entities = append(entities, e)
+		e = w.NewEntity()
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
+		entities = append(entities, e)
+
+		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+		e = w.NewEntity()
+		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {
+			a.X = 100
+		})
+		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		w.RemoveEntity(e)
+	}
+
+	for _, e := range entities {
+		_, _, _, _, _, _, _, _, _, _, _, _ = mapper.Get(e)
+		assert.True(t, mapper.HasAll(e))
+	}
+
+	for _, e := range entities {
+		mapper.Remove(e)
+		assert.False(t, mapper.HasAll(e))
+	}
+
+	assert.Panics(t, func() {
+		mapper.Get(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.HasAll(Entity{})
+	})
+	assert.Panics(t, func() {
+		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
+	})
+	assert.Panics(t, func() {
+		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {
+		})
+	})
+	assert.Panics(t, func() {
+		mapper.Remove(Entity{})
+	})
+}
+
+func TestMap12NewBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
+	}
+	w.RemoveEntity(w.NewEntity())
+	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
+
+	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query := filter.Query()
+	cnt := 0
+	var lastEntity Entity
+	for query.Next() {
+		_, _, _, _, _, _, _, _ = query.Get()
+		lastEntity = query.Entity()
+		cnt++
+	}
+	assert.True(t, mapper.HasAll(lastEntity))
+	assert.Equal(t, n*3, cnt)
+}
+
+func TestMap12NewBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
+	}
+	w.RemoveEntity(w.NewEntity())
+	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {
+		a.X = 5
+		a.Y = 6
+	})
+
+	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	query := filter.Query()
+	cnt := 0
+	var lastEntity Entity
+	for query.Next() {
+		_, _, _, _, _, _, _, _ = query.Get()
+		lastEntity = query.Entity()
+		cnt++
+	}
+	assert.True(t, mapper.HasAll(lastEntity))
+	assert.Equal(t, 3*n, cnt)
+
+	mapper.NewBatchFn(5, nil)
+}
+
+func TestMap12Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	mapper := NewMap12[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{}, RelIdx(0, parent1))
+	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
+	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
+
+	mapper.SetRelations(e, RelIdx(0, parent2))
+	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
+
+	assert.Panics(t, func() {
+		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+	})
+	assert.Panics(t, func() {
+		mapper.SetRelations(e)
+	})
+	assert.Panics(t, func() {
+		mapper.GetRelation(Entity{}, 0)
+	})
+}
+
+func TestMap12AddBatch(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+
+	mapper.RemoveBatch(filter2.Batch(), nil)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}
+
+func TestMap12AddBatchFn(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
+	posMap := NewMap1[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
+
+	cnt := 1
+	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
+		pos.X = float64(cnt)
+		cnt++
+	})
+	assert.Equal(t, 2*n+1, cnt)
+
+	filter := NewFilter1[Position](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[CompA](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		a := query.Get()
+		assert.EqualValues(t, cnt, a.X)
+		pos := posMap.Get(query.Entity())
+		assert.Greater(t, pos.X, 0.0)
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+
+	cnt = 0
+	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, 2*n, cnt)
+
+	query = filter2.Query()
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+}
+
+func TestMap12SetRelationsBatch(t *testing.T) {
+	n := 24
+	w := NewWorld(16)
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	mapper := NewMap12[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
+	childMap := NewMap[ChildOf](&w)
+
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{}, RelIdx(0, parent1))
+	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{}, RelIdx(0, parent2))
+
+	filter := NewFilter1[ChildOf](&w)
+
+	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
+		assert.Equal(t, parent3, childMap.GetRelation(entity))
+	}, RelIdx(0, parent3))
+
+	query := filter.Query(RelIdx(0, parent2))
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, 0, cnt)
+
+	query = filter.Query(RelIdx(0, parent3))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	assert.Equal(t, n, cnt)
+
+	assert.Panics(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
+			assert.Equal(t, parent3, childMap.GetRelation(entity))
+		})
+	})
+}

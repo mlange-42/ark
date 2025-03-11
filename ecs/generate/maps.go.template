@@ -5,7 +5,7 @@ package ecs
 
 import "unsafe"
 
-{{range makeRange 1 8}}
+{{range makeRange 1 12}}
 {{- $n := . -}}
 {{- $lower := lowerLetters . -}}
 {{- $upper := upperLetters . -}}
