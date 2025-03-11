@@ -60,6 +60,9 @@ func TestMask256(t *testing.T) {
 	assert.True(t, not.Get(id(0)))
 	assert.False(t, not.Get(id(1)))
 	assert.False(t, not.Get(id(32)))
+
+	assert.False(t, mask.IsZero())
+	assert.True(t, (&bitMask256{}).IsZero())
 }
 
 func TestBitMask256Copy(t *testing.T) {
