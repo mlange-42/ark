@@ -145,7 +145,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(enti
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	removeBatch(ex.world,batch,ex.remove,fn)
+	removeBatch(ex.world, batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
