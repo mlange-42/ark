@@ -83,6 +83,14 @@ func ResourceIDs(w *World) []ResID {
 	return ids
 }
 
+// ResourceTypeID returns the [ResID] for a resource type.
+// Registers the type if it is not already registered.
+//
+// See [ResourceID] for a more commonly used generic variant.
+func ResourceTypeID(w *World, tp reflect.Type) ResID {
+	return w.resourceID(tp)
+}
+
 // ResourceType returns the reflect.Type for a resource [ResID], and whether the ID is assigned.
 func ResourceType(w *World, id ResID) (reflect.Type, bool) {
 	return w.resources.registry.ComponentType(id.id)
