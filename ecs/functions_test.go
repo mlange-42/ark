@@ -77,6 +77,17 @@ func TestCompType(t *testing.T) {
 	assert.Equal(t, typeOf[Position](), c.Type())
 }
 
+func TestResourceTypeID(t *testing.T) {
+	w := NewWorld(1024)
+	id1 := ResourceTypeID(&w, typeOf[Position]())
+	id2 := ResourceTypeID(&w, typeOf[Velocity]())
+	id3 := ResourceTypeID(&w, typeOf[Position]())
+
+	assert.EqualValues(t, 0, id1.id)
+	assert.EqualValues(t, 1, id2.id)
+	assert.EqualValues(t, 0, id3.id)
+}
+
 func TestResourceShortcuts(t *testing.T) {
 	w := NewWorld(1024)
 	res := Position{1, 2}
