@@ -79,42 +79,6 @@ func (b *bitMask) ContainsAny(other *bitMask) bool {
 		b.bits[3]&other.bits[3] != 0
 }
 
-// And returns the bitwise AND of two masks.
-func (b *bitMask) And(other *bitMask) bitMask {
-	return bitMask{
-		bits: [4]uint64{
-			b.bits[0] & other.bits[0],
-			b.bits[1] & other.bits[1],
-			b.bits[2] & other.bits[2],
-			b.bits[3] & other.bits[3],
-		},
-	}
-}
-
-// Or returns the bitwise OR of two masks.
-func (b *bitMask) Or(other *bitMask) bitMask {
-	return bitMask{
-		bits: [4]uint64{
-			b.bits[0] | other.bits[0],
-			b.bits[1] | other.bits[1],
-			b.bits[2] | other.bits[2],
-			b.bits[3] | other.bits[3],
-		},
-	}
-}
-
-// Xor returns the bitwise XOR of two masks.
-func (b *bitMask) Xor(other *bitMask) bitMask {
-	return bitMask{
-		bits: [4]uint64{
-			b.bits[0] ^ other.bits[0],
-			b.bits[1] ^ other.bits[1],
-			b.bits[2] ^ other.bits[2],
-			b.bits[3] ^ other.bits[3],
-		},
-	}
-}
-
 // TotalBitsSet returns how many bits are set in this mask.
 func (b *bitMask) TotalBitsSet() int {
 	return bits.OnesCount64(b.bits[0]) + bits.OnesCount64(b.bits[1]) + bits.OnesCount64(b.bits[2]) + bits.OnesCount64(b.bits[3])

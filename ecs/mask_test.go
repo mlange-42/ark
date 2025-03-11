@@ -52,14 +52,6 @@ func TestMask(t *testing.T) {
 	assert.False(t, mask.ContainsAny(&other2))
 }
 
-func TestBitMaskLogic(t *testing.T) {
-	big := uint8(maskTotalBits - 2)
-
-	assert.Equal(t, newMask(id(5)), all(id(0), id(5)).And(all(id(5), id8(big))))
-	assert.Equal(t, newMask(id(0), id(5), id8(big)), all(id(0), id(5)).Or(all(id(5), id8(big))))
-	assert.Equal(t, newMask(id(0), id8(big)), all(id(0), id(5)).Xor(all(id(5), id8(big))))
-}
-
 func TestBitMaskCopy(t *testing.T) {
 	big := uint8(maskTotalBits - 2)
 
