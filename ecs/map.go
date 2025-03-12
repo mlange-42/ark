@@ -102,6 +102,24 @@ func (m *Map[T]) Get(entity Entity) *T {
 	return m.GetUnchecked(entity)
 }
 
+// GetOrNil returns the mapped component for the given entity.
+//
+// Returns nil if the entity does not have the mapped component.
+// Faster than calling [Map.Has] and [Map.Get] subsequently.
+//
+// ⚠️ Do not store the obtained pointer outside of the current context!
+func (m *Map[T]) GetOrNil(entity Entity) *T {
+	if !m.world.Alive(entity) {
+		panic("can't get a component of a dead entity")
+	}
+	index := m.world.storage.entities[entity.id]
+	column := m.storage.columns[index.table]
+	if column == nil {
+		return nil
+	}
+	return (*T)(column.Get(uintptr(index.row)))
+}
+
 // GetUnchecked returns the mapped component for the given entity.
 // In contrast to [Map.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.

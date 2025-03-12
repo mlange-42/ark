@@ -11,7 +11,8 @@ import "unsafe"
 {{- $upper := upperLetters . -}}
 {{- $generics := join "[" " any, " " any]" $upper -}}
 {{- $genericsShort := join "[" ", " "]" $upper -}}
-{{- $return := join "(*" ", *" ")" $upper -}}
+{{- $return := join "" ", " "" $lower -}}
+{{- $returnTypes := join "(*" ", *" ")" $upper -}}
 {{- $args := arguments $lower $upper "" -}}
 {{- $mask := join "id" ", id" "" $upper -}}
 
@@ -134,11 +135,35 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity
 // Use [Map{{.}}.HasAll] to check whether the entity has all mapped components.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$return}} {
+func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$returnTypes}} {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
 	return m.GetUnchecked(entity)
+}
+
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Faster than calling [Map{{.}}.HasAll] and [Map{{.}}.Get] subsequently.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map{{.}}{{$genericsShort}}) GetOrNil(entity Entity) {{$returnTypes}} {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+	{{range $i, $v := $upper}}
+	var {{index $lower $i}} *{{$v}}
+	{{- end}}
+	{{range $i, $v := $upper}}
+	column{{$v}} := m.storage{{$v}}.columns[index.table]
+	if column{{$v}} != nil {
+		{{index $lower $i}} = (*{{$v}})(column{{$v}}.Get(row))
+	}
+	{{- end}}
+	return {{$return}}
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -150,7 +175,7 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$return}} {
 // Use [Map{{.}}.HasAll] to check whether the entity has all mapped components.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$return}} {
+func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$returnTypes}} {
 	{{- range $n}}
 	m.world.storage.checkHasComponent(entity, m.ids[{{.}}])
 	{{- end}}
