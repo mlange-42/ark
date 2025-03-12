@@ -57,10 +57,17 @@ func TestMap{{.}}(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		{{blanks .}} = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, {{$mapArgs}})
+	for _, entity := range entities {
+		{{$values}} := mapper.Get(entity)
+		{{- range $lower}}
+		assert.NotNil(t, {{.}})
+		{{- end}}
+		{{$values}} = mapper.GetUnchecked(entity)
+		{{- range $lower}}
+		assert.NotNil(t, {{.}})
+		{{- end}}
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, {{$mapArgs}})
 	}
 
 	for _, e := range entities {
@@ -97,6 +104,11 @@ func TestMap{{.}}Nil(t *testing.T) {
 	{{$values}} := mapper.Get(entity)
 	{{- range $lower}}
 	assert.Nil(t, {{.}})
+	{{- end}}
+	
+	{{$values}} = mapper.GetUnchecked(entity)
+	{{- range $lower}}
+	assert.NotNil(t, {{.}})
 	{{- end}}
 }
 
