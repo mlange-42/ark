@@ -27,6 +27,7 @@ import (
 {{- $upperFilter := upperLetters $nFilter -}}
 {{- $genericsFilter := join "[Comp" ", Comp" "]" $upperFilter -}}
 {{- $genericsRelFilter := replace $genericsFilter "CompA" "ChildOf" -}}
+{{- $values := join "" ", " "" $lower -}}
 
 func TestMap{{.}}(t *testing.T) {
 	n := 12
@@ -85,6 +86,18 @@ func TestMap{{.}}(t *testing.T) {
 	assert.Panics(t, func(){
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap{{.}}Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap{{.}}{{$generics}}(&w)
+	entity := w.NewEntity()
+
+	{{$values}} := mapper.Get(entity)
+	{{- range $lower}}
+	assert.Nil(t, {{.}})
+	{{- end}}
 }
 
 func TestMap{{.}}NewBatch(t *testing.T) {

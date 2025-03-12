@@ -130,25 +130,10 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map{{.}}.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$returnTypes}} {
-	if !m.world.Alive(entity) {
-		panic("can't get components of a dead entity")
-	}
-	return m.GetUnchecked(entity)
-}
-
-// GetOrNil returns the mapped components for the given entity.
-//
-// Return nil for components the entity is missing.
-// Faster than calling [Map{{.}}.HasAll] and [Map{{.}}.Get] subsequently.
-//
-// ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map{{.}}{{$genericsShort}}) GetOrNil(entity Entity) {{$returnTypes}} {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
@@ -170,21 +155,22 @@ func (m *Map{{.}}{{$genericsShort}}) GetOrNil(entity Entity) {{$returnTypes}} {
 // In contrast to [Map{{.}}.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map{{.}}.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$returnTypes}} {
-	{{- range $n}}
-	m.world.storage.checkHasComponent(entity, m.ids[{{.}}])
-	{{- end}}
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-
-	return {{range $i, $v := $upper}}{{if $i}},
-		{{end}}(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row)){{end}}
+	{{range $i, $v := $upper}}
+	var {{index $lower $i}} *{{$v}}
+	{{- end}}
+	{{range $i, $v := $upper}}
+	column{{$v}} := m.storage{{$v}}.columns[index.table]
+	if column{{$v}} != nil {
+		{{index $lower $i}} = (*{{$v}})(column{{$v}}.Get(row))
+	}
+	{{- end}}
+	return {{$return}}
 }
 
 // HasAll return whether the given entity has all mapped components.

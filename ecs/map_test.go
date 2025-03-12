@@ -32,7 +32,11 @@ func TestMap(t *testing.T) {
 
 	posMap.Remove(e1)
 	assert.False(t, posMap.Has(e1))
-	assert.Panics(t, func() { posMap.Get(e1) })
+
+	pos = posMap.Get(e1)
+	assert.Nil(t, pos)
+	pos = posMap.GetUnchecked(e1)
+	assert.Nil(t, pos)
 
 	e2 := posMap.NewEntityFn(func(a *Position) {
 		a.X = 100
