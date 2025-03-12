@@ -108,7 +108,7 @@ func TestMap{{.}}Nil(t *testing.T) {
 	
 	{{$values}} = mapper.GetUnchecked(entity)
 	{{- range $lower}}
-	assert.NotNil(t, {{.}})
+	assert.Nil(t, {{.}})
 	{{- end}}
 }
 
