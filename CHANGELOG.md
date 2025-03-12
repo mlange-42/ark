@@ -18,13 +18,13 @@
 
 ### Performance
 
-- Optimize table creation and world stats by re-use of item sizes from archetypes (#177)
-- Optimize table column lookup, speeding up component operations and unsafe queries (#178)
+- Optimizes table creation and world stats by re-use of item sizes from archetypes (#177)
+- Optimizes table column lookup, speeding up component operations and unsafe queries (#178)
 
 ### Bugfixes
 
-- Fail with a more informative error when creating entities with missing relation targets (#169)
-- Fix false-positive debug checks on registered queries and unsafe get (#179)
+- Fails with a more informative error when creating entities with missing relation targets (#169)
+- Fixes false-positive debug checks on registered queries and unsafe get (#179)
 
 ### Other
 
