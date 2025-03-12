@@ -80,7 +80,7 @@ func TestMap1Nil(t *testing.T) {
 	assert.Nil(t, a)
 
 	a = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
+	assert.Nil(t, a)
 }
 
 func TestMap1NewBatch(t *testing.T) {
@@ -372,8 +372,8 @@ func TestMap2Nil(t *testing.T) {
 	assert.Nil(t, b)
 
 	a, b = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
 }
 
 func TestMap2NewBatch(t *testing.T) {
@@ -668,9 +668,9 @@ func TestMap3Nil(t *testing.T) {
 	assert.Nil(t, c)
 
 	a, b, c = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
-	assert.NotNil(t, c)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
 }
 
 func TestMap3NewBatch(t *testing.T) {
@@ -968,10 +968,10 @@ func TestMap4Nil(t *testing.T) {
 	assert.Nil(t, d)
 
 	a, b, c, d = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
-	assert.NotNil(t, c)
-	assert.NotNil(t, d)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
 }
 
 func TestMap4NewBatch(t *testing.T) {
@@ -1272,11 +1272,11 @@ func TestMap5Nil(t *testing.T) {
 	assert.Nil(t, e)
 
 	a, b, c, d, e = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
-	assert.NotNil(t, c)
-	assert.NotNil(t, d)
-	assert.NotNil(t, e)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
 }
 
 func TestMap5NewBatch(t *testing.T) {
@@ -1580,12 +1580,12 @@ func TestMap6Nil(t *testing.T) {
 	assert.Nil(t, f)
 
 	a, b, c, d, e, f = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
-	assert.NotNil(t, c)
-	assert.NotNil(t, d)
-	assert.NotNil(t, e)
-	assert.NotNil(t, f)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
 }
 
 func TestMap6NewBatch(t *testing.T) {
@@ -1892,13 +1892,13 @@ func TestMap7Nil(t *testing.T) {
 	assert.Nil(t, g)
 
 	a, b, c, d, e, f, g = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
-	assert.NotNil(t, c)
-	assert.NotNil(t, d)
-	assert.NotNil(t, e)
-	assert.NotNil(t, f)
-	assert.NotNil(t, g)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
 }
 
 func TestMap7NewBatch(t *testing.T) {
@@ -2208,14 +2208,14 @@ func TestMap8Nil(t *testing.T) {
 	assert.Nil(t, h)
 
 	a, b, c, d, e, f, g, h = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
-	assert.NotNil(t, c)
-	assert.NotNil(t, d)
-	assert.NotNil(t, e)
-	assert.NotNil(t, f)
-	assert.NotNil(t, g)
-	assert.NotNil(t, h)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
 }
 
 func TestMap8NewBatch(t *testing.T) {
@@ -2528,15 +2528,15 @@ func TestMap9Nil(t *testing.T) {
 	assert.Nil(t, i)
 
 	a, b, c, d, e, f, g, h, i = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
-	assert.NotNil(t, c)
-	assert.NotNil(t, d)
-	assert.NotNil(t, e)
-	assert.NotNil(t, f)
-	assert.NotNil(t, g)
-	assert.NotNil(t, h)
-	assert.NotNil(t, i)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
 }
 
 func TestMap9NewBatch(t *testing.T) {
@@ -2853,16 +2853,16 @@ func TestMap10Nil(t *testing.T) {
 	assert.Nil(t, j)
 
 	a, b, c, d, e, f, g, h, i, j = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
-	assert.NotNil(t, c)
-	assert.NotNil(t, d)
-	assert.NotNil(t, e)
-	assert.NotNil(t, f)
-	assert.NotNil(t, g)
-	assert.NotNil(t, h)
-	assert.NotNil(t, i)
-	assert.NotNil(t, j)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
+	assert.Nil(t, j)
 }
 
 func TestMap10NewBatch(t *testing.T) {
@@ -3182,17 +3182,17 @@ func TestMap11Nil(t *testing.T) {
 	assert.Nil(t, k)
 
 	a, b, c, d, e, f, g, h, i, j, k = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
-	assert.NotNil(t, c)
-	assert.NotNil(t, d)
-	assert.NotNil(t, e)
-	assert.NotNil(t, f)
-	assert.NotNil(t, g)
-	assert.NotNil(t, h)
-	assert.NotNil(t, i)
-	assert.NotNil(t, j)
-	assert.NotNil(t, k)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
+	assert.Nil(t, j)
+	assert.Nil(t, k)
 }
 
 func TestMap11NewBatch(t *testing.T) {
@@ -3515,18 +3515,18 @@ func TestMap12Nil(t *testing.T) {
 	assert.Nil(t, l)
 
 	a, b, c, d, e, f, g, h, i, j, k, l = mapper.GetUnchecked(entity)
-	assert.NotNil(t, a)
-	assert.NotNil(t, b)
-	assert.NotNil(t, c)
-	assert.NotNil(t, d)
-	assert.NotNil(t, e)
-	assert.NotNil(t, f)
-	assert.NotNil(t, g)
-	assert.NotNil(t, h)
-	assert.NotNil(t, i)
-	assert.NotNil(t, j)
-	assert.NotNil(t, k)
-	assert.NotNil(t, l)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
+	assert.Nil(t, j)
+	assert.Nil(t, k)
+	assert.Nil(t, l)
 }
 
 func TestMap12NewBatch(t *testing.T) {

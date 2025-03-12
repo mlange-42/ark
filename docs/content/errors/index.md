@@ -19,8 +19,8 @@ Therefore, Ark panics.
 Ark tries to give informative error messages on invalid operations or other misuse.
 In performance hot spots like [queries](../queries) or [component mappers](../operations#component-mappers),
 however, this is not always possible without degrading performance.
-As an example, {{< api ecs Map.Get >}} panics (deliberately) with `invalid memory address or nil pointer dereference`
-if the entity does not have the requested component.
+As an example, {{< api ecs Query2.Get >}} panics (deliberately) with `invalid memory address or nil pointer dereference`
+when called after query iteration finished.
 
 In case of uninformative errors in queries or mappers, try to run your project using the build tag `debug`:
 
