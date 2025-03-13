@@ -8,10 +8,11 @@ const maxCacheID = math.MaxUint32
 
 // Cache entry for a [Filter].
 type cacheEntry struct {
-	id      cacheID         // Entry ID.
-	filter  Batch           // The underlying filter.
-	indices map[tableID]int // Map of table indices for removal.
-	tables  []tableID       // Tables matching the filter.
+	id        cacheID         // Entry ID.
+	filter    filter          // The underlying filter.
+	relations []RelationID    // Entity relationships.
+	indices   map[tableID]int // Map of table indices for removal.
+	tables    []tableID       // Tables matching the filter.
 }
 
 // cache provides [Filter] caching to speed up queries.
@@ -50,10 +51,11 @@ func (c *cache) register(storage *storage, batch *Batch) cacheID {
 	index := len(c.filters)
 	c.filters = append(c.filters,
 		cacheEntry{
-			id:      id,
-			filter:  *batch,
-			tables:  storage.getTableIDs(batch),
-			indices: nil,
+			id:        id,
+			filter:    batch.filter,
+			relations: batch.relations,
+			tables:    storage.getTableIDs(batch),
+			indices:   nil,
 		})
 	c.indices[id] = index
 	return id
@@ -83,7 +85,7 @@ func (c *cache) addTable(storage *storage, table *table) {
 	if !table.HasRelations() {
 		for i := range c.filters {
 			e := &c.filters[i]
-			if !e.filter.filter.matches(&arch.mask) {
+			if !e.filter.matches(&arch.mask) {
 				continue
 			}
 			e.tables = append(e.tables, table.id)
@@ -93,10 +95,10 @@ func (c *cache) addTable(storage *storage, table *table) {
 
 	for i := range c.filters {
 		e := &c.filters[i]
-		if !e.filter.filter.matches(&arch.mask) {
+		if !e.filter.matches(&arch.mask) {
 			continue
 		}
-		if !table.Matches(e.filter.relations) {
+		if !table.Matches(e.relations) {
 			continue
 		}
 		e.tables = append(e.tables, table.id)
@@ -118,7 +120,7 @@ func (c *cache) removeTable(storage *storage, table *table) {
 	for i := range c.filters {
 		e := &c.filters[i]
 
-		if e.indices == nil && e.filter.filter.matches(&arch.mask) {
+		if e.indices == nil && e.filter.matches(&arch.mask) {
 			c.mapTables(storage, e)
 		}
 
