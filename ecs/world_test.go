@@ -179,6 +179,7 @@ func TestWorldRelations(t *testing.T) {
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
 
 	mapper1 := NewMap3[Position, ChildOf, ChildOf2](&w)
 	assert.True(t, w.storage.registry.IsRelation[ComponentID[ChildOf](&w).id])
@@ -189,18 +190,21 @@ func TestWorldRelations(t *testing.T) {
 		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, RelIdx(1, parent1), RelIdx(2, parent2))
 		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, RelIdx(1, parent2), RelIdx(2, parent1))
 		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel[ChildOf](parent2), Rel[ChildOf2](parent2))
+		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel[ChildOf](parent1), Rel[ChildOf2](parent3))
 	}
 
 	filter := NewFilter3[Position, ChildOf, ChildOf2](&w)
 
 	query := filter.Query()
+	assert.Equal(t, 50, query.Count())
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 40, cnt)
+	assert.Equal(t, 50, cnt)
 
 	query = filter.Query(RelIdx(1, parent1), RelIdx(2, parent2))
+	assert.Equal(t, 10, query.Count())
 	cnt = 0
 	for query.Next() {
 		cnt++
@@ -208,11 +212,12 @@ func TestWorldRelations(t *testing.T) {
 	assert.Equal(t, 10, cnt)
 
 	query = filter.Query(RelIdx(1, parent1))
+	assert.Equal(t, 30, query.Count())
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 20, cnt)
+	assert.Equal(t, 30, cnt)
 
 	mapper2 := NewMap2[Position, ChildOf](&w)
 	child2Map := NewMap1[ChildOf2](&w)
