@@ -15,6 +15,7 @@ func TestQuery1(t *testing.T) {
 	mapper := NewMap1[CompA](&w)
 	compMapper := NewMap[CompA](&w)
 	posMapper := NewMap[Position](&w)
+	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{})
@@ -25,6 +26,8 @@ func TestQuery1(t *testing.T) {
 		e = mapper.NewEntity(&CompA{})
 		posMapper.Add(e, &Position{})
 	}
+
+	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
 	filter := NewFilter1[CompA](&w)
@@ -85,11 +88,14 @@ func TestQuery1Empty(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
+	mapper := NewMap1[CompA](&w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
+
+	w.RemoveEntity(mapper.NewEntityFn(nil))
 
 	filter := NewFilter1[CompA](&w)
 	query := filter.Query()
@@ -262,6 +268,7 @@ func TestQuery2(t *testing.T) {
 	mapper := NewMap2[CompA, CompB](&w)
 	compMapper := NewMap[CompA](&w)
 	posMapper := NewMap[Position](&w)
+	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{})
@@ -272,6 +279,8 @@ func TestQuery2(t *testing.T) {
 		e = mapper.NewEntity(&CompA{}, &CompB{})
 		posMapper.Add(e, &Position{})
 	}
+
+	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
 	filter := NewFilter2[CompA, CompB](&w)
@@ -332,11 +341,14 @@ func TestQuery2Empty(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
+	mapper := NewMap2[CompA, CompB](&w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
+
+	w.RemoveEntity(mapper.NewEntityFn(nil))
 
 	filter := NewFilter2[CompA, CompB](&w)
 	query := filter.Query()
@@ -509,6 +521,7 @@ func TestQuery3(t *testing.T) {
 	mapper := NewMap3[CompA, CompB, CompC](&w)
 	compMapper := NewMap[CompA](&w)
 	posMapper := NewMap[Position](&w)
+	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
@@ -519,6 +532,8 @@ func TestQuery3(t *testing.T) {
 		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
 		posMapper.Add(e, &Position{})
 	}
+
+	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
 	filter := NewFilter3[CompA, CompB, CompC](&w)
@@ -579,11 +594,14 @@ func TestQuery3Empty(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
+	mapper := NewMap3[CompA, CompB, CompC](&w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
+
+	w.RemoveEntity(mapper.NewEntityFn(nil))
 
 	filter := NewFilter3[CompA, CompB, CompC](&w)
 	query := filter.Query()
@@ -756,6 +774,7 @@ func TestQuery4(t *testing.T) {
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
 	compMapper := NewMap[CompA](&w)
 	posMapper := NewMap[Position](&w)
+	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
@@ -766,6 +785,8 @@ func TestQuery4(t *testing.T) {
 		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
 		posMapper.Add(e, &Position{})
 	}
+
+	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
 	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
@@ -826,11 +847,14 @@ func TestQuery4Empty(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
+	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
+
+	w.RemoveEntity(mapper.NewEntityFn(nil))
 
 	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
 	query := filter.Query()
@@ -1003,6 +1027,7 @@ func TestQuery5(t *testing.T) {
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
 	compMapper := NewMap[CompA](&w)
 	posMapper := NewMap[Position](&w)
+	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
@@ -1013,6 +1038,8 @@ func TestQuery5(t *testing.T) {
 		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 		posMapper.Add(e, &Position{})
 	}
+
+	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
 	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
@@ -1073,11 +1100,14 @@ func TestQuery5Empty(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
+	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
+
+	w.RemoveEntity(mapper.NewEntityFn(nil))
 
 	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
 	query := filter.Query()
@@ -1250,6 +1280,7 @@ func TestQuery6(t *testing.T) {
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	compMapper := NewMap[CompA](&w)
 	posMapper := NewMap[Position](&w)
+	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
@@ -1260,6 +1291,8 @@ func TestQuery6(t *testing.T) {
 		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 		posMapper.Add(e, &Position{})
 	}
+
+	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
 	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
@@ -1320,11 +1353,14 @@ func TestQuery6Empty(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
+	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
+
+	w.RemoveEntity(mapper.NewEntityFn(nil))
 
 	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	query := filter.Query()
@@ -1497,6 +1533,7 @@ func TestQuery7(t *testing.T) {
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	compMapper := NewMap[CompA](&w)
 	posMapper := NewMap[Position](&w)
+	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
@@ -1507,6 +1544,8 @@ func TestQuery7(t *testing.T) {
 		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 		posMapper.Add(e, &Position{})
 	}
+
+	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
 	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
@@ -1567,11 +1606,14 @@ func TestQuery7Empty(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
+	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
+
+	w.RemoveEntity(mapper.NewEntityFn(nil))
 
 	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	query := filter.Query()
@@ -1744,6 +1786,7 @@ func TestQuery8(t *testing.T) {
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	compMapper := NewMap[CompA](&w)
 	posMapper := NewMap[Position](&w)
+	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
@@ -1754,6 +1797,8 @@ func TestQuery8(t *testing.T) {
 		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 		posMapper.Add(e, &Position{})
 	}
+
+	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
@@ -1814,11 +1859,14 @@ func TestQuery8Empty(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
+	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
+
+	w.RemoveEntity(mapper.NewEntityFn(nil))
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
@@ -2049,14 +2097,21 @@ func TestQuery0Empty(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
+	posVelMap := NewMap2[Position, Velocity](&w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
+	w.RemoveEntity(posVelMap.NewEntityFn(nil))
 
-	filter := NewFilter0(&w).Without(C[Position]())
+	filter := NewFilter0(&w)
 	query := filter.Query()
+	assert.Equal(t, 10, query.Count())
+	query.Close()
+
+	filter = NewFilter0(&w).Without(C[Position]())
+	query = filter.Query()
 	assert.Equal(t, 0, query.Count())
 
 	assert.Panics(t, func() { query.Entity() })
