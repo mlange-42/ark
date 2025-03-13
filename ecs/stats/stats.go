@@ -11,8 +11,6 @@ import (
 type World struct {
 	// Entity statistics.
 	Entities Entities
-	// Total number of components.
-	ComponentCount int
 	// Component types, indexed by component ID.
 	ComponentTypes []reflect.Type
 	// Locked state of the world.
@@ -41,28 +39,26 @@ type Entities struct {
 
 // Archetype statistics.
 type Archetype struct {
-	// Number of free tables.
-	FreeTables int
-	// Number of relation components in the archetype.
-	NumRelations int
-	// Number of components.
-	Components int
-	// Component IDs.
-	ComponentIDs []uint8
-	// Component types for ComponentIDs.
-	ComponentTypes []reflect.Type
-	// Memory for components per entity, in bytes.
-	MemoryPerEntity int
-	// Memory reserved for entities and components, in bytes.
-	Memory int
-	// Memory actually used for alive entities and their components components, in bytes.
-	MemoryUsed int
 	// Number of entities in the tables of this archetype.
 	Size int
 	// Sum of capacity of the tables in this archetype.
 	Capacity int
+	// Component IDs.
+	ComponentIDs []uint8
+	// Component types for ComponentIDs.
+	ComponentTypes []reflect.Type
+	// Number of relation components in the archetype.
+	NumRelations int
+	// Memory reserved for entities and components, in bytes.
+	Memory int
+	// Memory actually used for alive entities and their components components, in bytes.
+	MemoryUsed int
+	// Memory for components per entity, in bytes.
+	MemoryPerEntity int
 	// Table statistics.
 	Tables []Table
+	// Number of free tables.
+	FreeTables int
 }
 
 // Table statistics.
@@ -82,7 +78,7 @@ func (s *World) String() string {
 
 	fmt.Fprintf(
 		&b, "World     -- Components: %d, Archetypes: %d, Filters: %d, Memory: %.1f kB, Locked: %t\n",
-		s.ComponentCount, len(s.Archetypes), s.CachedFilters, float64(s.Memory)/1024.0, s.Locked,
+		len(s.ComponentTypes), len(s.Archetypes), s.CachedFilters, float64(s.Memory)/1024.0, s.Locked,
 	)
 
 	typeNames := make([]string, len(s.ComponentTypes))
@@ -111,6 +107,6 @@ func (s *Archetype) String() string {
 
 	return fmt.Sprintf(
 		"Archetype -- Tables: %4d, Comps: %2d, Entities: %6d, Cap: %6d, Mem: %7.1f kB, Per entity: %4d B\n             Components: %s\n",
-		len(s.Tables), s.Components, s.Size, s.Capacity, float64(s.Memory)/1024.0, s.MemoryPerEntity, strings.Join(typeNames, ", "),
+		len(s.Tables), len(s.ComponentIDs), s.Size, s.Capacity, float64(s.Memory)/1024.0, s.MemoryPerEntity, strings.Join(typeNames, ", "),
 	)
 }

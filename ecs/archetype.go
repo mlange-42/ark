@@ -188,8 +188,7 @@ func (a *archetype) Reset(storage *storage) {
 // Stats generates statistics for an archetype.
 func (a *archetype) Stats(storage *storage) stats.Archetype {
 	ids := a.components
-	aCompCount := len(ids)
-	aTypes := make([]reflect.Type, aCompCount)
+	aTypes := make([]reflect.Type, len(ids))
 	for j, id := range ids {
 		aTypes[j], _ = storage.registry.ComponentType(id.id)
 	}
@@ -224,7 +223,6 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 	return stats.Archetype{
 		FreeTables:      len(a.freeTables),
 		NumRelations:    int(a.numRelations),
-		Components:      aCompCount,
 		ComponentIDs:    intIDs,
 		ComponentTypes:  aTypes,
 		Memory:          memory,

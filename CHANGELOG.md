@@ -2,6 +2,10 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.3.0...main)
 
+### Breaking changes
+
+- Removes redundant information from `stats`: `stats.World.ComponentCount` and `stats.Archetype.Components` (#192)
+
 ### Features
 
 - Adds `QueryX.Count` (#175)
@@ -13,9 +17,10 @@
 
 ### Documentation
 
-- Adds user guide section on Ark's error handling philosophy (#170)
+- Adds user guide chapter on Ark's error handling philosophy (#170)
 - Adds information on uninformative `Map.Get` errors to API docs (#171)
 - Adds benchmarks for build tag `tiny` (#180)
+- Adds user guide chapter on world statistics (#193)
 
 ### Performance
 
