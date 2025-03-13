@@ -9,6 +9,7 @@
 - Provides `MapX` for up to 12 components (#182)
 - Adds `MapX.Set` and `Map.Set` (#183)
 - Adds function `ResourceTypeID` (#184)
+- `MapX.Get` etc. return `nil` for missing components instead of panic (#189)
 
 ### Documentation
 
