@@ -30,7 +30,7 @@ func NewWorld(initialCapacity ...int) World {
 	}
 }
 
-// NewEntity creates a new [Entity].
+// NewEntity creates a new [Entity] without any components.
 func (w *World) NewEntity() Entity {
 	w.checkLocked()
 

@@ -140,6 +140,9 @@ func (m *Map1[A]) GetUnchecked(entity Entity) *A {
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map1.Get] and checking for nil pointer may be faster
+// than calling [Map1.HasAll] and [Map1.Get] subsequently.
 func (m *Map1[A]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -424,6 +427,9 @@ func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map2.Get] and checking for nil pointer may be faster
+// than calling [Map2.HasAll] and [Map2.Get] subsequently.
 func (m *Map2[A, B]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -736,6 +742,9 @@ func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map3.Get] and checking for nil pointer may be faster
+// than calling [Map3.HasAll] and [Map3.Get] subsequently.
 func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -1074,6 +1083,9 @@ func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map4.Get] and checking for nil pointer may be faster
+// than calling [Map4.HasAll] and [Map4.Get] subsequently.
 func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -1438,6 +1450,9 @@ func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map5.Get] and checking for nil pointer may be faster
+// than calling [Map5.HasAll] and [Map5.Get] subsequently.
 func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -1828,6 +1843,9 @@ func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map6.Get] and checking for nil pointer may be faster
+// than calling [Map6.HasAll] and [Map6.Get] subsequently.
 func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -2244,6 +2262,9 @@ func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D,
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map7.Get] and checking for nil pointer may be faster
+// than calling [Map7.HasAll] and [Map7.Get] subsequently.
 func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -2686,6 +2707,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, 
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map8.Get] and checking for nil pointer may be faster
+// than calling [Map8.HasAll] and [Map8.Get] subsequently.
 func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -3154,6 +3178,9 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) GetUnchecked(entity Entity) (*A, *B, *
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map9.Get] and checking for nil pointer may be faster
+// than calling [Map9.HasAll] and [Map9.Get] subsequently.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -3648,6 +3675,9 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) GetUnchecked(entity Entity) (*A, *
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map10.Get] and checking for nil pointer may be faster
+// than calling [Map10.HasAll] and [Map10.Get] subsequently.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -4168,6 +4198,9 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) GetUnchecked(entity Entity) (*A
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map11.Get] and checking for nil pointer may be faster
+// than calling [Map11.HasAll] and [Map11.Get] subsequently.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -4714,6 +4747,9 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) GetUnchecked(entity Entity) 
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map12.Get] and checking for nil pointer may be faster
+// than calling [Map12.HasAll] and [Map12.Get] subsequently.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")

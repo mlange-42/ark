@@ -122,6 +122,9 @@ func (m *Map[T]) GetUnchecked(entity Entity) *T {
 }
 
 // Has return whether the given entity has the mapped component.
+//
+// Using [Map.Get] and checking for nil pointer may be faster
+// than calling [Map.Has] and [Map.Get] subsequently.
 func (m *Map[T]) Has(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't get a component of a dead entity")
