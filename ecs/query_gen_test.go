@@ -197,6 +197,11 @@ func TestQuery1Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	batch := filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, filter.relations, batch.relations)
+
 	filter.Unregister()
 
 	// relation filter 1
@@ -212,6 +217,11 @@ func TestQuery1Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 0, len(batch.relations))
+
 	filter.Unregister()
 
 	// relation filter 2
@@ -227,6 +237,10 @@ func TestQuery1Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch(RelIdx(0, parent2))
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 1, len(batch.relations))
 
 	assert.Panics(t, func() {
 		filter.Exclusive()
@@ -430,6 +444,11 @@ func TestQuery2Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	batch := filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, filter.relations, batch.relations)
+
 	filter.Unregister()
 
 	// relation filter 1
@@ -445,6 +464,11 @@ func TestQuery2Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 0, len(batch.relations))
+
 	filter.Unregister()
 
 	// relation filter 2
@@ -460,6 +484,10 @@ func TestQuery2Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch(RelIdx(0, parent2))
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 1, len(batch.relations))
 
 	assert.Panics(t, func() {
 		filter.Exclusive()
@@ -663,6 +691,11 @@ func TestQuery3Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	batch := filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, filter.relations, batch.relations)
+
 	filter.Unregister()
 
 	// relation filter 1
@@ -678,6 +711,11 @@ func TestQuery3Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 0, len(batch.relations))
+
 	filter.Unregister()
 
 	// relation filter 2
@@ -693,6 +731,10 @@ func TestQuery3Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch(RelIdx(0, parent2))
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 1, len(batch.relations))
 
 	assert.Panics(t, func() {
 		filter.Exclusive()
@@ -896,6 +938,11 @@ func TestQuery4Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	batch := filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, filter.relations, batch.relations)
+
 	filter.Unregister()
 
 	// relation filter 1
@@ -911,6 +958,11 @@ func TestQuery4Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 0, len(batch.relations))
+
 	filter.Unregister()
 
 	// relation filter 2
@@ -926,6 +978,10 @@ func TestQuery4Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch(RelIdx(0, parent2))
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 1, len(batch.relations))
 
 	assert.Panics(t, func() {
 		filter.Exclusive()
@@ -1129,6 +1185,11 @@ func TestQuery5Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	batch := filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, filter.relations, batch.relations)
+
 	filter.Unregister()
 
 	// relation filter 1
@@ -1144,6 +1205,11 @@ func TestQuery5Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 0, len(batch.relations))
+
 	filter.Unregister()
 
 	// relation filter 2
@@ -1159,6 +1225,10 @@ func TestQuery5Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch(RelIdx(0, parent2))
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 1, len(batch.relations))
 
 	assert.Panics(t, func() {
 		filter.Exclusive()
@@ -1362,6 +1432,11 @@ func TestQuery6Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	batch := filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, filter.relations, batch.relations)
+
 	filter.Unregister()
 
 	// relation filter 1
@@ -1377,6 +1452,11 @@ func TestQuery6Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 0, len(batch.relations))
+
 	filter.Unregister()
 
 	// relation filter 2
@@ -1392,6 +1472,10 @@ func TestQuery6Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch(RelIdx(0, parent2))
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 1, len(batch.relations))
 
 	assert.Panics(t, func() {
 		filter.Exclusive()
@@ -1595,6 +1679,11 @@ func TestQuery7Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	batch := filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, filter.relations, batch.relations)
+
 	filter.Unregister()
 
 	// relation filter 1
@@ -1610,6 +1699,11 @@ func TestQuery7Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 0, len(batch.relations))
+
 	filter.Unregister()
 
 	// relation filter 2
@@ -1625,6 +1719,10 @@ func TestQuery7Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch(RelIdx(0, parent2))
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 1, len(batch.relations))
 
 	assert.Panics(t, func() {
 		filter.Exclusive()
@@ -1828,6 +1926,11 @@ func TestQuery8Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, 2*n, cnt)
+
+	batch := filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, filter.relations, batch.relations)
+
 	filter.Unregister()
 
 	// relation filter 1
@@ -1843,6 +1946,11 @@ func TestQuery8Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 0, len(batch.relations))
+
 	filter.Unregister()
 
 	// relation filter 2
@@ -1858,6 +1966,10 @@ func TestQuery8Registered(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
+
+	batch = filter.Batch(RelIdx(0, parent2))
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, 1, len(batch.relations))
 
 	assert.Panics(t, func() {
 		filter.Exclusive()
@@ -2003,6 +2115,43 @@ func TestQuery0Relations(t *testing.T) {
 		cnt++
 	}
 	assert.Equal(t, cnt, 3*n+3)
+
+	assert.Panics(t, func() {
+		filter.Exclusive()
+	})
+	assert.Panics(t, func() {
+		filter.Register()
+	})
+
+	filter.Unregister()
+	assert.Panics(t, func() {
+		filter.Unregister()
+	})
+}
+
+func TestQuery0Registered(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	for range n {
+		w.NewEntity()
+		w.NewEntity()
+	}
+
+	filter := NewFilter0(&w).Register()
+	query := filter.Query()
+	assert.Equal(t, 2*n, query.Count())
+
+	cnt := 0
+	for query.Next() {
+		_ = query.Entity()
+		cnt++
+	}
+	assert.Equal(t, 2*n, cnt)
+
+	batch := filter.Batch()
+	assert.Equal(t, filter.filter, *batch.filter)
+	assert.Equal(t, filter.relations, batch.relations)
 
 	assert.Panics(t, func() {
 		filter.Exclusive()

@@ -166,8 +166,8 @@ func (s *storage) registerTargets(relations []RelationID) {
 	}
 }
 
-func (s *storage) registerFilter(batch *Batch) cacheID {
-	return s.cache.register(s, batch)
+func (s *storage) registerFilter(filter *filter, relations []RelationID) cacheID {
+	return s.cache.register(s, filter, relations)
 }
 
 func (s *storage) unregisterFilter(entry cacheID) {
@@ -382,6 +382,21 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([
 func (s *storage) getTables(batch *Batch) []*table {
 	tables := []*table{}
 
+	if batch.cache != maxCacheID {
+		cache := s.getRegisteredFilter(batch.cache)
+		for _, tableID := range cache.tables {
+			table := &s.tables[tableID]
+			if table.Len() == 0 {
+				continue
+			}
+			if !table.Matches(batch.relations) {
+				continue
+			}
+			tables = append(tables, table)
+		}
+		return tables
+	}
+
 	for i := range s.archetypes {
 		archetype := &s.archetypes[i]
 		if !batch.filter.matches(&archetype.mask) {
@@ -406,12 +421,12 @@ func (s *storage) getTables(batch *Batch) []*table {
 	return tables
 }
 
-func (s *storage) getTableIDs(batch *Batch) []tableID {
+func (s *storage) getTableIDs(filter *filter, relations []RelationID) []tableID {
 	tables := []tableID{}
 
 	for i := range s.archetypes {
 		archetype := &s.archetypes[i]
-		if !batch.filter.matches(&archetype.mask) {
+		if !filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -420,10 +435,10 @@ func (s *storage) getTableIDs(batch *Batch) []tableID {
 			continue
 		}
 
-		tableIDs := archetype.GetTables(batch.relations)
+		tableIDs := archetype.GetTables(relations)
 		for _, tab := range tableIDs {
 			table := &s.tables[tab]
-			if !table.Matches(batch.relations) {
+			if !table.Matches(relations) {
 				continue
 			}
 			tables = append(tables, tab)
