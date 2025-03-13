@@ -24,7 +24,7 @@ Unfortunately, this is required due to the limitations of Go's generics.
 In addition to {{< api ecs Map1 >}}, {{< api ecs Map2 >}}, etc., there is {{< api ecs Map >}}.
 It is a dedicated mapper for a single component and provides a few additional methods.
 
-Component mappers can also be used to access components for specific entities:
+Component mappers are also used to access components for specific entities:
 
 {{< code-func operations_test.go TestComponentMapperGet >}}
 
