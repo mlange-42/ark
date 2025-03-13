@@ -148,15 +148,22 @@ func TestWorldRemoveEntities(t *testing.T) {
 	})
 	assert.Equal(t, n*3, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter2[Position, Velocity](&w)
 	cnt = 0
 	w.RemoveEntities(filter.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, n*2, cnt)
+	assert.Equal(t, n, cnt)
 
-	filter2 := NewFilter0(&w)
-	query := filter2.Query()
+	filter2 := NewFilter1[Position](&w).Register()
+	cnt = 0
+	w.RemoveEntities(filter2.Batch(), func(entity Entity) {
+		cnt++
+	})
+	assert.Equal(t, n, cnt)
+
+	filter3 := NewFilter0(&w)
+	query := filter3.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
