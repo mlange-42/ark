@@ -27,6 +27,7 @@ import (
 {{- $upperFilter := upperLetters $nFilter -}}
 {{- $genericsFilter := join "[Comp" ", Comp" "]" $upperFilter -}}
 {{- $genericsRelFilter := replace $genericsFilter "CompA" "ChildOf" -}}
+{{- $values := join "" ", " "" $lower -}}
 
 func TestMap{{.}}(t *testing.T) {
 	n := 12
@@ -56,10 +57,17 @@ func TestMap{{.}}(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		{{blanks .}} = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, {{$mapArgs}})
+	for _, entity := range entities {
+		{{$values}} := mapper.Get(entity)
+		{{- range $lower}}
+		assert.NotNil(t, {{.}})
+		{{- end}}
+		{{$values}} = mapper.GetUnchecked(entity)
+		{{- range $lower}}
+		assert.NotNil(t, {{.}})
+		{{- end}}
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, {{$mapArgs}})
 	}
 
 	for _, e := range entities {
@@ -85,6 +93,23 @@ func TestMap{{.}}(t *testing.T) {
 	assert.Panics(t, func(){
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap{{.}}Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap{{.}}{{$generics}}(&w)
+	entity := w.NewEntity()
+
+	{{$values}} := mapper.Get(entity)
+	{{- range $lower}}
+	assert.Nil(t, {{.}})
+	{{- end}}
+	
+	{{$values}} = mapper.GetUnchecked(entity)
+	{{- range $lower}}
+	assert.Nil(t, {{.}})
+	{{- end}}
 }
 
 func TestMap{{.}}NewBatch(t *testing.T) {

@@ -100,37 +100,49 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Rel
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map1.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) Get(entity Entity) *A {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	return a
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map1.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map1.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row))
+	var a *A
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	return a
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map1.Get] and checking for nil pointer may be faster
+// than calling [Map1.HasAll] and [Map1.Get] subsequently.
 func (m *Map1[A]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -365,39 +377,59 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), r
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map2.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	return a, b
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map2.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map2.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row))
+	var a *A
+	var b *B
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	return a, b
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map2.Get] and checking for nil pointer may be faster
+// than calling [Map2.HasAll] and [Map2.Get] subsequently.
 func (m *Map2[A, B]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -650,41 +682,69 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B,
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map3.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+	var c *C
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	return a, b, c
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map3.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map3.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-	m.world.storage.checkHasComponent(entity, m.ids[2])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row))
+	var a *A
+	var b *B
+	var c *C
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	return a, b, c
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map3.Get] and checking for nil pointer may be faster
+// than calling [Map3.HasAll] and [Map3.Get] subsequently.
 func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -953,43 +1013,79 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b 
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map4.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	return a, b, c, d
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map4.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map4.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-	m.world.storage.checkHasComponent(entity, m.ids[2])
-	m.world.storage.checkHasComponent(entity, m.ids[3])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row))
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	return a, b, c, d
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map4.Get] and checking for nil pointer may be faster
+// than calling [Map4.HasAll] and [Map4.Get] subsequently.
 func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -1274,45 +1370,89 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A,
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map5.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	return a, b, c, d, e
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map5.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map5.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-	m.world.storage.checkHasComponent(entity, m.ids[2])
-	m.world.storage.checkHasComponent(entity, m.ids[3])
-	m.world.storage.checkHasComponent(entity, m.ids[4])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row))
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	return a, b, c, d, e
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map5.Get] and checking for nil pointer may be faster
+// than calling [Map5.HasAll] and [Map5.Get] subsequently.
 func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -1613,47 +1753,99 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a 
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map6.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	return a, b, c, d, e, f
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map6.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map6.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-	m.world.storage.checkHasComponent(entity, m.ids[2])
-	m.world.storage.checkHasComponent(entity, m.ids[3])
-	m.world.storage.checkHasComponent(entity, m.ids[4])
-	m.world.storage.checkHasComponent(entity, m.ids[5])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row)),
-		(*F)(m.storageF.columns[index.table].Get(row))
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	return a, b, c, d, e, f
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map6.Get] and checking for nil pointer may be faster
+// than calling [Map6.HasAll] and [Map6.Get] subsequently.
 func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -1970,49 +2162,109 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity,
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map7.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	return a, b, c, d, e, f, g
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map7.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map7.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-	m.world.storage.checkHasComponent(entity, m.ids[2])
-	m.world.storage.checkHasComponent(entity, m.ids[3])
-	m.world.storage.checkHasComponent(entity, m.ids[4])
-	m.world.storage.checkHasComponent(entity, m.ids[5])
-	m.world.storage.checkHasComponent(entity, m.ids[6])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row)),
-		(*F)(m.storageF.columns[index.table].Get(row)),
-		(*G)(m.storageG.columns[index.table].Get(row))
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	return a, b, c, d, e, f, g
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map7.Get] and checking for nil pointer may be faster
+// than calling [Map7.HasAll] and [Map7.Get] subsequently.
 func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -2345,51 +2597,119 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Enti
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map8.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+	var h *H
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	columnH := m.storageH.columns[index.table]
+	if columnH != nil {
+		h = (*H)(columnH.Get(row))
+	}
+	return a, b, c, d, e, f, g, h
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map8.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map8.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-	m.world.storage.checkHasComponent(entity, m.ids[2])
-	m.world.storage.checkHasComponent(entity, m.ids[3])
-	m.world.storage.checkHasComponent(entity, m.ids[4])
-	m.world.storage.checkHasComponent(entity, m.ids[5])
-	m.world.storage.checkHasComponent(entity, m.ids[6])
-	m.world.storage.checkHasComponent(entity, m.ids[7])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row)),
-		(*F)(m.storageF.columns[index.table].Get(row)),
-		(*G)(m.storageG.columns[index.table].Get(row)),
-		(*H)(m.storageH.columns[index.table].Get(row))
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+	var h *H
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	columnH := m.storageH.columns[index.table]
+	if columnH != nil {
+		h = (*H)(columnH.Get(row))
+	}
+	return a, b, c, d, e, f, g, h
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map8.Get] and checking for nil pointer may be faster
+// than calling [Map8.HasAll] and [Map8.Get] subsequently.
 func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -2738,53 +3058,129 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(entity E
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map9.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+	var h *H
+	var i *I
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	columnH := m.storageH.columns[index.table]
+	if columnH != nil {
+		h = (*H)(columnH.Get(row))
+	}
+	columnI := m.storageI.columns[index.table]
+	if columnI != nil {
+		i = (*I)(columnI.Get(row))
+	}
+	return a, b, c, d, e, f, g, h, i
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map9.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map9.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-	m.world.storage.checkHasComponent(entity, m.ids[2])
-	m.world.storage.checkHasComponent(entity, m.ids[3])
-	m.world.storage.checkHasComponent(entity, m.ids[4])
-	m.world.storage.checkHasComponent(entity, m.ids[5])
-	m.world.storage.checkHasComponent(entity, m.ids[6])
-	m.world.storage.checkHasComponent(entity, m.ids[7])
-	m.world.storage.checkHasComponent(entity, m.ids[8])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row)),
-		(*F)(m.storageF.columns[index.table].Get(row)),
-		(*G)(m.storageG.columns[index.table].Get(row)),
-		(*H)(m.storageH.columns[index.table].Get(row)),
-		(*I)(m.storageI.columns[index.table].Get(row))
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+	var h *H
+	var i *I
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	columnH := m.storageH.columns[index.table]
+	if columnH != nil {
+		h = (*H)(columnH.Get(row))
+	}
+	columnI := m.storageI.columns[index.table]
+	if columnI != nil {
+		i = (*I)(columnI.Get(row))
+	}
+	return a, b, c, d, e, f, g, h, i
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map9.Get] and checking for nil pointer may be faster
+// than calling [Map9.HasAll] and [Map9.Get] subsequently.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -3149,55 +3545,139 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(enti
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map10.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+	var h *H
+	var i *I
+	var j *J
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	columnH := m.storageH.columns[index.table]
+	if columnH != nil {
+		h = (*H)(columnH.Get(row))
+	}
+	columnI := m.storageI.columns[index.table]
+	if columnI != nil {
+		i = (*I)(columnI.Get(row))
+	}
+	columnJ := m.storageJ.columns[index.table]
+	if columnJ != nil {
+		j = (*J)(columnJ.Get(row))
+	}
+	return a, b, c, d, e, f, g, h, i, j
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map10.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map10.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-	m.world.storage.checkHasComponent(entity, m.ids[2])
-	m.world.storage.checkHasComponent(entity, m.ids[3])
-	m.world.storage.checkHasComponent(entity, m.ids[4])
-	m.world.storage.checkHasComponent(entity, m.ids[5])
-	m.world.storage.checkHasComponent(entity, m.ids[6])
-	m.world.storage.checkHasComponent(entity, m.ids[7])
-	m.world.storage.checkHasComponent(entity, m.ids[8])
-	m.world.storage.checkHasComponent(entity, m.ids[9])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row)),
-		(*F)(m.storageF.columns[index.table].Get(row)),
-		(*G)(m.storageG.columns[index.table].Get(row)),
-		(*H)(m.storageH.columns[index.table].Get(row)),
-		(*I)(m.storageI.columns[index.table].Get(row)),
-		(*J)(m.storageJ.columns[index.table].Get(row))
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+	var h *H
+	var i *I
+	var j *J
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	columnH := m.storageH.columns[index.table]
+	if columnH != nil {
+		h = (*H)(columnH.Get(row))
+	}
+	columnI := m.storageI.columns[index.table]
+	if columnI != nil {
+		i = (*I)(columnI.Get(row))
+	}
+	columnJ := m.storageJ.columns[index.table]
+	if columnJ != nil {
+		j = (*J)(columnJ.Get(row))
+	}
+	return a, b, c, d, e, f, g, h, i, j
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map10.Get] and checking for nil pointer may be faster
+// than calling [Map10.HasAll] and [Map10.Get] subsequently.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -3578,57 +4058,149 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(e
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map11.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+	var h *H
+	var i *I
+	var j *J
+	var k *K
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	columnH := m.storageH.columns[index.table]
+	if columnH != nil {
+		h = (*H)(columnH.Get(row))
+	}
+	columnI := m.storageI.columns[index.table]
+	if columnI != nil {
+		i = (*I)(columnI.Get(row))
+	}
+	columnJ := m.storageJ.columns[index.table]
+	if columnJ != nil {
+		j = (*J)(columnJ.Get(row))
+	}
+	columnK := m.storageK.columns[index.table]
+	if columnK != nil {
+		k = (*K)(columnK.Get(row))
+	}
+	return a, b, c, d, e, f, g, h, i, j, k
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map11.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map11.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-	m.world.storage.checkHasComponent(entity, m.ids[2])
-	m.world.storage.checkHasComponent(entity, m.ids[3])
-	m.world.storage.checkHasComponent(entity, m.ids[4])
-	m.world.storage.checkHasComponent(entity, m.ids[5])
-	m.world.storage.checkHasComponent(entity, m.ids[6])
-	m.world.storage.checkHasComponent(entity, m.ids[7])
-	m.world.storage.checkHasComponent(entity, m.ids[8])
-	m.world.storage.checkHasComponent(entity, m.ids[9])
-	m.world.storage.checkHasComponent(entity, m.ids[10])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row)),
-		(*F)(m.storageF.columns[index.table].Get(row)),
-		(*G)(m.storageG.columns[index.table].Get(row)),
-		(*H)(m.storageH.columns[index.table].Get(row)),
-		(*I)(m.storageI.columns[index.table].Get(row)),
-		(*J)(m.storageJ.columns[index.table].Get(row)),
-		(*K)(m.storageK.columns[index.table].Get(row))
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+	var h *H
+	var i *I
+	var j *J
+	var k *K
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	columnH := m.storageH.columns[index.table]
+	if columnH != nil {
+		h = (*H)(columnH.Get(row))
+	}
+	columnI := m.storageI.columns[index.table]
+	if columnI != nil {
+		i = (*I)(columnI.Get(row))
+	}
+	columnJ := m.storageJ.columns[index.table]
+	if columnJ != nil {
+		j = (*J)(columnJ.Get(row))
+	}
+	columnK := m.storageK.columns[index.table]
+	if columnK != nil {
+		k = (*K)(columnK.Get(row))
+	}
+	return a, b, c, d, e, f, g, h, i, j, k
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map11.Get] and checking for nil pointer may be faster
+// than calling [Map11.HasAll] and [Map11.Get] subsequently.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
@@ -4025,59 +4597,159 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn fun
 
 // Get returns the mapped components for the given entity.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map12.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L) {
 	if !m.world.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := &m.world.storage.entities[entity.id]
+	row := uintptr(index.row)
+
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+	var h *H
+	var i *I
+	var j *J
+	var k *K
+	var l *L
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	columnH := m.storageH.columns[index.table]
+	if columnH != nil {
+		h = (*H)(columnH.Get(row))
+	}
+	columnI := m.storageI.columns[index.table]
+	if columnI != nil {
+		i = (*I)(columnI.Get(row))
+	}
+	columnJ := m.storageJ.columns[index.table]
+	if columnJ != nil {
+		j = (*J)(columnJ.Get(row))
+	}
+	columnK := m.storageK.columns[index.table]
+	if columnK != nil {
+		k = (*K)(columnK.Get(row))
+	}
+	columnL := m.storageL.columns[index.table]
+	if columnL != nil {
+		l = (*L)(columnL.Get(row))
+	}
+	return a, b, c, d, e, f, g, h, i, j, k, l
 }
 
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map12.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity is missing any of the mapped components,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map12.HasAll] to check whether the entity has all mapped components.
+// Return nil for components the entity is missing.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L) {
-	m.world.storage.checkHasComponent(entity, m.ids[0])
-	m.world.storage.checkHasComponent(entity, m.ids[1])
-	m.world.storage.checkHasComponent(entity, m.ids[2])
-	m.world.storage.checkHasComponent(entity, m.ids[3])
-	m.world.storage.checkHasComponent(entity, m.ids[4])
-	m.world.storage.checkHasComponent(entity, m.ids[5])
-	m.world.storage.checkHasComponent(entity, m.ids[6])
-	m.world.storage.checkHasComponent(entity, m.ids[7])
-	m.world.storage.checkHasComponent(entity, m.ids[8])
-	m.world.storage.checkHasComponent(entity, m.ids[9])
-	m.world.storage.checkHasComponent(entity, m.ids[10])
-	m.world.storage.checkHasComponent(entity, m.ids[11])
-
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 
-	return (*A)(m.storageA.columns[index.table].Get(row)),
-		(*B)(m.storageB.columns[index.table].Get(row)),
-		(*C)(m.storageC.columns[index.table].Get(row)),
-		(*D)(m.storageD.columns[index.table].Get(row)),
-		(*E)(m.storageE.columns[index.table].Get(row)),
-		(*F)(m.storageF.columns[index.table].Get(row)),
-		(*G)(m.storageG.columns[index.table].Get(row)),
-		(*H)(m.storageH.columns[index.table].Get(row)),
-		(*I)(m.storageI.columns[index.table].Get(row)),
-		(*J)(m.storageJ.columns[index.table].Get(row)),
-		(*K)(m.storageK.columns[index.table].Get(row)),
-		(*L)(m.storageL.columns[index.table].Get(row))
+	var a *A
+	var b *B
+	var c *C
+	var d *D
+	var e *E
+	var f *F
+	var g *G
+	var h *H
+	var i *I
+	var j *J
+	var k *K
+	var l *L
+
+	columnA := m.storageA.columns[index.table]
+	if columnA != nil {
+		a = (*A)(columnA.Get(row))
+	}
+	columnB := m.storageB.columns[index.table]
+	if columnB != nil {
+		b = (*B)(columnB.Get(row))
+	}
+	columnC := m.storageC.columns[index.table]
+	if columnC != nil {
+		c = (*C)(columnC.Get(row))
+	}
+	columnD := m.storageD.columns[index.table]
+	if columnD != nil {
+		d = (*D)(columnD.Get(row))
+	}
+	columnE := m.storageE.columns[index.table]
+	if columnE != nil {
+		e = (*E)(columnE.Get(row))
+	}
+	columnF := m.storageF.columns[index.table]
+	if columnF != nil {
+		f = (*F)(columnF.Get(row))
+	}
+	columnG := m.storageG.columns[index.table]
+	if columnG != nil {
+		g = (*G)(columnG.Get(row))
+	}
+	columnH := m.storageH.columns[index.table]
+	if columnH != nil {
+		h = (*H)(columnH.Get(row))
+	}
+	columnI := m.storageI.columns[index.table]
+	if columnI != nil {
+		i = (*I)(columnI.Get(row))
+	}
+	columnJ := m.storageJ.columns[index.table]
+	if columnJ != nil {
+		j = (*J)(columnJ.Get(row))
+	}
+	columnK := m.storageK.columns[index.table]
+	if columnK != nil {
+		k = (*K)(columnK.Get(row))
+	}
+	columnL := m.storageL.columns[index.table]
+	if columnL != nil {
+		l = (*L)(columnL.Get(row))
+	}
+	return a, b, c, d, e, f, g, h, i, j, k, l
 }
 
 // HasAll return whether the given entity has all mapped components.
+//
+// Using [Map12.Get] and checking for nil pointer may be faster
+// than calling [Map12.HasAll] and [Map12.Get] subsequently.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")

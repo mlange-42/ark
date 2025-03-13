@@ -90,34 +90,41 @@ func (m *Map[T]) NewBatchFn(count int, fn func(entity Entity, comp *T), target .
 
 // Get returns the mapped component for the given entity.
 //
-// Panics if the entity does not have the mapped component,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map.Has] to check whether the entity has the mapped component.
+// Returns nil if the entity does not have the mapped component.
 //
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) Get(entity Entity) *T {
 	if !m.world.Alive(entity) {
 		panic("can't get a component of a dead entity")
 	}
-	return m.GetUnchecked(entity)
+	index := m.world.storage.entities[entity.id]
+	column := m.storage.columns[index.table]
+	if column == nil {
+		return nil
+	}
+	return (*T)(column.Get(uintptr(index.row)))
 }
 
 // GetUnchecked returns the mapped component for the given entity.
 // In contrast to [Map.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Panics if the entity does not have the mapped component,
-// with a nil pointer dereference error. Use build tag `debug` for improved errors.
-// Use [Map.Has] to check whether the entity has the mapped component.
+// Returns nil if the entity does not have the mapped component.
 //
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) GetUnchecked(entity Entity) *T {
-	m.world.storage.checkHasComponent(entity, m.id)
 	index := m.world.storage.entities[entity.id]
-	return (*T)(m.storage.columns[index.table].Get(uintptr(index.row)))
+	column := m.storage.columns[index.table]
+	if column == nil {
+		return nil
+	}
+	return (*T)(column.Get(uintptr(index.row)))
 }
 
 // Has return whether the given entity has the mapped component.
+//
+// Using [Map.Get] and checking for nil pointer may be faster
+// than calling [Map.Has] and [Map.Get] subsequently.
 func (m *Map[T]) Has(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't get a component of a dead entity")

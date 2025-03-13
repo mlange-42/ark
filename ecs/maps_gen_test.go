@@ -36,10 +36,13 @@ func TestMap1(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{})
+	for _, entity := range entities {
+		a := mapper.Get(entity)
+		assert.NotNil(t, a)
+		a = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{})
 	}
 
 	for _, e := range entities {
@@ -65,6 +68,19 @@ func TestMap1(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap1Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap1[CompA](&w)
+	entity := w.NewEntity()
+
+	a := mapper.Get(entity)
+	assert.Nil(t, a)
+
+	a = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
 }
 
 func TestMap1NewBatch(t *testing.T) {
@@ -309,10 +325,15 @@ func TestMap2(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{})
+	for _, entity := range entities {
+		a, b := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		a, b = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{})
 	}
 
 	for _, e := range entities {
@@ -338,6 +359,21 @@ func TestMap2(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap2Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap2[CompA, CompB](&w)
+	entity := w.NewEntity()
+
+	a, b := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+
+	a, b = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
 }
 
 func TestMap2NewBatch(t *testing.T) {
@@ -582,10 +618,17 @@ func TestMap3(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{}, &CompC{})
+	for _, entity := range entities {
+		a, b, c := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		a, b, c = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{})
 	}
 
 	for _, e := range entities {
@@ -611,6 +654,23 @@ func TestMap3(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap3Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap3[CompA, CompB, CompC](&w)
+	entity := w.NewEntity()
+
+	a, b, c := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+
+	a, b, c = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
 }
 
 func TestMap3NewBatch(t *testing.T) {
@@ -855,10 +915,19 @@ func TestMap4(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _, _, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
+	for _, entity := range entities {
+		a, b, c, d := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		a, b, c, d = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 	}
 
 	for _, e := range entities {
@@ -884,6 +953,25 @@ func TestMap4(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap4Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+	entity := w.NewEntity()
+
+	a, b, c, d := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+
+	a, b, c, d = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
 }
 
 func TestMap4NewBatch(t *testing.T) {
@@ -1128,10 +1216,21 @@ func TestMap5(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _, _, _, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+	for _, entity := range entities {
+		a, b, c, d, e := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		a, b, c, d, e = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	}
 
 	for _, e := range entities {
@@ -1157,6 +1256,27 @@ func TestMap5(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap5Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
+	entity := w.NewEntity()
+
+	a, b, c, d, e := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+
+	a, b, c, d, e = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
 }
 
 func TestMap5NewBatch(t *testing.T) {
@@ -1401,10 +1521,23 @@ func TestMap6(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _, _, _, _, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+	for _, entity := range entities {
+		a, b, c, d, e, f := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		a, b, c, d, e, f = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	}
 
 	for _, e := range entities {
@@ -1430,6 +1563,29 @@ func TestMap6(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap6Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
+	entity := w.NewEntity()
+
+	a, b, c, d, e, f := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+
+	a, b, c, d, e, f = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
 }
 
 func TestMap6NewBatch(t *testing.T) {
@@ -1674,10 +1830,25 @@ func TestMap7(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _, _, _, _, _, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+	for _, entity := range entities {
+		a, b, c, d, e, f, g := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		a, b, c, d, e, f, g = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	}
 
 	for _, e := range entities {
@@ -1703,6 +1874,31 @@ func TestMap7(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap7Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+	entity := w.NewEntity()
+
+	a, b, c, d, e, f, g := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+
+	a, b, c, d, e, f, g = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
 }
 
 func TestMap7NewBatch(t *testing.T) {
@@ -1947,10 +2143,27 @@ func TestMap8(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _, _, _, _, _, _, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+	for _, entity := range entities {
+		a, b, c, d, e, f, g, h := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.NotNil(t, h)
+		a, b, c, d, e, f, g, h = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.NotNil(t, h)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	}
 
 	for _, e := range entities {
@@ -1976,6 +2189,33 @@ func TestMap8(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap8Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	entity := w.NewEntity()
+
+	a, b, c, d, e, f, g, h := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+
+	a, b, c, d, e, f, g, h = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
 }
 
 func TestMap8NewBatch(t *testing.T) {
@@ -2220,10 +2460,29 @@ func TestMap9(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _, _, _, _, _, _, _, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
+	for _, entity := range entities {
+		a, b, c, d, e, f, g, h, i := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.NotNil(t, h)
+		assert.NotNil(t, i)
+		a, b, c, d, e, f, g, h, i = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.NotNil(t, h)
+		assert.NotNil(t, i)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
 	}
 
 	for _, e := range entities {
@@ -2249,6 +2508,35 @@ func TestMap9(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap9Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
+	entity := w.NewEntity()
+
+	a, b, c, d, e, f, g, h, i := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
+
+	a, b, c, d, e, f, g, h, i = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
 }
 
 func TestMap9NewBatch(t *testing.T) {
@@ -2493,10 +2781,31 @@ func TestMap10(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _, _, _, _, _, _, _, _, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
+	for _, entity := range entities {
+		a, b, c, d, e, f, g, h, i, j := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.NotNil(t, h)
+		assert.NotNil(t, i)
+		assert.NotNil(t, j)
+		a, b, c, d, e, f, g, h, i, j = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.NotNil(t, h)
+		assert.NotNil(t, i)
+		assert.NotNil(t, j)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
 	}
 
 	for _, e := range entities {
@@ -2523,6 +2832,37 @@ func TestMap10(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap10Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
+	entity := w.NewEntity()
+
+	a, b, c, d, e, f, g, h, i, j := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
+	assert.Nil(t, j)
+
+	a, b, c, d, e, f, g, h, i, j = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
+	assert.Nil(t, j)
 }
 
 func TestMap10NewBatch(t *testing.T) {
@@ -2767,10 +3107,33 @@ func TestMap11(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _, _, _, _, _, _, _, _, _, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
+	for _, entity := range entities {
+		a, b, c, d, e, f, g, h, i, j, k := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.NotNil(t, h)
+		assert.NotNil(t, i)
+		assert.NotNil(t, j)
+		assert.NotNil(t, k)
+		a, b, c, d, e, f, g, h, i, j, k = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.NotNil(t, h)
+		assert.NotNil(t, i)
+		assert.NotNil(t, j)
+		assert.NotNil(t, k)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
 	}
 
 	for _, e := range entities {
@@ -2797,6 +3160,39 @@ func TestMap11(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap11Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
+	entity := w.NewEntity()
+
+	a, b, c, d, e, f, g, h, i, j, k := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
+	assert.Nil(t, j)
+	assert.Nil(t, k)
+
+	a, b, c, d, e, f, g, h, i, j, k = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
+	assert.Nil(t, j)
+	assert.Nil(t, k)
 }
 
 func TestMap11NewBatch(t *testing.T) {
@@ -3041,10 +3437,35 @@ func TestMap12(t *testing.T) {
 		w.RemoveEntity(e)
 	}
 
-	for _, e := range entities {
-		_, _, _, _, _, _, _, _, _, _, _, _ = mapper.Get(e)
-		assert.True(t, mapper.HasAll(e))
-		mapper.Set(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
+	for _, entity := range entities {
+		a, b, c, d, e, f, g, h, i, j, k, l := mapper.Get(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.NotNil(t, h)
+		assert.NotNil(t, i)
+		assert.NotNil(t, j)
+		assert.NotNil(t, k)
+		assert.NotNil(t, l)
+		a, b, c, d, e, f, g, h, i, j, k, l = mapper.GetUnchecked(entity)
+		assert.NotNil(t, a)
+		assert.NotNil(t, b)
+		assert.NotNil(t, c)
+		assert.NotNil(t, d)
+		assert.NotNil(t, e)
+		assert.NotNil(t, f)
+		assert.NotNil(t, g)
+		assert.NotNil(t, h)
+		assert.NotNil(t, i)
+		assert.NotNil(t, j)
+		assert.NotNil(t, k)
+		assert.NotNil(t, l)
+		assert.True(t, mapper.HasAll(entity))
+		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
 	}
 
 	for _, e := range entities {
@@ -3071,6 +3492,41 @@ func TestMap12(t *testing.T) {
 	assert.Panics(t, func() {
 		mapper.Remove(Entity{})
 	})
+}
+
+func TestMap12Nil(t *testing.T) {
+	w := NewWorld(4)
+
+	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
+	entity := w.NewEntity()
+
+	a, b, c, d, e, f, g, h, i, j, k, l := mapper.Get(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
+	assert.Nil(t, j)
+	assert.Nil(t, k)
+	assert.Nil(t, l)
+
+	a, b, c, d, e, f, g, h, i, j, k, l = mapper.GetUnchecked(entity)
+	assert.Nil(t, a)
+	assert.Nil(t, b)
+	assert.Nil(t, c)
+	assert.Nil(t, d)
+	assert.Nil(t, e)
+	assert.Nil(t, f)
+	assert.Nil(t, g)
+	assert.Nil(t, h)
+	assert.Nil(t, i)
+	assert.Nil(t, j)
+	assert.Nil(t, k)
+	assert.Nil(t, l)
 }
 
 func TestMap12NewBatch(t *testing.T) {
