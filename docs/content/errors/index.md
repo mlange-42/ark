@@ -1,7 +1,7 @@
 +++
 title = 'Error handling'
 type = "docs"
-weight = 80
+weight = 90
 description = "Ark's way to handle errors."
 +++
 
