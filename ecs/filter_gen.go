@@ -71,7 +71,7 @@ func (f *Filter0) Register() *Filter0 {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(f.Batch())
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
 	return f
 }
 
@@ -88,6 +88,11 @@ func (f *Filter0) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter0.Relations].
+//
+// ⚠️ The returned [Query0] should not be stored, but used immediately and re-generated
+// each time before query iteration.
+// Otherwise, changes to the origin filter or calls to [Filter0.Batch] or [Filter0.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter0) Query(rel ...Relation) Query0 {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -104,6 +109,11 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter0.Relations].
+//
+// ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
+// each time a batch operation is called.
+// Otherwise, changes to the origin filter or calls to [Filter0.Batch] or [Filter0.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter0) Batch(rel ...Relation) *Batch {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -205,7 +215,7 @@ func (f *Filter1[A]) Register() *Filter1[A] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(f.Batch())
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
 	return f
 }
 
@@ -222,6 +232,11 @@ func (f *Filter1[A]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter1.Relations].
+//
+// ⚠️ The returned [Query1] should not be stored, but used immediately and re-generated
+// each time before query iteration.
+// Otherwise, changes to the origin filter or calls to [Filter1.Batch] or [Filter1.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -240,6 +255,11 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter1.Relations].
+//
+// ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
+// each time a batch operation is called.
+// Otherwise, changes to the origin filter or calls to [Filter1.Batch] or [Filter1.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter1[A]) Batch(rel ...Relation) *Batch {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -340,7 +360,7 @@ func (f *Filter2[A, B]) Register() *Filter2[A, B] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(f.Batch())
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
 	return f
 }
 
@@ -357,6 +377,11 @@ func (f *Filter2[A, B]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter2.Relations].
+//
+// ⚠️ The returned [Query2] should not be stored, but used immediately and re-generated
+// each time before query iteration.
+// Otherwise, changes to the origin filter or calls to [Filter2.Batch] or [Filter2.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -375,6 +400,11 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter2.Relations].
+//
+// ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
+// each time a batch operation is called.
+// Otherwise, changes to the origin filter or calls to [Filter2.Batch] or [Filter2.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter2[A, B]) Batch(rel ...Relation) *Batch {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -478,7 +508,7 @@ func (f *Filter3[A, B, C]) Register() *Filter3[A, B, C] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(f.Batch())
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
 	return f
 }
 
@@ -495,6 +525,11 @@ func (f *Filter3[A, B, C]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter3.Relations].
+//
+// ⚠️ The returned [Query3] should not be stored, but used immediately and re-generated
+// each time before query iteration.
+// Otherwise, changes to the origin filter or calls to [Filter3.Batch] or [Filter3.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -513,6 +548,11 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter3.Relations].
+//
+// ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
+// each time a batch operation is called.
+// Otherwise, changes to the origin filter or calls to [Filter3.Batch] or [Filter3.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter3[A, B, C]) Batch(rel ...Relation) *Batch {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -617,7 +657,7 @@ func (f *Filter4[A, B, C, D]) Register() *Filter4[A, B, C, D] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(f.Batch())
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
 	return f
 }
 
@@ -634,6 +674,11 @@ func (f *Filter4[A, B, C, D]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter4.Relations].
+//
+// ⚠️ The returned [Query4] should not be stored, but used immediately and re-generated
+// each time before query iteration.
+// Otherwise, changes to the origin filter or calls to [Filter4.Batch] or [Filter4.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -652,6 +697,11 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter4.Relations].
+//
+// ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
+// each time a batch operation is called.
+// Otherwise, changes to the origin filter or calls to [Filter4.Batch] or [Filter4.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter4[A, B, C, D]) Batch(rel ...Relation) *Batch {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -757,7 +807,7 @@ func (f *Filter5[A, B, C, D, E]) Register() *Filter5[A, B, C, D, E] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(f.Batch())
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
 	return f
 }
 
@@ -774,6 +824,11 @@ func (f *Filter5[A, B, C, D, E]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter5.Relations].
+//
+// ⚠️ The returned [Query5] should not be stored, but used immediately and re-generated
+// each time before query iteration.
+// Otherwise, changes to the origin filter or calls to [Filter5.Batch] or [Filter5.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -792,6 +847,11 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter5.Relations].
+//
+// ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
+// each time a batch operation is called.
+// Otherwise, changes to the origin filter or calls to [Filter5.Batch] or [Filter5.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter5[A, B, C, D, E]) Batch(rel ...Relation) *Batch {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -898,7 +958,7 @@ func (f *Filter6[A, B, C, D, E, F]) Register() *Filter6[A, B, C, D, E, F] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(f.Batch())
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
 	return f
 }
 
@@ -915,6 +975,11 @@ func (f *Filter6[A, B, C, D, E, F]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter6.Relations].
+//
+// ⚠️ The returned [Query6] should not be stored, but used immediately and re-generated
+// each time before query iteration.
+// Otherwise, changes to the origin filter or calls to [Filter6.Batch] or [Filter6.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E, F] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -933,6 +998,11 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter6.Relations].
+//
+// ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
+// each time a batch operation is called.
+// Otherwise, changes to the origin filter or calls to [Filter6.Batch] or [Filter6.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...Relation) *Batch {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -1040,7 +1110,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Register() *Filter7[A, B, C, D, E, F, G] 
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(f.Batch())
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
 	return f
 }
 
@@ -1057,6 +1127,11 @@ func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter7.Relations].
+//
+// ⚠️ The returned [Query7] should not be stored, but used immediately and re-generated
+// each time before query iteration.
+// Otherwise, changes to the origin filter or calls to [Filter7.Batch] or [Filter7.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D, E, F, G] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -1075,6 +1150,11 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter7.Relations].
+//
+// ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
+// each time a batch operation is called.
+// Otherwise, changes to the origin filter or calls to [Filter7.Batch] or [Filter7.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...Relation) *Batch {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -1183,7 +1263,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Register() *Filter8[A, B, C, D, E, F, 
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(f.Batch())
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
 	return f
 }
 
@@ -1200,6 +1280,11 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter8.Relations].
+//
+// ⚠️ The returned [Query8] should not be stored, but used immediately and re-generated
+// each time before query iteration.
+// Otherwise, changes to the origin filter or calls to [Filter8.Batch] or [Filter8.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C, D, E, F, G, H] {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
@@ -1218,6 +1303,11 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter8.Relations].
+//
+// ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
+// each time a batch operation is called.
+// Otherwise, changes to the origin filter or calls to [Filter8.Batch] or [Filter8.Query]
+// with different relationship targets may modify stored instances.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...Relation) *Batch {
 	if f.cache == maxCacheID {
 		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)

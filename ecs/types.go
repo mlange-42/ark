@@ -55,6 +55,11 @@ func (id ResID) Index() uint8 {
 
 // Batch is like a filter for batch processing of entities.
 // Create it using [Filter2.Batch] etc.
+//
+// ⚠️ This should not be stored, but used immediately and re-generated
+// each time a batch operation is called.
+// Otherwise, changes to the origin filter or calls to [Filter2.Batch]
+// with different relationship targets may modify stored instances.
 type Batch struct {
 	filter    *filter
 	relations []RelationID

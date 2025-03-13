@@ -22,8 +22,8 @@ func TestFilterCache(t *testing.T) {
 	assert.Equal(t, 0, int(filter2.cache))
 	assert.Equal(t, 1, int(filter3.cache))
 
-	assert.Equal(t, 2, len(world.storage.getTableIDs(filter2.Batch())))
-	assert.Equal(t, 1, len(world.storage.getTableIDs(filter3.Batch())))
+	assert.Equal(t, 2, len(world.storage.getTableIDs(&filter2.filter, filter2.relations)))
+	assert.Equal(t, 1, len(world.storage.getTableIDs(&filter3.filter, filter3.relations)))
 
 	assert.PanicsWithValue(t, "filter is already registered, can't register", func() { filter2.Register() })
 

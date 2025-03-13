@@ -9,7 +9,7 @@ const maxCacheID = math.MaxUint32
 // Cache entry for a [Filter].
 type cacheEntry struct {
 	id        cacheID         // Entry ID.
-	filter    filter          // The underlying filter.
+	filter    *filter         // The underlying filter.
 	relations []RelationID    // Entity relationships.
 	indices   map[tableID]int // Map of table indices for removal.
 	tables    []tableID       // Tables matching the filter.
@@ -45,16 +45,16 @@ func (c *cache) getEntry(id cacheID) *cacheEntry {
 }
 
 // Register a [Filter].
-func (c *cache) register(storage *storage, batch *Batch) cacheID {
+func (c *cache) register(storage *storage, filter *filter, relations []RelationID) cacheID {
 	// TODO: prevent duplicate registration
 	id := c.intPool.Get()
 	index := len(c.filters)
 	c.filters = append(c.filters,
 		cacheEntry{
 			id:        id,
-			filter:    *batch.filter,
-			relations: batch.relations,
-			tables:    storage.getTableIDs(batch),
+			filter:    filter,
+			relations: relations,
+			tables:    storage.getTableIDs(filter, relations),
 			indices:   nil,
 		})
 	c.indices[id] = index

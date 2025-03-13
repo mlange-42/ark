@@ -21,6 +21,7 @@
 
 - Optimizes table creation and world stats by re-use of item sizes from archetypes (#177)
 - Optimizes table column lookup, speeding up component operations and unsafe queries (#178)
+- Batch operations use the filter cache for cached filters (#191)
 
 ### Bugfixes
 
