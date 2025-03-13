@@ -13,8 +13,6 @@ type World struct {
 	Entities Entities
 	// Component types, indexed by component ID.
 	ComponentTypes []reflect.Type
-	// Locked state of the world.
-	Locked bool
 	// Archetype statistics.
 	Archetypes []Archetype
 	// Memory reserved for entities and components, in bytes.
@@ -23,17 +21,19 @@ type World struct {
 	MemoryUsed int
 	// Number of cached filters.
 	CachedFilters int
+	// Locked state of the world.
+	Locked bool
 }
 
 // Entities provide statistics about [ecs.World] entities.
 type Entities struct {
 	// Currently used/alive entities.
 	Used int
-	// Current capacity of the entity pool.
-	Total int
 	// Recycled/available entities.
 	Recycled int
-	// Current capacity of the entities list.
+	// Current total number of entities in the pool (used + recycled).
+	Total int
+	// Current capacity of entity pool and entity list.
 	Capacity int
 }
 
