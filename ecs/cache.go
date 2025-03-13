@@ -113,9 +113,10 @@ func (c *cache) addTable(storage *storage, table *table) {
 // Can only be used for tables that have a relation target.
 // Tables without a relation are never removed.
 func (c *cache) removeTable(storage *storage, table *table) {
-	if !table.HasRelations() {
-		return
-	}
+	//if !table.HasRelations() {
+	//	// unreachable
+	//	return
+	//}
 	arch := &storage.archetypes[table.archetype]
 	for i := range c.filters {
 		e := &c.filters[i]
