@@ -136,10 +136,15 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 //
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
 func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) *Batch {
-	f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	if f.cache == maxCacheID {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	}
 	return &Batch {
-		filter:    f.filter,
+		filter:    &f.filter,
 		relations: f.tempRelations,
+		cache:     f.cache,
 	}
 }
 

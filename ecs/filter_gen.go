@@ -105,10 +105,15 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 //
 // Relation targets provided here are added to those specified with [Filter0.Relations].
 func (f *Filter0) Batch(rel ...Relation) *Batch {
-	f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	if f.cache == maxCacheID {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	}
 	return &Batch{
-		filter:    f.filter,
+		filter:    &f.filter,
 		relations: f.tempRelations,
+		cache:     f.cache,
 	}
 }
 
@@ -236,10 +241,15 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 //
 // Relation targets provided here are added to those specified with [Filter1.Relations].
 func (f *Filter1[A]) Batch(rel ...Relation) *Batch {
-	f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	if f.cache == maxCacheID {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	}
 	return &Batch{
-		filter:    f.filter,
+		filter:    &f.filter,
 		relations: f.tempRelations,
+		cache:     f.cache,
 	}
 }
 
@@ -366,10 +376,15 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 //
 // Relation targets provided here are added to those specified with [Filter2.Relations].
 func (f *Filter2[A, B]) Batch(rel ...Relation) *Batch {
-	f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	if f.cache == maxCacheID {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	}
 	return &Batch{
-		filter:    f.filter,
+		filter:    &f.filter,
 		relations: f.tempRelations,
+		cache:     f.cache,
 	}
 }
 
@@ -499,10 +514,15 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 //
 // Relation targets provided here are added to those specified with [Filter3.Relations].
 func (f *Filter3[A, B, C]) Batch(rel ...Relation) *Batch {
-	f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	if f.cache == maxCacheID {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	}
 	return &Batch{
-		filter:    f.filter,
+		filter:    &f.filter,
 		relations: f.tempRelations,
+		cache:     f.cache,
 	}
 }
 
@@ -633,10 +653,15 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 //
 // Relation targets provided here are added to those specified with [Filter4.Relations].
 func (f *Filter4[A, B, C, D]) Batch(rel ...Relation) *Batch {
-	f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	if f.cache == maxCacheID {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	}
 	return &Batch{
-		filter:    f.filter,
+		filter:    &f.filter,
 		relations: f.tempRelations,
+		cache:     f.cache,
 	}
 }
 
@@ -768,10 +793,15 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 //
 // Relation targets provided here are added to those specified with [Filter5.Relations].
 func (f *Filter5[A, B, C, D, E]) Batch(rel ...Relation) *Batch {
-	f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	if f.cache == maxCacheID {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	}
 	return &Batch{
-		filter:    f.filter,
+		filter:    &f.filter,
 		relations: f.tempRelations,
+		cache:     f.cache,
 	}
 }
 
@@ -904,10 +934,15 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 //
 // Relation targets provided here are added to those specified with [Filter6.Relations].
 func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...Relation) *Batch {
-	f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	if f.cache == maxCacheID {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	}
 	return &Batch{
-		filter:    f.filter,
+		filter:    &f.filter,
 		relations: f.tempRelations,
+		cache:     f.cache,
 	}
 }
 
@@ -1041,10 +1076,15 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 //
 // Relation targets provided here are added to those specified with [Filter7.Relations].
 func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...Relation) *Batch {
-	f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	if f.cache == maxCacheID {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	}
 	return &Batch{
-		filter:    f.filter,
+		filter:    &f.filter,
 		relations: f.tempRelations,
+		cache:     f.cache,
 	}
 }
 
@@ -1179,10 +1219,15 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 //
 // Relation targets provided here are added to those specified with [Filter8.Relations].
 func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...Relation) *Batch {
-	f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	if f.cache == maxCacheID {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
+	} else {
+		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	}
 	return &Batch{
-		filter:    f.filter,
+		filter:    &f.filter,
 		relations: f.tempRelations,
+		cache:     f.cache,
 	}
 }
 

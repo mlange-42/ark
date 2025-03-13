@@ -56,8 +56,9 @@ func (id ResID) Index() uint8 {
 // Batch is like a filter for batch processing of entities.
 // Create it using [Filter2.Batch] etc.
 type Batch struct {
-	filter    filter
+	filter    *filter
 	relations []RelationID
+	cache     cacheID
 }
 
 // EntityDump is a dump of the entire entity data of the world.

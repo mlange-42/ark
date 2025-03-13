@@ -52,7 +52,7 @@ func (c *cache) register(storage *storage, batch *Batch) cacheID {
 	c.filters = append(c.filters,
 		cacheEntry{
 			id:        id,
-			filter:    batch.filter,
+			filter:    *batch.filter,
 			relations: batch.relations,
 			tables:    storage.getTableIDs(batch),
 			indices:   nil,
