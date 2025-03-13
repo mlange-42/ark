@@ -178,7 +178,6 @@ func (w *World) Stats() *stats.World {
 		memoryUsed += archStats.MemoryUsed
 	}
 
-	w.stats.ComponentCount = compCount
 	w.stats.ComponentTypes = types
 	w.stats.Locked = w.IsLocked()
 	w.stats.Memory = memory
