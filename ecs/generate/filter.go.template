@@ -24,7 +24,6 @@ type Filter{{.}}{{$generics}} struct {
 	world         *World
 	ids           []ID
 	relations     []RelationID
-	tempRelations []RelationID
 	components    []*componentStorage
 	filter        filter
 	cache         cacheID
@@ -125,13 +124,12 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$genericsShort}} {
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
 	var tempRelation []RelationID
 	if f.cache == maxCacheID {
-		f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
 		tempRelation = f.relations
 	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.tempRelations, 0)
-		tempRelation = f.tempRelations
+		tempRelation = f.relations[f.numRelations:]
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, {{.}})
@@ -169,17 +167,16 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) *Batch {
-	var temRel []RelationID
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var tempRelation []RelationID
 	if f.cache == maxCacheID {
-		f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
-		temRel = f.relations
+		tempRelation = f.relations
 	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.tempRelations, 0)
-		temRel = f.tempRelations
+		tempRelation = f.relations[f.numRelations:]
 	}
 	return &Batch {
 		filter:    &f.filter,
-		relations: temRel,
+		relations: tempRelation,
 		cache:     f.cache,
 	}
 }
