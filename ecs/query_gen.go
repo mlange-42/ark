@@ -27,22 +27,6 @@ type Query0 struct {
 	components []*componentStorage
 }
 
-// Next advances the query's cursor to the next entity.
-func (q *Query0) Next() bool {
-	q.world.checkQueryNext(&q.cursor)
-	if int64(q.cursor.index) < q.cursor.maxIndex {
-		q.cursor.index++
-		return true
-	}
-	return q.nextTableOrArchetype()
-}
-
-// Entity returns the current entity.
-func (q *Query0) Entity() Entity {
-	q.world.checkQueryGet(&q.cursor)
-	return q.table.GetEntity(q.cursor.index)
-}
-
 // Count counts the entities matching this query.
 //
 // Has some overhead of iterating through archetypes.
@@ -151,30 +135,6 @@ type Query1[A any] struct {
 	cache      *cacheEntry
 	components []*componentStorage
 	columnA    *column
-}
-
-// Next advances the query's cursor to the next entity.
-func (q *Query1[A]) Next() bool {
-	q.world.checkQueryNext(&q.cursor)
-	if int64(q.cursor.index) < q.cursor.maxIndex {
-		q.cursor.index++
-		return true
-	}
-	return q.nextTableOrArchetype()
-}
-
-// Entity returns the current entity.
-func (q *Query1[A]) Entity() Entity {
-	q.world.checkQueryGet(&q.cursor)
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queried components of the current entity.
-//
-// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
-func (q *Query1[A]) Get() *A {
-	q.world.checkQueryGet(&q.cursor)
-	return (*A)(q.columnA.Get(q.cursor.index))
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -291,31 +251,6 @@ type Query2[A any, B any] struct {
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
-}
-
-// Next advances the query's cursor to the next entity.
-func (q *Query2[A, B]) Next() bool {
-	q.world.checkQueryNext(&q.cursor)
-	if int64(q.cursor.index) < q.cursor.maxIndex {
-		q.cursor.index++
-		return true
-	}
-	return q.nextTableOrArchetype()
-}
-
-// Entity returns the current entity.
-func (q *Query2[A, B]) Entity() Entity {
-	q.world.checkQueryGet(&q.cursor)
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queried components of the current entity.
-//
-// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
-func (q *Query2[A, B]) Get() (*A, *B) {
-	q.world.checkQueryGet(&q.cursor)
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index))
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -437,32 +372,6 @@ type Query3[A any, B any, C any] struct {
 	columnA    *column
 	columnB    *column
 	columnC    *column
-}
-
-// Next advances the query's cursor to the next entity.
-func (q *Query3[A, B, C]) Next() bool {
-	q.world.checkQueryNext(&q.cursor)
-	if int64(q.cursor.index) < q.cursor.maxIndex {
-		q.cursor.index++
-		return true
-	}
-	return q.nextTableOrArchetype()
-}
-
-// Entity returns the current entity.
-func (q *Query3[A, B, C]) Entity() Entity {
-	q.world.checkQueryGet(&q.cursor)
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queried components of the current entity.
-//
-// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
-func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
-	q.world.checkQueryGet(&q.cursor)
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index))
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -587,33 +496,6 @@ type Query4[A any, B any, C any, D any] struct {
 	columnB    *column
 	columnC    *column
 	columnD    *column
-}
-
-// Next advances the query's cursor to the next entity.
-func (q *Query4[A, B, C, D]) Next() bool {
-	q.world.checkQueryNext(&q.cursor)
-	if int64(q.cursor.index) < q.cursor.maxIndex {
-		q.cursor.index++
-		return true
-	}
-	return q.nextTableOrArchetype()
-}
-
-// Entity returns the current entity.
-func (q *Query4[A, B, C, D]) Entity() Entity {
-	q.world.checkQueryGet(&q.cursor)
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queried components of the current entity.
-//
-// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
-func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
-	q.world.checkQueryGet(&q.cursor)
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index)),
-		(*D)(q.columnD.Get(q.cursor.index))
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -741,34 +623,6 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnC    *column
 	columnD    *column
 	columnE    *column
-}
-
-// Next advances the query's cursor to the next entity.
-func (q *Query5[A, B, C, D, E]) Next() bool {
-	q.world.checkQueryNext(&q.cursor)
-	if int64(q.cursor.index) < q.cursor.maxIndex {
-		q.cursor.index++
-		return true
-	}
-	return q.nextTableOrArchetype()
-}
-
-// Entity returns the current entity.
-func (q *Query5[A, B, C, D, E]) Entity() Entity {
-	q.world.checkQueryGet(&q.cursor)
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queried components of the current entity.
-//
-// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
-func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
-	q.world.checkQueryGet(&q.cursor)
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index)),
-		(*D)(q.columnD.Get(q.cursor.index)),
-		(*E)(q.columnE.Get(q.cursor.index))
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -899,35 +753,6 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnD    *column
 	columnE    *column
 	columnF    *column
-}
-
-// Next advances the query's cursor to the next entity.
-func (q *Query6[A, B, C, D, E, F]) Next() bool {
-	q.world.checkQueryNext(&q.cursor)
-	if int64(q.cursor.index) < q.cursor.maxIndex {
-		q.cursor.index++
-		return true
-	}
-	return q.nextTableOrArchetype()
-}
-
-// Entity returns the current entity.
-func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
-	q.world.checkQueryGet(&q.cursor)
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queried components of the current entity.
-//
-// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
-func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
-	q.world.checkQueryGet(&q.cursor)
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index)),
-		(*D)(q.columnD.Get(q.cursor.index)),
-		(*E)(q.columnE.Get(q.cursor.index)),
-		(*F)(q.columnF.Get(q.cursor.index))
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -1061,36 +886,6 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnE    *column
 	columnF    *column
 	columnG    *column
-}
-
-// Next advances the query's cursor to the next entity.
-func (q *Query7[A, B, C, D, E, F, G]) Next() bool {
-	q.world.checkQueryNext(&q.cursor)
-	if int64(q.cursor.index) < q.cursor.maxIndex {
-		q.cursor.index++
-		return true
-	}
-	return q.nextTableOrArchetype()
-}
-
-// Entity returns the current entity.
-func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
-	q.world.checkQueryGet(&q.cursor)
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queried components of the current entity.
-//
-// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
-func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
-	q.world.checkQueryGet(&q.cursor)
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index)),
-		(*D)(q.columnD.Get(q.cursor.index)),
-		(*E)(q.columnE.Get(q.cursor.index)),
-		(*F)(q.columnF.Get(q.cursor.index)),
-		(*G)(q.columnG.Get(q.cursor.index))
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -1227,37 +1022,6 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnF    *column
 	columnG    *column
 	columnH    *column
-}
-
-// Next advances the query's cursor to the next entity.
-func (q *Query8[A, B, C, D, E, F, G, H]) Next() bool {
-	q.world.checkQueryNext(&q.cursor)
-	if int64(q.cursor.index) < q.cursor.maxIndex {
-		q.cursor.index++
-		return true
-	}
-	return q.nextTableOrArchetype()
-}
-
-// Entity returns the current entity.
-func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
-	q.world.checkQueryGet(&q.cursor)
-	return q.table.GetEntity(q.cursor.index)
-}
-
-// Get returns the queried components of the current entity.
-//
-// ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
-func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) {
-	q.world.checkQueryGet(&q.cursor)
-	return (*A)(q.columnA.Get(q.cursor.index)),
-		(*B)(q.columnB.Get(q.cursor.index)),
-		(*C)(q.columnC.Get(q.cursor.index)),
-		(*D)(q.columnD.Get(q.cursor.index)),
-		(*E)(q.columnE.Get(q.cursor.index)),
-		(*F)(q.columnF.Get(q.cursor.index)),
-		(*G)(q.columnG.Get(q.cursor.index)),
-		(*H)(q.columnH.Get(q.cursor.index))
 }
 
 // GetRelation returns the entity relation target of the component at the given index.

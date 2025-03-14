@@ -2,14 +2,14 @@
 
 package ecs
 
-func (w *World) checkQueryNext(cursor *cursor) {
-	if cursor.table < -1 {
+func (c *cursor) checkQueryNext() {
+	if c.table < -1 {
 		panic("query iteration already finished. Create a new query to iterate again")
 	}
 }
 
-func (w *World) checkQueryGet(cursor *cursor) {
-	if cursor.table < 0 {
+func (c *cursor) checkQueryGet() {
+	if c.table < 0 {
 		panic("query already iterated or iteration not started yet")
 	}
 }

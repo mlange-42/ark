@@ -2,8 +2,8 @@
 
 package ecs
 
-func (w *World) checkQueryNext(cursor *cursor) {}
+func (c *cursor) checkQueryNext() {}
 
-func (w *World) checkQueryGet(cursor *cursor) {}
+func (c *cursor) checkQueryGet() {}
 
 func (s *storage) checkHasComponent(entity Entity, comp ID) {}
