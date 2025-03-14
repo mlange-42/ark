@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// World provide statistics for an [ecs.World].
+// World statistics.
 type World struct {
 	// Entity statistics.
 	Entities Entities
@@ -25,7 +25,7 @@ type World struct {
 	Locked bool
 }
 
-// Entities provide statistics about [ecs.World] entities.
+// Entities statistics.
 type Entities struct {
 	// Currently used/alive entities.
 	Used int
@@ -73,40 +73,44 @@ type Table struct {
 	MemoryUsed int
 }
 
-func (s *World) String() string {
+func (w *World) String() string {
 	b := strings.Builder{}
 
 	fmt.Fprintf(
 		&b, "World     -- Components: %d, Archetypes: %d, Filters: %d, Memory: %.1f kB, Locked: %t\n",
-		len(s.ComponentTypes), len(s.Archetypes), s.CachedFilters, float64(s.Memory)/1024.0, s.Locked,
+		len(w.ComponentTypes), len(w.Archetypes), w.CachedFilters, float64(w.Memory)/1024.0, w.Locked,
 	)
 
-	typeNames := make([]string, len(s.ComponentTypes))
-	for i, tp := range s.ComponentTypes {
+	typeNames := make([]string, len(w.ComponentTypes))
+	for i, tp := range w.ComponentTypes {
 		typeNames[i] = tp.Name()
 	}
 	fmt.Fprintf(&b, "             Components: %s\n", strings.Join(typeNames, ", "))
-	fmt.Fprint(&b, s.Entities.String())
+	fmt.Fprint(&b, w.Entities.String())
 
-	for i := range s.Archetypes {
-		fmt.Fprint(&b, s.Archetypes[i].String())
+	for i := range w.Archetypes {
+		fmt.Fprint(&b, w.Archetypes[i].String())
 	}
 
 	return b.String()
 }
 
-func (s *Entities) String() string {
-	return fmt.Sprintf("Entities  -- Used: %d, Recycled: %d, Total: %d, Capacity: %d\n", s.Used, s.Recycled, s.Total, s.Capacity)
+func (e *Entities) String() string {
+	return fmt.Sprintf("Entities  -- Used: %d, Recycled: %d, Total: %d, Capacity: %d\n", e.Used, e.Recycled, e.Total, e.Capacity)
 }
 
-func (s *Archetype) String() string {
-	typeNames := make([]string, len(s.ComponentTypes))
-	for i, tp := range s.ComponentTypes {
+func (a *Archetype) String() string {
+	typeNames := make([]string, len(a.ComponentTypes))
+	for i, tp := range a.ComponentTypes {
 		typeNames[i] = tp.Name()
 	}
 
 	return fmt.Sprintf(
 		"Archetype -- Tables: %4d, Comps: %2d, Entities: %6d, Cap: %6d, Mem: %7.1f kB, Per entity: %4d B\n             Components: %s\n",
-		len(s.Tables), len(s.ComponentIDs), s.Size, s.Capacity, float64(s.Memory)/1024.0, s.MemoryPerEntity, strings.Join(typeNames, ", "),
+		len(a.Tables), len(a.ComponentIDs), a.Size, a.Capacity, float64(a.Memory)/1024.0, a.MemoryPerEntity, strings.Join(typeNames, ", "),
 	)
+}
+
+func (t *Table) String() string {
+	return fmt.Sprintf("Table     -- Entities: %6d, Cap: %6d, Mem: %7.1f kB\n", t.Size, t.Capacity, float64(t.Memory)/1024.0)
 }

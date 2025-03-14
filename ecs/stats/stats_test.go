@@ -27,4 +27,10 @@ func TestStats(t *testing.T) {
 		},
 	}
 	fmt.Println(stats.String())
+
+	table := Table{
+		Size:     16,
+		Capacity: 64,
+	}
+	fmt.Println(table.String())
 }
