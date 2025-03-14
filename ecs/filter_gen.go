@@ -103,7 +103,7 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 		f.components = make([]*componentStorage, 0)
 
 	}
-	return newQuery0(f.world, &f.filter, f.tempRelations, f.cache, f.components)
+	return newQuery0(f)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -249,7 +249,7 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery1[A](f.world, &f.filter, f.tempRelations, f.cache, f.components)
+	return newQuery1(f)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -394,7 +394,7 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery2[A, B](f.world, &f.filter, f.tempRelations, f.cache, f.components)
+	return newQuery2(f)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -542,7 +542,7 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery3[A, B, C](f.world, &f.filter, f.tempRelations, f.cache, f.components)
+	return newQuery3(f)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -691,7 +691,7 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery4[A, B, C, D](f.world, &f.filter, f.tempRelations, f.cache, f.components)
+	return newQuery4(f)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -841,7 +841,7 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery5[A, B, C, D, E](f.world, &f.filter, f.tempRelations, f.cache, f.components)
+	return newQuery5(f)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -992,7 +992,7 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery6[A, B, C, D, E, F](f.world, &f.filter, f.tempRelations, f.cache, f.components)
+	return newQuery6(f)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -1144,7 +1144,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery7[A, B, C, D, E, F, G](f.world, &f.filter, f.tempRelations, f.cache, f.components)
+	return newQuery7(f)
 }
 
 // Batch creates a [Batch] from this filter.
@@ -1297,7 +1297,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery8[A, B, C, D, E, F, G, H](f.world, &f.filter, f.tempRelations, f.cache, f.components)
+	return newQuery8(f)
 }
 
 // Batch creates a [Batch] from this filter.

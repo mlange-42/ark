@@ -47,20 +47,19 @@ type Query{{.}}{{$generics}} struct {
 	{{- end}}
 }
 
-func newQuery{{.}}{{$generics}}(world *World, filter *filter, relations []RelationID,
-	cacheID cacheID, components []*componentStorage) Query{{.}}{{$genericsShort}} {
+func newQuery{{.}}{{$generics}}(f *Filter{{.}}{{$genericsShort}}) Query{{.}}{{$genericsShort}} {
 	var cache *cacheEntry
-	if cacheID != maxCacheID {
-		cache = world.storage.getRegisteredFilter(cacheID)
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
 	
 	return Query{{.}}{{$genericsShort}}{
-		world:      world,
-		filter:     filter,
-		relations:  relations,
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
 		cache:      cache,
-		lock:       world.lock(),
-		components: components,
+		lock:       f.world.lock(),
+		components: f.components,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,

@@ -27,20 +27,19 @@ type Query0 struct {
 	components []*componentStorage
 }
 
-func newQuery0(world *World, filter *filter, relations []RelationID,
-	cacheID cacheID, components []*componentStorage) Query0 {
+func newQuery0(f *Filter0) Query0 {
 	var cache *cacheEntry
-	if cacheID != maxCacheID {
-		cache = world.storage.getRegisteredFilter(cacheID)
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
 
 	return Query0{
-		world:      world,
-		filter:     filter,
-		relations:  relations,
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
 		cache:      cache,
-		lock:       world.lock(),
-		components: components,
+		lock:       f.world.lock(),
+		components: f.components,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,
@@ -176,20 +175,19 @@ type Query1[A any] struct {
 	columnA    *column
 }
 
-func newQuery1[A any](world *World, filter *filter, relations []RelationID,
-	cacheID cacheID, components []*componentStorage) Query1[A] {
+func newQuery1[A any](f *Filter1[A]) Query1[A] {
 	var cache *cacheEntry
-	if cacheID != maxCacheID {
-		cache = world.storage.getRegisteredFilter(cacheID)
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
 
 	return Query1[A]{
-		world:      world,
-		filter:     filter,
-		relations:  relations,
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
 		cache:      cache,
-		lock:       world.lock(),
-		components: components,
+		lock:       f.world.lock(),
+		components: f.components,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,
@@ -339,20 +337,19 @@ type Query2[A any, B any] struct {
 	columnB    *column
 }
 
-func newQuery2[A any, B any](world *World, filter *filter, relations []RelationID,
-	cacheID cacheID, components []*componentStorage) Query2[A, B] {
+func newQuery2[A any, B any](f *Filter2[A, B]) Query2[A, B] {
 	var cache *cacheEntry
-	if cacheID != maxCacheID {
-		cache = world.storage.getRegisteredFilter(cacheID)
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
 
 	return Query2[A, B]{
-		world:      world,
-		filter:     filter,
-		relations:  relations,
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
 		cache:      cache,
-		lock:       world.lock(),
-		components: components,
+		lock:       f.world.lock(),
+		components: f.components,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,
@@ -508,20 +505,19 @@ type Query3[A any, B any, C any] struct {
 	columnC    *column
 }
 
-func newQuery3[A any, B any, C any](world *World, filter *filter, relations []RelationID,
-	cacheID cacheID, components []*componentStorage) Query3[A, B, C] {
+func newQuery3[A any, B any, C any](f *Filter3[A, B, C]) Query3[A, B, C] {
 	var cache *cacheEntry
-	if cacheID != maxCacheID {
-		cache = world.storage.getRegisteredFilter(cacheID)
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
 
 	return Query3[A, B, C]{
-		world:      world,
-		filter:     filter,
-		relations:  relations,
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
 		cache:      cache,
-		lock:       world.lock(),
-		components: components,
+		lock:       f.world.lock(),
+		components: f.components,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,
@@ -681,20 +677,19 @@ type Query4[A any, B any, C any, D any] struct {
 	columnD    *column
 }
 
-func newQuery4[A any, B any, C any, D any](world *World, filter *filter, relations []RelationID,
-	cacheID cacheID, components []*componentStorage) Query4[A, B, C, D] {
+func newQuery4[A any, B any, C any, D any](f *Filter4[A, B, C, D]) Query4[A, B, C, D] {
 	var cache *cacheEntry
-	if cacheID != maxCacheID {
-		cache = world.storage.getRegisteredFilter(cacheID)
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
 
 	return Query4[A, B, C, D]{
-		world:      world,
-		filter:     filter,
-		relations:  relations,
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
 		cache:      cache,
-		lock:       world.lock(),
-		components: components,
+		lock:       f.world.lock(),
+		components: f.components,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,
@@ -858,20 +853,19 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnE    *column
 }
 
-func newQuery5[A any, B any, C any, D any, E any](world *World, filter *filter, relations []RelationID,
-	cacheID cacheID, components []*componentStorage) Query5[A, B, C, D, E] {
+func newQuery5[A any, B any, C any, D any, E any](f *Filter5[A, B, C, D, E]) Query5[A, B, C, D, E] {
 	var cache *cacheEntry
-	if cacheID != maxCacheID {
-		cache = world.storage.getRegisteredFilter(cacheID)
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
 
 	return Query5[A, B, C, D, E]{
-		world:      world,
-		filter:     filter,
-		relations:  relations,
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
 		cache:      cache,
-		lock:       world.lock(),
-		components: components,
+		lock:       f.world.lock(),
+		components: f.components,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,
@@ -1039,20 +1033,19 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnF    *column
 }
 
-func newQuery6[A any, B any, C any, D any, E any, F any](world *World, filter *filter, relations []RelationID,
-	cacheID cacheID, components []*componentStorage) Query6[A, B, C, D, E, F] {
+func newQuery6[A any, B any, C any, D any, E any, F any](f *Filter6[A, B, C, D, E, F]) Query6[A, B, C, D, E, F] {
 	var cache *cacheEntry
-	if cacheID != maxCacheID {
-		cache = world.storage.getRegisteredFilter(cacheID)
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
 
 	return Query6[A, B, C, D, E, F]{
-		world:      world,
-		filter:     filter,
-		relations:  relations,
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
 		cache:      cache,
-		lock:       world.lock(),
-		components: components,
+		lock:       f.world.lock(),
+		components: f.components,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,
@@ -1224,20 +1217,19 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnG    *column
 }
 
-func newQuery7[A any, B any, C any, D any, E any, F any, G any](world *World, filter *filter, relations []RelationID,
-	cacheID cacheID, components []*componentStorage) Query7[A, B, C, D, E, F, G] {
+func newQuery7[A any, B any, C any, D any, E any, F any, G any](f *Filter7[A, B, C, D, E, F, G]) Query7[A, B, C, D, E, F, G] {
 	var cache *cacheEntry
-	if cacheID != maxCacheID {
-		cache = world.storage.getRegisteredFilter(cacheID)
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
 
 	return Query7[A, B, C, D, E, F, G]{
-		world:      world,
-		filter:     filter,
-		relations:  relations,
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
 		cache:      cache,
-		lock:       world.lock(),
-		components: components,
+		lock:       f.world.lock(),
+		components: f.components,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,
@@ -1413,20 +1405,19 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnH    *column
 }
 
-func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](world *World, filter *filter, relations []RelationID,
-	cacheID cacheID, components []*componentStorage) Query8[A, B, C, D, E, F, G, H] {
+func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](f *Filter8[A, B, C, D, E, F, G, H]) Query8[A, B, C, D, E, F, G, H] {
 	var cache *cacheEntry
-	if cacheID != maxCacheID {
-		cache = world.storage.getRegisteredFilter(cacheID)
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
 
 	return Query8[A, B, C, D, E, F, G, H]{
-		world:      world,
-		filter:     filter,
-		relations:  relations,
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
 		cache:      cache,
-		lock:       world.lock(),
-		components: components,
+		lock:       f.world.lock(),
+		components: f.components,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,
