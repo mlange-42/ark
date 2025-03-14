@@ -33,7 +33,7 @@ func NewMap1[A any](world *World) Map1[A] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations)
@@ -47,7 +47,7 @@ func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -64,7 +64,7 @@ func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations)
@@ -78,7 +78,7 @@ func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -156,7 +156,7 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations)
@@ -170,7 +170,7 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -200,7 +200,7 @@ func (m *Map1[A]) Set(entity Entity, a *A) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, m.relations, nil)
@@ -214,7 +214,7 @@ func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -265,13 +265,13 @@ func (m *Map1[A]) GetRelationUnchecked(entity Entity, index int) Entity {
 // SetRelations sets relation targets for the given entity.
 func (m *Map1[A]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map1[A]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -305,7 +305,7 @@ func NewMap2[A any, B any](world *World) Map2[A, B] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -320,7 +320,7 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -338,7 +338,7 @@ func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -353,7 +353,7 @@ func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -444,7 +444,7 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -459,7 +459,7 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -492,7 +492,7 @@ func (m *Map2[A, B]) Set(entity Entity, a *A, b *B) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -507,7 +507,7 @@ func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -560,13 +560,13 @@ func (m *Map2[A, B]) GetRelationUnchecked(entity Entity, index int) Entity {
 // SetRelations sets relation targets for the given entity.
 func (m *Map2[A, B]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map2[A, B]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -605,7 +605,7 @@ func NewMap3[A any, B any, C any](world *World) Map3[A, B, C] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -621,7 +621,7 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -640,7 +640,7 @@ func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -656,7 +656,7 @@ func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -760,7 +760,7 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -776,7 +776,7 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -812,7 +812,7 @@ func (m *Map3[A, B, C]) Set(entity Entity, a *A, b *B, c *C) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -828,7 +828,7 @@ func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -883,13 +883,13 @@ func (m *Map3[A, B, C]) GetRelationUnchecked(entity Entity, index int) Entity {
 // SetRelations sets relation targets for the given entity.
 func (m *Map3[A, B, C]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map3[A, B, C]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -931,7 +931,7 @@ func NewMap4[A any, B any, C any, D any](world *World) Map4[A, B, C, D] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -948,7 +948,7 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) En
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -968,7 +968,7 @@ func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...R
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -985,7 +985,7 @@ func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Re
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -1102,7 +1102,7 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1119,7 +1119,7 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -1158,7 +1158,7 @@ func (m *Map4[A, B, C, D]) Set(entity Entity, a *A, b *B, c *C, d *D) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1175,7 +1175,7 @@ func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ..
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1232,13 +1232,13 @@ func (m *Map4[A, B, C, D]) GetRelationUnchecked(entity Entity, index int) Entity
 // SetRelations sets relation targets for the given entity.
 func (m *Map4[A, B, C, D]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map4[A, B, C, D]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -1283,7 +1283,7 @@ func NewMap5[A any, B any, C any, D any, E any](world *World) Map5[A, B, C, D, E
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1301,7 +1301,7 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -1322,7 +1322,7 @@ func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E),
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1340,7 +1340,7 @@ func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -1470,7 +1470,7 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1488,7 +1488,7 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -1530,7 +1530,7 @@ func (m *Map5[A, B, C, D, E]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1548,7 +1548,7 @@ func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1607,13 +1607,13 @@ func (m *Map5[A, B, C, D, E]) GetRelationUnchecked(entity Entity, index int) Ent
 // SetRelations sets relation targets for the given entity.
 func (m *Map5[A, B, C, D, E]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map5[A, B, C, D, E]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -1661,7 +1661,7 @@ func NewMap6[A any, B any, C any, D any, E any, F any](world *World) Map6[A, B, 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1680,7 +1680,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -1702,7 +1702,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1721,7 +1721,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -1864,7 +1864,7 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1883,7 +1883,7 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -1928,7 +1928,7 @@ func (m *Map6[A, B, C, D, E, F]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1947,7 +1947,7 @@ func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -2008,13 +2008,13 @@ func (m *Map6[A, B, C, D, E, F]) GetRelationUnchecked(entity Entity, index int) 
 // SetRelations sets relation targets for the given entity.
 func (m *Map6[A, B, C, D, E, F]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map6[A, B, C, D, E, F]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -2065,7 +2065,7 @@ func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) Map7
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -2085,7 +2085,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -2108,7 +2108,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -2128,7 +2128,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -2284,7 +2284,7 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -2304,7 +2304,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -2352,7 +2352,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Set(entity Entity, a *A, b *B, c *C, d *D, e
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -2372,7 +2372,7 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -2435,13 +2435,13 @@ func (m *Map7[A, B, C, D, E, F, G]) GetRelationUnchecked(entity Entity, index in
 // SetRelations sets relation targets for the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map7[A, B, C, D, E, F, G]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -2495,7 +2495,7 @@ func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *Worl
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -2516,7 +2516,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -2540,7 +2540,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -2561,7 +2561,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -2730,7 +2730,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -2751,7 +2751,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -2802,7 +2802,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Set(entity Entity, a *A, b *B, c *C, d *D
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -2823,7 +2823,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -2888,13 +2888,13 @@ func (m *Map8[A, B, C, D, E, F, G, H]) GetRelationUnchecked(entity Entity, index
 // SetRelations sets relation targets for the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map8[A, B, C, D, E, F, G, H]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -2951,7 +2951,7 @@ func NewMap9[A any, B any, C any, D any, E any, F any, G any, H any, I any](worl
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -2973,7 +2973,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntity(a *A, b *B, c *C, d *D, e *E
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -2998,7 +2998,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -3020,7 +3020,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatch(count int, a *A, b *B, c *C, 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -3202,7 +3202,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -3224,7 +3224,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Add(entity Entity, a *A, b *B, c *C, d
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -3278,7 +3278,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Set(entity Entity, a *A, b *B, c *C, d
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -3300,7 +3300,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatch(batch *Batch, a *A, b *B, c *
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -3367,13 +3367,13 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) GetRelationUnchecked(entity Entity, in
 // SetRelations sets relation targets for the given entity.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -3433,7 +3433,7 @@ func NewMap10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -3456,7 +3456,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntity(a *A, b *B, c *C, d *D, 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -3482,7 +3482,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -3505,7 +3505,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatch(count int, a *A, b *B, c 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -3700,7 +3700,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -3723,7 +3723,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Add(entity Entity, a *A, b *B, c *
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -3780,7 +3780,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Set(entity Entity, a *A, b *B, c *
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -3803,7 +3803,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatch(batch *Batch, a *A, b *B,
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -3872,13 +3872,13 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) GetRelationUnchecked(entity Entity
 // SetRelations sets relation targets for the given entity.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -3941,7 +3941,7 @@ func NewMap11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -3965,7 +3965,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntity(a *A, b *B, c *C, d *
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -3992,7 +3992,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B,
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -4016,7 +4016,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatch(count int, a *A, b *B,
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -4224,7 +4224,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -4248,7 +4248,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Add(entity Entity, a *A, b *B, 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -4308,7 +4308,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Set(entity Entity, a *A, b *B, 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -4332,7 +4332,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatch(batch *Batch, a *A, b 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -4403,13 +4403,13 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) GetRelationUnchecked(entity Ent
 // SetRelations sets relation targets for the given entity.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 
@@ -4475,7 +4475,7 @@ func NewMap12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -4500,7 +4500,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntity(a *A, b *B, c *C, 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	entity := m.world.newEntityWith(m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -4528,7 +4528,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -4553,7 +4553,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatch(count int, a *A, b 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 	if fn == nil {
 		return
@@ -4774,7 +4774,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -4799,7 +4799,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Add(entity Entity, a *A, b *
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchange(entity, m.ids, nil, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -4862,7 +4862,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Set(entity Entity, a *A, b *
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.exchangeBatch(batch, m.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -4887,7 +4887,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatch(batch *Batch, a *A,
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -4960,12 +4960,12 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) GetRelationUnchecked(entity 
 // SetRelations sets relation targets for the given entity.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, nil, m.relations)
+	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }

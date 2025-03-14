@@ -24,10 +24,10 @@ type Filter{{.}}{{$generics}} struct {
 	world         *World
 	ids           []ID
 	relations     []RelationID
-	tempRelations []RelationID
 	components    []*componentStorage
 	filter        filter
 	cache         cacheID
+	numRelations  uint8
 }
 
 // NewFilter{{.}} creates a new [Filter{{.}}].
@@ -87,7 +87,8 @@ func (f *Filter{{.}}{{$genericsShort}}) Exclusive() *Filter{{.}}{{$genericsShort
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...Relation) *Filter{{.}}{{$genericsShort}} {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.numRelations = uint8(len(f.relations))
 	return f
 }
 {{- end}}
@@ -123,10 +124,10 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$genericsShort}} {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, {{.}})
@@ -142,7 +143,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 	return Query{{.}}{{$genericsShort}}{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.tempRelations,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -164,14 +165,14 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) *Batch {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch {
 		filter:    &f.filter,
-		relations: f.tempRelations,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }

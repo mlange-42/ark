@@ -9,13 +9,13 @@ package ecs
 //
 // See [Filter2] for a usage example.
 type Filter0 struct {
-	world         *World
-	ids           []ID
-	relations     []RelationID
-	tempRelations []RelationID
-	components    []*componentStorage
-	filter        filter
-	cache         cacheID
+	world        *World
+	ids          []ID
+	relations    []RelationID
+	components   []*componentStorage
+	filter       filter
+	cache        cacheID
+	numRelations uint8
 }
 
 // NewFilter0 creates a new [Filter0].
@@ -94,10 +94,10 @@ func (f *Filter0) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter0.Batch] or [Filter0.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter0) Query(rel ...Relation) Query0 {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, 0)
@@ -111,7 +111,7 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 	return Query0{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.tempRelations,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -133,14 +133,14 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 // Otherwise, changes to the origin filter or calls to [Filter0.Batch] or [Filter0.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter0) Batch(rel ...Relation) *Batch {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
-		relations: f.tempRelations,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }
@@ -158,13 +158,13 @@ func (f *Filter0) checkCached() {
 //
 // See [Filter2] for a usage example.
 type Filter1[A any] struct {
-	world         *World
-	ids           []ID
-	relations     []RelationID
-	tempRelations []RelationID
-	components    []*componentStorage
-	filter        filter
-	cache         cacheID
+	world        *World
+	ids          []ID
+	relations    []RelationID
+	components   []*componentStorage
+	filter       filter
+	cache        cacheID
+	numRelations uint8
 }
 
 // NewFilter1 creates a new [Filter1].
@@ -221,7 +221,8 @@ func (f *Filter1[A]) Exclusive() *Filter1[A] {
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter1[A]) Relations(rel ...Relation) *Filter1[A] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.numRelations = uint8(len(f.relations))
 	return f
 }
 
@@ -256,10 +257,10 @@ func (f *Filter1[A]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter1.Batch] or [Filter1.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, 1)
@@ -275,7 +276,7 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 	return Query1[A]{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.tempRelations,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -297,14 +298,14 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 // Otherwise, changes to the origin filter or calls to [Filter1.Batch] or [Filter1.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter1[A]) Batch(rel ...Relation) *Batch {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
-		relations: f.tempRelations,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }
@@ -320,13 +321,13 @@ func (f *Filter1[A]) checkCached() {
 //
 // Instances should be created during initialization and stored, e.g. in systems.
 type Filter2[A any, B any] struct {
-	world         *World
-	ids           []ID
-	relations     []RelationID
-	tempRelations []RelationID
-	components    []*componentStorage
-	filter        filter
-	cache         cacheID
+	world        *World
+	ids          []ID
+	relations    []RelationID
+	components   []*componentStorage
+	filter       filter
+	cache        cacheID
+	numRelations uint8
 }
 
 // NewFilter2 creates a new [Filter2].
@@ -384,7 +385,8 @@ func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter2[A, B]) Relations(rel ...Relation) *Filter2[A, B] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.numRelations = uint8(len(f.relations))
 	return f
 }
 
@@ -419,10 +421,10 @@ func (f *Filter2[A, B]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter2.Batch] or [Filter2.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, 2)
@@ -438,7 +440,7 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 	return Query2[A, B]{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.tempRelations,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -460,14 +462,14 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 // Otherwise, changes to the origin filter or calls to [Filter2.Batch] or [Filter2.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter2[A, B]) Batch(rel ...Relation) *Batch {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
-		relations: f.tempRelations,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }
@@ -485,13 +487,13 @@ func (f *Filter2[A, B]) checkCached() {
 //
 // See [Filter2] for a usage example.
 type Filter3[A any, B any, C any] struct {
-	world         *World
-	ids           []ID
-	relations     []RelationID
-	tempRelations []RelationID
-	components    []*componentStorage
-	filter        filter
-	cache         cacheID
+	world        *World
+	ids          []ID
+	relations    []RelationID
+	components   []*componentStorage
+	filter       filter
+	cache        cacheID
+	numRelations uint8
 }
 
 // NewFilter3 creates a new [Filter3].
@@ -550,7 +552,8 @@ func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter3[A, B, C]) Relations(rel ...Relation) *Filter3[A, B, C] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.numRelations = uint8(len(f.relations))
 	return f
 }
 
@@ -585,10 +588,10 @@ func (f *Filter3[A, B, C]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter3.Batch] or [Filter3.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, 3)
@@ -604,7 +607,7 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 	return Query3[A, B, C]{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.tempRelations,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -626,14 +629,14 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 // Otherwise, changes to the origin filter or calls to [Filter3.Batch] or [Filter3.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter3[A, B, C]) Batch(rel ...Relation) *Batch {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
-		relations: f.tempRelations,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }
@@ -651,13 +654,13 @@ func (f *Filter3[A, B, C]) checkCached() {
 //
 // See [Filter2] for a usage example.
 type Filter4[A any, B any, C any, D any] struct {
-	world         *World
-	ids           []ID
-	relations     []RelationID
-	tempRelations []RelationID
-	components    []*componentStorage
-	filter        filter
-	cache         cacheID
+	world        *World
+	ids          []ID
+	relations    []RelationID
+	components   []*componentStorage
+	filter       filter
+	cache        cacheID
+	numRelations uint8
 }
 
 // NewFilter4 creates a new [Filter4].
@@ -717,7 +720,8 @@ func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter4[A, B, C, D]) Relations(rel ...Relation) *Filter4[A, B, C, D] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.numRelations = uint8(len(f.relations))
 	return f
 }
 
@@ -752,10 +756,10 @@ func (f *Filter4[A, B, C, D]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter4.Batch] or [Filter4.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, 4)
@@ -771,7 +775,7 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 	return Query4[A, B, C, D]{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.tempRelations,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -793,14 +797,14 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 // Otherwise, changes to the origin filter or calls to [Filter4.Batch] or [Filter4.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter4[A, B, C, D]) Batch(rel ...Relation) *Batch {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
-		relations: f.tempRelations,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }
@@ -818,13 +822,13 @@ func (f *Filter4[A, B, C, D]) checkCached() {
 //
 // See [Filter2] for a usage example.
 type Filter5[A any, B any, C any, D any, E any] struct {
-	world         *World
-	ids           []ID
-	relations     []RelationID
-	tempRelations []RelationID
-	components    []*componentStorage
-	filter        filter
-	cache         cacheID
+	world        *World
+	ids          []ID
+	relations    []RelationID
+	components   []*componentStorage
+	filter       filter
+	cache        cacheID
+	numRelations uint8
 }
 
 // NewFilter5 creates a new [Filter5].
@@ -885,7 +889,8 @@ func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter5[A, B, C, D, E]) Relations(rel ...Relation) *Filter5[A, B, C, D, E] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.numRelations = uint8(len(f.relations))
 	return f
 }
 
@@ -920,10 +925,10 @@ func (f *Filter5[A, B, C, D, E]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter5.Batch] or [Filter5.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, 5)
@@ -939,7 +944,7 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 	return Query5[A, B, C, D, E]{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.tempRelations,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -961,14 +966,14 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 // Otherwise, changes to the origin filter or calls to [Filter5.Batch] or [Filter5.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter5[A, B, C, D, E]) Batch(rel ...Relation) *Batch {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
-		relations: f.tempRelations,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }
@@ -986,13 +991,13 @@ func (f *Filter5[A, B, C, D, E]) checkCached() {
 //
 // See [Filter2] for a usage example.
 type Filter6[A any, B any, C any, D any, E any, F any] struct {
-	world         *World
-	ids           []ID
-	relations     []RelationID
-	tempRelations []RelationID
-	components    []*componentStorage
-	filter        filter
-	cache         cacheID
+	world        *World
+	ids          []ID
+	relations    []RelationID
+	components   []*componentStorage
+	filter       filter
+	cache        cacheID
+	numRelations uint8
 }
 
 // NewFilter6 creates a new [Filter6].
@@ -1054,7 +1059,8 @@ func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter6[A, B, C, D, E, F]) Relations(rel ...Relation) *Filter6[A, B, C, D, E, F] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.numRelations = uint8(len(f.relations))
 	return f
 }
 
@@ -1089,10 +1095,10 @@ func (f *Filter6[A, B, C, D, E, F]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter6.Batch] or [Filter6.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E, F] {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, 6)
@@ -1108,7 +1114,7 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 	return Query6[A, B, C, D, E, F]{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.tempRelations,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -1130,14 +1136,14 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 // Otherwise, changes to the origin filter or calls to [Filter6.Batch] or [Filter6.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...Relation) *Batch {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
-		relations: f.tempRelations,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }
@@ -1155,13 +1161,13 @@ func (f *Filter6[A, B, C, D, E, F]) checkCached() {
 //
 // See [Filter2] for a usage example.
 type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
-	world         *World
-	ids           []ID
-	relations     []RelationID
-	tempRelations []RelationID
-	components    []*componentStorage
-	filter        filter
-	cache         cacheID
+	world        *World
+	ids          []ID
+	relations    []RelationID
+	components   []*componentStorage
+	filter       filter
+	cache        cacheID
+	numRelations uint8
 }
 
 // NewFilter7 creates a new [Filter7].
@@ -1224,7 +1230,8 @@ func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G]
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter7[A, B, C, D, E, F, G]) Relations(rel ...Relation) *Filter7[A, B, C, D, E, F, G] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.numRelations = uint8(len(f.relations))
 	return f
 }
 
@@ -1259,10 +1266,10 @@ func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter7.Batch] or [Filter7.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D, E, F, G] {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, 7)
@@ -1278,7 +1285,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 	return Query7[A, B, C, D, E, F, G]{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.tempRelations,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -1300,14 +1307,14 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 // Otherwise, changes to the origin filter or calls to [Filter7.Batch] or [Filter7.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...Relation) *Batch {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
-		relations: f.tempRelations,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }
@@ -1325,13 +1332,13 @@ func (f *Filter7[A, B, C, D, E, F, G]) checkCached() {
 //
 // See [Filter2] for a usage example.
 type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
-	world         *World
-	ids           []ID
-	relations     []RelationID
-	tempRelations []RelationID
-	components    []*componentStorage
-	filter        filter
-	cache         cacheID
+	world        *World
+	ids          []ID
+	relations    []RelationID
+	components   []*componentStorage
+	filter       filter
+	cache        cacheID
+	numRelations uint8
 }
 
 // NewFilter8 creates a new [Filter8].
@@ -1395,7 +1402,8 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Relations(rel ...Relation) *Filter8[A, B, C, D, E, F, G, H] {
 	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, append([]RelationID(nil), f.relations...), f.relations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.numRelations = uint8(len(f.relations))
 	return f
 }
 
@@ -1430,10 +1438,10 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter8.Batch] or [Filter8.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C, D, E, F, G, H] {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, 8)
@@ -1449,7 +1457,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 	return Query8[A, B, C, D, E, F, G, H]{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.tempRelations,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -1471,14 +1479,14 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 // Otherwise, changes to the origin filter or calls to [Filter8.Batch] or [Filter8.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...Relation) *Batch {
-	if f.cache == maxCacheID {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, f.relations, f.tempRelations)
-	} else {
-		f.tempRelations = relations(rel).toRelations(f.world, f.ids, nil, f.tempRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
-		relations: f.tempRelations,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }
