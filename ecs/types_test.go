@@ -109,6 +109,7 @@ func TestTypeSizes(t *testing.T) {
 	printTypeSize[table]()
 	printTypeSize[column]()
 	printTypeSize[cacheEntry]()
+	printTypeSize[cursor]()
 	printTypeSizeName[Filter2[Position, Velocity]]("Filter2")
 	printTypeSizeName[Query2[Position, Velocity]]("Query2")
 	printTypeSizeName[Query4[CompA, CompB, CompC, CompD]]("Query4")
