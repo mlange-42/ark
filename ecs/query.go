@@ -32,7 +32,7 @@ func newQuery(world *World, filter filter, relations []RelationID) Query {
 
 // Next advances the query's cursor to the next entity.
 func (q *Query) Next() bool {
-	q.world.checkQueryNext(&q.cursor)
+	q.cursor.checkQueryNext()
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
 		return true
@@ -42,7 +42,7 @@ func (q *Query) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query) Entity() Entity {
-	q.world.checkQueryGet(&q.cursor)
+	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
 }
 
@@ -50,7 +50,7 @@ func (q *Query) Entity() Entity {
 //
 // ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *Query) Get(comp ID) unsafe.Pointer {
-	q.world.checkQueryGet(&q.cursor)
+	q.cursor.checkQueryGet()
 	return q.table.Get(comp, uintptr(q.cursor.index))
 }
 

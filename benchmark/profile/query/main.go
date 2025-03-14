@@ -35,14 +35,9 @@ func run(rounds, iters, entities int) {
 	for i := 0; i < rounds; i++ {
 		world := ecs.NewWorld(1024)
 
-		posMap := ecs.NewMap[position](&world)
-		velMap := ecs.NewMap[velocity](&world)
+		mapper := ecs.NewMap2[position, velocity](&world)
 
-		for j := 0; j < entities; j++ {
-			e := world.NewEntity()
-			posMap.Add(e, &position{})
-			velMap.Add(e, &velocity{})
-		}
+		mapper.NewBatch(entities, &position{}, &velocity{1, -1})
 
 		filter := ecs.NewFilter2[position, velocity](&world)
 		for j := 0; j < iters; j++ {
