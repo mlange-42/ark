@@ -113,9 +113,9 @@ func (r relationIndex) targetEntity() Entity {
 // Helper for converting relations
 type relations []Relation
 
-func (r relations) toRelations(world *World, ids []ID, out []RelationID) []RelationID {
+func (r relations) toRelations(world *World, ids []ID, out []RelationID, startIdx uint8) []RelationID {
 	// TODO: can this be made more efficient?
-	out = out[:0]
+	out = out[:startIdx]
 	if len(r) == 0 {
 		return out
 	}
