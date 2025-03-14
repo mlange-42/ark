@@ -18,13 +18,13 @@ type cursor struct {
 type Query0 struct {
 	world      *World
 	filter     *filter
-	relations  []RelationID
-	lock       uint8
-	cursor     cursor
-	tables     []tableID
 	table      *table
 	cache      *cacheEntry
+	relations  []RelationID
+	tables     []tableID
 	components []*componentStorage
+	cursor     cursor
+	lock       uint8
 }
 
 // Count counts the entities matching this query.
@@ -127,14 +127,14 @@ func (q *Query0) setTable(index int32, table *table) {
 type Query1[A any] struct {
 	world      *World
 	filter     *filter
-	relations  []RelationID
-	lock       uint8
-	cursor     cursor
-	tables     []tableID
 	table      *table
 	cache      *cacheEntry
-	components []*componentStorage
 	columnA    *column
+	relations  []RelationID
+	tables     []tableID
+	components []*componentStorage
+	cursor     cursor
+	lock       uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -242,15 +242,15 @@ func (q *Query1[A]) setTable(index int32, table *table) {
 type Query2[A any, B any] struct {
 	world      *World
 	filter     *filter
-	relations  []RelationID
-	lock       uint8
-	cursor     cursor
-	tables     []tableID
 	table      *table
 	cache      *cacheEntry
-	components []*componentStorage
 	columnA    *column
 	columnB    *column
+	relations  []RelationID
+	tables     []tableID
+	components []*componentStorage
+	cursor     cursor
+	lock       uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -362,16 +362,16 @@ func (q *Query2[A, B]) setTable(index int32, table *table) {
 type Query3[A any, B any, C any] struct {
 	world      *World
 	filter     *filter
-	relations  []RelationID
-	lock       uint8
-	cursor     cursor
-	tables     []tableID
 	table      *table
 	cache      *cacheEntry
-	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
+	relations  []RelationID
+	tables     []tableID
+	components []*componentStorage
+	cursor     cursor
+	lock       uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -485,17 +485,17 @@ func (q *Query3[A, B, C]) setTable(index int32, table *table) {
 type Query4[A any, B any, C any, D any] struct {
 	world      *World
 	filter     *filter
-	relations  []RelationID
-	lock       uint8
-	cursor     cursor
-	tables     []tableID
 	table      *table
 	cache      *cacheEntry
-	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
 	columnD    *column
+	relations  []RelationID
+	tables     []tableID
+	components []*componentStorage
+	cursor     cursor
+	lock       uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -611,18 +611,18 @@ func (q *Query4[A, B, C, D]) setTable(index int32, table *table) {
 type Query5[A any, B any, C any, D any, E any] struct {
 	world      *World
 	filter     *filter
-	relations  []RelationID
-	lock       uint8
-	cursor     cursor
-	tables     []tableID
 	table      *table
 	cache      *cacheEntry
-	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
 	columnD    *column
 	columnE    *column
+	relations  []RelationID
+	tables     []tableID
+	components []*componentStorage
+	cursor     cursor
+	lock       uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -740,19 +740,19 @@ func (q *Query5[A, B, C, D, E]) setTable(index int32, table *table) {
 type Query6[A any, B any, C any, D any, E any, F any] struct {
 	world      *World
 	filter     *filter
-	relations  []RelationID
-	lock       uint8
-	cursor     cursor
-	tables     []tableID
 	table      *table
 	cache      *cacheEntry
-	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
 	columnD    *column
 	columnE    *column
 	columnF    *column
+	relations  []RelationID
+	tables     []tableID
+	components []*componentStorage
+	cursor     cursor
+	lock       uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -872,13 +872,8 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int32, table *table) {
 type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world      *World
 	filter     *filter
-	relations  []RelationID
-	lock       uint8
-	cursor     cursor
-	tables     []tableID
 	table      *table
 	cache      *cacheEntry
-	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
@@ -886,6 +881,11 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnE    *column
 	columnF    *column
 	columnG    *column
+	relations  []RelationID
+	tables     []tableID
+	components []*componentStorage
+	cursor     cursor
+	lock       uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -1007,13 +1007,8 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int32, table *table) {
 type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world      *World
 	filter     *filter
-	relations  []RelationID
-	lock       uint8
-	cursor     cursor
-	tables     []tableID
 	table      *table
 	cache      *cacheEntry
-	components []*componentStorage
 	columnA    *column
 	columnB    *column
 	columnC    *column
@@ -1022,6 +1017,11 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnF    *column
 	columnG    *column
 	columnH    *column
+	relations  []RelationID
+	tables     []tableID
+	components []*componentStorage
+	cursor     cursor
+	lock       uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.

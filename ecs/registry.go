@@ -70,8 +70,8 @@ func (r *registry) unregisterLastComponent() {
 // In addition to [registry], it determines whether types
 // are relation components and/or contain (or are) pointers.
 type componentRegistry struct {
-	registry
 	IsRelation []bool
+	registry
 }
 
 // newComponentRegistry creates a new ComponentRegistry.

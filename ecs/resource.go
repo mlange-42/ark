@@ -4,8 +4,8 @@ package ecs
 //
 // Create one with [NewResource].
 type Resource[T any] struct {
-	id    ResID
 	world *World
+	id    ResID
 }
 
 // NewResource creates a new [Resource] mapper for a resource type.

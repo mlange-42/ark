@@ -7,12 +7,12 @@ import "unsafe"
 // and should only be used when component types are not known at compile time.
 type Query struct {
 	world     *World
-	filter    filter
-	relations []RelationID
-	lock      uint8
-	cursor    cursor
-	tables    []tableID
 	table     *table
+	relations []RelationID
+	tables    []tableID
+	filter    filter
+	cursor    cursor
+	lock      uint8
 }
 
 func newQuery(world *World, filter filter, relations []RelationID) Query {

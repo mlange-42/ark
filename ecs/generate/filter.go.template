@@ -23,11 +23,11 @@ package ecs
 type Filter{{.}}{{$generics}} struct {
 	world         *World
 	ids           []ID
-	filter        filter
 	relations     []RelationID
 	tempRelations []RelationID
-	cache         cacheID
 	components    []*componentStorage
+	filter        filter
+	cache         cacheID
 }
 
 // NewFilter{{.}} creates a new [Filter{{.}}].

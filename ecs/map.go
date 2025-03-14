@@ -7,10 +7,10 @@ import "unsafe"
 // Instances should be created during initialization and stored, e.g. in systems.
 type Map[T any] struct {
 	world     *World
-	id        ID
-	ids       [1]ID
 	storage   *componentStorage
 	relations []RelationID
+	id        ID
+	ids       [1]ID
 }
 
 // NewMap creates a new [Map].

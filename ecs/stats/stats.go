@@ -9,12 +9,12 @@ import (
 
 // World statistics.
 type World struct {
-	// Entity statistics.
-	Entities Entities
 	// Component types, indexed by component ID.
 	ComponentTypes []reflect.Type
 	// Archetype statistics.
 	Archetypes []Archetype
+	// Entity statistics.
+	Entities Entities
 	// Memory reserved for entities and components, in bytes.
 	Memory int
 	// Memory actually used for alive entities and their components components, in bytes.
@@ -39,14 +39,16 @@ type Entities struct {
 
 // Archetype statistics.
 type Archetype struct {
-	// Number of entities in the tables of this archetype.
-	Size int
-	// Sum of capacity of the tables in this archetype.
-	Capacity int
 	// Component IDs.
 	ComponentIDs []uint8
 	// Component types for ComponentIDs.
 	ComponentTypes []reflect.Type
+	// Table statistics.
+	Tables []Table
+	// Number of entities in the tables of this archetype.
+	Size int
+	// Sum of capacity of the tables in this archetype.
+	Capacity int
 	// Number of relation components in the archetype.
 	NumRelations int
 	// Memory reserved for entities and components, in bytes.
@@ -55,8 +57,6 @@ type Archetype struct {
 	MemoryUsed int
 	// Memory for components per entity, in bytes.
 	MemoryPerEntity int
-	// Table statistics.
-	Tables []Table
 	// Number of free tables.
 	FreeTables int
 }
@@ -75,23 +75,19 @@ type Table struct {
 
 func (w *World) String() string {
 	b := strings.Builder{}
-
 	fmt.Fprintf(
 		&b, "World     -- Components: %d, Archetypes: %d, Filters: %d, Memory: %.1f kB, Locked: %t\n",
 		len(w.ComponentTypes), len(w.Archetypes), w.CachedFilters, float64(w.Memory)/1024.0, w.Locked,
 	)
-
 	typeNames := make([]string, len(w.ComponentTypes))
 	for i, tp := range w.ComponentTypes {
 		typeNames[i] = tp.Name()
 	}
 	fmt.Fprintf(&b, "             Components: %s\n", strings.Join(typeNames, ", "))
 	fmt.Fprint(&b, w.Entities.String())
-
 	for i := range w.Archetypes {
 		fmt.Fprint(&b, w.Archetypes[i].String())
 	}
-
 	return b.String()
 }
 
@@ -104,7 +100,6 @@ func (a *Archetype) String() string {
 	for i, tp := range a.ComponentTypes {
 		typeNames[i] = tp.Name()
 	}
-
 	return fmt.Sprintf(
 		"Archetype -- Tables: %4d, Comps: %2d, Entities: %6d, Cap: %6d, Mem: %7.1f kB, Per entity: %4d B\n             Components: %s\n",
 		len(a.Tables), len(a.ComponentIDs), a.Size, a.Capacity, float64(a.Memory)/1024.0, a.MemoryPerEntity, strings.Join(typeNames, ", "),

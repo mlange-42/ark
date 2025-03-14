@@ -35,16 +35,16 @@ type cursor struct {
 type Query{{.}}{{$generics}} struct {
 	world      *World
 	filter     *filter
-	relations  []RelationID
-	lock       uint8
-	cursor     cursor
-	tables     []tableID
 	table      *table
 	cache      *cacheEntry
-	components []*componentStorage
 	{{- range $upper}}
 	column{{.}}    *column
 	{{- end}}
+	relations  []RelationID
+	tables     []tableID
+	components []*componentStorage
+	cursor     cursor
+	lock       uint8
 }
 
 {{if . -}}
