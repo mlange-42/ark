@@ -25,7 +25,7 @@ func NewWorld(initialCapacity ...int) World {
 	return World{
 		storage:   newStorage(initialCapacity...),
 		resources: newResources(),
-		locks:     lock{},
+		locks:     newLock(),
 		stats:     &stats.World{},
 	}
 }

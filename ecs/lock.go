@@ -8,6 +8,12 @@ type lock struct {
 	bitPool bitPool   // The bit pool for getting and recycling bits.
 }
 
+func newLock() lock {
+	return lock{
+		bitPool: newBitPool(),
+	}
+}
+
 // Lock the world and get the Lock bit for later unlocking.
 func (m *lock) Lock() uint8 {
 	lock := m.bitPool.Get()

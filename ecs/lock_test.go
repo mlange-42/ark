@@ -7,7 +7,7 @@ import (
 )
 
 func TestLock(t *testing.T) {
-	locks := lock{}
+	locks := newLock()
 
 	assert.False(t, locks.IsLocked())
 

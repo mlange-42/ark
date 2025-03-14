@@ -101,10 +101,16 @@ func (p *entityPool) Available() int {
 // and to recycle that bit for later use.
 // This implementation uses an implicit list.
 type bitPool struct {
+	bits      []uint8
 	length    uint8
-	bits      [mask64TotalBits]uint8
 	next      uint8
 	available uint8
+}
+
+func newBitPool() bitPool {
+	return bitPool{
+		bits: make([]uint8, mask64TotalBits),
+	}
 }
 
 // Get returns a fresh or recycled bit.
