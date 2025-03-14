@@ -5,7 +5,6 @@ import (
 )
 
 type storage struct {
-	registry           componentRegistry
 	entities           []entityIndex
 	isTarget           []bool
 	graph              graph
@@ -15,6 +14,7 @@ type storage struct {
 	components         []componentStorage
 	cache              cache
 	entityPool         entityPool
+	registry           componentRegistry
 	config             config
 }
 
