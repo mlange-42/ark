@@ -31,8 +31,11 @@ next = "/quickstart"
 <a href="https://doi.org/10.5281/zenodo.14994239" style="display:inline-block">
 <img alt="Zenodo DOI: 10.5281/zenodo.14994239" src="https://img.shields.io/badge/10.5281%2Fzenodo.14994239-blue?label=doi" style="margin:0;"></img></a>
 
-<a href="https://github.com/mlange-42/ark/blob/main/LICENSE" style="display:inline-block">
+<a href="https://github.com/mlange-42/ark/blob/main/LICENSE-MIT" style="display:inline-block">
 <img alt="MIT license" src="https://img.shields.io/badge/MIT-brightgreen?label=license" style="margin:0;"></img></a>
+
+<a href="https://github.com/mlange-42/ark/blob/main/LICENSE-APACHE" style="display:inline-block">
+<img alt="Apache license" src="https://img.shields.io/badge/Apache%202.0-brightgreen?label=license" style="margin:0;"></img></a>
 
 </div>
 {{< /html >}}
@@ -62,4 +65,4 @@ Pull requests are welcome.
 
 ## License
 
-Ark and all its sources are released under the [MIT License](https://github.com/mlange-42/ark/blob/main/LICENSE).
+Ark and all its sources and documentation are distributed under the [MIT license](https://github.com/mlange-42/ark/blob/main/LICENSE-MIT) and the [Apache 2.0 license](https://github.com/mlange-42/ark/blob/main/LICENSE-APACHE), as your options.
