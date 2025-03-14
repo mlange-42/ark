@@ -113,13 +113,12 @@ func (r relationIndex) targetEntity() Entity {
 // Helper for converting relations
 type relations []Relation
 
-func (r relations) toRelations(world *World, ids []ID, base []RelationID, out []RelationID) []RelationID {
+func (r relations) toRelations(world *World, ids []ID, out []RelationID) []RelationID {
 	// TODO: can this be made more efficient?
 	out = out[:0]
-	if len(base) == 0 && len(r) == 0 {
+	if len(r) == 0 {
 		return out
 	}
-	out = append(out, base...)
 	for _, rel := range r {
 		id := rel.id(ids, world)
 		world.storage.checkRelationTarget(rel.targetEntity())

@@ -43,7 +43,7 @@ func (ex *Exchange1[A]) Removes(components ...Comp) *Exchange1[A] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange1[A]) Add(entity Entity, a *A, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, ex.relations)
@@ -57,7 +57,7 @@ func (ex *Exchange1[A]) Add(entity Entity, a *A, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -75,7 +75,7 @@ func (ex *Exchange1[A]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange1[A]) Exchange(entity Entity, a *A, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, ex.relations)
@@ -91,7 +91,7 @@ func (ex *Exchange1[A]) Exchange(entity Entity, a *A, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) ExchangeFn(entity Entity, fn func(a *A), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -103,7 +103,7 @@ func (ex *Exchange1[A]) ExchangeFn(entity Entity, fn func(a *A), rel ...Relation
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, ex.relations, nil)
@@ -132,7 +132,7 @@ func (ex *Exchange1[A]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange1[A]) ExchangeBatch(batch *Batch, a *A, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 	}, ex.relations, nil)
@@ -150,7 +150,7 @@ func (ex *Exchange1[A]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, a *
 }
 
 func (ex *Exchange1[A]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A), remove bool, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -223,7 +223,7 @@ func (ex *Exchange2[A, B]) Removes(components ...Comp) *Exchange2[A, B] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -238,7 +238,7 @@ func (ex *Exchange2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -256,7 +256,7 @@ func (ex *Exchange2[A, B]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -273,7 +273,7 @@ func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B, rel ...Relation) 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) ExchangeFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -285,7 +285,7 @@ func (ex *Exchange2[A, B]) ExchangeFn(entity Entity, fn func(a *A, b *B), rel ..
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -315,7 +315,7 @@ func (ex *Exchange2[A, B]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange2[A, B]) ExchangeBatch(batch *Batch, a *A, b *B, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -334,7 +334,7 @@ func (ex *Exchange2[A, B]) ExchangeBatchFn(batch *Batch, fn func(entity Entity, 
 }
 
 func (ex *Exchange2[A, B]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), remove bool, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -413,7 +413,7 @@ func (ex *Exchange3[A, B, C]) Removes(components ...Comp) *Exchange3[A, B, C] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -429,7 +429,7 @@ func (ex *Exchange3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relati
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -447,7 +447,7 @@ func (ex *Exchange3[A, B, C]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -465,7 +465,7 @@ func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C, rel ...R
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -477,7 +477,7 @@ func (ex *Exchange3[A, B, C]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -508,7 +508,7 @@ func (ex *Exchange3[A, B, C]) RemoveBatch(batch *Batch, fn func(entity Entity)) 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange3[A, B, C]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -528,7 +528,7 @@ func (ex *Exchange3[A, B, C]) ExchangeBatchFn(batch *Batch, fn func(entity Entit
 }
 
 func (ex *Exchange3[A, B, C]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), remove bool, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -611,7 +611,7 @@ func (ex *Exchange4[A, B, C, D]) Removes(components ...Comp) *Exchange4[A, B, C,
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -628,7 +628,7 @@ func (ex *Exchange4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -646,7 +646,7 @@ func (ex *Exchange4[A, B, C, D]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -665,7 +665,7 @@ func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D,
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -677,7 +677,7 @@ func (ex *Exchange4[A, B, C, D]) ExchangeFn(entity Entity, fn func(a *A, b *B, c
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -709,7 +709,7 @@ func (ex *Exchange4[A, B, C, D]) RemoveBatch(batch *Batch, fn func(entity Entity
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange4[A, B, C, D]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -730,7 +730,7 @@ func (ex *Exchange4[A, B, C, D]) ExchangeBatchFn(batch *Batch, fn func(entity En
 }
 
 func (ex *Exchange4[A, B, C, D]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), remove bool, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -817,7 +817,7 @@ func (ex *Exchange5[A, B, C, D, E]) Removes(components ...Comp) *Exchange5[A, B,
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -835,7 +835,7 @@ func (ex *Exchange5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -853,7 +853,7 @@ func (ex *Exchange5[A, B, C, D, E]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -873,7 +873,7 @@ func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -885,7 +885,7 @@ func (ex *Exchange5[A, B, C, D, E]) ExchangeFn(entity Entity, fn func(a *A, b *B
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -918,7 +918,7 @@ func (ex *Exchange5[A, B, C, D, E]) RemoveBatch(batch *Batch, fn func(entity Ent
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange5[A, B, C, D, E]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -940,7 +940,7 @@ func (ex *Exchange5[A, B, C, D, E]) ExchangeBatchFn(batch *Batch, fn func(entity
 }
 
 func (ex *Exchange5[A, B, C, D, E]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), remove bool, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1031,7 +1031,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) Removes(components ...Comp) *Exchange6[A,
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1050,7 +1050,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -1068,7 +1068,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1089,7 +1089,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C,
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -1101,7 +1101,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) ExchangeFn(entity Entity, fn func(a *A, b
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1135,7 +1135,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) RemoveBatch(batch *Batch, fn func(entity 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1158,7 +1158,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatchFn(batch *Batch, fn func(ent
 }
 
 func (ex *Exchange6[A, B, C, D, E, F]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), remove bool, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1253,7 +1253,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Removes(components ...Comp) *Exchange7
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1273,7 +1273,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -1291,7 +1291,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1313,7 +1313,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -1325,7 +1325,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeFn(entity Entity, fn func(a *A
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1360,7 +1360,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) RemoveBatch(batch *Batch, fn func(enti
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1384,7 +1384,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatchFn(batch *Batch, fn func(
 }
 
 func (ex *Exchange7[A, B, C, D, E, F, G]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), remove bool, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
@@ -1483,7 +1483,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Removes(components ...Comp) *Exchan
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1504,7 +1504,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -1522,7 +1522,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1545,7 +1545,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B,
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -1557,7 +1557,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeFn(entity Entity, fn func(a
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, nil, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1593,7 +1593,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) RemoveBatch(batch *Batch, fn func(e
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 	ex.world.exchangeBatch(batch, ex.ids, ex.remove, []unsafe.Pointer{
 		unsafe.Pointer(a),
 		unsafe.Pointer(b),
@@ -1618,7 +1618,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatchFn(batch *Batch, fn fu
 }
 
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), remove bool, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, nil, ex.relations)
+	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations)
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
