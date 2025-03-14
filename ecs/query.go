@@ -94,7 +94,7 @@ func (q *Query) nextTableOrArchetype() bool {
 }
 
 func (q *Query) nextArchetype() bool {
-	maxArchIndex := len(q.world.storage.archetypes) - 1
+	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
@@ -122,7 +122,7 @@ func (q *Query) nextArchetype() bool {
 }
 
 func (q *Query) nextTable() bool {
-	maxTableIndex := len(q.tables) - 1
+	maxTableIndex := int32(len(q.tables) - 1)
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
 		table := &q.world.storage.tables[q.tables[q.cursor.table]]
@@ -138,7 +138,7 @@ func (q *Query) nextTable() bool {
 	return false
 }
 
-func (q *Query) setTable(index int, table *table) {
+func (q *Query) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	q.cursor.index = 0

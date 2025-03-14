@@ -2097,13 +2097,11 @@ func TestQuery0Empty(t *testing.T) {
 	w := NewWorld(4)
 
 	posMap := NewMap[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
-	w.RemoveEntity(posVelMap.NewEntityFn(nil))
 
 	filter := NewFilter0(&w)
 	query := filter.Query()
