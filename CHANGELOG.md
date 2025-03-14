@@ -39,6 +39,7 @@
 ### Other
 
 - Reduces the maximum number of world locks to 64 to fail earlier on unclosed queries (#185)
+- Ark is dual-licensed under MIT and Apache 2.0 (#202)
 
 ## [[v0.3.0]](https://github.com/mlange-42/ark/compare/v0.2.0...v0.3.0)
 

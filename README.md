@@ -109,4 +109,4 @@ Lange, M. (2025): Ark &ndash; An archetype-based Entity Component System for Go.
 
 ## License
 
-This project is distributed under the [MIT license](./LICENSE).
+Ark and all its sources and documentation are distributed under the [MIT license](./LICENSE-MIT) and the [Apache 2.0 license](./LICENSE-APACHE), as your options.

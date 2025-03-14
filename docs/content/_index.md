@@ -62,4 +62,4 @@ Pull requests are welcome.
 
 ## License
 
-Ark and all its sources are released under the [MIT License](https://github.com/mlange-42/ark/blob/main/LICENSE).
+Ark and all its sources and documentation are distributed under the [MIT license](https://github.com/mlange-42/ark/blob/main/LICENSE-MIT) and the [Apache 2.0 license](https://github.com/mlange-42/ark/blob/main/LICENSE-APACHE), as your options.
