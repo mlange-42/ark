@@ -125,11 +125,9 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$genericsShort}} {
 	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
-	var tempRelation []RelationID
-	if f.cache == maxCacheID {
-		tempRelation = f.relations
-	} else {
-		tempRelation = f.relations[f.numRelations:]
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	if f.components == nil {
 		f.components = make([]*componentStorage, {{.}})
@@ -145,7 +143,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 	return Query{{.}}{{$genericsShort}}{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  tempRelation,
+		relations:  f.relations[start:],
 		cache:      cache,
 		lock:       f.world.lock(),
 		components: f.components,
@@ -168,15 +166,13 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) *Batch {
 	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
-	var tempRelation []RelationID
-	if f.cache == maxCacheID {
-		tempRelation = f.relations
-	} else {
-		tempRelation = f.relations[f.numRelations:]
+	var start uint8
+	if f.cache != maxCacheID {
+		start = f.numRelations
 	}
 	return &Batch {
 		filter:    &f.filter,
-		relations: tempRelation,
+		relations: f.relations[start:],
 		cache:     f.cache,
 	}
 }
