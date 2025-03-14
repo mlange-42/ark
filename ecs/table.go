@@ -29,18 +29,13 @@ type table struct {
 }
 
 func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []RelationID) table {
-
 	entities := newColumn(0, entityType, entitySize, false, Entity{}, capacity)
 	columns := make([]column, len(archetype.components))
 
 	components := make([]*column, maskTotalBits)
-	var maxSize uintptr = entitySize
 	for i, id := range archetype.components {
 		itemSize := uintptr(archetype.itemSizes[i])
 		columns[i] = newColumn(uint32(i), reg.Types[id.id], itemSize, archetype.isRelation[i], targets[i], capacity)
-		if itemSize > maxSize {
-			maxSize = columns[i].itemSize
-		}
 		components[id.id] = &columns[i]
 	}
 
