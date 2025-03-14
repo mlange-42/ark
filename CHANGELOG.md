@@ -28,6 +28,7 @@
 - Optimizes table column lookup, speeding up component operations and unsafe queries (#178)
 - Batch operations use the filter cache for cached filters (#191)
 - Optimizes query creation with 30% speedup (#197)
+- More reliable inlining of query methods (#198)
 
 ### Bugfixes
 
