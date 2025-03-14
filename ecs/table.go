@@ -25,7 +25,6 @@ type table struct {
 	len         uint32
 	cap         uint32
 
-	zeroValue   []byte         // zero value with the size of the largest item type, for fast zeroing
 	zeroPointer unsafe.Pointer // pointer to the zero value, for fast zeroing
 }
 
@@ -44,11 +43,10 @@ func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentR
 		}
 		components[id.id] = &columns[i]
 	}
-	var zeroValue []byte
+
 	var zeroPointer unsafe.Pointer
-	if maxSize > 0 {
-		zeroValue = make([]byte, maxSize)
-		zeroPointer = unsafe.Pointer(&zeroValue[0])
+	if archetype.zeroValue != nil {
+		zeroPointer = unsafe.Pointer(&archetype.zeroValue[0])
 	}
 
 	return table{
@@ -58,7 +56,6 @@ func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentR
 		entities:    entities,
 		ids:         archetype.components,
 		columns:     columns,
-		zeroValue:   zeroValue,
 		zeroPointer: zeroPointer,
 		relationIDs: relationIDs,
 		cap:         capacity,

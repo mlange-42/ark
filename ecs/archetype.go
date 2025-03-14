@@ -25,6 +25,8 @@ type archetype struct {
 	tables         []tableID                // all active tables
 	freeTables     []tableID                // all inactive/free tables
 	numRelations   uint8                    // number of relation components
+
+	zeroValue []byte // zero value with the size of the largest item type, for fast zeroing
 }
 
 type tableIDs struct {
@@ -36,11 +38,22 @@ func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, t
 	for i := range maskTotalBits {
 		componentsMap[i] = -1
 	}
+
 	sizes := make([]uint32, len(components))
+	var maxSize uintptr = entitySize
 	for i, id := range components {
 		componentsMap[id.id] = int16(i)
 		tp := reg.Types[id.id]
-		sizes[i] = uint32(sizeOf(tp))
+
+		itemSize := sizeOf(tp)
+		sizes[i] = uint32(itemSize)
+		if itemSize > maxSize {
+			maxSize = itemSize
+		}
+	}
+	var zeroValue []byte
+	if maxSize > 0 {
+		zeroValue = make([]byte, maxSize)
 	}
 
 	numRelations := uint8(0)
@@ -64,6 +77,7 @@ func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, t
 		tables:         tables,
 		numRelations:   numRelations,
 		relationTables: relationTables,
+		zeroValue:      zeroValue,
 	}
 }
 
