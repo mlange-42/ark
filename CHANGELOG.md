@@ -29,6 +29,7 @@
 - Batch operations use the filter cache for cached filters (#191)
 - Optimizes query creation with 30% speedup (#197)
 - More reliable inlining of query methods (#198)
+- Optimizes memory sizes of internal types (#199, #200)
 
 ### Bugfixes
 
