@@ -7,10 +7,10 @@ import (
 
 // column storage for components in an archetype.
 type column struct {
-	data       reflect.Value  // data buffer
 	pointer    unsafe.Pointer // pointer to the first element
-	target     Entity         // target entity if for a relation component
+	data       reflect.Value  // data buffer
 	itemSize   uintptr        // memory size of items
+	target     Entity         // target entity if for a relation component
 	index      uint32         // index of the column in the containing table
 	isRelation bool           // whether this column is for a relation component
 }

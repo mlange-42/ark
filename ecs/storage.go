@@ -5,18 +5,17 @@ import (
 )
 
 type storage struct {
-	config     config
-	registry   componentRegistry
-	entities   []entityIndex
-	isTarget   []bool
-	entityPool entityPool
-	graph      graph
-	cache      cache
-
+	entityPool         entityPool
+	registry           componentRegistry
+	entities           []entityIndex
+	isTarget           []bool
+	graph              graph
 	archetypes         []archetype
 	relationArchetypes []archetypeID
 	tables             []table
 	components         []componentStorage
+	cache              cache
+	config             config
 }
 
 type componentStorage struct {

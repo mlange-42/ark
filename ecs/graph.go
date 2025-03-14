@@ -5,10 +5,10 @@ import "fmt"
 type nodeID uint32
 
 type node struct {
+	neighbors idMap[nodeID]
+	mask      bitMask
 	id        nodeID
 	archetype archetypeID
-	mask      bitMask
-	neighbors idMap[nodeID]
 }
 
 func newNode(id nodeID, archetype archetypeID, mask bitMask) node {

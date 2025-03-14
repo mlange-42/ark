@@ -13,10 +13,10 @@ type number interface {
 // entityPool is an implementation using implicit linked lists.
 // Implements https://skypjack.github.io/2019-05-06-ecs-baf-part-3/
 type entityPool struct {
+	pointer   unsafe.Pointer
 	entities  []Entity
 	next      entityID
 	available uint32
-	pointer   unsafe.Pointer
 	reserved  entityID
 }
 

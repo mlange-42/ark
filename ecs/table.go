@@ -15,17 +15,16 @@ type tableID uint32
 const maxTableID = math.MaxUint32
 
 type table struct {
+	zeroPointer unsafe.Pointer // pointer to the zero value, for fast zeroing
+	components  []*column      // mapping from component IDs to columns
+	ids         []ID           // components IDs in the same order as in the archetype
+	columns     []column       // columns in dense order
+	relationIDs []RelationID   // all relation IDs and targets of the table
+	entities    column         // column for entities
 	id          tableID
 	archetype   archetypeID
-	components  []*column    // mapping from component IDs to columns
-	entities    column       // column for entities
-	ids         []ID         // components IDs in the same order as in the archetype
-	columns     []column     // columns in dense order
-	relationIDs []RelationID // all relation IDs and targets of the table
 	len         uint32
 	cap         uint32
-
-	zeroPointer unsafe.Pointer // pointer to the zero value, for fast zeroing
 }
 
 func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []RelationID) table {

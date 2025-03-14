@@ -8,11 +8,11 @@ const maxCacheID = math.MaxUint32
 
 // Cache entry for a [Filter].
 type cacheEntry struct {
-	id        cacheID         // Entry ID.
 	filter    *filter         // The underlying filter.
-	relations []RelationID    // Entity relationships.
 	indices   map[tableID]int // Map of table indices for removal.
+	relations []RelationID    // Entity relationships.
 	tables    []tableID       // Tables matching the filter.
+	id        cacheID         // Entry ID.
 }
 
 // cache provides [Filter] caching to speed up queries.
