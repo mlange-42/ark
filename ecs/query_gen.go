@@ -27,28 +27,6 @@ type Query0 struct {
 	components []*componentStorage
 }
 
-func newQuery0(f *Filter0) Query0 {
-	var cache *cacheEntry
-	if f.cache != maxCacheID {
-		cache = f.world.storage.getRegisteredFilter(f.cache)
-	}
-
-	return Query0{
-		world:      f.world,
-		filter:     &f.filter,
-		relations:  f.tempRelations,
-		cache:      cache,
-		lock:       f.world.lock(),
-		components: f.components,
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
-}
-
 // Next advances the query's cursor to the next entity.
 func (q *Query0) Next() bool {
 	q.world.checkQueryNext(&q.cursor)
@@ -173,28 +151,6 @@ type Query1[A any] struct {
 	cache      *cacheEntry
 	components []*componentStorage
 	columnA    *column
-}
-
-func newQuery1[A any](f *Filter1[A]) Query1[A] {
-	var cache *cacheEntry
-	if f.cache != maxCacheID {
-		cache = f.world.storage.getRegisteredFilter(f.cache)
-	}
-
-	return Query1[A]{
-		world:      f.world,
-		filter:     &f.filter,
-		relations:  f.tempRelations,
-		cache:      cache,
-		lock:       f.world.lock(),
-		components: f.components,
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -335,28 +291,6 @@ type Query2[A any, B any] struct {
 	components []*componentStorage
 	columnA    *column
 	columnB    *column
-}
-
-func newQuery2[A any, B any](f *Filter2[A, B]) Query2[A, B] {
-	var cache *cacheEntry
-	if f.cache != maxCacheID {
-		cache = f.world.storage.getRegisteredFilter(f.cache)
-	}
-
-	return Query2[A, B]{
-		world:      f.world,
-		filter:     &f.filter,
-		relations:  f.tempRelations,
-		cache:      cache,
-		lock:       f.world.lock(),
-		components: f.components,
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -503,28 +437,6 @@ type Query3[A any, B any, C any] struct {
 	columnA    *column
 	columnB    *column
 	columnC    *column
-}
-
-func newQuery3[A any, B any, C any](f *Filter3[A, B, C]) Query3[A, B, C] {
-	var cache *cacheEntry
-	if f.cache != maxCacheID {
-		cache = f.world.storage.getRegisteredFilter(f.cache)
-	}
-
-	return Query3[A, B, C]{
-		world:      f.world,
-		filter:     &f.filter,
-		relations:  f.tempRelations,
-		cache:      cache,
-		lock:       f.world.lock(),
-		components: f.components,
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -675,28 +587,6 @@ type Query4[A any, B any, C any, D any] struct {
 	columnB    *column
 	columnC    *column
 	columnD    *column
-}
-
-func newQuery4[A any, B any, C any, D any](f *Filter4[A, B, C, D]) Query4[A, B, C, D] {
-	var cache *cacheEntry
-	if f.cache != maxCacheID {
-		cache = f.world.storage.getRegisteredFilter(f.cache)
-	}
-
-	return Query4[A, B, C, D]{
-		world:      f.world,
-		filter:     &f.filter,
-		relations:  f.tempRelations,
-		cache:      cache,
-		lock:       f.world.lock(),
-		components: f.components,
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -851,28 +741,6 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnC    *column
 	columnD    *column
 	columnE    *column
-}
-
-func newQuery5[A any, B any, C any, D any, E any](f *Filter5[A, B, C, D, E]) Query5[A, B, C, D, E] {
-	var cache *cacheEntry
-	if f.cache != maxCacheID {
-		cache = f.world.storage.getRegisteredFilter(f.cache)
-	}
-
-	return Query5[A, B, C, D, E]{
-		world:      f.world,
-		filter:     &f.filter,
-		relations:  f.tempRelations,
-		cache:      cache,
-		lock:       f.world.lock(),
-		components: f.components,
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -1031,28 +899,6 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnD    *column
 	columnE    *column
 	columnF    *column
-}
-
-func newQuery6[A any, B any, C any, D any, E any, F any](f *Filter6[A, B, C, D, E, F]) Query6[A, B, C, D, E, F] {
-	var cache *cacheEntry
-	if f.cache != maxCacheID {
-		cache = f.world.storage.getRegisteredFilter(f.cache)
-	}
-
-	return Query6[A, B, C, D, E, F]{
-		world:      f.world,
-		filter:     &f.filter,
-		relations:  f.tempRelations,
-		cache:      cache,
-		lock:       f.world.lock(),
-		components: f.components,
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -1215,28 +1061,6 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnE    *column
 	columnF    *column
 	columnG    *column
-}
-
-func newQuery7[A any, B any, C any, D any, E any, F any, G any](f *Filter7[A, B, C, D, E, F, G]) Query7[A, B, C, D, E, F, G] {
-	var cache *cacheEntry
-	if f.cache != maxCacheID {
-		cache = f.world.storage.getRegisteredFilter(f.cache)
-	}
-
-	return Query7[A, B, C, D, E, F, G]{
-		world:      f.world,
-		filter:     &f.filter,
-		relations:  f.tempRelations,
-		cache:      cache,
-		lock:       f.world.lock(),
-		components: f.components,
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
 }
 
 // Next advances the query's cursor to the next entity.
@@ -1403,28 +1227,6 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnF    *column
 	columnG    *column
 	columnH    *column
-}
-
-func newQuery8[A any, B any, C any, D any, E any, F any, G any, H any](f *Filter8[A, B, C, D, E, F, G, H]) Query8[A, B, C, D, E, F, G, H] {
-	var cache *cacheEntry
-	if f.cache != maxCacheID {
-		cache = f.world.storage.getRegisteredFilter(f.cache)
-	}
-
-	return Query8[A, B, C, D, E, F, G, H]{
-		world:      f.world,
-		filter:     &f.filter,
-		relations:  f.tempRelations,
-		cache:      cache,
-		lock:       f.world.lock(),
-		components: f.components,
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
 }
 
 // Next advances the query's cursor to the next entity.

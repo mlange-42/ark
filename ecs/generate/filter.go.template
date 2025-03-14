@@ -134,7 +134,25 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}{{end}}
 	}
-	return newQuery{{.}}(f)
+	var cache *cacheEntry
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
+	}
+	
+	return Query{{.}}{{$genericsShort}}{
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
+		cache:      cache,
+		lock:       f.world.lock(),
+		components: f.components,
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 // Batch creates a [Batch] from this filter.

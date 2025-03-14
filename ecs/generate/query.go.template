@@ -47,28 +47,6 @@ type Query{{.}}{{$generics}} struct {
 	{{- end}}
 }
 
-func newQuery{{.}}{{$generics}}(f *Filter{{.}}{{$genericsShort}}) Query{{.}}{{$genericsShort}} {
-	var cache *cacheEntry
-	if f.cache != maxCacheID {
-		cache = f.world.storage.getRegisteredFilter(f.cache)
-	}
-	
-	return Query{{.}}{{$genericsShort}}{
-		world:      f.world,
-		filter:     &f.filter,
-		relations:  f.tempRelations,
-		cache:      cache,
-		lock:       f.world.lock(),
-		components: f.components,
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
-}
-
 // Next advances the query's cursor to the next entity.
 func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 	q.world.checkQueryNext(&q.cursor)

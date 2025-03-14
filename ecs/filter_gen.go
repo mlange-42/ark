@@ -103,7 +103,25 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 		f.components = make([]*componentStorage, 0)
 
 	}
-	return newQuery0(f)
+	var cache *cacheEntry
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
+	}
+
+	return Query0{
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
+		cache:      cache,
+		lock:       f.world.lock(),
+		components: f.components,
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 // Batch creates a [Batch] from this filter.
@@ -249,7 +267,25 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery1(f)
+	var cache *cacheEntry
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
+	}
+
+	return Query1[A]{
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
+		cache:      cache,
+		lock:       f.world.lock(),
+		components: f.components,
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 // Batch creates a [Batch] from this filter.
@@ -394,7 +430,25 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery2(f)
+	var cache *cacheEntry
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
+	}
+
+	return Query2[A, B]{
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
+		cache:      cache,
+		lock:       f.world.lock(),
+		components: f.components,
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 // Batch creates a [Batch] from this filter.
@@ -542,7 +596,25 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery3(f)
+	var cache *cacheEntry
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
+	}
+
+	return Query3[A, B, C]{
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
+		cache:      cache,
+		lock:       f.world.lock(),
+		components: f.components,
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 // Batch creates a [Batch] from this filter.
@@ -691,7 +763,25 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery4(f)
+	var cache *cacheEntry
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
+	}
+
+	return Query4[A, B, C, D]{
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
+		cache:      cache,
+		lock:       f.world.lock(),
+		components: f.components,
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 // Batch creates a [Batch] from this filter.
@@ -841,7 +931,25 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery5(f)
+	var cache *cacheEntry
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
+	}
+
+	return Query5[A, B, C, D, E]{
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
+		cache:      cache,
+		lock:       f.world.lock(),
+		components: f.components,
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 // Batch creates a [Batch] from this filter.
@@ -992,7 +1100,25 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery6(f)
+	var cache *cacheEntry
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
+	}
+
+	return Query6[A, B, C, D, E, F]{
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
+		cache:      cache,
+		lock:       f.world.lock(),
+		components: f.components,
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 // Batch creates a [Batch] from this filter.
@@ -1144,7 +1270,25 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery7(f)
+	var cache *cacheEntry
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
+	}
+
+	return Query7[A, B, C, D, E, F, G]{
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
+		cache:      cache,
+		lock:       f.world.lock(),
+		components: f.components,
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 // Batch creates a [Batch] from this filter.
@@ -1297,7 +1441,25 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 			f.components[i] = &f.world.storage.components[f.ids[i].id]
 		}
 	}
-	return newQuery8(f)
+	var cache *cacheEntry
+	if f.cache != maxCacheID {
+		cache = f.world.storage.getRegisteredFilter(f.cache)
+	}
+
+	return Query8[A, B, C, D, E, F, G, H]{
+		world:      f.world,
+		filter:     &f.filter,
+		relations:  f.tempRelations,
+		cache:      cache,
+		lock:       f.world.lock(),
+		components: f.components,
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 // Batch creates a [Batch] from this filter.
