@@ -443,10 +443,6 @@ func TestWorldPanics(t *testing.T) {
 	velID := ComponentID[Velocity](&w)
 	childID := ComponentID[ChildOf](&w)
 
-	assert.PanicsWithValue(t, "lengths of IDs and components to add do not match", func() {
-		w.newEntitiesWith(10, []ID{posID, velID}, []unsafe.Pointer{nil}, nil)
-	})
-
 	e := w.NewEntity()
 	w.exchange(e, nil, nil, nil, nil)
 	w.RemoveEntity(e)

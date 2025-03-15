@@ -63,10 +63,9 @@ func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A) {
+		*pa = *a
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -336,11 +335,10 @@ func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B) {
+		*pa = *a
+		*pb = *b
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -637,12 +635,11 @@ func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -964,13 +961,12 @@ func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...R
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -1317,14 +1313,13 @@ func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E),
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -1696,15 +1691,14 @@ func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -2101,16 +2095,15 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -2532,17 +2525,16 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -2989,18 +2981,17 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -3472,19 +3463,18 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-		unsafe.Pointer(j),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+		*pj = *j
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -3981,20 +3971,19 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B,
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-		unsafe.Pointer(j),
-		unsafe.Pointer(k),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+		*pj = *j
+		*pk = *k
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
@@ -4516,21 +4505,20 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-		unsafe.Pointer(j),
-		unsafe.Pointer(k),
-		unsafe.Pointer(l),
-	}, m.relations)
+	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K, pl *L) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+		*pj = *j
+		*pk = *k
+		*pl = *l
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.

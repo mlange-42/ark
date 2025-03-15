@@ -7,47 +7,20 @@ import (
 
 func (w *World) newEntity(ids []ID, relations []RelationID) Entity {
 	w.checkLocked()
-
 	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 	entity, _ := w.storage.createEntity(newTable.id)
-
 	w.storage.registerTargets(relations)
 	return entity
 }
 
-func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, relations []RelationID) {
-	w.checkLocked()
-
-	mask := bitMask{}
-	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
-
-	startIdx := newTable.Len()
-	w.storage.createEntities(newTable, count)
-
-	if comps != nil {
-		if len(ids) != len(comps) {
-			panic("lengths of IDs and components to add do not match")
-		}
-		for i := range count {
-			for j, id := range ids {
-				newTable.Set(id, uint32(startIdx+i), comps[j])
-			}
-		}
-	}
-	w.storage.registerTargets(relations)
-}
-
 func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableID, int) {
 	w.checkLocked()
-
 	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
-
 	startIdx := newTable.Len()
 	w.storage.createEntities(newTable, count)
 	w.storage.registerTargets(relations)
-
 	return newTable.id, startIdx
 }
 

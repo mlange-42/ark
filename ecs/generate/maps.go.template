@@ -88,12 +88,11 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$args}}), rel ...Rela
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.newEntitiesWith(count, m.ids, []unsafe.Pointer{
+	m.NewBatchFn(count, func(_ Entity, {{$args2}}) {
 		{{- range $lower}}
-		unsafe.Pointer({{.}}),
+		*p{{.}} = *{{.}}
 		{{- end}}
-	}, m.relations)
+	}, rel...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.

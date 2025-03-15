@@ -55,10 +55,9 @@ func (m *Map[T]) NewEntityFn(fn func(a *T), target ...Entity) Entity {
 // If the mapped component is a relationship (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map[T]) NewBatch(count int, comp *T, target ...Entity) {
-	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	m.world.newEntitiesWith(count, m.ids[:], []unsafe.Pointer{
-		unsafe.Pointer(comp),
-	}, m.relations)
+	m.NewBatchFn(count, func(entity Entity, c *T) {
+		*c = *comp
+	}, target...)
 }
 
 // NewBatchFn creates a batch of new entities with the mapped components, running the given initializer function on each.
