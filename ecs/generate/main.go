@@ -88,10 +88,10 @@ func join(before, sep, after string, args []string) string {
 	return fmt.Sprintf("%s%s%s", before, strings.Join(args, sep), after)
 }
 
-func arguments(names []string, types []string, prefix string) string {
+func arguments(names []string, types []string, namePrefix, typePrefix string) string {
 	str := make([]string, len(names))
 	for i, name := range names {
-		str[i] = fmt.Sprintf("%s *%s%s", name, prefix, types[i])
+		str[i] = fmt.Sprintf("%s%s *%s%s", namePrefix, name, typePrefix, types[i])
 	}
 	return strings.Join(str, ", ")
 }

@@ -37,6 +37,7 @@
 - Fails with a more informative error when creating entities with missing relation targets (#169)
 - Fixes false-positive debug checks on registered queries and unsafe get (#179)
 - Fixes a bookkeeping bug when recycling relationship tables (#204)
+- Fixes garbage collected pointers when assigning components using non-`...Fn` methods (#205)
 
 ### Other
 

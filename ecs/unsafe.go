@@ -13,12 +13,12 @@ type Unsafe struct {
 
 // NewEntity creates a new entity with the given components.
 func (u Unsafe) NewEntity(ids ...ID) Entity {
-	return u.world.newEntityWith(ids, nil, nil)
+	return u.world.newEntity(ids, nil)
 }
 
 // NewEntityRel creates a new entity with the given components and relation targets.
 func (u Unsafe) NewEntityRel(ids []ID, relations ...RelationID) Entity {
-	return u.world.newEntityWith(ids, nil, relations)
+	return u.world.newEntity(ids, relations)
 }
 
 // Get returns a pointer to the given component of an [Entity].
@@ -78,7 +78,7 @@ func (u Unsafe) Add(entity Entity, comp ...ID) {
 	if !u.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	u.world.exchange(entity, comp, nil, nil, nil)
+	u.world.exchange(entity, comp, nil, nil)
 }
 
 // AddRel adds the given components and relation targets to an entity.
@@ -86,7 +86,7 @@ func (u Unsafe) AddRel(entity Entity, comps []ID, relations ...RelationID) {
 	if !u.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	u.world.exchange(entity, comps, nil, nil, relations)
+	u.world.exchange(entity, comps, nil, relations)
 }
 
 // Remove the given components from an entity.
@@ -94,7 +94,7 @@ func (u Unsafe) Remove(entity Entity, comp ...ID) {
 	if !u.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	u.world.exchange(entity, nil, comp, nil, nil)
+	u.world.exchange(entity, nil, comp, nil)
 }
 
 // Exchange the given components on entity.
@@ -102,7 +102,7 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 	if !u.world.Alive(entity) {
 		panic("can't exchange components on a dead entity")
 	}
-	u.world.exchange(entity, add, remove, nil, relations)
+	u.world.exchange(entity, add, remove, relations)
 }
 
 // IDs returns all component IDs of an entity.

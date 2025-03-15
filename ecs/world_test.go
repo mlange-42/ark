@@ -5,7 +5,6 @@ import (
 	"math/rand/v2"
 	"runtime"
 	"testing"
-	"unsafe"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -46,9 +45,9 @@ func TestWorldExchange(t *testing.T) {
 	e2 := w.NewEntity()
 	e3 := w.NewEntity()
 
-	w.exchange(e1, []ID{posID}, nil, nil, nil)
-	w.exchange(e2, []ID{posID, velID}, nil, nil, nil)
-	w.exchange(e3, []ID{posID, velID}, nil, nil, nil)
+	w.exchange(e1, []ID{posID}, nil, nil)
+	w.exchange(e2, []ID{posID, velID}, nil, nil)
+	w.exchange(e3, []ID{posID, velID}, nil, nil)
 
 	assert.True(t, w.storage.has(e1, posID))
 	assert.False(t, w.storage.has(e1, velID))
@@ -62,7 +61,7 @@ func TestWorldExchange(t *testing.T) {
 	pos = (*Position)(w.storage.get(e1, posID))
 	assert.Equal(t, pos.X, 100.0)
 
-	w.exchange(e2, nil, []ID{posID}, nil, nil)
+	w.exchange(e2, nil, []ID{posID}, nil)
 	assert.False(t, w.storage.has(e2, posID))
 	assert.True(t, w.storage.has(e2, velID))
 }
@@ -439,46 +438,27 @@ func TestWorldPointerStressTest(t *testing.T) {
 
 func TestWorldPanics(t *testing.T) {
 	w := NewWorld(128, 32)
-	posID := ComponentID[Position](&w)
-	velID := ComponentID[Velocity](&w)
+	_ = ComponentID[Position](&w)
+	_ = ComponentID[Velocity](&w)
 	childID := ComponentID[ChildOf](&w)
 
-	assert.PanicsWithValue(t, "lengths of IDs and components to add do not match", func() {
-		w.newEntityWith([]ID{posID, velID}, []unsafe.Pointer{nil}, nil)
-	})
-	assert.PanicsWithValue(t, "lengths of IDs and components to add do not match", func() {
-		w.newEntitiesWith(10, []ID{posID, velID}, []unsafe.Pointer{nil}, nil)
-	})
-
 	e := w.NewEntity()
-	w.exchange(e, nil, nil, nil, nil)
+	w.exchange(e, nil, nil, nil)
 	w.RemoveEntity(e)
 
 	assert.PanicsWithValue(t, "exchange operation has no effect, but relations were specified. Use SetRelation(s) instead", func() {
 		e := w.NewEntity()
-		w.exchange(e, nil, nil, nil, []RelationID{RelID(childID, e)})
-		w.RemoveEntity(e)
-	})
-	assert.PanicsWithValue(t, "lengths of IDs and components to add do not match", func() {
-		e := w.NewEntity()
-		w.exchange(e, []ID{posID, velID}, nil, []unsafe.Pointer{nil}, nil)
+		w.exchange(e, nil, nil, []RelationID{RelID(childID, e)})
 		w.RemoveEntity(e)
 	})
 
 	e = w.NewEntity()
-	w.exchangeBatch(nil, nil, nil, nil, nil, nil)
+	w.exchangeBatch(nil, nil, nil, nil, nil)
 	w.RemoveEntity(e)
 
 	assert.PanicsWithValue(t, "exchange operation has no effect, but relations were specified. Use SetRelationBatch instead", func() {
 		e := w.NewEntity()
-		w.exchangeBatch(nil, nil, nil, nil, []RelationID{RelID(childID, e)}, nil)
-		w.RemoveEntity(e)
-	})
-
-	assert.PanicsWithValue(t, "lengths of IDs and components to add do not match", func() {
-		e := w.NewEntity()
-		filter := NewFilter0(&w)
-		w.exchangeBatch(filter.Batch(), []ID{posID, velID}, nil, []unsafe.Pointer{nil}, nil, nil)
+		w.exchangeBatch(nil, nil, nil, []RelationID{RelID(childID, e)}, nil)
 		w.RemoveEntity(e)
 	})
 }

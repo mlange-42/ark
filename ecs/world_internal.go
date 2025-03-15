@@ -2,64 +2,28 @@ package ecs
 
 import (
 	"reflect"
-	"unsafe"
 )
 
-func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []RelationID) Entity {
+func (w *World) newEntity(ids []ID, relations []RelationID) Entity {
 	w.checkLocked()
-
 	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
-	entity, idx := w.storage.createEntity(newTable.id)
-
-	if comps != nil {
-		if len(ids) != len(comps) {
-			panic("lengths of IDs and components to add do not match")
-		}
-		for i, id := range ids {
-			newTable.Set(id, idx, comps[i])
-		}
-	}
+	entity, _ := w.storage.createEntity(newTable.id)
 	w.storage.registerTargets(relations)
 	return entity
 }
 
-func (w *World) newEntitiesWith(count int, ids []ID, comps []unsafe.Pointer, relations []RelationID) {
-	w.checkLocked()
-
-	mask := bitMask{}
-	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
-
-	startIdx := newTable.Len()
-	w.storage.createEntities(newTable, count)
-
-	if comps != nil {
-		if len(ids) != len(comps) {
-			panic("lengths of IDs and components to add do not match")
-		}
-		for i := range count {
-			for j, id := range ids {
-				newTable.Set(id, uint32(startIdx+i), comps[j])
-			}
-		}
-	}
-	w.storage.registerTargets(relations)
-}
-
 func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableID, int) {
 	w.checkLocked()
-
 	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
-
 	startIdx := newTable.Len()
 	w.storage.createEntities(newTable, count)
 	w.storage.registerTargets(relations)
-
 	return newTable.id, startIdx
 }
 
-func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) {
+func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []RelationID) {
 	w.checkLocked()
 
 	if !w.Alive(entity) {
@@ -86,14 +50,6 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 			newTable.Set(id, newIndex, comp)
 		}
 	}
-	if addComps != nil {
-		if len(add) != len(addComps) {
-			panic("lengths of IDs and components to add do not match")
-		}
-		for i, id := range add {
-			newTable.Set(id, newIndex, addComps[i])
-		}
-	}
 
 	swapped := oldTable.Remove(index.row)
 
@@ -107,7 +63,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 }
 
 func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
-	addComps []unsafe.Pointer, relations []RelationID, fn func(table tableID, start, len int)) {
+	relations []RelationID, fn func(table tableID, start, len int)) {
 	w.checkLocked()
 
 	if len(add) == 0 && len(rem) == 0 {
@@ -131,14 +87,14 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 		if tableLen == 0 {
 			continue
 		}
-		t, start, len := w.exchangeTable(table, int(tableLen), add, rem, addComps, relations)
+		t, start, len := w.exchangeTable(table, int(tableLen), add, rem, relations)
 		if fn != nil {
 			fn(t, start, len)
 		}
 	}
 }
 
-func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) (tableID, int, int) {
+func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, relations []RelationID) (tableID, int, int) {
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
 	oldIDs := oldArchetype.components
@@ -163,16 +119,6 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 			oldCol := oldTable.GetColumn(id)
 			newCol := newTable.GetColumn(id)
 			newCol.SetLast(oldCol, newTable.len, uint32(oldLen))
-		}
-	}
-	if addComps != nil {
-		if len(add) != len(addComps) {
-			panic("lengths of IDs and components to add do not match")
-		}
-		for i := range count {
-			for j, id := range add {
-				newTable.Set(id, uint32(startIdx+i), addComps[j])
-			}
 		}
 	}
 
