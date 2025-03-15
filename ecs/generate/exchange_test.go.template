@@ -15,7 +15,7 @@ import (
 {{- $lower := lowerLetters . -}}
 
 {{- $generics := join "[Comp" ", Comp" "]" $upper -}}
-{{- $args := arguments $lower $upper "Comp" -}}
+{{- $args := arguments $lower $upper "" "Comp" -}}
 {{- $mapArgs := join "&Comp" "{}, &Comp" "{}" $upper -}}
 {{- $comps := join "" ", " "" $lower -}}
 

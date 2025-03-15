@@ -13,7 +13,8 @@ import "unsafe"
 {{- $genericsShort := join "[" ", " "]" $upper -}}
 {{- $return := join "" ", " "" $lower -}}
 {{- $returnTypes := join "(*" ", *" ")" $upper -}}
-{{- $args := arguments $lower $upper "" -}}
+{{- $args := arguments $lower $upper "" "" -}}
+{{- $args2 := arguments $lower $upper "p" "" -}}
 {{- $mask := join "id" ", id" "" $upper -}}
 
 // Map{{.}} is a mapper to access {{.}} components of an entity.
@@ -53,12 +54,11 @@ func NewMap{{.}}{{$generics}}(world *World) Map{{.}}{{$genericsShort}} {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
+	return m.NewEntityFn(func({{$args2}}) {
 		{{- range $lower}}
-		unsafe.Pointer({{.}}),
+		*p{{.}} = *{{.}}
 		{{- end}}
-	}, m.relations)
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -70,7 +70,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...Relation) Entit
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$args}}), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)

@@ -33,10 +33,9 @@ func NewMap1[A any](world *World) Map1[A] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A) {
+		*pa = *a
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -48,7 +47,7 @@ func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -305,11 +304,10 @@ func NewMap2[A any, B any](world *World) Map2[A, B] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B) {
+		*pa = *a
+		*pb = *b
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -321,7 +319,7 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -605,12 +603,11 @@ func NewMap3[A any, B any, C any](world *World) Map3[A, B, C] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B, pc *C) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -622,7 +619,7 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -931,13 +928,12 @@ func NewMap4[A any, B any, C any, D any](world *World) Map4[A, B, C, D] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -949,7 +945,7 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) En
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1283,14 +1279,13 @@ func NewMap5[A any, B any, C any, D any, E any](world *World) Map5[A, B, C, D, E
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -1302,7 +1297,7 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1661,15 +1656,14 @@ func NewMap6[A any, B any, C any, D any, E any, F any](world *World) Map6[A, B, 
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -1681,7 +1675,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2065,16 +2059,15 @@ func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) Map7
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -2086,7 +2079,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2495,17 +2488,16 @@ func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *Worl
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -2517,7 +2509,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2951,18 +2943,17 @@ func NewMap9[A any, B any, C any, D any, E any, F any, G any, H any, I any](worl
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -2974,7 +2965,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntity(a *A, b *B, c *C, d *D, e *E
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -3433,19 +3424,18 @@ func NewMap10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-		unsafe.Pointer(j),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+		*pj = *j
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -3457,7 +3447,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntity(a *A, b *B, c *C, d *D, 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -3941,20 +3931,19 @@ func NewMap11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-		unsafe.Pointer(j),
-		unsafe.Pointer(k),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+		*pj = *j
+		*pk = *k
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -3966,7 +3955,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntity(a *A, b *B, c *C, d *
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -4475,21 +4464,20 @@ func NewMap12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) Entity {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	return m.world.newEntityWith(m.ids, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-		unsafe.Pointer(j),
-		unsafe.Pointer(k),
-		unsafe.Pointer(l),
-	}, m.relations)
+	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K, pl *L) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+		*pj = *j
+		*pk = *k
+		*pl = *l
+	}, rel...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -4501,7 +4489,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntity(a *A, b *B, c *C, 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) Entity {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	entity := m.world.newEntityWith(m.ids, nil, m.relations)
+	entity := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)

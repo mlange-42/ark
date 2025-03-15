@@ -444,9 +444,6 @@ func TestWorldPanics(t *testing.T) {
 	childID := ComponentID[ChildOf](&w)
 
 	assert.PanicsWithValue(t, "lengths of IDs and components to add do not match", func() {
-		w.newEntityWith([]ID{posID, velID}, []unsafe.Pointer{nil}, nil)
-	})
-	assert.PanicsWithValue(t, "lengths of IDs and components to add do not match", func() {
 		w.newEntitiesWith(10, []ID{posID, velID}, []unsafe.Pointer{nil}, nil)
 	})
 

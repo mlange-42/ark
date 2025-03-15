@@ -29,8 +29,9 @@ func NewMap[T any](w *World) Map[T] {
 // If the mapped component is a relationship (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map[T]) NewEntity(comp *T, target ...Entity) Entity {
-	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	return m.world.newEntityWith(m.ids[:], []unsafe.Pointer{unsafe.Pointer(comp)}, m.relations)
+	return m.NewEntityFn(func(a *T) {
+		*a = *comp
+	}, target...)
 }
 
 // NewEntityFn creates a new entity with the mapped component and runs a callback instead of using a component for initialization.
@@ -42,7 +43,7 @@ func (m *Map[T]) NewEntity(comp *T, target ...Entity) Entity {
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) NewEntityFn(fn func(a *T), target ...Entity) Entity {
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	entity := m.world.newEntityWith(m.ids[:], nil, m.relations)
+	entity := m.world.newEntity(m.ids[:], m.relations)
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}

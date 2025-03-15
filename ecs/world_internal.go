@@ -5,21 +5,13 @@ import (
 	"unsafe"
 )
 
-func (w *World) newEntityWith(ids []ID, comps []unsafe.Pointer, relations []RelationID) Entity {
+func (w *World) newEntity(ids []ID, relations []RelationID) Entity {
 	w.checkLocked()
 
 	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
-	entity, idx := w.storage.createEntity(newTable.id)
+	entity, _ := w.storage.createEntity(newTable.id)
 
-	if comps != nil {
-		if len(ids) != len(comps) {
-			panic("lengths of IDs and components to add do not match")
-		}
-		for i, id := range ids {
-			newTable.Set(id, idx, comps[i])
-		}
-	}
 	w.storage.registerTargets(relations)
 	return entity
 }

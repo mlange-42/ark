@@ -13,12 +13,12 @@ type Unsafe struct {
 
 // NewEntity creates a new entity with the given components.
 func (u Unsafe) NewEntity(ids ...ID) Entity {
-	return u.world.newEntityWith(ids, nil, nil)
+	return u.world.newEntity(ids, nil)
 }
 
 // NewEntityRel creates a new entity with the given components and relation targets.
 func (u Unsafe) NewEntityRel(ids []ID, relations ...RelationID) Entity {
-	return u.world.newEntityWith(ids, nil, relations)
+	return u.world.newEntity(ids, relations)
 }
 
 // Get returns a pointer to the given component of an [Entity].
