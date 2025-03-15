@@ -1,7 +1,5 @@
 package ecs
 
-import "unsafe"
-
 // Map is a mapper to access and manipulate components of an entity.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
@@ -179,7 +177,7 @@ func (m *Map[T]) Set(entity Entity, comp *T) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 
 	index := &m.world.storage.entities[entity.id]
-	m.storage.columns[index.table].Set(index.row, unsafe.Pointer(comp))
+	*(*T)(m.storage.columns[index.table].Get(uintptr(index.row))) = *comp
 }
 
 // AddBatch adds the mapped component to all entities matching the given batch filter.
@@ -187,10 +185,9 @@ func (m *Map[T]) Set(entity Entity, comp *T) {
 // If the mapped component is a relationship (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map[T]) AddBatch(batch *Batch, comp *T, target ...Entity) {
-	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	m.world.exchangeBatch(batch, m.ids[:], nil, []unsafe.Pointer{
-		unsafe.Pointer(comp),
-	}, m.relations, nil)
+	m.AddBatchFn(batch, func(_ Entity, a *T) {
+		*a = *comp
+	}, target...)
 }
 
 // AddBatchFn adds the mapped component to all entities matching the given batch filter,
@@ -220,7 +217,7 @@ func (m *Map[T]) AddBatchFn(batch *Batch, fn func(entity Entity, comp *T), targe
 			m.world.unlock(lock)
 		}
 	}
-	m.world.exchangeBatch(batch, m.ids[:], nil, nil, m.relations, process)
+	m.world.exchangeBatch(batch, m.ids[:], nil, m.relations, process)
 }
 
 // Remove the mapped component from the given entity.

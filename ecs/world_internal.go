@@ -2,7 +2,6 @@ package ecs
 
 import (
 	"reflect"
-	"unsafe"
 )
 
 func (w *World) newEntity(ids []ID, relations []RelationID) Entity {
@@ -64,7 +63,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []Relation
 }
 
 func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
-	addComps []unsafe.Pointer, relations []RelationID, fn func(table tableID, start, len int)) {
+	relations []RelationID, fn func(table tableID, start, len int)) {
 	w.checkLocked()
 
 	if len(add) == 0 && len(rem) == 0 {
@@ -88,14 +87,14 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 		if tableLen == 0 {
 			continue
 		}
-		t, start, len := w.exchangeTable(table, int(tableLen), add, rem, addComps, relations)
+		t, start, len := w.exchangeTable(table, int(tableLen), add, rem, relations)
 		if fn != nil {
 			fn(t, start, len)
 		}
 	}
 }
 
-func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) (tableID, int, int) {
+func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, relations []RelationID) (tableID, int, int) {
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
 	oldIDs := oldArchetype.components
@@ -120,16 +119,6 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, a
 			oldCol := oldTable.GetColumn(id)
 			newCol := newTable.GetColumn(id)
 			newCol.SetLast(oldCol, newTable.len, uint32(oldLen))
-		}
-	}
-	if addComps != nil {
-		if len(add) != len(addComps) {
-			panic("lengths of IDs and components to add do not match")
-		}
-		for i := range count {
-			for j, id := range add {
-				newTable.Set(id, uint32(startIdx+i), addComps[j])
-			}
 		}
 	}
 
