@@ -9,7 +9,6 @@ import (
 const mask64TotalBits = 64
 
 // bitMask is a 64 bit bit-mask.
-// It is also a [Filter] for including certain components.
 type bitMask64 struct {
 	bits uint64 // 64 bits of the mask
 }

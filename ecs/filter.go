@@ -1,17 +1,17 @@
 package ecs
 
-// Filter is a filter for components.
+// UnsafeFilter is a filter for components.
 //
 // It is significantly slower than type-safe generic filters like [Filter2],
 // and should only be used when component types are not known at compile time.
-type Filter struct {
+type UnsafeFilter struct {
 	world *World
 	filter
 }
 
-// NewFilter creates a new [Filter] matching the given components.
-func NewFilter(world *World, ids ...ID) Filter {
-	return Filter{
+// NewUnsafeFilter creates a new [UnsafeFilter] matching the given components.
+func NewUnsafeFilter(world *World, ids ...ID) UnsafeFilter {
+	return UnsafeFilter{
 		world:  world,
 		filter: newFilter(ids...),
 	}
@@ -19,21 +19,32 @@ func NewFilter(world *World, ids ...ID) Filter {
 
 // Without specifies components to exclude.
 // Resets previous excludes.
-func (f Filter) Without(ids ...ID) Filter {
+func (f UnsafeFilter) Without(ids ...ID) UnsafeFilter {
 	f.filter = f.filter.Without(ids...)
 	return f
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
-func (f Filter) Exclusive() Filter {
+func (f UnsafeFilter) Exclusive() UnsafeFilter {
 	f.filter = f.filter.Exclusive()
 	return f
 }
 
 // Query returns a new query matching this filter and the given entity relation targets.
-func (f Filter) Query(relations ...RelationID) Query {
-	return newQuery(f.world, f.filter, relations)
+func (f UnsafeFilter) Query(relations ...RelationID) UnsafeQuery {
+	return UnsafeQuery{
+		world:     f.world,
+		filter:    f.filter,
+		relations: relations,
+		lock:      f.world.lock(),
+		cursor: cursor{
+			archetype: -1,
+			table:     -1,
+			index:     0,
+			maxIndex:  -1,
+		},
+	}
 }
 
 type filter struct {

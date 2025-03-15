@@ -27,7 +27,7 @@ func TestQuery(t *testing.T) {
 	}
 
 	// normal filter
-	filter := NewFilter(&w, compA, compB, compC)
+	filter := NewUnsafeFilter(&w, compA, compB, compC)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -41,7 +41,7 @@ func TestQuery(t *testing.T) {
 	assert.Equal(t, cnt, 2*n)
 
 	// filter without
-	filter = NewFilter(&w, compA, compB, compC).Without(posID)
+	filter = NewUnsafeFilter(&w, compA, compB, compC).Without(posID)
 	query = filter.Query()
 	assert.Equal(t, n, query.Count())
 
@@ -57,7 +57,7 @@ func TestQuery(t *testing.T) {
 	assert.Equal(t, cnt, n)
 
 	// filter exclusive
-	filter = NewFilter(&w, compA, compB, compC).Exclusive()
+	filter = NewUnsafeFilter(&w, compA, compB, compC).Exclusive()
 	query = filter.Query()
 	assert.Equal(t, n, query.Count())
 
@@ -84,7 +84,7 @@ func TestQueryEmpty(t *testing.T) {
 		u.Add(e1, posID)
 	}
 
-	filter := NewFilter(&w, compA, compB, compC)
+	filter := NewUnsafeFilter(&w, compA, compB, compC)
 	query := filter.Query()
 	assert.Equal(t, 0, query.Count())
 
@@ -123,7 +123,7 @@ func TestQueryRelations(t *testing.T) {
 	}
 
 	// normal filter
-	filter := NewFilter(&w, childID, compB, compC)
+	filter := NewUnsafeFilter(&w, childID, compB, compC)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -136,7 +136,7 @@ func TestQueryRelations(t *testing.T) {
 	assert.Equal(t, cnt, 2*n)
 
 	// relation filter
-	filter = NewFilter(&w, childID, compB, compC)
+	filter = NewUnsafeFilter(&w, childID, compB, compC)
 	query = filter.Query(RelID(childID, parent2))
 	assert.Equal(t, n, query.Count())
 
