@@ -5,7 +5,7 @@
 ### Breaking changes
 
 - Removes redundant information from `stats`: `stats.World.ComponentCount` and `stats.Archetype.Components` (#192)
-- Unsafe `Filter` and `Query` renamed to `UnsafeFilter` and ``UnsafeQuery` (#206)
+- Unsafe `Filter` and `Query` renamed to `UnsafeFilter` and `UnsafeQuery` (#206)
 
 ### Features
 
