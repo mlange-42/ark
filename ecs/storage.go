@@ -240,9 +240,11 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 	}
 
 	var newTableID tableID
+	recycled := false
 	if id, ok := archetype.GetFreeTable(); ok {
 		newTableID = id
 		s.tables[newTableID].recycle(targets, relations)
+		recycled = true
 	} else {
 		newTableID = tableID(len(s.tables))
 		cap := s.config.initialCapacity
@@ -256,13 +258,15 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 	archetype.AddTable(&s.tables[newTableID])
 
 	table := &s.tables[newTableID]
-	for i := range s.components {
-		id := ID{id: uint8(i)}
-		comps := &s.components[i]
-		if archetype.mask.Get(id) {
-			comps.columns = append(comps.columns, table.GetColumn(id))
-		} else {
-			comps.columns = append(comps.columns, nil)
+	if !recycled {
+		for i := range s.components {
+			id := ID{id: uint8(i)}
+			comps := &s.components[i]
+			if archetype.mask.Get(id) {
+				comps.columns = append(comps.columns, table.GetColumn(id))
+			} else {
+				comps.columns = append(comps.columns, nil)
+			}
 		}
 	}
 
