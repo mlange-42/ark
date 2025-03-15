@@ -13,6 +13,7 @@ import "unsafe"
 {{- $genericsShort := join "[" ", " "]" $upper -}}
 {{- $return := join "(*" ", *" ")" $upper -}}
 {{- $args := arguments $lower $upper "" "" -}}
+{{- $args2 := arguments $lower $upper "p" "" -}}
 {{- $mask := join "id" ", id" "" $upper -}}
 
 // Exchange{{.}} allows to exchange components of entities.
@@ -58,12 +59,11 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Removes(components ...Comp) *Exchange
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
+	ex.AddFn(entity, func({{$args2}}) {
 		{{- range $lower}}
-		unsafe.Pointer({{.}}),
+		*p{{.}} = *{{.}}
 		{{- end}}
-	}, ex.relations)
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -75,7 +75,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}}), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -83,7 +83,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}
 
 // Remove the components previously specified with [Exchange{{.}}.Removes] from the given entity.
 func (ex *Exchange{{.}}{{$genericsShort}}) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil, nil)
+	ex.world.exchange(entity, nil, ex.remove, nil)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -92,12 +92,11 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
+	ex.ExchangeFn(entity, func({{$args2}}) {
 		{{- range $lower}}
-		unsafe.Pointer({{.}}),
+		*p{{.}} = *{{.}}
 		{{- end}}
-	}, ex.relations)
+	}, rel...)
 }
 
 // ExchangeFn performs the exchange on the given entity, adding the provided components
@@ -111,7 +110,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, re
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeFn(entity Entity, fn func({{$args}}), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}

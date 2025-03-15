@@ -154,10 +154,9 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A) {
+		*pa = *a
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -169,7 +168,7 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -236,7 +235,7 @@ func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...
 
 // Remove the mapped components from the given entity.
 func (m *Map1[A]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -440,11 +439,10 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B) {
+		*pa = *a
+		*pb = *b
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -456,7 +454,7 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -529,7 +527,7 @@ func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B)
 
 // Remove the mapped components from the given entity.
 func (m *Map2[A, B]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -754,12 +752,11 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B, pc *C) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -771,7 +768,7 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -850,7 +847,7 @@ func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b 
 
 // Remove the mapped components from the given entity.
 func (m *Map3[A, B, C]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -1094,13 +1091,12 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -1112,7 +1108,7 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1197,7 +1193,7 @@ func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A,
 
 // Remove the mapped components from the given entity.
 func (m *Map4[A, B, C, D]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -1460,14 +1456,13 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -1479,7 +1474,7 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1570,7 +1565,7 @@ func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a 
 
 // Remove the mapped components from the given entity.
 func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -1852,15 +1847,14 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -1872,7 +1866,7 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1969,7 +1963,7 @@ func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity,
 
 // Remove the mapped components from the given entity.
 func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -2270,16 +2264,15 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -2291,7 +2284,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2394,7 +2387,7 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Enti
 
 // Remove the mapped components from the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -2714,17 +2707,16 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -2736,7 +2728,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2845,7 +2837,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity E
 
 // Remove the mapped components from the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -3184,18 +3176,17 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -3207,7 +3198,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Add(entity Entity, a *A, b *B, c *C, d
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -3322,7 +3313,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(entit
 
 // Remove the mapped components from the given entity.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -3680,19 +3671,18 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-		unsafe.Pointer(j),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+		*pj = *j
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -3704,7 +3694,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Add(entity Entity, a *A, b *B, c *
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -3825,7 +3815,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(e
 
 // Remove the mapped components from the given entity.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -4202,20 +4192,19 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-		unsafe.Pointer(j),
-		unsafe.Pointer(k),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+		*pj = *j
+		*pk = *k
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -4227,7 +4216,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Add(entity Entity, a *A, b *B, 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -4354,7 +4343,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn fun
 
 // Remove the mapped components from the given entity.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -4750,21 +4739,20 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) HasAll(entity Entity) bool {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
-	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-		unsafe.Pointer(i),
-		unsafe.Pointer(j),
-		unsafe.Pointer(k),
-		unsafe.Pointer(l),
-	}, m.relations)
+	m.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K, pl *L) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+		*pi = *i
+		*pj = *j
+		*pk = *k
+		*pl = *l
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -4776,7 +4764,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Add(entity Entity, a *A, b *
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
 	m.relations = relations(rel).toRelations(m.world, m.ids, m.relations, 0)
-	m.world.exchange(entity, m.ids, nil, nil, m.relations)
+	m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -4909,7 +4897,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn 
 
 // Remove the mapped components from the given entity.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil, nil)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,

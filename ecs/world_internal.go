@@ -24,7 +24,7 @@ func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableI
 	return newTable.id, startIdx
 }
 
-func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Pointer, relations []RelationID) {
+func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []RelationID) {
 	w.checkLocked()
 
 	if !w.Alive(entity) {
@@ -49,14 +49,6 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, addComps []unsafe.Po
 		if mask.Get(id) {
 			comp := oldTable.Get(id, uintptr(index.row))
 			newTable.Set(id, newIndex, comp)
-		}
-	}
-	if addComps != nil {
-		if len(add) != len(addComps) {
-			panic("lengths of IDs and components to add do not match")
-		}
-		for i, id := range add {
-			newTable.Set(id, newIndex, addComps[i])
 		}
 	}
 

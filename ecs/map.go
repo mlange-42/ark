@@ -55,8 +55,8 @@ func (m *Map[T]) NewEntityFn(fn func(a *T), target ...Entity) Entity {
 // If the mapped component is a relationship (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map[T]) NewBatch(count int, comp *T, target ...Entity) {
-	m.NewBatchFn(count, func(entity Entity, c *T) {
-		*c = *comp
+	m.NewBatchFn(count, func(entity Entity, a *T) {
+		*a = *comp
 	}, target...)
 }
 
@@ -145,11 +145,9 @@ func (m *Map[T]) HasUnchecked(entity Entity) bool {
 // If the mapped component is a relationship (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map[T]) Add(entity Entity, comp *T, target ...Entity) {
-	if !m.world.Alive(entity) {
-		panic("can't add a component to a dead entity")
-	}
-	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	m.world.exchange(entity, m.ids[:], nil, []unsafe.Pointer{unsafe.Pointer(comp)}, m.relations)
+	m.AddFn(entity, func(a *T) {
+		*a = *comp
+	}, target...)
 }
 
 // AddFn adds the mapped component to the given entity and runs a callback instead of using a component for initialization.
@@ -164,7 +162,7 @@ func (m *Map[T]) AddFn(entity Entity, fn func(a *T), target ...Entity) {
 		panic("can't add a component to a dead entity")
 	}
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	m.world.exchange(entity, m.ids[:], nil, nil, m.relations)
+	m.world.exchange(entity, m.ids[:], nil, m.relations)
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}
@@ -230,7 +228,7 @@ func (m *Map[T]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove a component from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids[:], nil, nil)
+	m.world.exchange(entity, nil, m.ids[:], nil)
 }
 
 // RemoveBatch removes the mapped component from all entities matching the given batch filter,

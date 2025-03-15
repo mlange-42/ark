@@ -43,10 +43,9 @@ func (ex *Exchange1[A]) Removes(components ...Comp) *Exchange1[A] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange1[A]) Add(entity Entity, a *A, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-	}, ex.relations)
+	ex.AddFn(entity, func(pa *A) {
+		*pa = *a
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -58,7 +57,7 @@ func (ex *Exchange1[A]) Add(entity Entity, a *A, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -66,7 +65,7 @@ func (ex *Exchange1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 
 // Remove the components previously specified with [Exchange1.Removes] from the given entity.
 func (ex *Exchange1[A]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil, nil)
+	ex.world.exchange(entity, nil, ex.remove, nil)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -75,10 +74,9 @@ func (ex *Exchange1[A]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange1[A]) Exchange(entity Entity, a *A, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
-		unsafe.Pointer(a),
-	}, ex.relations)
+	ex.ExchangeFn(entity, func(pa *A) {
+		*pa = *a
+	}, rel...)
 }
 
 // ExchangeFn performs the exchange on the given entity, adding the provided components
@@ -92,7 +90,7 @@ func (ex *Exchange1[A]) Exchange(entity Entity, a *A, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) ExchangeFn(entity Entity, fn func(a *A), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -223,11 +221,10 @@ func (ex *Exchange2[A, B]) Removes(components ...Comp) *Exchange2[A, B] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-	}, ex.relations)
+	ex.AddFn(entity, func(pa *A, pb *B) {
+		*pa = *a
+		*pb = *b
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -239,7 +236,7 @@ func (ex *Exchange2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -247,7 +244,7 @@ func (ex *Exchange2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Rela
 
 // Remove the components previously specified with [Exchange2.Removes] from the given entity.
 func (ex *Exchange2[A, B]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil, nil)
+	ex.world.exchange(entity, nil, ex.remove, nil)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -256,11 +253,10 @@ func (ex *Exchange2[A, B]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-	}, ex.relations)
+	ex.ExchangeFn(entity, func(pa *A, pb *B) {
+		*pa = *a
+		*pb = *b
+	}, rel...)
 }
 
 // ExchangeFn performs the exchange on the given entity, adding the provided components
@@ -274,7 +270,7 @@ func (ex *Exchange2[A, B]) Exchange(entity Entity, a *A, b *B, rel ...Relation) 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) ExchangeFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -413,12 +409,11 @@ func (ex *Exchange3[A, B, C]) Removes(components ...Comp) *Exchange3[A, B, C] {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-	}, ex.relations)
+	ex.AddFn(entity, func(pa *A, pb *B, pc *C) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -430,7 +425,7 @@ func (ex *Exchange3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relati
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -438,7 +433,7 @@ func (ex *Exchange3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), re
 
 // Remove the components previously specified with [Exchange3.Removes] from the given entity.
 func (ex *Exchange3[A, B, C]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil, nil)
+	ex.world.exchange(entity, nil, ex.remove, nil)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -447,12 +442,11 @@ func (ex *Exchange3[A, B, C]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-	}, ex.relations)
+	ex.ExchangeFn(entity, func(pa *A, pb *B, pc *C) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+	}, rel...)
 }
 
 // ExchangeFn performs the exchange on the given entity, adding the provided components
@@ -466,7 +460,7 @@ func (ex *Exchange3[A, B, C]) Exchange(entity Entity, a *A, b *B, c *C, rel ...R
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -611,13 +605,12 @@ func (ex *Exchange4[A, B, C, D]) Removes(components ...Comp) *Exchange4[A, B, C,
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-	}, ex.relations)
+	ex.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -629,7 +622,7 @@ func (ex *Exchange4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -637,7 +630,7 @@ func (ex *Exchange4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, 
 
 // Remove the components previously specified with [Exchange4.Removes] from the given entity.
 func (ex *Exchange4[A, B, C, D]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil, nil)
+	ex.world.exchange(entity, nil, ex.remove, nil)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -646,13 +639,12 @@ func (ex *Exchange4[A, B, C, D]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-	}, ex.relations)
+	ex.ExchangeFn(entity, func(pa *A, pb *B, pc *C, pd *D) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+	}, rel...)
 }
 
 // ExchangeFn performs the exchange on the given entity, adding the provided components
@@ -666,7 +658,7 @@ func (ex *Exchange4[A, B, C, D]) Exchange(entity Entity, a *A, b *B, c *C, d *D,
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -817,14 +809,13 @@ func (ex *Exchange5[A, B, C, D, E]) Removes(components ...Comp) *Exchange5[A, B,
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-	}, ex.relations)
+	ex.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -836,7 +827,7 @@ func (ex *Exchange5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -844,7 +835,7 @@ func (ex *Exchange5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *
 
 // Remove the components previously specified with [Exchange5.Removes] from the given entity.
 func (ex *Exchange5[A, B, C, D, E]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil, nil)
+	ex.world.exchange(entity, nil, ex.remove, nil)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -853,14 +844,13 @@ func (ex *Exchange5[A, B, C, D, E]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-	}, ex.relations)
+	ex.ExchangeFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+	}, rel...)
 }
 
 // ExchangeFn performs the exchange on the given entity, adding the provided components
@@ -874,7 +864,7 @@ func (ex *Exchange5[A, B, C, D, E]) Exchange(entity Entity, a *A, b *B, c *C, d 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -1031,15 +1021,14 @@ func (ex *Exchange6[A, B, C, D, E, F]) Removes(components ...Comp) *Exchange6[A,
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-	}, ex.relations)
+	ex.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -1051,7 +1040,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -1059,7 +1048,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, 
 
 // Remove the components previously specified with [Exchange6.Removes] from the given entity.
 func (ex *Exchange6[A, B, C, D, E, F]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil, nil)
+	ex.world.exchange(entity, nil, ex.remove, nil)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -1068,15 +1057,14 @@ func (ex *Exchange6[A, B, C, D, E, F]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-	}, ex.relations)
+	ex.ExchangeFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+	}, rel...)
 }
 
 // ExchangeFn performs the exchange on the given entity, adding the provided components
@@ -1090,7 +1078,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) Exchange(entity Entity, a *A, b *B, c *C,
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -1253,16 +1241,15 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Removes(components ...Comp) *Exchange7
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-	}, ex.relations)
+	ex.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -1274,7 +1261,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -1282,7 +1269,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *
 
 // Remove the components previously specified with [Exchange7.Removes] from the given entity.
 func (ex *Exchange7[A, B, C, D, E, F, G]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil, nil)
+	ex.world.exchange(entity, nil, ex.remove, nil)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -1291,16 +1278,15 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-	}, ex.relations)
+	ex.ExchangeFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+	}, rel...)
 }
 
 // ExchangeFn performs the exchange on the given entity, adding the provided components
@@ -1314,7 +1300,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Exchange(entity Entity, a *A, b *B, c 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -1483,17 +1469,16 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Removes(components ...Comp) *Exchan
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-	}, ex.relations)
+	ex.AddFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+	}, rel...)
 }
 
 // AddFn adds the mapped components to the given entity and runs a callback instead of using components for initialization.
@@ -1505,7 +1490,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, nil, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -1513,7 +1498,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, 
 
 // Remove the components previously specified with [Exchange8.Removes] from the given entity.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil, nil)
+	ex.world.exchange(entity, nil, ex.remove, nil)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -1522,17 +1507,16 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, []unsafe.Pointer{
-		unsafe.Pointer(a),
-		unsafe.Pointer(b),
-		unsafe.Pointer(c),
-		unsafe.Pointer(d),
-		unsafe.Pointer(e),
-		unsafe.Pointer(f),
-		unsafe.Pointer(g),
-		unsafe.Pointer(h),
-	}, ex.relations)
+	ex.ExchangeFn(entity, func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H) {
+		*pa = *a
+		*pb = *b
+		*pc = *c
+		*pd = *d
+		*pe = *e
+		*pf = *f
+		*pg = *g
+		*ph = *h
+	}, rel...)
 }
 
 // ExchangeFn performs the exchange on the given entity, adding the provided components
@@ -1546,7 +1530,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Exchange(entity Entity, a *A, b *B,
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	ex.relations = relations(rel).toRelations(ex.world, ex.ids, ex.relations, 0)
-	ex.world.exchange(entity, ex.ids, ex.remove, nil, ex.relations)
+	ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
