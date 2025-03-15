@@ -12,20 +12,20 @@ func TestFilter(t *testing.T) {
 	id3 := ID{2}
 
 	tests := []struct {
-		filter  Filter
+		filter  UnsafeFilter
 		mask    bitMask
 		matches bool
 	}{
-		{NewFilter(nil, id1, id2), newMask(id1, id2, id3), true},
-		{NewFilter(nil, id1, id2), newMask(id1), false},
+		{NewUnsafeFilter(nil, id1, id2), newMask(id1, id2, id3), true},
+		{NewUnsafeFilter(nil, id1, id2), newMask(id1), false},
 
-		{NewFilter(nil, id1, id2).Without(id3), newMask(id1, id2), true},
-		{NewFilter(nil, id1, id2).Without(id3), newMask(id1, id2, id3), false},
-		{NewFilter(nil, id1, id2).Without(id3), newMask(id1), false},
+		{NewUnsafeFilter(nil, id1, id2).Without(id3), newMask(id1, id2), true},
+		{NewUnsafeFilter(nil, id1, id2).Without(id3), newMask(id1, id2, id3), false},
+		{NewUnsafeFilter(nil, id1, id2).Without(id3), newMask(id1), false},
 
-		{NewFilter(nil, id1, id2).Exclusive(), newMask(id1, id2), true},
-		{NewFilter(nil, id1, id2).Exclusive(), newMask(id1, id2, id3), false},
-		{NewFilter(nil, id1, id2).Exclusive(), newMask(id1), false},
+		{NewUnsafeFilter(nil, id1, id2).Exclusive(), newMask(id1, id2), true},
+		{NewUnsafeFilter(nil, id1, id2).Exclusive(), newMask(id1, id2, id3), false},
+		{NewUnsafeFilter(nil, id1, id2).Exclusive(), newMask(id1), false},
 	}
 
 	for _, test := range tests {
@@ -34,9 +34,9 @@ func TestFilter(t *testing.T) {
 }
 
 func BenchmarkFilterCopy(b *testing.B) {
-	f := NewFilter(nil, id(1))
+	f := NewUnsafeFilter(nil, id(1))
 
-	var ff Filter
+	var ff UnsafeFilter
 	for b.Loop() {
 		ff = f
 	}

@@ -35,7 +35,7 @@ func TestUnsafeNewEntity(t *testing.T) {
 }
 
 func TestUnsafeQuery(t *testing.T) {
-	filter := ecs.NewFilter(&world, posID, velID)
+	filter := ecs.NewUnsafeFilter(&world, posID, velID)
 
 	query := filter.Query()
 	for query.Next() {

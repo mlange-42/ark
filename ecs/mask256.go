@@ -10,7 +10,6 @@ const mask256TotalBits = 256
 const wordSize = 64
 
 // bitMask is a 256 bit bit-mask.
-// It is also a [Filter] for including certain components.
 type bitMask256 struct {
 	bits [4]uint64 // 4x 64 bits of the mask
 }

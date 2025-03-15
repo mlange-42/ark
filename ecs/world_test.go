@@ -119,7 +119,7 @@ func TestWorldNewEntities(t *testing.T) {
 
 	w.NewEntities(n, nil)
 
-	filter := NewFilter(&w)
+	filter := NewUnsafeFilter(&w)
 	query := filter.Query()
 	cnt = 0
 	for query.Next() {
@@ -328,7 +328,7 @@ func TestWorldReset(t *testing.T) {
 	assert.Equal(t, 2, len(world.storage.entities))
 	assert.Equal(t, 2, len(world.storage.isTarget))
 
-	query := NewFilter(&world).Query()
+	query := NewUnsafeFilter(&world).Query()
 	assert.Equal(t, 0, query.Count())
 	query.Close()
 
@@ -340,7 +340,7 @@ func TestWorldReset(t *testing.T) {
 	assert.Equal(t, Entity{2, 0}, e1)
 	assert.Equal(t, Entity{3, 0}, e2)
 
-	query = NewFilter(&world).Query()
+	query = NewUnsafeFilter(&world).Query()
 	assert.Equal(t, 4, query.Count())
 	query.Close()
 }

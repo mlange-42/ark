@@ -121,7 +121,7 @@ func (u Unsafe) IDs(entity Entity) IDs {
 func (u Unsafe) DumpEntities() EntityDump {
 	alive := []uint32{}
 
-	filter := NewFilter(u.world)
+	filter := NewUnsafeFilter(u.world)
 	query := filter.Query()
 	for query.Next() {
 		alive = append(alive, uint32(query.Entity().id))

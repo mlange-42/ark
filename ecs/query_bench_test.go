@@ -48,7 +48,7 @@ func BenchmarkPosVelQueryUnsafe_1000(b *testing.B) {
 	mapper := NewMap2[Position, Velocity](&world)
 	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
 
-	filter := NewFilter(&world, posID, velID)
+	filter := NewUnsafeFilter(&world, posID, velID)
 	for b.Loop() {
 		query := filter.Query()
 		for query.Next() {

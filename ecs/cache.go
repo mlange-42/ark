@@ -6,7 +6,7 @@ type cacheID uint32
 
 const maxCacheID = math.MaxUint32
 
-// Cache entry for a [Filter].
+// Cache entry for a filter.
 type cacheEntry struct {
 	filter    *filter         // The underlying filter.
 	indices   map[tableID]int // Map of table indices for removal.
@@ -15,7 +15,7 @@ type cacheEntry struct {
 	id        cacheID         // Entry ID.
 }
 
-// cache provides [Filter] caching to speed up queries.
+// cache provides filter caching to speed up queries.
 //
 // For registered filters, the relevant archetypes are tracked internally,
 // so that there are no mask checks required during iteration.
@@ -44,7 +44,7 @@ func (c *cache) getEntry(id cacheID) *cacheEntry {
 	return &c.filters[c.indices[id]]
 }
 
-// Register a [Filter].
+// Register a filter.
 func (c *cache) register(storage *storage, filter *filter, relations []RelationID) cacheID {
 	// TODO: prevent duplicate registration
 	id := c.intPool.Get()

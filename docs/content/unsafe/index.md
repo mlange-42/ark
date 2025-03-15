@@ -32,7 +32,7 @@ Filters and queries work similar to the generic API, but also component IDs inst
 {{< code-func unsafe_test.go TestUnsafeQuery >}}
 
 > [!IMPORTANT]
-> Note the type casts! These are required because {{< api ecs Query.Get >}} returns an `unsafe.Pointer`
+> Note the type casts! These are required because {{< api ecs UnsafeQuery.Get >}} returns an `unsafe.Pointer`
 > to the underlying component storage.
 > Extra care should be taken here, because this is a common source of bugs and the cast is not checked for the correct type.
 

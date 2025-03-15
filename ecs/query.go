@@ -2,10 +2,10 @@ package ecs
 
 import "unsafe"
 
-// Query is an unsafe query.
+// UnsafeQuery is an unsafe query.
 // It is significantly slower than type-safe generic queries like [Query2],
 // and should only be used when component types are not known at compile time.
-type Query struct {
+type UnsafeQuery struct {
 	world     *World
 	table     *table
 	relations []RelationID
@@ -15,23 +15,8 @@ type Query struct {
 	lock      uint8
 }
 
-func newQuery(world *World, filter filter, relations []RelationID) Query {
-	return Query{
-		world:     world,
-		filter:    filter,
-		relations: relations,
-		lock:      world.lock(),
-		cursor: cursor{
-			archetype: -1,
-			table:     -1,
-			index:     0,
-			maxIndex:  -1,
-		},
-	}
-}
-
 // Next advances the query's cursor to the next entity.
-func (q *Query) Next() bool {
+func (q *UnsafeQuery) Next() bool {
 	q.cursor.checkQueryNext()
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -41,7 +26,7 @@ func (q *Query) Next() bool {
 }
 
 // Entity returns the current entity.
-func (q *Query) Entity() Entity {
+func (q *UnsafeQuery) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
 }
@@ -49,28 +34,28 @@ func (q *Query) Entity() Entity {
 // Get returns the queried components of the current entity.
 //
 // ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
-func (q *Query) Get(comp ID) unsafe.Pointer {
+func (q *UnsafeQuery) Get(comp ID) unsafe.Pointer {
 	q.cursor.checkQueryGet()
 	return q.table.Get(comp, uintptr(q.cursor.index))
 }
 
 // Has returns whether the current entity has the given component.
-func (q *Query) Has(comp ID) bool {
+func (q *UnsafeQuery) Has(comp ID) bool {
 	return q.table.Has(comp)
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
-func (q *Query) GetRelation(comp ID) Entity {
+func (q *UnsafeQuery) GetRelation(comp ID) Entity {
 	return q.table.GetRelation(comp)
 }
 
 // Count returns the number of entities matching this query.
-func (q *Query) Count() int {
+func (q *UnsafeQuery) Count() int {
 	return countQuery(&q.world.storage, &q.filter, q.relations)
 }
 
 // IDs returns the IDs of all component of the current [Entity]n.
-func (q *Query) IDs() IDs {
+func (q *UnsafeQuery) IDs() IDs {
 	return newIDs(q.table.ids)
 }
 
@@ -78,7 +63,7 @@ func (q *Query) IDs() IDs {
 //
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
-func (q *Query) Close() {
+func (q *UnsafeQuery) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
@@ -86,14 +71,14 @@ func (q *Query) Close() {
 	q.world.unlock(q.lock)
 }
 
-func (q *Query) nextTableOrArchetype() bool {
+func (q *UnsafeQuery) nextTableOrArchetype() bool {
 	if q.cursor.archetype >= 0 && q.nextTable() {
 		return true
 	}
 	return q.nextArchetype()
 }
 
-func (q *Query) nextArchetype() bool {
+func (q *UnsafeQuery) nextArchetype() bool {
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
@@ -121,7 +106,7 @@ func (q *Query) nextArchetype() bool {
 	return false
 }
 
-func (q *Query) nextTable() bool {
+func (q *UnsafeQuery) nextTable() bool {
 	maxTableIndex := int32(len(q.tables) - 1)
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
@@ -138,7 +123,7 @@ func (q *Query) nextTable() bool {
 	return false
 }
 
-func (q *Query) setTable(index int32, table *table) {
+func (q *UnsafeQuery) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	q.cursor.index = 0
