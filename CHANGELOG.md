@@ -32,6 +32,7 @@
 - More reliable inlining of query methods (#198)
 - Optimizes memory sizes of internal types (#199, #200)
 - Optimizes handling of relations in filters (#203)
+- Rework of component assignment for a bigfix, accidentally speeding up assigning operations (#205)
 
 ### Bugfixes
 
