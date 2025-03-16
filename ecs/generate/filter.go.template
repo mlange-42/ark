@@ -31,7 +31,7 @@ type Filter{{.}}{{$generics}} struct {
 }
 
 // New creates a new [Filter{{.}}]. It is safe to call on `nil` instance.
-// It is a helper method, intended to reduce the number of repeated generic type parameters.
+// It is a helper method, intended to avoid repeated listing of type parameters.
 func (_ *Filter{{.}}{{$genericsShort}}) New(world *World) *Filter{{.}}{{$genericsShort}} {
     return NewFilter{{.}}{{$genericsShort}}(world)
 }
@@ -145,7 +145,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
-	
+
 	return Query{{.}}{{$genericsShort}}{
 		world:      f.world,
 		filter:     &f.filter,
