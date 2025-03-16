@@ -30,6 +30,12 @@ type Exchange{{.}}{{$generics}} struct {
 	relations []RelationID
 }
 
+// New creates a new [Exchange{{.}}]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Exchange{{.}}{{$genericsShort}}) New(world *World) *Exchange{{.}}{{$genericsShort}} {
+    return NewExchange{{.}}{{$genericsShort}}(world)
+}
+
 // NewExchange{{.}} creates an [Exchange{{.}}].
 func NewExchange{{.}}{{$generics}}(world *World) *Exchange{{.}}{{$genericsShort}} {
 	ids := []ID{
