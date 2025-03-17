@@ -18,6 +18,8 @@ type Exchange1[A any] struct {
 
 // New creates a new [Exchange1]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Exchange2.New] for an example.
 func (_ *Exchange1[A]) New(world *World) *Exchange1[A] {
 	return NewExchange1[A](world)
 }
@@ -390,6 +392,8 @@ type Exchange3[A any, B any, C any] struct {
 
 // New creates a new [Exchange3]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Exchange2.New] for an example.
 func (_ *Exchange3[A, B, C]) New(world *World) *Exchange3[A, B, C] {
 	return NewExchange3[A, B, C](world)
 }
@@ -589,6 +593,8 @@ type Exchange4[A any, B any, C any, D any] struct {
 
 // New creates a new [Exchange4]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Exchange2.New] for an example.
 func (_ *Exchange4[A, B, C, D]) New(world *World) *Exchange4[A, B, C, D] {
 	return NewExchange4[A, B, C, D](world)
 }
@@ -796,6 +802,8 @@ type Exchange5[A any, B any, C any, D any, E any] struct {
 
 // New creates a new [Exchange5]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Exchange2.New] for an example.
 func (_ *Exchange5[A, B, C, D, E]) New(world *World) *Exchange5[A, B, C, D, E] {
 	return NewExchange5[A, B, C, D, E](world)
 }
@@ -1011,6 +1019,8 @@ type Exchange6[A any, B any, C any, D any, E any, F any] struct {
 
 // New creates a new [Exchange6]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Exchange2.New] for an example.
 func (_ *Exchange6[A, B, C, D, E, F]) New(world *World) *Exchange6[A, B, C, D, E, F] {
 	return NewExchange6[A, B, C, D, E, F](world)
 }
@@ -1234,6 +1244,8 @@ type Exchange7[A any, B any, C any, D any, E any, F any, G any] struct {
 
 // New creates a new [Exchange7]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Exchange2.New] for an example.
 func (_ *Exchange7[A, B, C, D, E, F, G]) New(world *World) *Exchange7[A, B, C, D, E, F, G] {
 	return NewExchange7[A, B, C, D, E, F, G](world)
 }
@@ -1465,6 +1477,8 @@ type Exchange8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 
 // New creates a new [Exchange8]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Exchange2.New] for an example.
 func (_ *Exchange8[A, B, C, D, E, F, G, H]) New(world *World) *Exchange8[A, B, C, D, E, F, G, H] {
 	return NewExchange8[A, B, C, D, E, F, G, H](world)
 }

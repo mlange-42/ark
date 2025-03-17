@@ -100,6 +100,16 @@ func ExampleMap2() {
 	// Output:
 }
 
+func ExampleMap2_New() {
+	world := ecs.NewWorld()
+
+	// Declare the mapper, e.g. in your system struct.
+	var mapper *ecs.Map2[Position, Velocity]
+
+	// Construct the mapper, avoiding repeated listing of generics.
+	mapper = mapper.New(&world)
+}
+
 func ExampleExchange2() {
 	world := ecs.NewWorld()
 
@@ -126,4 +136,14 @@ func ExampleExchange2() {
 	// Add Position and Velocity.
 	exchange.Add(entity, &Position{X: 100, Y: 100}, &Velocity{X: 1, Y: -1})
 	// Output:
+}
+
+func ExampleExchange2_New() {
+	world := ecs.NewWorld()
+
+	// Declare the exchange helper, e.g. in your system struct.
+	var exchange *ecs.Exchange2[Position, Velocity]
+
+	// Construct the exchange helper, avoiding repeated listing of generics.
+	exchange = exchange.New(&world).Removes(ecs.C[Altitude]())
 }

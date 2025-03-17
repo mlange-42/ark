@@ -32,6 +32,10 @@ type Exchange{{.}}{{$generics}} struct {
 
 // New creates a new [Exchange{{.}}]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+{{- if ne . 2 }}
+//
+// See [Exchange2.New] for an example.
+{{- end}}
 func (_ *Exchange{{.}}{{$genericsShort}}) New(world *World) *Exchange{{.}}{{$genericsShort}} {
     return NewExchange{{.}}{{$genericsShort}}(world)
 }
