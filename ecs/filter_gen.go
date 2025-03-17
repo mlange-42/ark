@@ -18,6 +18,12 @@ type Filter0 struct {
 	numRelations uint8
 }
 
+// New creates a new [Filter0]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Filter0) New(world *World) *Filter0 {
+	return NewFilter0(world)
+}
+
 // NewFilter0 creates a new [Filter0].
 //
 // Use [Filter0.Query] to obtain a [Query0].
@@ -165,6 +171,12 @@ type Filter1[A any] struct {
 	filter       filter
 	cache        cacheID
 	numRelations uint8
+}
+
+// New creates a new [Filter1]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Filter1[A]) New(world *World) *Filter1[A] {
+	return NewFilter1[A](world)
 }
 
 // NewFilter1 creates a new [Filter1].
@@ -328,6 +340,12 @@ type Filter2[A any, B any] struct {
 	filter       filter
 	cache        cacheID
 	numRelations uint8
+}
+
+// New creates a new [Filter2]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Filter2[A, B]) New(world *World) *Filter2[A, B] {
+	return NewFilter2[A, B](world)
 }
 
 // NewFilter2 creates a new [Filter2].
@@ -496,6 +514,12 @@ type Filter3[A any, B any, C any] struct {
 	numRelations uint8
 }
 
+// New creates a new [Filter3]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Filter3[A, B, C]) New(world *World) *Filter3[A, B, C] {
+	return NewFilter3[A, B, C](world)
+}
+
 // NewFilter3 creates a new [Filter3].
 //
 // Use [Filter3.Query] to obtain a [Query3].
@@ -661,6 +685,12 @@ type Filter4[A any, B any, C any, D any] struct {
 	filter       filter
 	cache        cacheID
 	numRelations uint8
+}
+
+// New creates a new [Filter4]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Filter4[A, B, C, D]) New(world *World) *Filter4[A, B, C, D] {
+	return NewFilter4[A, B, C, D](world)
 }
 
 // NewFilter4 creates a new [Filter4].
@@ -831,6 +861,12 @@ type Filter5[A any, B any, C any, D any, E any] struct {
 	numRelations uint8
 }
 
+// New creates a new [Filter5]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Filter5[A, B, C, D, E]) New(world *World) *Filter5[A, B, C, D, E] {
+	return NewFilter5[A, B, C, D, E](world)
+}
+
 // NewFilter5 creates a new [Filter5].
 //
 // Use [Filter5.Query] to obtain a [Query5].
@@ -998,6 +1034,12 @@ type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	filter       filter
 	cache        cacheID
 	numRelations uint8
+}
+
+// New creates a new [Filter6]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Filter6[A, B, C, D, E, F]) New(world *World) *Filter6[A, B, C, D, E, F] {
+	return NewFilter6[A, B, C, D, E, F](world)
 }
 
 // NewFilter6 creates a new [Filter6].
@@ -1170,6 +1212,12 @@ type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	numRelations uint8
 }
 
+// New creates a new [Filter7]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Filter7[A, B, C, D, E, F, G]) New(world *World) *Filter7[A, B, C, D, E, F, G] {
+	return NewFilter7[A, B, C, D, E, F, G](world)
+}
+
 // NewFilter7 creates a new [Filter7].
 //
 // Use [Filter7.Query] to obtain a [Query7].
@@ -1339,6 +1387,12 @@ type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	filter       filter
 	cache        cacheID
 	numRelations uint8
+}
+
+// New creates a new [Filter8]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Filter8[A, B, C, D, E, F, G, H]) New(world *World) *Filter8[A, B, C, D, E, F, G, H] {
+	return NewFilter8[A, B, C, D, E, F, G, H](world)
 }
 
 // NewFilter8 creates a new [Filter8].

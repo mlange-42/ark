@@ -31,6 +31,12 @@ type Map{{.}}{{$generics}} struct {
 	relations []RelationID
 }
 
+// New creates a new [Map{{.}}]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Map{{.}}{{$genericsShort}}) New(world *World) Map{{.}}{{$genericsShort}} {
+    return NewMap{{.}}{{$genericsShort}}(world)
+}
+
 // NewMap{{.}} creates a new [Map{{.}}].
 func NewMap{{.}}{{$generics}}(world *World) Map{{.}}{{$genericsShort}} {
 	ids := []ID{
