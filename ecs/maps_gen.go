@@ -16,16 +16,16 @@ type Map1[A any] struct {
 
 // New creates a new [Map1]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map1[A]) New(world *World) Map1[A] {
+func (_ *Map1[A]) New(world *World) *Map1[A] {
 	return NewMap1[A](world)
 }
 
 // NewMap1 creates a new [Map1].
-func NewMap1[A any](world *World) Map1[A] {
+func NewMap1[A any](world *World) *Map1[A] {
 	ids := []ID{
 		ComponentID[A](world),
 	}
-	return Map1[A]{
+	return &Map1[A]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -289,17 +289,17 @@ type Map2[A any, B any] struct {
 
 // New creates a new [Map2]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map2[A, B]) New(world *World) Map2[A, B] {
+func (_ *Map2[A, B]) New(world *World) *Map2[A, B] {
 	return NewMap2[A, B](world)
 }
 
 // NewMap2 creates a new [Map2].
-func NewMap2[A any, B any](world *World) Map2[A, B] {
+func NewMap2[A any, B any](world *World) *Map2[A, B] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
 	}
-	return Map2[A, B]{
+	return &Map2[A, B]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -590,18 +590,18 @@ type Map3[A any, B any, C any] struct {
 
 // New creates a new [Map3]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map3[A, B, C]) New(world *World) Map3[A, B, C] {
+func (_ *Map3[A, B, C]) New(world *World) *Map3[A, B, C] {
 	return NewMap3[A, B, C](world)
 }
 
 // NewMap3 creates a new [Map3].
-func NewMap3[A any, B any, C any](world *World) Map3[A, B, C] {
+func NewMap3[A any, B any, C any](world *World) *Map3[A, B, C] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
 		ComponentID[C](world),
 	}
-	return Map3[A, B, C]{
+	return &Map3[A, B, C]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -917,19 +917,19 @@ type Map4[A any, B any, C any, D any] struct {
 
 // New creates a new [Map4]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map4[A, B, C, D]) New(world *World) Map4[A, B, C, D] {
+func (_ *Map4[A, B, C, D]) New(world *World) *Map4[A, B, C, D] {
 	return NewMap4[A, B, C, D](world)
 }
 
 // NewMap4 creates a new [Map4].
-func NewMap4[A any, B any, C any, D any](world *World) Map4[A, B, C, D] {
+func NewMap4[A any, B any, C any, D any](world *World) *Map4[A, B, C, D] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
 		ComponentID[C](world),
 		ComponentID[D](world),
 	}
-	return Map4[A, B, C, D]{
+	return &Map4[A, B, C, D]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -1270,12 +1270,12 @@ type Map5[A any, B any, C any, D any, E any] struct {
 
 // New creates a new [Map5]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map5[A, B, C, D, E]) New(world *World) Map5[A, B, C, D, E] {
+func (_ *Map5[A, B, C, D, E]) New(world *World) *Map5[A, B, C, D, E] {
 	return NewMap5[A, B, C, D, E](world)
 }
 
 // NewMap5 creates a new [Map5].
-func NewMap5[A any, B any, C any, D any, E any](world *World) Map5[A, B, C, D, E] {
+func NewMap5[A any, B any, C any, D any, E any](world *World) *Map5[A, B, C, D, E] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
@@ -1283,7 +1283,7 @@ func NewMap5[A any, B any, C any, D any, E any](world *World) Map5[A, B, C, D, E
 		ComponentID[D](world),
 		ComponentID[E](world),
 	}
-	return Map5[A, B, C, D, E]{
+	return &Map5[A, B, C, D, E]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -1649,12 +1649,12 @@ type Map6[A any, B any, C any, D any, E any, F any] struct {
 
 // New creates a new [Map6]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map6[A, B, C, D, E, F]) New(world *World) Map6[A, B, C, D, E, F] {
+func (_ *Map6[A, B, C, D, E, F]) New(world *World) *Map6[A, B, C, D, E, F] {
 	return NewMap6[A, B, C, D, E, F](world)
 }
 
 // NewMap6 creates a new [Map6].
-func NewMap6[A any, B any, C any, D any, E any, F any](world *World) Map6[A, B, C, D, E, F] {
+func NewMap6[A any, B any, C any, D any, E any, F any](world *World) *Map6[A, B, C, D, E, F] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
@@ -1663,7 +1663,7 @@ func NewMap6[A any, B any, C any, D any, E any, F any](world *World) Map6[A, B, 
 		ComponentID[E](world),
 		ComponentID[F](world),
 	}
-	return Map6[A, B, C, D, E, F]{
+	return &Map6[A, B, C, D, E, F]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -2054,12 +2054,12 @@ type Map7[A any, B any, C any, D any, E any, F any, G any] struct {
 
 // New creates a new [Map7]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map7[A, B, C, D, E, F, G]) New(world *World) Map7[A, B, C, D, E, F, G] {
+func (_ *Map7[A, B, C, D, E, F, G]) New(world *World) *Map7[A, B, C, D, E, F, G] {
 	return NewMap7[A, B, C, D, E, F, G](world)
 }
 
 // NewMap7 creates a new [Map7].
-func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) Map7[A, B, C, D, E, F, G] {
+func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) *Map7[A, B, C, D, E, F, G] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
@@ -2069,7 +2069,7 @@ func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) Map7
 		ComponentID[F](world),
 		ComponentID[G](world),
 	}
-	return Map7[A, B, C, D, E, F, G]{
+	return &Map7[A, B, C, D, E, F, G]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -2485,12 +2485,12 @@ type Map8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 
 // New creates a new [Map8]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map8[A, B, C, D, E, F, G, H]) New(world *World) Map8[A, B, C, D, E, F, G, H] {
+func (_ *Map8[A, B, C, D, E, F, G, H]) New(world *World) *Map8[A, B, C, D, E, F, G, H] {
 	return NewMap8[A, B, C, D, E, F, G, H](world)
 }
 
 // NewMap8 creates a new [Map8].
-func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) Map8[A, B, C, D, E, F, G, H] {
+func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) *Map8[A, B, C, D, E, F, G, H] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
@@ -2501,7 +2501,7 @@ func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *Worl
 		ComponentID[G](world),
 		ComponentID[H](world),
 	}
-	return Map8[A, B, C, D, E, F, G, H]{
+	return &Map8[A, B, C, D, E, F, G, H]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -2942,12 +2942,12 @@ type Map9[A any, B any, C any, D any, E any, F any, G any, H any, I any] struct 
 
 // New creates a new [Map9]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map9[A, B, C, D, E, F, G, H, I]) New(world *World) Map9[A, B, C, D, E, F, G, H, I] {
+func (_ *Map9[A, B, C, D, E, F, G, H, I]) New(world *World) *Map9[A, B, C, D, E, F, G, H, I] {
 	return NewMap9[A, B, C, D, E, F, G, H, I](world)
 }
 
 // NewMap9 creates a new [Map9].
-func NewMap9[A any, B any, C any, D any, E any, F any, G any, H any, I any](world *World) Map9[A, B, C, D, E, F, G, H, I] {
+func NewMap9[A any, B any, C any, D any, E any, F any, G any, H any, I any](world *World) *Map9[A, B, C, D, E, F, G, H, I] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
@@ -2959,7 +2959,7 @@ func NewMap9[A any, B any, C any, D any, E any, F any, G any, H any, I any](worl
 		ComponentID[H](world),
 		ComponentID[I](world),
 	}
-	return Map9[A, B, C, D, E, F, G, H, I]{
+	return &Map9[A, B, C, D, E, F, G, H, I]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -3425,12 +3425,12 @@ type Map10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any]
 
 // New creates a new [Map10]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map10[A, B, C, D, E, F, G, H, I, J]) New(world *World) Map10[A, B, C, D, E, F, G, H, I, J] {
+func (_ *Map10[A, B, C, D, E, F, G, H, I, J]) New(world *World) *Map10[A, B, C, D, E, F, G, H, I, J] {
 	return NewMap10[A, B, C, D, E, F, G, H, I, J](world)
 }
 
 // NewMap10 creates a new [Map10].
-func NewMap10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any](world *World) Map10[A, B, C, D, E, F, G, H, I, J] {
+func NewMap10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any](world *World) *Map10[A, B, C, D, E, F, G, H, I, J] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
@@ -3443,7 +3443,7 @@ func NewMap10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 		ComponentID[I](world),
 		ComponentID[J](world),
 	}
-	return Map10[A, B, C, D, E, F, G, H, I, J]{
+	return &Map10[A, B, C, D, E, F, G, H, I, J]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -3934,12 +3934,12 @@ type Map11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any,
 
 // New creates a new [Map11]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map11[A, B, C, D, E, F, G, H, I, J, K]) New(world *World) Map11[A, B, C, D, E, F, G, H, I, J, K] {
+func (_ *Map11[A, B, C, D, E, F, G, H, I, J, K]) New(world *World) *Map11[A, B, C, D, E, F, G, H, I, J, K] {
 	return NewMap11[A, B, C, D, E, F, G, H, I, J, K](world)
 }
 
 // NewMap11 creates a new [Map11].
-func NewMap11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any](world *World) Map11[A, B, C, D, E, F, G, H, I, J, K] {
+func NewMap11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any](world *World) *Map11[A, B, C, D, E, F, G, H, I, J, K] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
@@ -3953,7 +3953,7 @@ func NewMap11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 		ComponentID[J](world),
 		ComponentID[K](world),
 	}
-	return Map11[A, B, C, D, E, F, G, H, I, J, K]{
+	return &Map11[A, B, C, D, E, F, G, H, I, J, K]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],
@@ -4469,12 +4469,12 @@ type Map12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any,
 
 // New creates a new [Map12]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) New(world *World) Map12[A, B, C, D, E, F, G, H, I, J, K, L] {
+func (_ *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) New(world *World) *Map12[A, B, C, D, E, F, G, H, I, J, K, L] {
 	return NewMap12[A, B, C, D, E, F, G, H, I, J, K, L](world)
 }
 
 // NewMap12 creates a new [Map12].
-func NewMap12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any, L any](world *World) Map12[A, B, C, D, E, F, G, H, I, J, K, L] {
+func NewMap12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any, L any](world *World) *Map12[A, B, C, D, E, F, G, H, I, J, K, L] {
 	ids := []ID{
 		ComponentID[A](world),
 		ComponentID[B](world),
@@ -4489,7 +4489,7 @@ func NewMap12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 		ComponentID[K](world),
 		ComponentID[L](world),
 	}
-	return Map12[A, B, C, D, E, F, G, H, I, J, K, L]{
+	return &Map12[A, B, C, D, E, F, G, H, I, J, K, L]{
 		world:    world,
 		ids:      ids,
 		storageA: &world.storage.components[ids[0].id],

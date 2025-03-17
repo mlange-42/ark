@@ -13,7 +13,9 @@ func TestExchange1(t *testing.T) {
 
 	posMap := NewMap2[Position, Velocity](&w)
 	mapper := NewMap1[CompA](&w)
-	ex := NewExchange1[CompA](&w).Removes(C[Velocity](), C[Position]())
+
+	var ex *Exchange1[CompA]
+	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -234,7 +236,9 @@ func TestExchange2(t *testing.T) {
 
 	posMap := NewMap2[Position, Velocity](&w)
 	mapper := NewMap2[CompA, CompB](&w)
-	ex := NewExchange2[CompA, CompB](&w).Removes(C[Velocity](), C[Position]())
+
+	var ex *Exchange2[CompA, CompB]
+	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -455,7 +459,9 @@ func TestExchange3(t *testing.T) {
 
 	posMap := NewMap2[Position, Velocity](&w)
 	mapper := NewMap3[CompA, CompB, CompC](&w)
-	ex := NewExchange3[CompA, CompB, CompC](&w).Removes(C[Velocity](), C[Position]())
+
+	var ex *Exchange3[CompA, CompB, CompC]
+	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -676,7 +682,9 @@ func TestExchange4(t *testing.T) {
 
 	posMap := NewMap2[Position, Velocity](&w)
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
-	ex := NewExchange4[CompA, CompB, CompC, CompD](&w).Removes(C[Velocity](), C[Position]())
+
+	var ex *Exchange4[CompA, CompB, CompC, CompD]
+	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -897,7 +905,9 @@ func TestExchange5(t *testing.T) {
 
 	posMap := NewMap2[Position, Velocity](&w)
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
-	ex := NewExchange5[CompA, CompB, CompC, CompD, CompE](&w).Removes(C[Velocity](), C[Position]())
+
+	var ex *Exchange5[CompA, CompB, CompC, CompD, CompE]
+	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1118,7 +1128,9 @@ func TestExchange6(t *testing.T) {
 
 	posMap := NewMap2[Position, Velocity](&w)
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
-	ex := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[Velocity](), C[Position]())
+
+	var ex *Exchange6[CompA, CompB, CompC, CompD, CompE, CompF]
+	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1339,7 +1351,9 @@ func TestExchange7(t *testing.T) {
 
 	posMap := NewMap2[Position, Velocity](&w)
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
-	ex := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[Velocity](), C[Position]())
+
+	var ex *Exchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG]
+	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1560,7 +1574,9 @@ func TestExchange8(t *testing.T) {
 
 	posMap := NewMap2[Position, Velocity](&w)
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
-	ex := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[Velocity](), C[Position]())
+
+	var ex *Exchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH]
+	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 

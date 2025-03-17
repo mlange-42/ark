@@ -12,7 +12,8 @@ func TestMap1(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap1[CompA](&w)
+	var mapper *Map1[CompA]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -301,7 +302,8 @@ func TestMap2(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap2[CompA, CompB](&w)
+	var mapper *Map2[CompA, CompB]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -594,7 +596,8 @@ func TestMap3(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap3[CompA, CompB, CompC](&w)
+	var mapper *Map3[CompA, CompB, CompC]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -891,7 +894,8 @@ func TestMap4(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+	var mapper *Map4[CompA, CompB, CompC, CompD]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -1192,7 +1196,8 @@ func TestMap5(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
+	var mapper *Map5[CompA, CompB, CompC, CompD, CompE]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -1497,7 +1502,8 @@ func TestMap6(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
+	var mapper *Map6[CompA, CompB, CompC, CompD, CompE, CompF]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -1806,7 +1812,8 @@ func TestMap7(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+	var mapper *Map7[CompA, CompB, CompC, CompD, CompE, CompF, CompG]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -2119,7 +2126,8 @@ func TestMap8(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	var mapper *Map8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -2436,7 +2444,8 @@ func TestMap9(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
+	var mapper *Map9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -2757,7 +2766,8 @@ func TestMap10(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
+	var mapper *Map10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -3083,7 +3093,8 @@ func TestMap11(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
+	var mapper *Map11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
@@ -3413,7 +3424,8 @@ func TestMap12(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
+	var mapper *Map12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL]
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}

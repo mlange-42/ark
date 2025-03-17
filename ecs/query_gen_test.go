@@ -30,7 +30,8 @@ func TestQuery1(t *testing.T) {
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
-	filter := NewFilter1[CompA](&w)
+	var filter *Filter1[CompA]
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -283,7 +284,8 @@ func TestQuery2(t *testing.T) {
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
-	filter := NewFilter2[CompA, CompB](&w)
+	var filter *Filter2[CompA, CompB]
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -536,7 +538,8 @@ func TestQuery3(t *testing.T) {
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
-	filter := NewFilter3[CompA, CompB, CompC](&w)
+	var filter *Filter3[CompA, CompB, CompC]
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -789,7 +792,8 @@ func TestQuery4(t *testing.T) {
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
-	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
+	var filter *Filter4[CompA, CompB, CompC, CompD]
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -1042,7 +1046,8 @@ func TestQuery5(t *testing.T) {
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
-	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
+	var filter *Filter5[CompA, CompB, CompC, CompD, CompE]
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -1295,7 +1300,8 @@ func TestQuery6(t *testing.T) {
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
-	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
+	var filter *Filter6[CompA, CompB, CompC, CompD, CompE, CompF]
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -1548,7 +1554,8 @@ func TestQuery7(t *testing.T) {
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
-	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+	var filter *Filter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG]
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -1801,7 +1808,8 @@ func TestQuery8(t *testing.T) {
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
-	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	var filter *Filter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH]
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -2045,7 +2053,8 @@ func TestQuery0(t *testing.T) {
 	}
 
 	// normal filter
-	filter := NewFilter0(&w)
+	var filter *Filter0
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 

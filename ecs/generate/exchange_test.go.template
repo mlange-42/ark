@@ -24,7 +24,9 @@ func TestExchange{{.}}(t *testing.T) {
 
 	posMap := NewMap2[Position, Velocity](&w)
 	mapper := NewMap{{.}}{{$generics}}(&w)
-	ex := NewExchange{{.}}{{$generics}}(&w).Removes(C[Velocity](), C[Position]())
+
+	var ex *Exchange{{.}}{{$generics}}
+	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
