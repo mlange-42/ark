@@ -6,6 +6,7 @@
 
 - Removes redundant information from `stats`: `stats.World.ComponentCount` and `stats.Archetype.Components` (#192)
 - Unsafe `Filter` and `Query` renamed to `UnsafeFilter` and `UnsafeQuery` (#206)
+- Constructors for `MapX` and `Map` return pointers instead of structs, for consistency (#208)
 
 ### Features
 
@@ -15,6 +16,7 @@
 - Adds `MapX.Set` and `Map.Set` (#183)
 - Adds function `ResourceTypeID` (#184)
 - `MapX.Get` etc. return `nil` for missing components instead of panic (#189)
+- Adds `FilterX.New`, `MapX.New` and `ExchangeX.New` to avoid repetition of generics (#207 by [Tener](https://github.com/Tener))
 
 ### Documentation
 

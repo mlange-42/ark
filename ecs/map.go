@@ -12,9 +12,9 @@ type Map[T any] struct {
 }
 
 // NewMap creates a new [Map].
-func NewMap[T any](w *World) Map[T] {
+func NewMap[T any](w *World) *Map[T] {
 	id := ComponentID[T](w)
-	return Map[T]{
+	return &Map[T]{
 		world:   w,
 		id:      id,
 		ids:     [1]ID{id},
