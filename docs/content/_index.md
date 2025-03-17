@@ -53,7 +53,7 @@ Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wik
 
 ## Cite as
 
-Lange, M. (2025): Ark &ndash; An archetype-based Entity Component System for Go. DOI: [10.5281/zenodo.14994239](https://doi.org/10.5281/zenodo.14994239),  GitHub repository: https://github.com/mlange-42/ark
+Lange, M. & contributors (2025): Ark &ndash; An archetype-based Entity Component System for Go. DOI: [10.5281/zenodo.14994239](https://doi.org/10.5281/zenodo.14994239),  GitHub repository: https://github.com/mlange-42/ark
 
 ## Contributing
 
