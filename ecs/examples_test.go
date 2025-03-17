@@ -39,6 +39,16 @@ func ExampleFilter2() {
 	// Output:
 }
 
+func ExampleFilter2_New() {
+	world := ecs.NewWorld()
+
+	// Declare the filter, e.g. in your system struct.
+	var filter *ecs.Filter2[Position, Velocity]
+
+	// Construct the filter, avoiding repeated listing of generics.
+	filter = filter.New(&world)
+}
+
 func ExampleQuery2() {
 	world := ecs.NewWorld()
 
