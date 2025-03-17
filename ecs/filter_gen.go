@@ -20,6 +20,8 @@ type Filter0 struct {
 
 // New creates a new [Filter0]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Filter2.New] for an example.
 func (_ *Filter0) New(world *World) *Filter0 {
 	return NewFilter0(world)
 }
@@ -175,6 +177,8 @@ type Filter1[A any] struct {
 
 // New creates a new [Filter1]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Filter2.New] for an example.
 func (_ *Filter1[A]) New(world *World) *Filter1[A] {
 	return NewFilter1[A](world)
 }
@@ -516,6 +520,8 @@ type Filter3[A any, B any, C any] struct {
 
 // New creates a new [Filter3]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Filter2.New] for an example.
 func (_ *Filter3[A, B, C]) New(world *World) *Filter3[A, B, C] {
 	return NewFilter3[A, B, C](world)
 }
@@ -689,6 +695,8 @@ type Filter4[A any, B any, C any, D any] struct {
 
 // New creates a new [Filter4]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Filter2.New] for an example.
 func (_ *Filter4[A, B, C, D]) New(world *World) *Filter4[A, B, C, D] {
 	return NewFilter4[A, B, C, D](world)
 }
@@ -863,6 +871,8 @@ type Filter5[A any, B any, C any, D any, E any] struct {
 
 // New creates a new [Filter5]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Filter2.New] for an example.
 func (_ *Filter5[A, B, C, D, E]) New(world *World) *Filter5[A, B, C, D, E] {
 	return NewFilter5[A, B, C, D, E](world)
 }
@@ -1038,6 +1048,8 @@ type Filter6[A any, B any, C any, D any, E any, F any] struct {
 
 // New creates a new [Filter6]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Filter2.New] for an example.
 func (_ *Filter6[A, B, C, D, E, F]) New(world *World) *Filter6[A, B, C, D, E, F] {
 	return NewFilter6[A, B, C, D, E, F](world)
 }
@@ -1214,6 +1226,8 @@ type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 
 // New creates a new [Filter7]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Filter2.New] for an example.
 func (_ *Filter7[A, B, C, D, E, F, G]) New(world *World) *Filter7[A, B, C, D, E, F, G] {
 	return NewFilter7[A, B, C, D, E, F, G](world)
 }
@@ -1391,6 +1405,8 @@ type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 
 // New creates a new [Filter8]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Filter2.New] for an example.
 func (_ *Filter8[A, B, C, D, E, F, G, H]) New(world *World) *Filter8[A, B, C, D, E, F, G, H] {
 	return NewFilter8[A, B, C, D, E, F, G, H](world)
 }

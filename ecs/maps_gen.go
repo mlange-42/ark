@@ -16,6 +16,8 @@ type Map1[A any] struct {
 
 // New creates a new [Map1]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map1[A]) New(world *World) *Map1[A] {
 	return NewMap1[A](world)
 }
@@ -590,6 +592,8 @@ type Map3[A any, B any, C any] struct {
 
 // New creates a new [Map3]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map3[A, B, C]) New(world *World) *Map3[A, B, C] {
 	return NewMap3[A, B, C](world)
 }
@@ -917,6 +921,8 @@ type Map4[A any, B any, C any, D any] struct {
 
 // New creates a new [Map4]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map4[A, B, C, D]) New(world *World) *Map4[A, B, C, D] {
 	return NewMap4[A, B, C, D](world)
 }
@@ -1270,6 +1276,8 @@ type Map5[A any, B any, C any, D any, E any] struct {
 
 // New creates a new [Map5]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map5[A, B, C, D, E]) New(world *World) *Map5[A, B, C, D, E] {
 	return NewMap5[A, B, C, D, E](world)
 }
@@ -1649,6 +1657,8 @@ type Map6[A any, B any, C any, D any, E any, F any] struct {
 
 // New creates a new [Map6]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map6[A, B, C, D, E, F]) New(world *World) *Map6[A, B, C, D, E, F] {
 	return NewMap6[A, B, C, D, E, F](world)
 }
@@ -2054,6 +2064,8 @@ type Map7[A any, B any, C any, D any, E any, F any, G any] struct {
 
 // New creates a new [Map7]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map7[A, B, C, D, E, F, G]) New(world *World) *Map7[A, B, C, D, E, F, G] {
 	return NewMap7[A, B, C, D, E, F, G](world)
 }
@@ -2485,6 +2497,8 @@ type Map8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 
 // New creates a new [Map8]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map8[A, B, C, D, E, F, G, H]) New(world *World) *Map8[A, B, C, D, E, F, G, H] {
 	return NewMap8[A, B, C, D, E, F, G, H](world)
 }
@@ -2942,6 +2956,8 @@ type Map9[A any, B any, C any, D any, E any, F any, G any, H any, I any] struct 
 
 // New creates a new [Map9]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map9[A, B, C, D, E, F, G, H, I]) New(world *World) *Map9[A, B, C, D, E, F, G, H, I] {
 	return NewMap9[A, B, C, D, E, F, G, H, I](world)
 }
@@ -3425,6 +3441,8 @@ type Map10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any]
 
 // New creates a new [Map10]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map10[A, B, C, D, E, F, G, H, I, J]) New(world *World) *Map10[A, B, C, D, E, F, G, H, I, J] {
 	return NewMap10[A, B, C, D, E, F, G, H, I, J](world)
 }
@@ -3934,6 +3952,8 @@ type Map11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any,
 
 // New creates a new [Map11]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map11[A, B, C, D, E, F, G, H, I, J, K]) New(world *World) *Map11[A, B, C, D, E, F, G, H, I, J, K] {
 	return NewMap11[A, B, C, D, E, F, G, H, I, J, K](world)
 }
@@ -4469,6 +4489,8 @@ type Map12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any,
 
 // New creates a new [Map12]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Map2.New] for an example.
 func (_ *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) New(world *World) *Map12[A, B, C, D, E, F, G, H, I, J, K, L] {
 	return NewMap12[A, B, C, D, E, F, G, H, I, J, K, L](world)
 }
