@@ -43,7 +43,8 @@ func TestQuery{{.}}(t *testing.T) {
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
 
 	// normal filter
-	filter := NewFilter{{.}}{{$generics}}(&w)
+	var filter *Filter{{.}}{{$generics}}
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 
@@ -289,7 +290,8 @@ func TestQuery0(t *testing.T) {
 	}
 
 	// normal filter
-	filter := NewFilter0(&w)
+	var filter *Filter0
+	filter = filter.New(&w)
 	query := filter.Query()
 	assert.Equal(t, 2*n, query.Count())
 

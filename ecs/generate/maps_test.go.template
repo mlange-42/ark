@@ -33,7 +33,8 @@ func TestMap{{.}}(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	mapper := NewMap{{.}}{{$generics}}(&w)
+	var mapper *Map{{.}}{{$generics}}
+	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
 
 	entities := []Entity{}
