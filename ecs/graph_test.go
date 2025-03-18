@@ -11,7 +11,7 @@ func TestGraph(t *testing.T) {
 
 	mask := newMask()
 	node := g.Find(0, []ID{id(0), id(1)}, []ID{}, &mask)
-	assert.Equal(t, 3, len(g.nodes))
+	assert.EqualValues(t, 3, g.nodes.Len())
 	assert.EqualValues(t, 2, node.id)
 	assert.Equal(t, newMask(id(0), id(1)), node.mask)
 

@@ -11,6 +11,20 @@ func TestTypeOf(t *testing.T) {
 	assert.Equal(t, "Position", posType.Name())
 }
 
+func TestPagedSlice(t *testing.T) {
+	a := pagedSlice[int32]{}
+
+	var i int32
+	for i = 0; i < 66; i++ {
+		a.Add(i)
+		assert.Equal(t, i, *a.Get(i))
+		assert.Equal(t, i+1, a.Len())
+	}
+
+	a.Set(3, 100)
+	assert.Equal(t, int32(100), *a.Get(3))
+}
+
 func BenchmarkTypeOf(b *testing.B) {
 	for b.Loop() {
 		_ = typeOf[Position]()
