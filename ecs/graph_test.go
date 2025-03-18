@@ -49,7 +49,7 @@ func TestGraphNodePointers(t *testing.T) {
 
 	node := g.nodes.Get(0)
 	for i := range maskTotalBits {
-		node = g.Find(node.id, []ID{id(i)}, nil, &bitMask256{})
+		node = g.Find(node.id, []ID{id(i)}, nil, &bitMask{})
 	}
 
 	assert.Equal(t, unsafe.Pointer(ptr), unsafe.Pointer(g.nodes.Get(0)))

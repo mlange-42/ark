@@ -31,7 +31,7 @@ type graph struct {
 
 func newGraph() graph {
 	nodes := pagedSlice[node]{}
-	nodes.Add(newNode(0, 0, &bitMask256{}))
+	nodes.Add(newNode(0, 0, &bitMask{}))
 
 	return graph{
 		nodes: nodes,
