@@ -19,7 +19,7 @@ func countQuery(storage *storage, filter *filter, relations []RelationID) int {
 	count := 0
 	for arch := range storage.archetypes {
 		archetype := &storage.archetypes[arch]
-		if !filter.matches(&archetype.mask) {
+		if !filter.matches(archetype.mask) {
 			continue
 		}
 

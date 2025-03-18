@@ -15,18 +15,19 @@ const maxArchetypeID = math.MaxUint32
 
 type archetype struct {
 	components     []ID                     // components IDs of the archetype in arbitrary order
-	itemSizes      []uint32                 // item size per component ID
+	itemSizes      []uint32                 // item size per component index
 	componentsMap  []int16                  // mapping from component IDs to column indices; -1 indicates none
 	isRelation     []bool                   // whether columns are relations components, indexed by column index
 	relationTables []map[entityID]*tableIDs // lookup for relation targets of tables, indexed by column index
 	tables         []tableID                // all active tables
 	freeTables     []tableID                // all inactive/free tables
 	zeroValue      []byte                   // zero value with the size of the largest item type, for fast zeroing
-	mask           bitMask
+	mask           *bitMask
 	id             archetypeID
 	node           nodeID
 	numRelations   uint8 // number of relation components
 }
+
 type tableIDs struct {
 	tables []tableID
 }
@@ -67,7 +68,7 @@ func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, t
 	return archetype{
 		id:             id,
 		node:           node,
-		mask:           *mask,
+		mask:           mask,
 		components:     components,
 		itemSizes:      sizes,
 		componentsMap:  componentsMap,
