@@ -224,6 +224,7 @@ func (s *storage) createArchetype(node *node) *archetype {
 }
 
 func (s *storage) createTable(archetype *archetype, relations []RelationID) *table {
+	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(archetype.components))
 
 	if uint8(len(relations)) < archetype.numRelations {
@@ -327,6 +328,7 @@ func (s *storage) moveEntities(src, dst *table, count uint32) {
 }
 
 func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []RelationID) []RelationID {
+	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(oldTable.columns))
 	for i := range oldTable.columns {
 		targets[i] = oldTable.columns[i].target
@@ -353,6 +355,7 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []Relat
 
 func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([]RelationID, bool) {
 	changed := false
+	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(oldTable.columns))
 	for i := range oldTable.columns {
 		targets[i] = oldTable.columns[i].target
