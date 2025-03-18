@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"testing"
+	"unsafe"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -40,4 +41,16 @@ func TestGraph(t *testing.T) {
 	assert.PanicsWithValue(t,
 		"component with ID 0 added and removed in the same exchange operation",
 		func() { g.Find(node.id, []ID{id(0)}, []ID{id(0)}, &mask) })
+}
+
+func TestGraphNodePointers(t *testing.T) {
+	g := newGraph()
+	ptr := g.nodes.Get(0)
+
+	node := g.nodes.Get(0)
+	for i := range maskTotalBits {
+		node = g.Find(node.id, []ID{id(i)}, nil, &bitMask256{})
+	}
+
+	assert.Equal(t, unsafe.Pointer(ptr), unsafe.Pointer(g.nodes.Get(0)))
 }
