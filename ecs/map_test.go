@@ -263,7 +263,7 @@ func TestMapRelation(t *testing.T) {
 			childMap.SetRelation(e, deadParent)
 		})
 	assert.PanicsWithValue(t,
-		"relations must be fully specified",
+		"relation targets must be fully specified",
 		func() {
 			childMap.NewEntity(&ChildOf{})
 		})

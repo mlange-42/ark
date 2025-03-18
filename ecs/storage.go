@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"fmt"
 	"unsafe"
 )
 
@@ -230,8 +231,8 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 		targets[idx] = rel.target
 		numRelations++
 	}
-	if numRelations != archetype.numRelations {
-		panic("relations must be fully specified")
+	if numRelations < archetype.numRelations {
+		panic("relation targets must be fully specified")
 	}
 	for i := range relations {
 		rel := &relations[i]
@@ -360,6 +361,10 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([
 		// Validity of the target is checked when creating a new table.
 		// Whether the component is a relation is checked when creating a new table.
 		column := oldTable.components[rel.component.id]
+		if column == nil {
+			tp, _ := s.registry.ComponentType(rel.component.id)
+			panic(fmt.Sprintf("entity has no component of type %s to set relation target for", tp.Name()))
+		}
 		if rel.target == targets[column.index] {
 			continue
 		}

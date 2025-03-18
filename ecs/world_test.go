@@ -224,6 +224,12 @@ func TestWorldRelations(t *testing.T) {
 
 	e := mapper2.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, parent1))
 	child2Map.Add(e, &ChildOf2{}, RelIdx(0, parent2))
+
+	child2Map.Remove(e)
+
+	assert.PanicsWithValue(t, "entity has no component of type ChildOf2 to set relation target for", func() {
+		child2Map.SetRelations(e, RelIdx(0, parent2))
+	})
 }
 
 func TestWorldSetRelations(t *testing.T) {
