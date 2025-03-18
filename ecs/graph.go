@@ -11,11 +11,11 @@ type node struct {
 	archetype archetypeID
 }
 
-func newNode(id nodeID, archetype archetypeID, mask bitMask) node {
+func newNode(id nodeID, archetype archetypeID, mask *bitMask) node {
 	return node{
 		id:        id,
 		archetype: archetype,
-		mask:      mask,
+		mask:      *mask,
 		neighbors: newIDMap[*node](),
 	}
 }
@@ -31,7 +31,7 @@ type graph struct {
 
 func newGraph() graph {
 	nodes := pagedSlice[node]{}
-	nodes.Add(newNode(0, 0, newMask()))
+	nodes.Add(newNode(0, 0, &bitMask{}))
 
 	return graph{
 		nodes: nodes,
@@ -86,6 +86,6 @@ func (g *graph) findOrCreate(mask *bitMask) *node {
 			return node
 		}
 	}
-	g.nodes.Add(newNode(nodeID(len), maxArchetypeID, *mask))
+	g.nodes.Add(newNode(nodeID(len), maxArchetypeID, mask))
 	return g.nodes.Get(len)
 }
