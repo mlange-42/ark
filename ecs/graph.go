@@ -5,7 +5,7 @@ import "fmt"
 type nodeID uint32
 
 type node struct {
-	neighbors idMap[nodeID]
+	neighbors idMap[*node]
 	mask      bitMask
 	id        nodeID
 	archetype archetypeID
@@ -16,7 +16,7 @@ func newNode(id nodeID, archetype archetypeID, mask bitMask) node {
 		id:        id,
 		archetype: archetype,
 		mask:      mask,
-		neighbors: newIDMap[nodeID](),
+		neighbors: newIDMap[*node](),
 	}
 }
 
@@ -26,19 +26,20 @@ func (n *node) GetArchetype() (archetypeID, bool) {
 
 // Archetype graph for faster lookup of transitions.
 type graph struct {
-	nodes []node
+	nodes pagedSlice[node]
 }
 
 func newGraph() graph {
+	nodes := pagedSlice[node]{}
+	nodes.Add(newNode(0, 0, newMask()))
+
 	return graph{
-		nodes: []node{
-			newNode(0, 0, newMask()),
-		},
+		nodes: nodes,
 	}
 }
 
 func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *node {
-	startNode := &g.nodes[start]
+	startNode := g.nodes.Get(int32(start))
 	curr := startNode
 
 	for _, id := range remove {
@@ -47,11 +48,11 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 		}
 		outMask.Set(id, false)
 		if next, ok := curr.neighbors.Get(id.id); ok {
-			curr = &g.nodes[next]
+			curr = next
 		} else {
 			next := g.findOrCreate(outMask)
-			next.neighbors.Set(id.id, curr.id)
-			curr.neighbors.Set(id.id, next.id)
+			next.neighbors.Set(id.id, curr)
+			curr.neighbors.Set(id.id, next)
 			curr = next
 		}
 	}
@@ -66,11 +67,11 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 
 		outMask.Set(id, true)
 		if next, ok := curr.neighbors.Get(id.id); ok {
-			curr = &g.nodes[next]
+			curr = next
 		} else {
 			next := g.findOrCreate(outMask)
-			next.neighbors.Set(id.id, curr.id)
-			curr.neighbors.Set(id.id, next.id)
+			next.neighbors.Set(id.id, curr)
+			curr.neighbors.Set(id.id, next)
 			curr = next
 		}
 	}
@@ -78,12 +79,13 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 }
 
 func (g *graph) findOrCreate(mask *bitMask) *node {
-	for i := range g.nodes {
-		if g.nodes[i].mask.Equals(mask) {
-			return &g.nodes[i]
+	len := g.nodes.Len()
+	for i := range len {
+		node := g.nodes.Get(i)
+		if node.mask.Equals(mask) {
+			return node
 		}
 	}
-	idx := len(g.nodes)
-	g.nodes = append(g.nodes, newNode(nodeID(idx), maxArchetypeID, *mask))
-	return &g.nodes[idx]
+	g.nodes.Add(newNode(nodeID(len), maxArchetypeID, *mask))
+	return g.nodes.Get(len)
 }
