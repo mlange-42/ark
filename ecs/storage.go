@@ -410,7 +410,7 @@ func (s *storage) getTables(batch *Batch) []*table {
 
 	for i := range s.archetypes {
 		archetype := &s.archetypes[i]
-		if !batch.filter.matches(&archetype.mask) {
+		if !batch.filter.matches(archetype.mask) {
 			continue
 		}
 
@@ -437,7 +437,7 @@ func (s *storage) getTableIDs(filter *filter, relations []RelationID) []tableID 
 
 	for i := range s.archetypes {
 		archetype := &s.archetypes[i]
-		if !filter.matches(&archetype.mask) {
+		if !filter.matches(archetype.mask) {
 			continue
 		}
 

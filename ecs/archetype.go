@@ -22,7 +22,7 @@ type archetype struct {
 	tables         []tableID                // all active tables
 	freeTables     []tableID                // all inactive/free tables
 	zeroValue      []byte                   // zero value with the size of the largest item type, for fast zeroing
-	mask           bitMask
+	mask           *bitMask
 	id             archetypeID
 	node           nodeID
 	numRelations   uint8 // number of relation components
@@ -68,7 +68,7 @@ func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, t
 	return archetype{
 		id:             id,
 		node:           node,
-		mask:           *mask,
+		mask:           mask,
 		components:     components,
 		itemSizes:      sizes,
 		componentsMap:  componentsMap,
