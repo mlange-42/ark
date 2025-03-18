@@ -21,7 +21,7 @@ type comp2 struct {
 }
 
 func main() {
-	count := 10
+	count := 50
 	iters := 10000
 	entities := 1000
 

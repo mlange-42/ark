@@ -15,7 +15,7 @@ const maxArchetypeID = math.MaxUint32
 
 type archetype struct {
 	components     []ID                     // components IDs of the archetype in arbitrary order
-	itemSizes      []uint32                 // item size per component ID
+	itemSizes      []uint32                 // item size per component index
 	componentsMap  []int16                  // mapping from component IDs to column indices; -1 indicates none
 	isRelation     []bool                   // whether columns are relations components, indexed by column index
 	relationTables []map[entityID]*tableIDs // lookup for relation targets of tables, indexed by column index
@@ -27,6 +27,7 @@ type archetype struct {
 	node           nodeID
 	numRelations   uint8 // number of relation components
 }
+
 type tableIDs struct {
 	tables []tableID
 }
