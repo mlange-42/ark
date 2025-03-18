@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"fmt"
 	"unsafe"
 )
 
@@ -223,15 +224,16 @@ func (s *storage) createArchetype(node *node) *archetype {
 }
 
 func (s *storage) createTable(archetype *archetype, relations []RelationID) *table {
+	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(archetype.components))
-	numRelations := uint8(0)
+
+	if uint8(len(relations)) < archetype.numRelations {
+		// TODO: is there way to trigger this?
+		panic("relation targets must be fully specified")
+	}
 	for _, rel := range relations {
 		idx := archetype.componentsMap[rel.component.id]
 		targets[idx] = rel.target
-		numRelations++
-	}
-	if numRelations != archetype.numRelations {
-		panic("relations must be fully specified")
 	}
 	for i := range relations {
 		rel := &relations[i]
@@ -326,6 +328,7 @@ func (s *storage) moveEntities(src, dst *table, count uint32) {
 }
 
 func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []RelationID) []RelationID {
+	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(oldTable.columns))
 	for i := range oldTable.columns {
 		targets[i] = oldTable.columns[i].target
@@ -352,6 +355,7 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []Relat
 
 func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([]RelationID, bool) {
 	changed := false
+	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(oldTable.columns))
 	for i := range oldTable.columns {
 		targets[i] = oldTable.columns[i].target
@@ -360,6 +364,10 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([
 		// Validity of the target is checked when creating a new table.
 		// Whether the component is a relation is checked when creating a new table.
 		column := oldTable.components[rel.component.id]
+		if column == nil {
+			tp, _ := s.registry.ComponentType(rel.component.id)
+			panic(fmt.Sprintf("entity has no component of type %s to set relation target for", tp.Name()))
+		}
 		if rel.target == targets[column.index] {
 			continue
 		}

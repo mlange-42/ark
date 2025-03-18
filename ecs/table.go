@@ -187,11 +187,16 @@ func (t *table) AddAllEntities(other *table, count uint32) {
 }
 
 func (t *table) MatchesExact(relations []RelationID) bool {
-	if len(relations) != len(t.relationIDs) {
+	if len(relations) < len(t.relationIDs) {
 		panic("relation targets must be fully specified")
 	}
 	for _, rel := range relations {
 		column := t.components[rel.component.id]
+		if column == nil {
+			// TODO: is there a check anywhere that prevents adding/setting relations
+			// on columns not in the table?
+			continue
+		}
 		if !column.isRelation {
 			panic(fmt.Sprintf("component %d is not a relation component", rel.component.id))
 		}
