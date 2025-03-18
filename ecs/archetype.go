@@ -90,7 +90,7 @@ func (a *archetype) GetTable(storage *storage, relations []RelationID) (*table, 
 	if !a.HasRelations() {
 		return &storage.tables[a.tables[0]], true
 	}
-	if len(relations) < int(a.numRelations) {
+	if uint8(len(relations)) < a.numRelations {
 		panic("relation targets must be fully specified")
 	}
 	index := a.componentsMap[relations[0].component.id]

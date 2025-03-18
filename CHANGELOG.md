@@ -42,6 +42,8 @@
 - Fixes false-positive debug checks on registered queries and unsafe get (#179)
 - Fixes a bookkeeping bug when recycling relationship tables (#204)
 - Fixes garbage collected pointers when assigning components using non-`...Fn` methods (#205)
+- Fix error on removing relationship components (#212)
+- Check that entities actually have relationship components to set target for (#212)
 
 ### Other
 

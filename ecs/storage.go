@@ -225,14 +225,13 @@ func (s *storage) createArchetype(node *node) *archetype {
 
 func (s *storage) createTable(archetype *archetype, relations []RelationID) *table {
 	targets := make([]Entity, len(archetype.components))
-	numRelations := uint8(0)
+
+	if uint8(len(relations)) < archetype.numRelations {
+		panic("relation targets must be fully specified")
+	}
 	for _, rel := range relations {
 		idx := archetype.componentsMap[rel.component.id]
 		targets[idx] = rel.target
-		numRelations++
-	}
-	if numRelations < archetype.numRelations {
-		panic("relation targets must be fully specified")
 	}
 	for i := range relations {
 		rel := &relations[i]
