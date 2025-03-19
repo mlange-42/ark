@@ -5,7 +5,7 @@ import (
 	"unsafe"
 )
 
-// column storage for components in an archetype.
+// column storage for components in an table.
 type column struct {
 	pointer    unsafe.Pointer // pointer to the first element
 	data       reflect.Value  // data buffer
@@ -88,4 +88,42 @@ func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
 	} else {
 		c.data.SetZero()
 	}
+}
+
+// entityColumn storage for entities in an table.
+type entityColumn struct {
+	pointer unsafe.Pointer // pointer to the first element
+	data    reflect.Value  // data buffer
+}
+
+// newColumn creates a new column for a given type and capacity.
+func newEntityColumn(capacity uint32) entityColumn {
+	// TODO: should be use a slice instead of an array here?
+	data := reflect.New(reflect.ArrayOf(int(capacity), entityType)).Elem()
+	pointer := data.Addr().UnsafePointer()
+
+	return entityColumn{
+		data:    data,
+		pointer: pointer,
+	}
+}
+
+// Get returns a pointer to the component at the given index.
+func (c *entityColumn) Get(index uintptr) unsafe.Pointer {
+	return unsafe.Add(c.pointer, index*entitySize)
+}
+
+func (c *entityColumn) SetLast(other *entityColumn, ownLen uint32, count uint32) {
+	start := ownLen - count
+	src := other.Get(0)
+	dst := c.Get(uintptr(start))
+	copyPtr(src, dst, entitySize*uintptr(count))
+}
+
+// Set overwrites the component at the given index.
+func (c *entityColumn) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
+	dst := c.Get(uintptr(index))
+
+	copyPtr(comp, dst, entitySize)
+	return dst
 }
