@@ -80,9 +80,6 @@ func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
 	if ownLen == 0 {
 		return
 	}
-	if zero == nil {
-		return
-	}
 	if ownLen <= 64 { // A coarse estimate where manually zeroing is faster
 		c.ZeroRange(0, ownLen, zero)
 	} else {

@@ -112,6 +112,7 @@ func TestTypeSizes(t *testing.T) {
 	printTypeSize[archetype]()
 	printTypeSize[table]()
 	printTypeSize[column]()
+	printTypeSize[entityColumn]()
 	printTypeSize[cacheEntry]()
 	printTypeSize[cursor]()
 	printTypeSizeName[Filter2[Position, Velocity]]("Filter2")
