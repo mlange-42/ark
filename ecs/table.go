@@ -20,7 +20,7 @@ type table struct {
 	ids         []ID           // components IDs in the same order as in the archetype
 	columns     []column       // columns in dense order
 	relationIDs []RelationID   // all relation IDs and targets of the table
-	entities    column         // column for entities
+	entities    entityColumn   // column for entities
 	id          tableID
 	archetype   archetypeID
 	len         uint32
@@ -28,7 +28,7 @@ type table struct {
 }
 
 func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []RelationID) table {
-	entities := newColumn(0, entityType, entitySize, false, Entity{}, capacity)
+	entities := newEntityColumn(capacity)
 	columns := make([]column, len(archetype.components))
 
 	components := make([]*column, maskTotalBits)
@@ -141,7 +141,7 @@ func (t *table) Remove(index uint32) bool {
 	swapped := index != uint32(lastIndex)
 
 	if swapped {
-		sz := t.entities.itemSize
+		sz := entitySize
 		src := unsafe.Add(t.entities.pointer, lastIndex*sz)
 		dst := unsafe.Add(t.entities.pointer, uintptr(index)*sz)
 		copyPtr(src, dst, uintptr(sz))
@@ -166,7 +166,6 @@ func (t *table) Remove(index uint32) bool {
 }
 
 func (t *table) Reset() {
-	t.entities.Reset(t.len, nil)
 	for c := range t.columns {
 		t.columns[c].Reset(t.len, t.zeroPointer)
 	}
