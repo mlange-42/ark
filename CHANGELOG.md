@@ -1,6 +1,6 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.3.0...main)
+## [[v0.4.0]](https://github.com/mlange-42/ark/compare/v0.3.0...v0.4.0)
 
 ### Breaking changes
 
@@ -34,7 +34,7 @@
 - More reliable inlining of query methods (#198)
 - Optimizes memory sizes of internal types (#199, #200)
 - Optimizes handling of relations in filters (#203)
-- Rework of component assignment for a bigfix, accidentally speeding up assigning operations (#205)
+- Rework of component assignment for a bugfix, accidentally speeding up assigning operations (#205)
 - Uses a dedicated column type for entities in tables/archetypes, with a small speeding for component operations (216)
 
 ### Bugfixes
