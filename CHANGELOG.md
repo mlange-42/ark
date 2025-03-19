@@ -35,7 +35,7 @@
 - Optimizes memory sizes of internal types (#199, #200)
 - Optimizes handling of relations in filters (#203)
 - Rework of component assignment for a bugfix, accidentally speeding up assigning operations (#205)
-- Uses a dedicated column type for entities in tables/archetypes, with a small speeding for component operations (216)
+- Uses a dedicated column type for entities in tables/archetypes, with a small speedup for component operations (216)
 
 ### Bugfixes
 
@@ -43,8 +43,8 @@
 - Fixes false-positive debug checks on registered queries and unsafe get (#179)
 - Fixes a bookkeeping bug when recycling relationship tables (#204)
 - Fixes garbage collected pointers when assigning components using non-`...Fn` methods (#205)
-- Fix error on removing relationship components (#212)
-- Check that entities actually have relationship components to set target for (#212)
+- Fixes error on removing relationship components (#212)
+- Checks that entities actually have relationship components to set target for (#212)
 
 ### Other
 
