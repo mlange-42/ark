@@ -35,12 +35,12 @@ type Scheduler struct {
 	systems []System
 }
 
-// AddSystem adds a System to the Scheduler
+// AddSystem adds a System to the scheduler
 func (s *Scheduler) AddSystem(sys System) {
 	s.systems = append(s.systems, sys)
 }
 
-// Run initializes and updates all Systems
+// Run initializes and updates all systems
 func (s *Scheduler) Run(steps int) {
 	s.initialize()
 	for i := 0; i < steps; i++ {
@@ -48,6 +48,7 @@ func (s *Scheduler) Run(steps int) {
 	}
 }
 
+// initialize a new world and all systems
 func (s *Scheduler) initialize() {
 	s.world = ecs.NewWorld()
 
@@ -56,6 +57,7 @@ func (s *Scheduler) initialize() {
 	}
 }
 
+// update all systems
 func (s *Scheduler) update() {
 	for _, sys := range s.systems {
 		sys.Update(&s.world)
@@ -81,6 +83,7 @@ type InitializerSystem struct {
 
 // Initialize the system
 func (s *InitializerSystem) Initialize(w *ecs.World) {
+	// Initialize entities with Position and Velocity
 	mapper := ecs.NewMap2[Position, Velocity](w)
 	mapper.NewBatchFn(s.Count, func(_ ecs.Entity, pos *Position, vel *Velocity) {
 		pos.X = rand.Float64() * 100
@@ -95,16 +98,19 @@ func (s *InitializerSystem) Update(w *ecs.World) {}
 
 // PosUpdaterSystem updates entity positions
 type PosUpdaterSystem struct {
+	// Store filters permanently, for efficiency
 	filter *ecs.Filter2[Position, Velocity]
 }
 
 // Initialize the system
 func (s *PosUpdaterSystem) Initialize(w *ecs.World) {
-	s.filter = ecs.NewFilter2[Position, Velocity](w)
+	// Initialize the filter, using a shortcut to avoid listing generics again
+	s.filter = s.filter.New(w)
 }
 
 // Update the system
 func (s *PosUpdaterSystem) Update(w *ecs.World) {
+	// Perform system update logic
 	query := s.filter.Query()
 	for query.Next() {
 		pos, vel := query.Get()
