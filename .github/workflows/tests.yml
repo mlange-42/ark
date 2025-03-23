@@ -130,3 +130,4 @@ jobs:
         run: |
           go run ./examples/readme
           go run ./examples/systems
+          go run ./examples/no_ecs
