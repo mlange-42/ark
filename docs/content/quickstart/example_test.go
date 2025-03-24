@@ -43,7 +43,7 @@ func main() {
 	for range 5000 {
 		// Get a fresh query
 		query := filter.Query()
-		// Iterate it.
+		// Iterate it
 		for query.Next() {
 			// Component access through the Query
 			pos, vel := query.Get()
