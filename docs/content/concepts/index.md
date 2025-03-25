@@ -116,6 +116,8 @@ As with [components](#components), resources are Go structs that can contain any
 
 {{< code-func concepts_test.go TestResource >}}
 
+See chapter [Resources](../resources) for more details.
+
 ## Relationships
 
 Entity relationships are a powerful, advanced ECS feature that was first introduced by [Flecs](https://www.flecs.dev/flecs/).

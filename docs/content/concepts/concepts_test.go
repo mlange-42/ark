@@ -78,9 +78,7 @@ func TestResource(t *testing.T) {
 	// Add it to the world.
 	ecs.AddResource(&world, &worldGrid)
 
-	// In your system, create a resource mapper.
-	gridRes := ecs.NewResource[Grid](&world)
-	// Access the resource.
-	grid := gridRes.Get()
+	// Elsewhere, get the resource from the world.
+	grid := ecs.GetResource[Grid](&world)
 	_ = grid
 }
