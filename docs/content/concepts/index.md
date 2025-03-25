@@ -73,6 +73,8 @@ and only contain closely related state variables that are typically used togethe
 Components can also be labels or tags, which means that they don't contain any data
 but are just used to tag entities, like `Female` and `Male`.
 
+A world can contain up to 256 different component types (64 with build tag `tiny`).
+
 See chapter [Component operations](../operations) for how to create entities with components,
 adding and removing components, and other details.
 
@@ -107,14 +109,16 @@ a scheduler, and other useful stuff for Ark. See there for a full example.
 
 ## Resources
 
-Resources are data structures that are unique to an ECS world.
+Resources are singular data structures in an ECS world.
+As such, they can be thought of as components that exist only once and are not associated to an entity.
 Examples could be the current game/simulation tick, a grid that your entities live on,
 or an acceleration structure for spatial indexing.
-As such, they can be thought of as components that exist only once and are not associated to an entity.
 
 As with [components](#components), resources are Go structs that can contain any types of variables.
 
 {{< code-func concepts_test.go TestResource >}}
+
+See chapter [Resources](../resources) for more details.
 
 ## Relationships
 

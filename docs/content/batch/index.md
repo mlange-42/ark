@@ -1,7 +1,7 @@
 +++
 title = 'Batch operations'
 type = "docs"
-weight = 60
+weight = 70
 description = "Ark's queries and filters."
 +++
 
