@@ -5,10 +5,12 @@ weight = 50
 description = "Resources for singleton objects."
 +++
 
-Resources are data structures that are unique to an ECS world.
+Resources are singular data structures in an ECS world.
+As such, they can be thought of as components that exist only once and are not associated to an entity.
 Examples could be the current game/simulation tick, a grid that your entities live on,
 or an acceleration structure for spatial indexing.
-As such, they can be thought of as components that exist only once and are not associated to an entity.
+
+A world can contain up to 256 resources (64 with build tag `tiny`).
 
 ## Adding resources
 

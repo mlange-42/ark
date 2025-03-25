@@ -6,7 +6,7 @@ description = "Manipulating components."
 +++
 
 Components contain the data associated to your game or simulation entities.
-This chapter explains how to to manipulate them.
+This chapter explains how to manipulate them.
 For general information on components, see section [Components](../concepts#components) in chapter [Concepts](../concepts).
 
 ## Component mappers
@@ -23,6 +23,8 @@ Unfortunately, this is required due to the limitations of Go's generics.
 
 In addition to {{< api ecs Map1 >}}, {{< api ecs Map2 >}}, etc., there is {{< api ecs Map >}}.
 It is a dedicated mapper for a single component and provides a few additional methods.
+
+## Component access
 
 Component mappers are also used to access components for specific entities:
 
