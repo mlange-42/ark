@@ -7,6 +7,7 @@
 - Adds an example on how to implement systems (#221, #223)
 - Adds an example on how to use non-ECS data structures with entities (#222)
 - Adds chapter on resources to the user guide (#226)
+- Adds a section on limitations of entity relationships to the user guide (#227)
 
 ## [[v0.4.0]](https://github.com/mlange-42/ark/compare/v0.3.0...v0.4.0)
 
