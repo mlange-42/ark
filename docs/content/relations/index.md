@@ -129,6 +129,24 @@ Entities that are the target of any relationships can be removed from the world 
 When this happens, all entities that have this target in a relation get assigned to the zero entity as target.
 The respective archetype is de-activated and marked for potential re-use for another target entity.
 
+## Limitation
+
+Unlike [Flecs](https://flecs.dev), the ECS that pioneered entity relationships,
+Ark is limited to supporting only "exclusive" relationships.
+This means that any relationship (i.e. relationship type/component) can only have a single target entity.
+An entity can, however, have multiple different relationship types at the same time.
+
+The limitation to a single target is mainly a performance consideration.
+Firstly, the possibility for multiple targets would require a different,
+slower approach for component mapping in archetypes.
+Secondly, usage of multiple targets would easily lead to archetype fragmentation,
+as a separate archetype (table) would be created for each unique combination of targets.
+
+Entity relationships in Ark are still a very powerful feature,
+while discouraging use cases where they could easily lead to poor performance.
+For more details on when entity relationships are the most effective and efficient,
+see the next section.
+
 ## When to use, and when not
 
 When using Ark's entity relations, an archetype is created for each target entity of a relation.
