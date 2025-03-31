@@ -131,9 +131,9 @@ The respective archetype is de-activated and marked for potential re-use for ano
 
 ## Limitation
 
-Compared to [Flecs](https://flecs.dev), the ECS that pioneered entity relationships,
-Ark only support "exclusive" relationships.
-This means that any relationship (i.e. relationship type/components) can only have a single target entity.
+Unlike [Flecs](https://flecs.dev), the ECS that pioneered entity relationships,
+Ark is limited to supporting only "exclusive" relationships.
+This means that any relationship (i.e. relationship type/component) can only have a single target entity.
 An entity can, however, have multiple different relationship types at the same time.
 
 The limitation to a single target is mainly a performance consideration.
