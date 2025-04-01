@@ -37,7 +37,7 @@ func NewMap1[A any](world *World) *Map1[A] {
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A) {
 		*pa = *a
@@ -48,7 +48,7 @@ func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
@@ -67,7 +67,7 @@ func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A) {
 		*pa = *a
@@ -78,7 +78,7 @@ func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Relation) {
@@ -312,7 +312,7 @@ func NewMap2[A any, B any](world *World) *Map2[A, B] {
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B) {
 		*pa = *a
@@ -324,7 +324,7 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
@@ -344,7 +344,7 @@ func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B) {
 		*pa = *a
@@ -356,7 +356,7 @@ func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), rel ...Relation) {
@@ -617,7 +617,7 @@ func NewMap3[A any, B any, C any](world *World) *Map3[A, B, C] {
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B, pc *C) {
 		*pa = *a
@@ -630,7 +630,7 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) Entity {
@@ -651,7 +651,7 @@ func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) 
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C) {
 		*pa = *a
@@ -664,7 +664,7 @@ func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
@@ -948,7 +948,7 @@ func NewMap4[A any, B any, C any, D any](world *World) *Map4[A, B, C, D] {
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D) {
 		*pa = *a
@@ -962,7 +962,7 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) En
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...Relation) Entity {
@@ -984,7 +984,7 @@ func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...R
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D) {
 		*pa = *a
@@ -998,7 +998,7 @@ func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Re
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
@@ -1305,7 +1305,7 @@ func NewMap5[A any, B any, C any, D any, E any](world *World) *Map5[A, B, C, D, 
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E) {
 		*pa = *a
@@ -1320,7 +1320,7 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) Entity {
@@ -1343,7 +1343,7 @@ func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E),
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E) {
 		*pa = *a
@@ -1358,7 +1358,7 @@ func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, 
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
@@ -1688,7 +1688,7 @@ func NewMap6[A any, B any, C any, D any, E any, F any](world *World) *Map6[A, B,
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F) {
 		*pa = *a
@@ -1704,7 +1704,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) Entity {
@@ -1728,7 +1728,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F) {
 		*pa = *a
@@ -1744,7 +1744,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
@@ -2097,7 +2097,7 @@ func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) *Map
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G) {
 		*pa = *a
@@ -2114,7 +2114,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) Entity {
@@ -2139,7 +2139,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, 
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G) {
 		*pa = *a
@@ -2156,7 +2156,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, 
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
@@ -2532,7 +2532,7 @@ func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *Worl
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H) {
 		*pa = *a
@@ -2550,7 +2550,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) Entity {
@@ -2576,7 +2576,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H) {
 		*pa = *a
@@ -2594,7 +2594,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
@@ -2993,7 +2993,7 @@ func NewMap9[A any, B any, C any, D any, E any, F any, G any, H any, I any](worl
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I) {
 		*pa = *a
@@ -3012,7 +3012,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntity(a *A, b *B, c *C, d *D, e *E
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) Entity {
@@ -3039,7 +3039,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, 
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I) {
 		*pa = *a
@@ -3058,7 +3058,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatch(count int, a *A, b *B, c *C, 
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
@@ -3480,7 +3480,7 @@ func NewMap10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J) {
 		*pa = *a
@@ -3500,7 +3500,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntity(a *A, b *B, c *C, d *D, 
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) Entity {
@@ -3528,7 +3528,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c 
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J) {
 		*pa = *a
@@ -3548,7 +3548,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatch(count int, a *A, b *B, c 
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
@@ -3993,7 +3993,7 @@ func NewMap11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K) {
 		*pa = *a
@@ -4014,7 +4014,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntity(a *A, b *B, c *C, d *
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) Entity {
@@ -4043,7 +4043,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B,
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K) {
 		*pa = *a
@@ -4064,7 +4064,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatch(count int, a *A, b *B,
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
@@ -4532,7 +4532,7 @@ func NewMap12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J a
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) Entity {
 	return m.NewEntityFn(func(pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K, pl *L) {
 		*pa = *a
@@ -4554,7 +4554,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntity(a *A, b *B, c *C, 
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) Entity {
@@ -4584,7 +4584,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b 
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K, pl *L) {
 		*pa = *a
@@ -4606,7 +4606,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatch(count int, a *A, b 
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {

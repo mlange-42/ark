@@ -58,7 +58,7 @@ See the examples below for their usage.
 
 ### On new entities
 
-When creating entities, we can use a `MapX` (e.g. {{< api ecs Map2 >}}):
+When creating entities, we can use a `MapX` (e.g. {{< api ecs Map2.NewEntity >}}):
 
 {{< code-func relations_test.go TestNewEntity >}}
 
@@ -104,12 +104,12 @@ All [batch operation](../batch) methods of `MapX` (e.g. {{< api ecs Map2.NewBatc
 There are two ways to specify target entities to filter for: when building the filter, and when getting the query.
 Both ways can be combined.
 
-Relation targets given via {{< api ecs Map2.Relations >}} when building a filter are best used for permanent or long-lived targets.
+Relation targets given via {{< api ecs Filter2.Relations >}} when building a filter are best used for permanent or long-lived targets.
 
 {{< code-func relations_test.go TestFilter1 >}}
 
 With [cached filters](../queries#filter-caching), the targets specified this way are included in the cache.
-For short-lived targets, it is better to pass them when building a query with {{< api ecs Map2.Query >}}
+For short-lived targets, it is better to pass them when building a query with {{< api ecs Filter2.Query >}}
 
 {{< code-func relations_test.go TestFilter2 >}}
 

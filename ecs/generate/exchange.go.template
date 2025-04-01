@@ -65,7 +65,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Removes(components ...Comp) *Exchange
 // Add the mapped components to the given entity.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (ex *Exchange{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...Relation) {
 	ex.AddFn(entity, func({{$args2}}) {
 		{{- range $lower}}
@@ -78,7 +78,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}}), rel ...Relation) {
@@ -98,7 +98,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Remove(entity Entity) {
 // and removing those previously specified with [Exchange{{.}}.Removes].
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, rel ...Relation) {
 	ex.ExchangeFn(entity, func({{$args2}}) {
 		{{- range $lower}}
@@ -113,7 +113,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, re
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeFn(entity Entity, fn func({{$args}}), rel ...Relation) {
@@ -127,7 +127,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeFn(entity Entity, fn func({{$
 // AddBatch adds the mapped components to all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (ex *Exchange{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...Relation) {
 	ex.AddBatchFn(batch, func(_ Entity, {{$args2}}) {
 		{{- range $lower}}
@@ -140,7 +140,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel
 // running the given function on each. The function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...Relation) {
@@ -157,7 +157,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch, fn func(ent
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatch(batch *Batch, {{$args}}, rel ...Relation) {
 	ex.ExchangeBatchFn(batch, func(_ Entity, {{$args2}}) {
 		{{- range $lower}}
@@ -170,7 +170,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatch(batch *Batch, {{$args}}
 // running the given function on each. The function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...Relation) {
