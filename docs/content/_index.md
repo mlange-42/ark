@@ -37,6 +37,8 @@ next = "/quickstart"
 <a href="https://github.com/mlange-42/ark/blob/main/LICENSE-APACHE" style="display:inline-block">
 <img alt="Apache license" src="https://img.shields.io/badge/Apache%202.0-brightgreen?label=license" style="margin:0;"></img></a>
 
+<a href="https://github.com/avelino/awesome-go" style="display:inline-block">
+<img alt="Mentioned in Awesome Go" src="https://awesome.re/mentioned-badge.svg" style="margin:0;"></img></a>
 </div>
 {{< /html >}}
 
