@@ -60,7 +60,7 @@ func NewMap{{.}}{{$generics}}(world *World) *Map{{.}}{{$genericsShort}} {
 // NewEntity creates a new entity with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...Relation) Entity {
 	return m.NewEntityFn(func({{$args2}}) {
 		{{- range $lower}}
@@ -73,7 +73,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...Relation) Entit
 // The callback can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$args}}), rel ...Relation) Entity {
@@ -94,7 +94,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$args}}), rel ...Rela
 // NewBatch creates a batch of new entities with the mapped components.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...Relation) {
 	m.NewBatchFn(count, func(_ Entity, {{$args2}}) {
 		{{- range $lower}}
@@ -107,7 +107,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...Relat
 // The initializer function can be nil.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
-// a relation target entity must be provided.
+// a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity, {{$args}}), rel ...Relation) {
