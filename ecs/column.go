@@ -70,7 +70,7 @@ func (c *column) ZeroRange(start, len uint32, zero unsafe.Pointer) {
 		return
 	}
 	var i uint32
-	for i = 0; i < len; i++ {
+	for i = range len {
 		dst := unsafe.Add(c.pointer, (i+start)*size)
 		copyPtr(zero, dst, c.itemSize)
 	}

@@ -18,7 +18,7 @@ func BenchmarkCreateEntity1Comp_1000(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		b.StartTimer()
-		for j := 0; j < 1000; j++ {
+		for range 1000 {
 			_ = builder.NewEntityFn(nil)
 		}
 		b.StopTimer()

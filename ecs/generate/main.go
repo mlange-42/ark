@@ -62,7 +62,7 @@ func makeRange(min, max int) []int {
 
 func lowerLetters(n int) []string {
 	letters := make([]string, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		letters[i] = string(rune('a' + i))
 	}
 	return letters
@@ -70,7 +70,7 @@ func lowerLetters(n int) []string {
 
 func upperLetters(n int) []string {
 	letters := make([]string, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		letters[i] = string(rune('A' + i))
 	}
 	return letters

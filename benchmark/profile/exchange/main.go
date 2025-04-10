@@ -31,7 +31,7 @@ func main() {
 }
 
 func run(rounds, iters, numEntities int) {
-	for i := 0; i < rounds; i++ {
+	for range rounds {
 		w := ecs.NewWorld(1024)
 
 		ex1 := ecs.NewExchange1[comp1](&w).Removes(ecs.C[comp2]())

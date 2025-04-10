@@ -31,14 +31,14 @@ func main() {
 }
 
 func run(rounds, iters int) {
-	for i := 0; i < rounds; i++ {
+	for range rounds {
 		world := ecs.NewWorld(1024)
 
 		mapper := ecs.NewMap2[position, velocity](&world)
 		mapper.NewBatchFn(100, nil)
 
 		filter := ecs.NewFilter2[position, velocity](&world)
-		for j := 0; j < iters; j++ {
+		for range iters {
 			query := filter.Query()
 			query.Close()
 		}

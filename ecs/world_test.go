@@ -382,7 +382,7 @@ func TestWorldRemoveGC(t *testing.T) {
 	runtime.ReadMemStats(&mem1)
 
 	entities := []Entity{}
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		e := mapper.NewEntity(&SliceComp{})
 		ws := mapper.Get(e)
 		ws.Slice = make([]int, 10000)
@@ -419,10 +419,10 @@ func TestWorldPointerStressTest(t *testing.T) {
 	count := 1
 	var entities []Entity
 
-	for i := 0; i < 1000; i++ {
+	for range 1000 {
 		add := rand.IntN(1000)
 		count += add
-		for n := 0; n < add; n++ {
+		for range add {
 			e := mapper.NewEntity(&PointerComp{})
 			ptr := mapper.Get(e)
 			ptr.Ptr = &PointerType{&Position{X: float64(e.id), Y: 2}}
@@ -439,8 +439,8 @@ func TestWorldPointerStressTest(t *testing.T) {
 
 		rem := rand.IntN(count)
 		count -= rem
-		for n := 0; n < rem; n++ {
-			w.RemoveEntity(entities[n])
+		for _, e := range entities {
+			w.RemoveEntity(e)
 		}
 
 		entities = entities[:0]

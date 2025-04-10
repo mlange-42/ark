@@ -19,7 +19,7 @@ func TestEntityPool(t *testing.T) {
 	expectedAll[0].gen = math.MaxUint32
 	expectedAll[1].gen = math.MaxUint32
 
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		_ = p.Get()
 	}
 	assert.Equal(t, expectedAll, p.entities, "Wrong initial entities")
@@ -40,7 +40,7 @@ func TestEntityPool(t *testing.T) {
 	assert.Equal(t, expectedAll, p.entities, "Wrong entities after get/recycle")
 
 	e0Old = p.entities[reservedEntities]
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		p.Recycle(p.entities[i+reservedEntities])
 		expectedAll[i+1].gen++
 	}
@@ -50,7 +50,7 @@ func TestEntityPool(t *testing.T) {
 
 	assert.False(t, p.Alive(e0Old), "Recycled entity of old generation should not be alive")
 
-	for i := 0; i < 5; i++ {
+	for range 5 {
 		_ = p.Get()
 	}
 
@@ -110,13 +110,13 @@ func TestEntityPoolStochastic(t *testing.T) {
 func TestBitPool(t *testing.T) {
 	p := newBitPool()
 
-	for i := 0; i < mask64TotalBits; i++ {
+	for i := range mask64TotalBits {
 		assert.Equal(t, i, int(p.Get()))
 	}
 
 	assert.Panics(t, func() { p.Get() })
 
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		p.Recycle(uint8(i))
 	}
 	for i := 9; i >= 0; i-- {
@@ -127,13 +127,13 @@ func TestBitPool(t *testing.T) {
 
 	p.Reset()
 
-	for i := 0; i < mask64TotalBits; i++ {
+	for i := range mask64TotalBits {
 		assert.Equal(t, i, int(p.Get()))
 	}
 
 	assert.Panics(t, func() { p.Get() })
 
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		p.Recycle(uint8(i))
 	}
 	for i := 9; i >= 0; i-- {
@@ -144,8 +144,8 @@ func TestBitPool(t *testing.T) {
 func TestIntPool(t *testing.T) {
 	p := newIntPool[int](16)
 
-	for n := 0; n < 3; n++ {
-		for i := 0; i < 32; i++ {
+	for range 3 {
+		for i := range 32 {
 			assert.Equal(t, i, p.Get())
 		}
 

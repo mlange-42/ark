@@ -95,7 +95,7 @@ type Grid struct {
 // NewGrid creates a ner Grid of the given size.
 func NewGrid(w, h int) Grid {
 	grid := make([][]ecs.Entity, h)
-	for i := 0; i < h; i++ {
+	for i := range h {
 		grid[i] = make([]ecs.Entity, w)
 	}
 	return Grid{

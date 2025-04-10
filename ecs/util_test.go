@@ -15,7 +15,7 @@ func TestPagedSlice(t *testing.T) {
 	a := pagedSlice[int32]{}
 
 	var i int32
-	for i = 0; i < 66; i++ {
+	for i = range 66 {
 		a.Add(i)
 		assert.Equal(t, i, *a.Get(i))
 		assert.Equal(t, i+1, a.Len())

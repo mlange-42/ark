@@ -105,7 +105,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, r
 	count := uintptr(oldLen)
 
 	var i uintptr
-	for i = 0; i < count; i++ {
+	for i = range count {
 		idx := startIdx + i
 		entity := oldTable.GetEntity(i)
 		index := &w.storage.entities[entity.id]
