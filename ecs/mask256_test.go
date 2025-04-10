@@ -88,7 +88,7 @@ func TestBitMask256Copy(t *testing.T) {
 }
 
 func TestBitMask256(t *testing.T) {
-	for i := 0; i < mask256TotalBits; i++ {
+	for i := range mask256TotalBits {
 		mask := newMask256(id(i))
 		assert.Equal(t, 1, mask.TotalBitsSet())
 		assert.True(t, mask.Get(id(i)))
@@ -96,7 +96,7 @@ func TestBitMask256(t *testing.T) {
 	mask := bitMask256{}
 	assert.Equal(t, 0, mask.TotalBitsSet())
 
-	for i := 0; i < mask256TotalBits; i++ {
+	for i := range mask256TotalBits {
 		mask.Set(id(i), true)
 		assert.Equal(t, i+1, mask.TotalBitsSet())
 		assert.True(t, mask.Get(id(i)))
@@ -130,7 +130,7 @@ func TestMask256ToTypes(t *testing.T) {
 
 func BenchmarkMask256Get(b *testing.B) {
 	mask := newMask256()
-	for i := 0; i < mask256TotalBits; i++ {
+	for i := range mask256TotalBits {
 		if rand.Float64() < 0.5 {
 			mask.Set(id(i), true)
 		}
@@ -146,7 +146,7 @@ func BenchmarkMask256Get(b *testing.B) {
 
 func BenchmarkMask256Contains(b *testing.B) {
 	mask := newMask256()
-	for i := 0; i < mask256TotalBits; i++ {
+	for i := range mask256TotalBits {
 		if rand.Float64() < 0.5 {
 			mask.Set(id(i), true)
 		}
@@ -162,7 +162,7 @@ func BenchmarkMask256Contains(b *testing.B) {
 
 func BenchmarkMask256ContainsAny(b *testing.B) {
 	mask := newMask256()
-	for i := 0; i < mask256TotalBits; i++ {
+	for i := range mask256TotalBits {
 		if rand.Float64() < 0.5 {
 			mask.Set(id(i), true)
 		}

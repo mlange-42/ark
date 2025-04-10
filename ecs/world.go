@@ -163,7 +163,7 @@ func (w *World) Stats() *stats.World {
 	cntOld := int32(len(w.stats.Archetypes))
 	cntNew := int32(len(w.storage.archetypes))
 	var i int32
-	for i = 0; i < cntOld; i++ {
+	for i = range cntOld {
 		arch := &w.storage.archetypes[i]
 		archStats := &w.stats.Archetypes[i]
 		arch.UpdateStats(archStats, &w.storage)

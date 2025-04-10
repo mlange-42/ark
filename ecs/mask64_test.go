@@ -87,7 +87,7 @@ func TestBitMask64Copy(t *testing.T) {
 }
 
 func TestBitMask64(t *testing.T) {
-	for i := 0; i < mask64TotalBits; i++ {
+	for i := range mask64TotalBits {
 		mask := newMask64(id(i))
 		assert.Equal(t, 1, mask.TotalBitsSet())
 		assert.True(t, mask.Get(id(i)))
@@ -95,7 +95,7 @@ func TestBitMask64(t *testing.T) {
 	mask := bitMask64{}
 	assert.Equal(t, 0, mask.TotalBitsSet())
 
-	for i := 0; i < mask64TotalBits; i++ {
+	for i := range mask64TotalBits {
 		mask.Set(id(i), true)
 		assert.Equal(t, i+1, mask.TotalBitsSet())
 		assert.True(t, mask.Get(id(i)))
@@ -129,7 +129,7 @@ func TestMask64ToTypes(t *testing.T) {
 
 func BenchmarkMask64Get(b *testing.B) {
 	mask := newMask64()
-	for i := 0; i < mask64TotalBits; i++ {
+	for i := range mask64TotalBits {
 		if rand.Float64() < 0.5 {
 			mask.Set(id(i), true)
 		}
@@ -145,7 +145,7 @@ func BenchmarkMask64Get(b *testing.B) {
 
 func BenchmarkMask64Contains(b *testing.B) {
 	mask := newMask64()
-	for i := 0; i < mask64TotalBits; i++ {
+	for i := range mask64TotalBits {
 		if rand.Float64() < 0.5 {
 			mask.Set(id(i), true)
 		}
@@ -161,7 +161,7 @@ func BenchmarkMask64Contains(b *testing.B) {
 
 func BenchmarkMask64ContainsAny(b *testing.B) {
 	mask := newMask64()
-	for i := 0; i < mask64TotalBits; i++ {
+	for i := range mask64TotalBits {
 		if rand.Float64() < 0.5 {
 			mask.Set(id(i), true)
 		}

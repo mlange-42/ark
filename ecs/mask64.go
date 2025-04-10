@@ -85,7 +85,7 @@ func (b *bitMask64) toTypes(reg *registry) []ID {
 	totalIDs := reg.Count()
 
 	idx := 0
-	for j := 0; j < totalIDs; j++ {
+	for j := range totalIDs {
 		id := ID{id: uint8(j)}
 		if b.Get(id) {
 			types[idx] = id

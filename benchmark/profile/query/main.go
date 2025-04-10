@@ -32,7 +32,7 @@ func main() {
 }
 
 func run(rounds, iters, entities int) {
-	for i := 0; i < rounds; i++ {
+	for range rounds {
 		world := ecs.NewWorld(1024)
 
 		mapper := ecs.NewMap2[position, velocity](&world)
@@ -40,7 +40,7 @@ func run(rounds, iters, entities int) {
 		mapper.NewBatch(entities, &position{}, &velocity{1, -1})
 
 		filter := ecs.NewFilter2[position, velocity](&world)
-		for j := 0; j < iters; j++ {
+		for range iters {
 			query := filter.Query()
 			for query.Next() {
 				pos, vel := query.Get()

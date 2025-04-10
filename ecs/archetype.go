@@ -263,7 +263,7 @@ func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
 		cntOld = cntNew
 	}
 	var i int32
-	for i = 0; i < cntOld; i++ {
+	for i := range cntOld {
 		tableStats := &stats.Tables[i]
 		table := &storage.tables[tables[i]]
 		table.UpdateStats(stats.MemoryPerEntity, tableStats, &storage.registry)

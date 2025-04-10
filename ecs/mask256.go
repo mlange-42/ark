@@ -95,7 +95,7 @@ func (b *bitMask256) toTypes(reg *registry) []ID {
 	bits := totalIDs % wordSize
 
 	idx := 0
-	for i := 0; i < bins; i++ {
+	for i := range bins {
 		if b.bits[i] == 0 {
 			continue
 		}
@@ -103,7 +103,7 @@ func (b *bitMask256) toTypes(reg *registry) []ID {
 		if i == bins-1 {
 			cnt = bits
 		}
-		for j := 0; j < cnt; j++ {
+		for j := range cnt {
 			id := ID{id: uint8(i*wordSize + j)}
 			if b.Get(id) {
 				types[idx] = id
