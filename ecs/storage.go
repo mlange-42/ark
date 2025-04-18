@@ -23,7 +23,7 @@ type componentStorage struct {
 	columns []*column
 }
 
-func newStorage(capacity ...int) storage {
+func newStorage(numArchetypes int, capacity ...int) storage {
 	config := newConfig(capacity...)
 
 	reg := newComponentRegistry()
@@ -38,9 +38,9 @@ func newStorage(capacity ...int) storage {
 		componentsMap[i] = -1
 	}
 
-	archetypes := make([]archetype, 0, 128)
+	archetypes := make([]archetype, 0, numArchetypes)
 	archetypes = append(archetypes, newArchetype(0, 0, &bitMask{}, []ID{}, []tableID{0}, &reg))
-	tables := make([]table, 0, 128)
+	tables := make([]table, 0, numArchetypes)
 	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, []Entity{}, []RelationID{}))
 	return storage{
 		config:     config,
