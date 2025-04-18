@@ -23,7 +23,7 @@ type World struct {
 // If no arguments are provided, the defaults are 1024 and 128, respectively.
 func NewWorld(initialCapacity ...int) World {
 	return World{
-		storage:   newStorage(initialCapacity...),
+		storage:   newStorage(16, initialCapacity...),
 		resources: newResources(),
 		locks:     newLock(),
 		stats:     &stats.World{},

@@ -7,7 +7,7 @@ import (
 )
 
 func TestStorage(t *testing.T) {
-	s := newStorage()
+	s := newStorage(16)
 	assert.Equal(t, 1, len(s.archetypes))
 	assert.Equal(t, 1, len(s.tables))
 
