@@ -1,10 +1,10 @@
 # Changelog
 
-## [[v0.4.2]](https://github.com/mlange-42/ark/compare/v0.4.1...v0.4.2)
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.4.1...main)
 
 ### Performance
 
-- Reduces the number of initial archetypes to 16 for faster world creation (#223)
+- Reduces the number of initial archetypes to 16 for faster world creation (#234)
 
 ## [[v0.4.1]](https://github.com/mlange-42/ark/compare/v0.4.0...v0.4.1)
 
