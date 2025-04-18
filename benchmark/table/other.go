@@ -18,43 +18,28 @@ func benchesOther() []benchmark.Benchmark {
 
 func newWorld(b *testing.B) {
 	var w ecs.World
-
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		w = ecs.NewWorld()
 	}
-	b.StopTimer()
-
 	assert.False(b, w.IsLocked())
 }
 
 func resetWorld(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
-
-	b.StartTimer()
-
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		w.Reset()
 	}
-	b.StopTimer()
-
 	assert.False(b, w.IsLocked())
 }
 
 func componentID(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	origID := ecs.ComponentID[comp1](&w)
 
 	var id ecs.ID
 
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		id = ecs.ComponentID[comp1](&w)
 	}
-	b.StopTimer()
-
 	assert.Equal(b, origID, id)
 }
