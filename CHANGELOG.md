@@ -6,6 +6,10 @@
 
 - Reduces the number of initial archetypes to 16 for faster world creation (#234)
 
+### Documentation
+
+- Fixes typos in API docs (#235 by [LucDrenth](https://github.com/LucDrenth))
+
 ## [[v0.4.1]](https://github.com/mlange-42/ark/compare/v0.4.0...v0.4.1)
 
 ### Documentation
