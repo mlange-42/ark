@@ -109,7 +109,7 @@ func (t *table) Alloc(n uint32) {
 }
 
 // Extend the table to be able to store the given number of additional entities.
-// Has no effect of the table's capacity is already sufficient.
+// Has no effect if the table's capacity is already sufficient.
 // If the capacity needs to be increased, it will be doubled until it is sufficient.
 func (t *table) Extend(by uint32) {
 	required := t.len + by

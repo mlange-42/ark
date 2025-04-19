@@ -20,11 +20,11 @@ func main() {
 	world := ecs.NewWorld()
 
 	// Create a non-ECS grid data structure,
-	// and add is as a resource.
+	// and add it as a resource.
 	grid := NewGrid(15, 20)
 	ecs.AddResource(&world, &grid)
 
-	// Create enities on the grid.
+	// Create entities on the grid.
 	createGridEntities(&world, 100)
 
 	// Run a simulation
@@ -92,7 +92,7 @@ type Grid struct {
 	Height int
 }
 
-// NewGrid creates a ner Grid of the given size.
+// NewGrid creates a new Grid of the given size.
 func NewGrid(w, h int) Grid {
 	grid := make([][]ecs.Entity, h)
 	for i := range h {
