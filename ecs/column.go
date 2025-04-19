@@ -17,7 +17,7 @@ type column struct {
 
 // newColumn creates a new column for a given type and capacity.
 func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool, target Entity, capacity uint32) column {
-	// TODO: should be use a slice instead of an array here?
+	// TODO: should we use a slice instead of an array here?
 	data := reflect.New(reflect.ArrayOf(int(capacity), tp)).Elem()
 	pointer := data.Addr().UnsafePointer()
 
@@ -95,7 +95,7 @@ type entityColumn struct {
 
 // newColumn creates a new column for a given type and capacity.
 func newEntityColumn(capacity uint32) entityColumn {
-	// TODO: should be use a slice instead of an array here?
+	// TODO: should we use a slice instead of an array here?
 	data := reflect.New(reflect.ArrayOf(int(capacity), entityType)).Elem()
 	pointer := data.Addr().UnsafePointer()
 
