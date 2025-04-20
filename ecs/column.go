@@ -50,7 +50,7 @@ func (c *column) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
 		return dst
 	}
 
-	copyPtr(comp, dst, uintptr(c.itemSize))
+	copyPtr(comp, dst, c.itemSize)
 	return dst
 }
 
