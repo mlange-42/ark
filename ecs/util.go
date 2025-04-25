@@ -17,7 +17,7 @@ func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
 }
 
 func typeOf[T any]() reflect.Type {
-	return reflect.TypeOf((*T)(nil)).Elem()
+	return reflect.TypeFor[T]()
 }
 
 func sizeOf(tp reflect.Type) uintptr {
