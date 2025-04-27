@@ -74,14 +74,14 @@ func TestComponentInfo(t *testing.T) {
 
 func TestCompType(t *testing.T) {
 	c := C[Position]()
-	assert.Equal(t, typeOf[Position](), c.Type())
+	assert.Equal(t, reflect.TypeFor[Position](), c.Type())
 }
 
 func TestResourceTypeID(t *testing.T) {
 	w := NewWorld(1024)
-	id1 := ResourceTypeID(&w, typeOf[Position]())
-	id2 := ResourceTypeID(&w, typeOf[Velocity]())
-	id3 := ResourceTypeID(&w, typeOf[Position]())
+	id1 := ResourceTypeID(&w, reflect.TypeFor[Position]())
+	id2 := ResourceTypeID(&w, reflect.TypeFor[Velocity]())
+	id3 := ResourceTypeID(&w, reflect.TypeFor[Position]())
 
 	assert.EqualValues(t, 0, id1.id)
 	assert.EqualValues(t, 1, id2.id)

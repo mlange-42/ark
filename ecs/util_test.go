@@ -8,11 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTypeOf(t *testing.T) {
-	posType := typeOf[Position]()
-	assert.Equal(t, "Position", posType.Name())
-}
-
 func TestCopyPtr(t *testing.T) {
 	assert := assert.New(t)
 
@@ -69,14 +64,8 @@ func TestPagedSlice(t *testing.T) {
 	assert.Equal(t, int32(100), *a.Get(3))
 }
 
-func BenchmarkTypeOf(b *testing.B) {
-	for b.Loop() {
-		_ = typeOf[Position]()
-	}
-}
-
 func BenchmarkSizeOf(b *testing.B) {
-	tp := typeOf[Position]()
+	tp := reflect.TypeFor[Position]()
 	for b.Loop() {
 		_ = sizeOf(tp)
 	}

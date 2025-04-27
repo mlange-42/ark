@@ -1,12 +1,15 @@
 package ecs
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"reflect"
+)
 
 type entityID uint32
 
-var entityType = typeOf[Entity]()
+var entityType = reflect.TypeFor[Entity]()
 var entitySize = sizeOf(entityType)
-var entityIndexSize = sizeOf(typeOf[entityIndex]())
+var entityIndexSize = sizeOf(reflect.TypeFor[entityIndex]())
 
 //var wildcard = Entity{1, 0}
 
