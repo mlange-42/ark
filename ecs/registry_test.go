@@ -56,8 +56,8 @@ func BenchmarkRegistryGet(b *testing.B) {
 }
 
 func BenchmarkTypeEquality(b *testing.B) {
-	tp1 := typeOf[Position]()
-	tp2 := typeOf[Velocity]()
+	tp1 := reflect.TypeFor[Position]()
+	tp2 := reflect.TypeFor[Velocity]()
 
 	for b.Loop() {
 		_ = tp1 == tp2

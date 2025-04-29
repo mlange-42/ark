@@ -14,7 +14,7 @@ import "reflect"
 //
 // ⚠️ Warning: Using IDs that are outside of the range of registered IDs anywhere in [World] or other places will result in undefined behavior!
 func ComponentID[T any](w *World) ID {
-	return w.componentID(typeOf[T]())
+	return w.componentID(reflect.TypeFor[T]())
 }
 
 // ComponentIDs returns a list of all registered component IDs.
@@ -57,7 +57,7 @@ type Comp struct {
 
 // C creates a [Comp] instance for the given type.
 func C[T any]() Comp {
-	return Comp{typeOf[T]()}
+	return Comp{reflect.TypeFor[T]()}
 }
 
 // Type returns the reflect.Type of the component.
@@ -70,7 +70,7 @@ func (c Comp) Type() reflect.Type {
 //
 // The number of resources per [World] is limited to 256 (64 with build tag tiny).
 func ResourceID[T any](w *World) ResID {
-	return w.resourceID(typeOf[T]())
+	return w.resourceID(reflect.TypeFor[T]())
 }
 
 // ResourceIDs returns a list of all registered resource IDs.

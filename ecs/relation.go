@@ -1,6 +1,8 @@
 package ecs
 
-var relationTp = typeOf[RelationMarker]()
+import "reflect"
+
+var relationTp = reflect.TypeFor[RelationMarker]()
 
 // RelationMarker is a marker for entity relation components.
 // It must be embedded as first field of a component that represent an entity relationship
