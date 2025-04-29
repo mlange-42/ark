@@ -1,10 +1,11 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.4.1...main)
+## [[v0.4.2]](https://github.com/mlange-42/ark/compare/v0.4.1...v0.4.2)
 
 ### Performance
 
 - Reduces the number of initial archetypes to 16 for faster world creation (#234)
+- Uses `reflect.TypeFor`, speeding up component ID lookup by 20% (#239 by [LucDrenth](https://github.com/LucDrenth))
 
 ### Documentation
 
