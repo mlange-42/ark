@@ -513,3 +513,58 @@ func TestWorldStats(t *testing.T) {
 	stats = w.Stats()
 	fmt.Println(stats.String())
 }
+
+func TestWorldCreateManyTables(t *testing.T) {
+	n := 1000
+
+	w := NewWorld()
+	dataMap := NewMap1[Position](&w)
+
+	entities := make([]Entity, 0)
+	for i := range n {
+		entities = append(entities, dataMap.NewEntity(&Position{X: float64(i)}))
+	}
+
+	filter := NewFilter1[Position](&w)
+	q := filter.Query()
+	assert.Equal(t, n, q.Count())
+	q.Close()
+
+	relMap := NewMap1[ChildOf](&w)
+	for i := range n {
+		relMap.Add(entities[i], &ChildOf{}, Rel[ChildOf](entities[(i+1)%n]))
+	}
+
+	q = filter.Query()
+	assert.Equal(t, n, q.Count())
+	q.Close()
+}
+
+func TestWorldCreateManyTablesSlice(t *testing.T) {
+	n := 1000
+
+	w := NewWorld()
+	dataMap := NewMap1[SliceComp](&w)
+
+	entities := make([]Entity, 0)
+	for range n {
+		entities = append(entities, dataMap.NewEntity(&SliceComp{Slice: []int{1, 2, 3, 4}}))
+	}
+
+	filter := NewFilter1[SliceComp](&w)
+	q := filter.Query()
+	assert.Equal(t, n, q.Count())
+	q.Close()
+
+	relMap := NewMap1[ChildOf](&w)
+	for i := range n {
+		relMap.Add(entities[i], &ChildOf{}, Rel[ChildOf](entities[(i+1)%n]))
+	}
+
+	q = filter.Query()
+	assert.Equal(t, n, q.Count())
+	for q.Next() {
+		sl := q.Get()
+		assert.Equal(t, []int{1, 2, 3, 4}, sl.Slice)
+	}
+}
