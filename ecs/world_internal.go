@@ -44,6 +44,10 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []Relation
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	newIndex := newTable.Add(entity)
 
+	// Get the old table and archetype again, as the pointer may have changed.
+	oldTable = &w.storage.tables[oldTable.id]
+	oldArchetype = &w.storage.archetypes[oldTable.archetype]
+
 	for _, id := range oldArchetype.components {
 		if mask.Get(id) {
 			comp := oldTable.Get(id, uintptr(index.row))
@@ -76,17 +80,19 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	tables := w.storage.getTables(batch)
 	lengths := make([]uint32, len(tables))
 	var totalEntities uint32 = 0
-	for i, table := range tables {
+	for i, tableID := range tables {
+		table := &w.storage.tables[tableID]
 		lengths[i] = uint32(table.Len())
 		totalEntities += uint32(table.Len())
 	}
 
-	for i, table := range tables {
+	for i, tableID := range tables {
 		tableLen := lengths[i]
 
 		if tableLen == 0 {
 			continue
 		}
+		table := &w.storage.tables[tableID]
 		t, start, len := w.exchangeTable(table, int(tableLen), add, rem, relations)
 		if fn != nil {
 			fn(t, start, len)
@@ -101,6 +107,9 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, r
 
 	mask := *oldArchetype.mask
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
+	// Get the old table again, as pointers may have changed.
+	oldTable = &w.storage.tables[oldTable.id]
+
 	startIdx := uintptr(newTable.Len())
 	count := uintptr(oldLen)
 
@@ -151,6 +160,8 @@ func (w *World) setRelations(entity Entity, relations []RelationID) {
 	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
 	if !ok {
 		newTable = w.storage.createTable(oldArch, newRelations)
+		// Get the old table again, as pointers may have changed.
+		oldTable = &w.storage.tables[oldTable.id]
 	}
 	newIndex := newTable.Add(entity)
 
@@ -180,17 +191,19 @@ func (w *World) setRelationsBatch(batch *Batch, relations []RelationID, fn func(
 	tables := w.storage.getTables(batch)
 	lengths := make([]uint32, len(tables))
 	var totalEntities uint32 = 0
-	for i, table := range tables {
+	for i, tableID := range tables {
+		table := &w.storage.tables[tableID]
 		lengths[i] = uint32(table.Len())
 		totalEntities += uint32(table.Len())
 	}
 
-	for i, table := range tables {
+	for i, tableID := range tables {
 		tableLen := lengths[i]
 
 		if tableLen == 0 {
 			continue
 		}
+		table := &w.storage.tables[tableID]
 		t, start, len := w.setRelationsTable(table, int(tableLen), relations)
 		if fn != nil {
 			fn(t, start, len)
@@ -210,6 +223,8 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []Relat
 	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
 	if !ok {
 		newTable = w.storage.createTable(oldArch, newRelations)
+		// Get the old table again, as pointers may have changed.
+		oldTable = &w.storage.tables[oldTable.id]
 	}
 	startIdx := newTable.Len()
 	w.storage.moveEntities(oldTable, newTable, uint32(oldLen))
