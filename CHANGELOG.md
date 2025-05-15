@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.4.2...main)
+
+### Bugfixes
+
+- Fix bug with archetype tables caused by non-persistent pointers (#244, fixes #243)
+
 ## [[v0.4.2]](https://github.com/mlange-42/ark/compare/v0.4.1...v0.4.2)
 
 ### Performance
