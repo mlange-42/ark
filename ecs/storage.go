@@ -301,6 +301,8 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				newTable, ok := archetype.GetTable(s, allRelations)
 				if !ok {
 					newTable = s.createTable(archetype, newRelations)
+					// Get the old table again, as pointers may have changed.
+					table = &s.tables[table.id]
 				}
 				s.moveEntities(table, newTable, uint32(table.Len()))
 			}

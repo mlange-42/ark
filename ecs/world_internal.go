@@ -44,6 +44,10 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []Relation
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	newIndex := newTable.Add(entity)
 
+	// Get the old table and archetype again, as the pointer may have changed.
+	oldTable = &w.storage.tables[oldTable.id]
+	oldArchetype = &w.storage.archetypes[oldTable.archetype]
+
 	for _, id := range oldArchetype.components {
 		if mask.Get(id) {
 			comp := oldTable.Get(id, uintptr(index.row))
@@ -101,6 +105,9 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, r
 
 	mask := *oldArchetype.mask
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
+	// Get the old table again, as pointers may have changed.
+	oldTable = &w.storage.tables[oldTable.id]
+
 	startIdx := uintptr(newTable.Len())
 	count := uintptr(oldLen)
 
@@ -151,6 +158,8 @@ func (w *World) setRelations(entity Entity, relations []RelationID) {
 	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
 	if !ok {
 		newTable = w.storage.createTable(oldArch, newRelations)
+		// Get the old table again, as pointers may have changed.
+		oldTable = &w.storage.tables[oldTable.id]
 	}
 	newIndex := newTable.Add(entity)
 
@@ -210,6 +219,8 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []Relat
 	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
 	if !ok {
 		newTable = w.storage.createTable(oldArch, newRelations)
+		// Get the old table again, as pointers may have changed.
+		oldTable = &w.storage.tables[oldTable.id]
 	}
 	startIdx := newTable.Len()
 	w.storage.moveEntities(oldTable, newTable, uint32(oldLen))
