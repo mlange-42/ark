@@ -78,7 +78,8 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 
 	tables := w.storage.getTables(batch)
 	cleanup := []Entity{}
-	for _, table := range tables {
+	for _, tableID := range tables {
+		table := &w.storage.tables[tableID]
 		len := uintptr(table.Len())
 		var i uintptr
 		if fn != nil {

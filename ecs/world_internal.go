@@ -80,17 +80,19 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	tables := w.storage.getTables(batch)
 	lengths := make([]uint32, len(tables))
 	var totalEntities uint32 = 0
-	for i, table := range tables {
+	for i, tableID := range tables {
+		table := &w.storage.tables[tableID]
 		lengths[i] = uint32(table.Len())
 		totalEntities += uint32(table.Len())
 	}
 
-	for i, table := range tables {
+	for i, tableID := range tables {
 		tableLen := lengths[i]
 
 		if tableLen == 0 {
 			continue
 		}
+		table := &w.storage.tables[tableID]
 		t, start, len := w.exchangeTable(table, int(tableLen), add, rem, relations)
 		if fn != nil {
 			fn(t, start, len)
@@ -189,17 +191,19 @@ func (w *World) setRelationsBatch(batch *Batch, relations []RelationID, fn func(
 	tables := w.storage.getTables(batch)
 	lengths := make([]uint32, len(tables))
 	var totalEntities uint32 = 0
-	for i, table := range tables {
+	for i, tableID := range tables {
+		table := &w.storage.tables[tableID]
 		lengths[i] = uint32(table.Len())
 		totalEntities += uint32(table.Len())
 	}
 
-	for i, table := range tables {
+	for i, tableID := range tables {
 		tableLen := lengths[i]
 
 		if tableLen == 0 {
 			continue
 		}
+		table := &w.storage.tables[tableID]
 		t, start, len := w.setRelationsTable(table, int(tableLen), relations)
 		if fn != nil {
 			fn(t, start, len)

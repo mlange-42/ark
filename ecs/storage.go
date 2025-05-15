@@ -392,8 +392,8 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([
 	return result, true
 }
 
-func (s *storage) getTables(batch *Batch) []*table {
-	tables := []*table{}
+func (s *storage) getTables(batch *Batch) []tableID {
+	tables := []tableID{}
 
 	if batch.cache != maxCacheID {
 		cache := s.getRegisteredFilter(batch.cache)
@@ -405,7 +405,7 @@ func (s *storage) getTables(batch *Batch) []*table {
 			if !table.Matches(batch.relations) {
 				continue
 			}
-			tables = append(tables, table)
+			tables = append(tables, tableID)
 		}
 		return tables
 	}
@@ -418,7 +418,7 @@ func (s *storage) getTables(batch *Batch) []*table {
 
 		if !archetype.HasRelations() {
 			table := &s.tables[archetype.tables[0]]
-			tables = append(tables, table)
+			tables = append(tables, table.id)
 			continue
 		}
 
@@ -428,7 +428,7 @@ func (s *storage) getTables(batch *Batch) []*table {
 			if !table.Matches(batch.relations) {
 				continue
 			}
-			tables = append(tables, table)
+			tables = append(tables, tab)
 		}
 	}
 	return tables
