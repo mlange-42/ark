@@ -556,6 +556,11 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 	assert.Equal(t, n, q.Count())
 	q.Close()
 
+	velMap := NewMap1[Velocity](&w)
+	for i := range n {
+		velMap.Add(entities[i], &Velocity{})
+	}
+
 	relMap := NewMap1[ChildOf](&w)
 	for i := range n {
 		relMap.Add(entities[i], &ChildOf{}, Rel[ChildOf](entities[(i+1)%n]))
