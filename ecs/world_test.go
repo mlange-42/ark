@@ -540,7 +540,6 @@ func TestWorldCreateManyTables(t *testing.T) {
 	q.Close()
 }
 
-/*
 func TestWorldCreateManyTablesSlice(t *testing.T) {
 	n := 1000
 
@@ -574,4 +573,3 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 		assert.Equal(t, []int{1, 2, 3, 4}, sl.Slice)
 	}
 }
-*/
