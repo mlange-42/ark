@@ -50,8 +50,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []Relation
 
 	for _, id := range oldArchetype.components {
 		if mask.Get(id) {
-			comp := oldTable.Get(id, uintptr(index.row))
-			newTable.Set(id, newIndex, comp)
+			newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
 		}
 	}
 
@@ -166,8 +165,7 @@ func (w *World) setRelations(entity Entity, relations []RelationID) {
 	newIndex := newTable.Add(entity)
 
 	for _, id := range oldArch.components {
-		comp := oldTable.Get(id, uintptr(index.row))
-		newTable.Set(id, newIndex, comp)
+		newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
 	}
 
 	swapped := oldTable.Remove(index.row)

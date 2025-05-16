@@ -38,20 +38,15 @@ func (c *column) Get(index uintptr) unsafe.Pointer {
 
 func (c *column) SetLast(other *column, ownLen uint32, count uint32) {
 	start := ownLen - count
-	src := other.Get(0)
-	dst := c.Get(uintptr(start))
-	copyPtr(src, dst, c.itemSize*uintptr(count))
+	copyRange(other.data, c.data, int(start), int(count))
 }
 
 // Set overwrites the component at the given index.
-func (c *column) Set(index uint32, comp unsafe.Pointer) unsafe.Pointer {
-	dst := c.Get(uintptr(index))
+func (c *column) Set(index uint32, src *column, srcIndex int) {
 	if c.itemSize == 0 {
-		return dst
+		return
 	}
-
-	copyPtr(comp, dst, c.itemSize)
-	return dst
+	copyItem(src.data, c.data, srcIndex, int(index))
 }
 
 // Zero resets the memory at the given index.
@@ -112,9 +107,7 @@ func (c *entityColumn) Get(index uintptr) unsafe.Pointer {
 
 func (c *entityColumn) SetLast(other *entityColumn, ownLen uint32, count uint32) {
 	start := ownLen - count
-	src := other.Get(0)
-	dst := c.Get(uintptr(start))
-	copyPtr(src, dst, entitySize*uintptr(count))
+	copyRange(other.data, c.data, int(start), int(count))
 }
 
 // Set overwrites the component at the given index.
