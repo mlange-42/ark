@@ -50,11 +50,11 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []Relation
 
 	for _, id := range oldArchetype.components {
 		if mask.Get(id) {
-			newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
+			newTable.Set(id, newIndex, oldTable.Column(id), int(index.row), w.storage.registry.IsTrivial[id.id])
 		}
 	}
 
-	swapped := oldTable.Remove(index.row)
+	swapped := oldTable.Remove(index.row, &w.storage.registry)
 
 	if swapped {
 		swapEntity := oldTable.GetEntity(uintptr(index.row))
@@ -126,7 +126,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, r
 		if mask.Get(id) {
 			oldCol := oldTable.GetColumn(id)
 			newCol := newTable.GetColumn(id)
-			newCol.SetLast(oldCol, newTable.len, uint32(oldLen))
+			newCol.SetLast(oldCol, newTable.len, uint32(oldLen), w.storage.registry.IsTrivial[id.id])
 		}
 	}
 
@@ -165,10 +165,10 @@ func (w *World) setRelations(entity Entity, relations []RelationID) {
 	newIndex := newTable.Add(entity)
 
 	for _, id := range oldArch.components {
-		newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
+		newTable.Set(id, newIndex, oldTable.Column(id), int(index.row), w.storage.registry.IsTrivial[id.id])
 	}
 
-	swapped := oldTable.Remove(index.row)
+	swapped := oldTable.Remove(index.row, &w.storage.registry)
 
 	if swapped {
 		swapEntity := oldTable.GetEntity(uintptr(index.row))

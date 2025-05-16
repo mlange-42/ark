@@ -36,14 +36,26 @@ func (c *column) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*c.itemSize)
 }
 
-func (c *column) SetLast(other *column, ownLen uint32, count uint32) {
+func (c *column) SetLast(other *column, ownLen uint32, count uint32, isTrivial bool) {
 	start := ownLen - count
+	if isTrivial {
+		src := other.Get(0)
+		dst := c.Get(uintptr(start))
+		copyPtr(src, dst, c.itemSize*uintptr(count))
+		return
+	}
 	copyRange(other.data, c.data, int(start), int(count))
 }
 
 // Set overwrites the component at the given index.
-func (c *column) Set(index uint32, src *column, srcIndex int) {
+func (c *column) Set(index uint32, src *column, srcIndex int, isTrivial bool) {
 	if c.itemSize == 0 {
+		return
+	}
+	if isTrivial {
+		comp := src.Get(uintptr(srcIndex))
+		dst := c.Get(uintptr(index))
+		copyPtr(comp, dst, c.itemSize)
 		return
 	}
 	copyItem(src.data, c.data, srcIndex, int(index))
