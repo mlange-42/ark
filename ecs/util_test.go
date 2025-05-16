@@ -64,6 +64,33 @@ func TestPagedSlice(t *testing.T) {
 	assert.Equal(t, int32(100), *a.Get(3))
 }
 
+func TestIsTrivial(t *testing.T) {
+	assert.True(t, isTrivial(reflect.TypeFor[[5]int]()))
+	assert.True(t, isTrivial(reflect.TypeFor[struct{}]()))
+	assert.True(t, isTrivial(reflect.TypeFor[struct {
+		A int
+	}]()))
+	assert.True(t, isTrivial(reflect.TypeFor[struct {
+		A struct{ A int }
+	}]()))
+
+	assert.False(t, isTrivial(reflect.TypeFor[[]int]()))
+	assert.False(t, isTrivial(reflect.TypeFor[[5]string]()))
+
+	assert.False(t, isTrivial(reflect.TypeFor[struct {
+		S []int
+	}]()))
+	assert.False(t, isTrivial(reflect.TypeFor[struct {
+		S []string
+	}]()))
+	assert.False(t, isTrivial(reflect.TypeFor[struct {
+		S [5]string
+	}]()))
+	assert.False(t, isTrivial(reflect.TypeFor[struct {
+		A struct{ S string }
+	}]()))
+}
+
 func BenchmarkSizeOf(b *testing.B) {
 	tp := reflect.TypeFor[Position]()
 	for b.Loop() {

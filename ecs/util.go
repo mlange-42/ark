@@ -48,7 +48,7 @@ func isRelation(tp reflect.Type) bool {
 	return field.Type == relationTp && field.Name == relationTp.Name()
 }
 
-// isTrivial checks if a type is "trivial" (contains no pointers, slices, maps, or channels).
+// isTrivial checks if a type is "trivial" (contains no pointers, slices, maps, strings, or channels).
 // It also returns false if the type itself is one of these.
 func isTrivial(tp reflect.Type) bool {
 	// Base case: If the type is invalid, return false
@@ -58,7 +58,7 @@ func isTrivial(tp reflect.Type) bool {
 
 	// Check if the type itself is a pointer, slice, map, or channel
 	switch tp.Kind() {
-	case reflect.Ptr, reflect.Slice, reflect.Map, reflect.Chan, reflect.Interface:
+	case reflect.Ptr, reflect.Slice, reflect.Map, reflect.Chan, reflect.Interface, reflect.String:
 		return false
 	}
 
