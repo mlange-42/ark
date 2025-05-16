@@ -229,6 +229,38 @@ func TestMapAddBatchFn(t *testing.T) {
 	assert.Equal(t, 0, cnt)
 }
 
+func TestMapSliceComponent(t *testing.T) {
+	n := 12
+	w := NewWorld(8)
+
+	mapper := NewMap[CompA](&w)
+	sliceMap := NewMap[SliceComp](&w)
+
+	cnt := 0
+	sliceMap.NewBatchFn(n, func(entity Entity, sl *SliceComp) {
+		sl.Slice = []int{1, 2, 3, 4}
+		cnt++
+	})
+	assert.Equal(t, n, cnt)
+
+	filter := NewFilter1[SliceComp](&w)
+	cnt = 0
+	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA) {
+		a.X = float64(cnt)
+		cnt++
+	})
+
+	filter2 := NewFilter1[SliceComp](&w)
+	query := filter2.Query()
+	cnt = 0
+	for query.Next() {
+		sl := query.Get()
+		assert.EqualValues(t, []int{1, 2, 3, 4}, sl.Slice)
+		cnt++
+	}
+	assert.Equal(t, n, cnt)
+}
+
 func TestMapRelation(t *testing.T) {
 	w := NewWorld(32)
 
