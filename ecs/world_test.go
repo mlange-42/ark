@@ -520,6 +520,9 @@ func TestWorldCreateManyTables(t *testing.T) {
 	w := NewWorld()
 	dataMap := NewMap1[Position](&w)
 
+	id := ComponentID[Position](&w)
+	assert.True(t, w.storage.registry.IsTrivial[id.id])
+
 	entities := make([]Entity, 0)
 	for i := range n {
 		entities = append(entities, dataMap.NewEntity(&Position{X: float64(i)}))
@@ -545,6 +548,9 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 
 	w := NewWorld()
 	dataMap := NewMap1[SliceComp](&w)
+
+	id := ComponentID[SliceComp](&w)
+	assert.False(t, w.storage.registry.IsTrivial[id.id])
 
 	entities := make([]Entity, 0)
 	for range n {
