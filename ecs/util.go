@@ -16,6 +16,16 @@ func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
 	copy(dstSlice, srcSlice)
 }
 
+func copyItem(src, dst reflect.Value, from, to int) {
+	dst.Index(to).Set(src.Index(from))
+}
+
+func copyRange(src, dst reflect.Value, start, count int) {
+	srcSlice := src.Slice(0, count)
+	dstSlice := dst.Slice(start, start+count)
+	reflect.Copy(dstSlice, srcSlice)
+}
+
 func sizeOf(tp reflect.Type) uintptr {
 	size, align := tp.Size(), uintptr(tp.Align())
 	return (size + (align - 1)) / align * align

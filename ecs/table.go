@@ -78,6 +78,10 @@ func (t *table) Get(component ID, index uintptr) unsafe.Pointer {
 	return t.components[component.id].Get(index)
 }
 
+func (t *table) Column(component ID) *column {
+	return t.components[component.id]
+}
+
 func (t *table) Has(component ID) bool {
 	return t.components[component.id] != nil
 }
@@ -94,8 +98,8 @@ func (t *table) GetColumn(component ID) *column {
 	return t.components[component.id]
 }
 
-func (t *table) Set(component ID, index uint32, comp unsafe.Pointer) {
-	t.components[component.id].Set(index, comp)
+func (t *table) Set(component ID, index uint32, src *column, srcIndex int) {
+	t.components[component.id].Set(index, src, srcIndex)
 }
 
 func (t *table) SetEntity(index uint32, entity Entity) {
@@ -148,10 +152,8 @@ func (t *table) Remove(index uint32) bool {
 
 		for i := range t.columns {
 			column := &t.columns[i]
-			sz := column.itemSize
-			src := unsafe.Add(column.pointer, lastIndex*sz)
-			dst := unsafe.Add(column.pointer, uintptr(index)*sz)
-			copyPtr(src, dst, uintptr(sz))
+			copyItem(column.data, column.data, int(lastIndex), int(index))
+
 			column.Zero(lastIndex, t.zeroPointer)
 		}
 	} else {
