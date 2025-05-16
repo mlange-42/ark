@@ -238,7 +238,7 @@ func TestMapSliceComponent(t *testing.T) {
 
 	cnt := 0
 	sliceMap.NewBatchFn(n, func(entity Entity, sl *SliceComp) {
-		sl.Slice = []int{1, 2, 3, 4}
+		sl.Slice = []int{cnt + 1, cnt + 2, cnt + 3, cnt + 4}
 		cnt++
 	})
 	assert.Equal(t, n, cnt)
@@ -255,7 +255,7 @@ func TestMapSliceComponent(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		sl := query.Get()
-		assert.EqualValues(t, []int{1, 2, 3, 4}, sl.Slice)
+		assert.EqualValues(t, []int{cnt + 1, cnt + 2, cnt + 3, cnt + 4}, sl.Slice)
 		cnt++
 	}
 	assert.Equal(t, n, cnt)
