@@ -1,10 +1,15 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.4.2...main)
+## [[v0.4.3]](https://github.com/mlange-42/ark/compare/v0.4.2...v0.4.3)
 
 ### Bugfixes
 
-- Fix bug with archetype tables caused by non-persistent pointers (#244, fixes #243)
+- Fix bug in moving entities between archetype tables, caused by non-persistent pointers (#244, fixes #243)
+- Fix premature garbage collection of slices and pointers by copying using reflect (#245)
+
+### Performance
+
+- For trivial component types, get rid of the performance degradation caused by #245 (#249)
 
 ## [[v0.4.2]](https://github.com/mlange-42/ark/compare/v0.4.1...v0.4.2)
 
