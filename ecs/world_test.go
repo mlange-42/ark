@@ -554,7 +554,10 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 
 	entities := make([]Entity, 0)
 	for range n {
-		entities = append(entities, dataMap.NewEntity(&SliceComp{Slice: []int{1, 2, 3, 4}}))
+		e := dataMap.NewEntity(&SliceComp{Slice: nil})
+		sl := dataMap.Get(e)
+		sl.Slice = []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}
+		entities = append(entities, e)
 	}
 
 	filter := NewFilter1[SliceComp](&w)
@@ -576,6 +579,7 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 	assert.Equal(t, n, q.Count())
 	for q.Next() {
 		sl := q.Get()
-		assert.Equal(t, []int{1, 2, 3, 4}, sl.Slice)
+		e := q.Entity()
+		assert.Equal(t, []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}, sl.Slice)
 	}
 }
