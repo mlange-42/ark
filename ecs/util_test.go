@@ -74,6 +74,7 @@ func TestIsTrivial(t *testing.T) {
 		A struct{ A int }
 	}]()))
 
+	assert.False(t, isTrivial(nil))
 	assert.False(t, isTrivial(reflect.TypeFor[[]int]()))
 	assert.False(t, isTrivial(reflect.TypeFor[[5]string]()))
 
