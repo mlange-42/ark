@@ -10,7 +10,8 @@ type registry struct {
 	Components map[reflect.Type]uint8 // Mapping from types to IDs.
 	Types      []reflect.Type         // Mapping from IDs to types.
 	IDs        []uint8                // List of IDs.
-	Used       bitMask                // Mapping from IDs tu used status.
+	Used       bitMask                // Mapping from IDs to used status.
+	Trivial    bitMask                // Mapping from IDs to whether types are trivial.
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
@@ -71,6 +72,7 @@ func (r *registry) unregisterLastComponent() {
 // are relation components and/or contain (or are) pointers.
 type componentRegistry struct {
 	IsRelation []bool
+	IsTrivial  []bool
 	registry
 }
 
@@ -79,6 +81,7 @@ func newComponentRegistry() componentRegistry {
 	return componentRegistry{
 		registry:   newRegistry(),
 		IsRelation: make([]bool, maskTotalBits),
+		IsTrivial:  make([]bool, maskTotalBits),
 	}
 }
 
@@ -94,9 +97,8 @@ func (r *componentRegistry) ComponentID(tp reflect.Type) (uint8, bool) {
 // registerComponent registers a components and assigns an ID for it.
 func (r *componentRegistry) registerComponent(tp reflect.Type, totalBits int) uint8 {
 	newID := r.registry.registerComponent(tp, totalBits)
-	if r.isRelation(tp) {
-		r.IsRelation[newID] = true
-	}
+	r.IsRelation[newID] = isRelation(tp)
+	r.IsTrivial[newID] = isTrivial(tp)
 	return newID
 }
 
@@ -104,13 +106,4 @@ func (r *componentRegistry) unregisterLastComponent() {
 	newID := uint8(len(r.Components) - 1)
 	r.registry.unregisterLastComponent()
 	r.IsRelation[newID] = false
-}
-
-// isRelation determines whether a type is a relation component.
-func (r *componentRegistry) isRelation(tp reflect.Type) bool {
-	if tp.Kind() != reflect.Struct || tp.NumField() == 0 {
-		return false
-	}
-	field := tp.Field(0)
-	return field.Type == relationTp && field.Name == relationTp.Name()
 }

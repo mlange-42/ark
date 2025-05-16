@@ -96,7 +96,7 @@ func (s *storage) RemoveEntity(entity Entity) {
 	index := &s.entities[entity.id]
 	table := &s.tables[index.table]
 
-	swapped := table.Remove(index.row)
+	swapped := table.Remove(index.row, &s.registry)
 
 	s.entityPool.Recycle(entity)
 
@@ -318,7 +318,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 // moveEntities moves all entities from src to dst.
 func (s *storage) moveEntities(src, dst *table, count uint32) {
 	oldLen := dst.Len()
-	dst.AddAll(src, count)
+	dst.AddAll(src, count, &s.registry)
 
 	newLen := dst.Len()
 	newTable := dst.id

@@ -98,8 +98,8 @@ func (t *table) GetColumn(component ID) *column {
 	return t.components[component.id]
 }
 
-func (t *table) Set(component ID, index uint32, src *column, srcIndex int) {
-	t.components[component.id].Set(index, src, srcIndex)
+func (t *table) Set(component ID, index uint32, src *column, srcIndex int, isTrivial bool) {
+	t.components[component.id].Set(index, src, srcIndex, isTrivial)
 }
 
 func (t *table) SetEntity(index uint32, entity Entity) {
@@ -140,7 +140,7 @@ func (t *table) Extend(by uint32) {
 
 // Remove swap-removes the entity at the given index.
 // Returns whether a swap was necessary.
-func (t *table) Remove(index uint32) bool {
+func (t *table) Remove(index uint32, reg *componentRegistry) bool {
 	lastIndex := uintptr(t.len - 1)
 	swapped := index != uint32(lastIndex)
 
@@ -152,8 +152,17 @@ func (t *table) Remove(index uint32) bool {
 
 		for i := range t.columns {
 			column := &t.columns[i]
-			copyItem(column.data, column.data, int(lastIndex), int(index))
 
+			if reg.IsTrivial[t.ids[i].id] {
+				sz := column.itemSize
+				src := unsafe.Add(column.pointer, lastIndex*sz)
+				dst := unsafe.Add(column.pointer, uintptr(index)*sz)
+				copyPtr(src, dst, uintptr(sz))
+				column.Zero(lastIndex, t.zeroPointer)
+				continue
+			}
+
+			copyItem(column.data, column.data, int(lastIndex), int(index))
 			column.Zero(lastIndex, t.zeroPointer)
 		}
 	} else {
@@ -174,11 +183,11 @@ func (t *table) Reset() {
 	t.len = 0
 }
 
-func (t *table) AddAll(other *table, count uint32) {
+func (t *table) AddAll(other *table, count uint32, reg *componentRegistry) {
 	t.Alloc(count)
 	t.entities.SetLast(&other.entities, t.len, count)
 	for c := range t.columns {
-		t.columns[c].SetLast(&other.columns[c], t.len, count)
+		t.columns[c].SetLast(&other.columns[c], t.len, count, reg.IsTrivial[t.ids[c].id])
 	}
 }
 
