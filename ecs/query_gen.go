@@ -64,6 +64,7 @@ func (q *Query0) nextTableOrArchetype() bool {
 }
 
 func (q *Query0) nextArchetype() bool {
+	q.tables = nil
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
@@ -180,6 +181,7 @@ func (q *Query1[A]) nextTableOrArchetype() bool {
 }
 
 func (q *Query1[A]) nextArchetype() bool {
+	q.tables = nil
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
@@ -297,6 +299,7 @@ func (q *Query2[A, B]) nextTableOrArchetype() bool {
 }
 
 func (q *Query2[A, B]) nextArchetype() bool {
+	q.tables = nil
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
@@ -419,6 +422,7 @@ func (q *Query3[A, B, C]) nextTableOrArchetype() bool {
 }
 
 func (q *Query3[A, B, C]) nextArchetype() bool {
+	q.tables = nil
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
@@ -544,6 +548,7 @@ func (q *Query4[A, B, C, D]) nextTableOrArchetype() bool {
 }
 
 func (q *Query4[A, B, C, D]) nextArchetype() bool {
+	q.tables = nil
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
@@ -672,6 +677,7 @@ func (q *Query5[A, B, C, D, E]) nextTableOrArchetype() bool {
 }
 
 func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
+	q.tables = nil
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
@@ -803,6 +809,7 @@ func (q *Query6[A, B, C, D, E, F]) nextTableOrArchetype() bool {
 }
 
 func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
+	q.tables = nil
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
@@ -937,6 +944,7 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTableOrArchetype() bool {
 }
 
 func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
+	q.tables = nil
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
@@ -1074,6 +1082,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTableOrArchetype() bool {
 }
 
 func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
+	q.tables = nil
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++

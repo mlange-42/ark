@@ -149,3 +149,41 @@ func TestQueryRelations(t *testing.T) {
 	}
 	assert.Equal(t, cnt, n)
 }
+
+func TestQueryCount(t *testing.T) {
+	world := NewWorld()
+
+	parentMap := NewMap1[Position](&world)
+	childMap := NewMap2[Velocity, ChildOf](&world)
+	dummyMap := NewMap1[Velocity](&world)
+
+	parent1 := parentMap.NewEntity(&Position{})
+	parent2 := parentMap.NewEntity(&Position{})
+
+	childMap.NewEntity(&Velocity{}, &ChildOf{}, Rel[ChildOf](parent1))
+	childMap.NewEntity(&Velocity{}, &ChildOf{}, Rel[ChildOf](parent2))
+
+	dummyMap.NewEntity(&Velocity{})
+
+	filter := NewFilter0(&world)
+	query := filter.Query()
+
+	count := query.Count()
+	counter := 0
+	for query.Next() {
+		counter++
+	}
+
+	assert.Equal(t, count, counter, "Number of entities should match count")
+
+	filter2 := NewUnsafeFilter(&world)
+	query2 := filter2.Query()
+
+	count = query2.Count()
+	counter = 0
+	for query2.Next() {
+		counter++
+	}
+
+	assert.Equal(t, count, counter, "Number of entities should match count")
+}

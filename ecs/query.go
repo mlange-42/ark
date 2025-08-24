@@ -79,6 +79,7 @@ func (q *UnsafeQuery) nextTableOrArchetype() bool {
 }
 
 func (q *UnsafeQuery) nextArchetype() bool {
+	q.tables = nil
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
