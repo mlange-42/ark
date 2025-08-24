@@ -1,7 +1,6 @@
 package ecs
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -172,7 +171,6 @@ func TestQueryCount(t *testing.T) {
 	count := query.Count()
 	counter := 0
 	for query.Next() {
-		fmt.Println(query.Entity())
 		counter++
 	}
 
