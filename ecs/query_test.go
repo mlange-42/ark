@@ -175,4 +175,15 @@ func TestQueryCount(t *testing.T) {
 	}
 
 	assert.Equal(t, count, counter, "Number of entities should match count")
+
+	filter2 := NewUnsafeFilter(&world)
+	query2 := filter2.Query()
+
+	count = query2.Count()
+	counter = 0
+	for query2.Next() {
+		counter++
+	}
+
+	assert.Equal(t, count, counter, "Number of entities should match count")
 }
