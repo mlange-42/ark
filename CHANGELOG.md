@@ -1,11 +1,17 @@
 # Changelog
 
+## [[v0.4.4]](https://github.com/mlange-42/ark/compare/v0.4.3...v0.4.4)
+
+### Bugfixes
+
+- Fixes bug where a table of relation entities was accidentally iterated twice (#258, fixes #256)
+
 ## [[v0.4.3]](https://github.com/mlange-42/ark/compare/v0.4.2...v0.4.3)
 
 ### Bugfixes
 
-- Fix bug in moving entities between archetype tables, caused by non-persistent pointers (#244, fixes #243)
-- Fix premature garbage collection of slices and pointers by copying using reflect (#245)
+- Fixes bug in moving entities between archetype tables, caused by non-persistent pointers (#244, fixes #243)
+- Fixes premature garbage collection of slices and pointers by copying using reflect (#245)
 
 ### Performance
 
