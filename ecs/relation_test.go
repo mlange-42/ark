@@ -66,3 +66,33 @@ func TestToRelations(t *testing.T) {
 		{component: child2ID, target: Entity{3, 0}},
 	}, out)
 }
+
+func TestRemoveRelationTarget(t *testing.T) {
+	world := NewWorld()
+
+	e1 := world.NewEntity()
+	e2 := world.NewEntity()
+
+	childMap := NewMap[ChildOf](&world)
+	child2Map := NewMap[ChildOf2](&world)
+
+	gen2Map := NewMap3[Position, ChildOf, ChildOf2](&world)
+	e3 := gen2Map.NewEntity(
+		&Position{},
+		&ChildOf{}, &ChildOf2{},
+		RelIdx(1, e1),
+		RelIdx(2, e2),
+	)
+	_ = e3
+
+	assert.Equal(t, e1, childMap.GetRelation(e3))
+	assert.Equal(t, e2, child2Map.GetRelation(e3))
+
+	world.RemoveEntity(e1)
+	assert.Equal(t, Entity{}, childMap.GetRelation(e3))
+	assert.Equal(t, e2, child2Map.GetRelation(e3))
+
+	world.RemoveEntity(e2)
+	assert.Equal(t, Entity{}, childMap.GetRelation(e3))
+	assert.Equal(t, Entity{}, child2Map.GetRelation(e3))
+}

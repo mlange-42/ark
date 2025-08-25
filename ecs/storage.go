@@ -300,7 +300,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				allRelations := s.getExchangeTargetsUnchecked(table, newRelations)
 				newTable, ok := archetype.GetTable(s, allRelations)
 				if !ok {
-					newTable = s.createTable(archetype, newRelations)
+					newTable = s.createTable(archetype, allRelations)
 					// Get the old table again, as pointers may have changed.
 					table = &s.tables[table.id]
 				}
