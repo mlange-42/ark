@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.4.5]](https://github.com/mlange-42/ark/compare/v0.4.4...v0.4.5)
+
+### Bugfixes
+
+- Fixes panic on removing a relation target when there are multiple relations on an entity (#260, fixes #259)
+
 ## [[v0.4.4]](https://github.com/mlange-42/ark/compare/v0.4.3...v0.4.4)
 
 ### Bugfixes
