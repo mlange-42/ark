@@ -151,11 +151,11 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 	return table, true
 }
 
-func (a *archetype) FreeTable(table tableID) {
+func (a *archetype) FreeTable(table tableID, isReset bool) {
 	_ = a.tables.Remove(table)
 	a.freeTables = append(a.freeTables, table)
 
-	if a.numRelations <= 1 {
+	if isReset || a.numRelations <= 1 {
 		return
 	}
 
@@ -210,7 +210,7 @@ func (a *archetype) Reset(storage *storage) {
 
 	for i := len(a.tables.tables) - 1; i >= 0; i-- {
 		storage.cache.removeTable(storage, &storage.tables[a.tables.tables[i]])
-		a.FreeTable(a.tables.tables[i])
+		a.FreeTable(a.tables.tables[i], true)
 	}
 
 	for _, m := range a.relationTables {
