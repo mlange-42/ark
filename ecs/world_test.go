@@ -15,7 +15,7 @@ func TestNewWorld(t *testing.T) {
 	assert.Equal(t, 2, len(w.storage.entities))
 	assert.Equal(t, 1, len(w.storage.tables))
 	assert.Equal(t, 1, len(w.storage.archetypes))
-	assert.Equal(t, 1, len(w.storage.archetypes[0].tables))
+	assert.Equal(t, 1, len(w.storage.archetypes[0].tables.tables))
 }
 
 func TestWorldNewEntity(t *testing.T) {
@@ -287,14 +287,14 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 	}
 
 	archetype := &w.storage.archetypes[1]
-	assert.Equal(t, []tableID{3, 2}, archetype.tables)
+	assert.Equal(t, []tableID{3, 2}, archetype.tables.tables)
 	assert.Equal(t, []tableID{1}, archetype.freeTables)
 
 	for _, e := range entities {
 		childMap.SetRelation(e, parent3)
 		assert.Equal(t, parent3, childMap.GetRelation(e))
 	}
-	assert.Equal(t, []tableID{3, 2, 1}, archetype.tables)
+	assert.Equal(t, []tableID{3, 2, 1}, archetype.tables.tables)
 	assert.Equal(t, []tableID{}, archetype.freeTables)
 
 	filter := NewFilter2[Position, ChildOf](&w)

@@ -281,9 +281,9 @@ func (s *storage) cleanupArchetypes(target Entity) {
 	newRelations := []RelationID{}
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
-		len := len(archetype.tables)
+		len := len(archetype.tables.tables)
 		for i := len - 1; i >= 0; i-- {
-			table := &s.tables[archetype.tables[i]]
+			table := &s.tables[archetype.tables.tables[i]]
 
 			foundTarget := false
 			for _, rel := range table.relationIDs {
@@ -417,7 +417,7 @@ func (s *storage) getTables(batch *Batch) []tableID {
 		}
 
 		if !archetype.HasRelations() {
-			table := &s.tables[archetype.tables[0]]
+			table := &s.tables[archetype.tables.tables[0]]
 			tables = append(tables, table.id)
 			continue
 		}
@@ -444,7 +444,7 @@ func (s *storage) getTableIDs(filter *filter, relations []RelationID) []tableID 
 		}
 
 		if !archetype.HasRelations() {
-			tables = append(tables, archetype.tables[0])
+			tables = append(tables, archetype.tables.tables[0])
 			continue
 		}
 

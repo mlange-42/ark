@@ -89,7 +89,7 @@ func (q *UnsafeQuery) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
+			table := &q.world.storage.tables[archetype.tables.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
