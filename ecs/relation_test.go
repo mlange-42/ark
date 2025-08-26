@@ -96,3 +96,33 @@ func TestRemoveRelationTarget(t *testing.T) {
 	assert.Equal(t, Entity{}, childMap.GetRelation(e3))
 	assert.Equal(t, Entity{}, child2Map.GetRelation(e3))
 }
+
+func TestStaleRelationTable(t *testing.T) {
+	world := NewWorld()
+	filter := NewFilter1[Position](&world)
+
+	e1 := world.NewEntity()
+	e2 := world.NewEntity()
+
+	gen := NewMap3[Position, ChildOf, ChildOf2](&world)
+	gen.NewEntity(
+		&Position{},
+		&ChildOf{}, &ChildOf2{},
+		RelIdx(1, e1),
+		RelIdx(2, e2),
+	)
+
+	world.RemoveEntity(e1)
+
+	e4 := world.NewEntity()
+	gen.NewEntity(
+		&Position{},
+		&ChildOf{}, &ChildOf2{},
+		RelIdx(1, e4),
+		RelIdx(2, e2),
+	)
+
+	query := filter.Query(Rel[ChildOf2](e2))
+	assert.Equal(t, 2, query.Count())
+	query.Close()
+}
