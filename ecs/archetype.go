@@ -131,9 +131,70 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 	return table, true
 }
 
-func (a *archetype) FreeTable(table tableID) {
+// use table.relationIDs to unindex the table from relationTables
+func (a *archetype) unindexTableRelations(table *table) {
+	tableId := table.id
+	relationIds := table.relationIDs
+	relationTablesLength := int16(len(a.relationTables))
+	for _, relationId := range relationIds {
+		entityId := relationId.target.id
+		if entityId == 0 {
+			// this is an invalid entity ID, skip it?
+			// or removing the entry from relationTables?
+			continue
+		}
+		componentId := relationId.component.id
+		// get component colIdx by componentsMap
+		// uint8 less than maskTotalBits, do not need to check
+		colIdx := a.componentsMap[componentId]
+		if colIdx < 0 || colIdx >= relationTablesLength {
+			// TODO should we panic here?
+			continue
+		}
+
+		// re-check by a.isRelation ?
+
+		relationTable := a.relationTables[colIdx]
+		ids, ok := relationTable[entityId]
+		if !ok {
+			continue
+		}
+
+		// find and remove tableId from tables.tables
+		index := slices.Index(ids.tables, tableId)
+		if index != -1 {
+			last := len(ids.tables) - 1
+			if index != last {
+				ids.tables[index], ids.tables[last] = ids.tables[last], ids.tables[index]
+			}
+			ids.tables = ids.tables[:last]
+		} else {
+			// why? should we panic here?
+		}
+		// if tables.tables is empty, remove the entry from relationTables ?
+		// if len(ids.tables) == 0 {
+		// 	delete(relationTable, entityId)
+		// }
+	}
+}
+
+// FreeTable tries to free a table from the archetype.
+// If isReset is true, skip unindexing the table from relationTables.
+//
+//	isReset=true: called from World.Reset(); relationTables will be cleared afterwards,
+//	so we intentionally skip per-bucket unindex for speed.
+func (a *archetype) FreeTable(table *table, isReset bool) {
+	tableId := table.id
 	// TODO: can we speed this up for large numbers of relation targets?
-	index := slices.Index(a.tables, table)
+	index := slices.Index(a.tables, tableId)
+	if index == -1 {
+		// TODO should we panic here?
+		return
+	}
+
+	if a.HasRelations() != table.HasRelations() {
+		// TODO: should we panic here?
+	}
 	last := len(a.tables) - 1
 
 	if index != last {
@@ -141,7 +202,13 @@ func (a *archetype) FreeTable(table tableID) {
 	}
 	a.tables = a.tables[:last]
 
-	a.freeTables = append(a.freeTables, table)
+	a.freeTables = append(a.freeTables, tableId)
+	if !a.HasRelations() || isReset {
+		// fast path: if isReset is true, or table has no relations
+		// we can skip unindexing
+		return
+	}
+	a.unindexTableRelations(table)
 }
 
 func (a *archetype) AddTable(table *table) {
@@ -187,8 +254,9 @@ func (a *archetype) Reset(storage *storage) {
 	}
 
 	for i := len(a.tables) - 1; i >= 0; i-- {
-		storage.cache.removeTable(storage, &storage.tables[a.tables[i]])
-		a.FreeTable(a.tables[i])
+		table := &storage.tables[a.tables[i]]
+		storage.cache.removeTable(storage, table)
+		a.FreeTable(table, true)
 	}
 
 	for _, m := range a.relationTables {

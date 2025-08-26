@@ -306,7 +306,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				}
 				s.moveEntities(table, newTable, uint32(table.Len()))
 			}
-			archetype.FreeTable(table.id)
+			archetype.FreeTable(table, false)
 			s.cache.removeTable(s, table)
 
 			newRelations = newRelations[:0]
