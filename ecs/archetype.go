@@ -154,6 +154,16 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 func (a *archetype) FreeTable(table tableID) {
 	_ = a.tables.Remove(table)
 	a.freeTables = append(a.freeTables, table)
+
+	if a.numRelations <= 1 {
+		return
+	}
+
+	for _, m := range a.relationTables {
+		for _, v := range m {
+			_ = v.Remove(table)
+		}
+	}
 }
 
 func (a *archetype) AddTable(table *table) {
