@@ -74,7 +74,7 @@ func (q *Query0) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
+			table := &q.world.storage.tables[archetype.tables.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -191,7 +191,7 @@ func (q *Query1[A]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
+			table := &q.world.storage.tables[archetype.tables.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -309,7 +309,7 @@ func (q *Query2[A, B]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
+			table := &q.world.storage.tables[archetype.tables.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -432,7 +432,7 @@ func (q *Query3[A, B, C]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
+			table := &q.world.storage.tables[archetype.tables.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -558,7 +558,7 @@ func (q *Query4[A, B, C, D]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
+			table := &q.world.storage.tables[archetype.tables.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -687,7 +687,7 @@ func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
+			table := &q.world.storage.tables[archetype.tables.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -819,7 +819,7 @@ func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
+			table := &q.world.storage.tables[archetype.tables.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -954,7 +954,7 @@ func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
+			table := &q.world.storage.tables[archetype.tables.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true
@@ -1092,7 +1092,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables[0]]
+			table := &q.world.storage.tables[archetype.tables.tables[0]]
 			if table.Len() > 0 {
 				q.setTable(0, table)
 				return true

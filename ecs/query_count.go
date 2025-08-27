@@ -24,7 +24,7 @@ func countQuery(storage *storage, filter *filter, relations []RelationID) int {
 		}
 
 		if !archetype.HasRelations() {
-			table := &storage.tables[archetype.tables[0]]
+			table := &storage.tables[archetype.tables.tables[0]]
 			count += table.Len()
 			continue
 		}
