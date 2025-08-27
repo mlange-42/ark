@@ -159,6 +159,8 @@ func (a *archetype) FreeTable(table tableID, isReset bool) {
 		return
 	}
 
+	// TODO: can/should we be more selective here?
+	// For a potential solution, see https://github.com/mlange-42/ark/pull/264
 	for _, m := range a.relationTables {
 		for _, v := range m {
 			_ = v.Remove(table)
