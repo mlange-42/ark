@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.4.6...main)
+
+### Documentation
+
+- Adds a user guide chapter on Ark's archetype-based architecture (#262)
+
 ## [[v0.4.6]](https://github.com/mlange-42/ark/compare/v0.4.5...v0.4.6)
 
 ### Bugfixes
