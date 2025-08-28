@@ -40,7 +40,7 @@ Similarly, the second archetype contains all entities with A and C, and their co
 
 The exact component composition of each archetype is encoded in a bitmask for fast comparison.
 Thus, queries can easily identify their relevant archetypes, and then simply iterate entities linearly, which is very fast
-and cache-friendly. Components can be accessed through a query in a very efficiently (&approx;1ns).
+and cache-friendly. Components can be accessed through a query very efficiently (&approx;1ns).
 
 ## World entity access
 
@@ -60,15 +60,12 @@ But they also come with a downside. Adding or removing components to/from an ent
 This takes roughly 10-20ns per involved component.
 To reduce the number of archetype changes, it is recommended to add/remove/exchange multiple components at the same time rather than one after the other.
 
-However, as the benchmarks in the [go-ecs-benchmarks](https://github.com/mlange-42/go-ecs-benchmarks) repository illustrate,
-Ark seems to be the fastest Go ECS available.
-
 For more numbers on performance, see chapter [Benchmarks](../benchmarks). 
 
 ## Details
 
 Actually, the explanation above is quite simplified.
-Particularly it leaves out [Entity Relations](../../guide/relations) and the *archetypes graph* and *nodes*.
+Particularly it leaves out [Entity Relations](../relations) and the *archetypes graph* and *nodes*.
 
 ### Archetype graph
 
@@ -81,8 +78,8 @@ Following these transitions, the archetype resulting from addition and/or remova
 of components can be found easily.
 
 {{< html >}}
-<img alt="Archetype graph light" width="600" class="light" src="../images/archetype-graph.svg"></img>
-<img alt="Archetype graph dark" width="600" class="dark" src="../images/archetype-graph-dark.svg"></img>
+<img alt="Archetype graph light" width="600" class="light" src="./images/archetype-graph.svg"></img>
+<img alt="Archetype graph dark" width="600" class="dark" src="./images/archetype-graph-dark.svg"></img>
 {{< /html >}}  
 *Illustration of the archetype graph. Letters represent components. Boxes represent archetype nodes.
 Arrows represent transitions when a single component is added or removed.*
@@ -105,7 +102,7 @@ Transitions are stored in the nodes with lookup approx. 10 times faster than Go'
 
 ### Entity relations
 
-The *archetype nodes* explained above are utilized to implement Ark's [Entity Relations](../../guide/relations) feature.
+The *archetype nodes* explained above are utilized to implement Ark's [Entity Relations](../relations) feature.
 When an archetype contains a relation components, the respective node contains an archetype "table"
 for each entity that is a target of that relation.
 As an example, we have components `A`, `B` and `R`, where `R` is a relation.
