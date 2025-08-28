@@ -98,26 +98,24 @@ func TestResourceShortcuts(t *testing.T) {
 }
 
 func BenchmarkComponentID(b *testing.B) {
-	b.StopTimer()
+
 	world := NewWorld(1024)
 	id := ComponentID[Position](&world)
 
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		id = ComponentID[Position](&world)
 	}
 	_ = id
 }
 
 func BenchmarkTypeID(b *testing.B) {
-	b.StopTimer()
+
 	world := NewWorld(1024)
 	id := ComponentID[Position](&world)
 	info, _ := ComponentInfo(&world, id)
 	tp := info.Type
 
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		id = TypeID(&world, tp)
 	}
 	_ = id

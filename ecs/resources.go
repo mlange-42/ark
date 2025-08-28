@@ -51,7 +51,7 @@ func (r *Resources) Remove(id ResID) {
 // Returns nil if there is no such resource.
 //
 // See [Resource.Get] for the recommended type-safe way.
-func (r *Resources) Get(id ResID) interface{} {
+func (r *Resources) Get(id ResID) any {
 	return r.resources[id.id]
 }
 

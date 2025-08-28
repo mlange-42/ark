@@ -76,7 +76,7 @@ func upperLetters(n int) []string {
 	return letters
 }
 
-func concat(args ...interface{}) string {
+func concat(args ...any) string {
 	var result strings.Builder
 	for _, arg := range args {
 		result.WriteString(fmt.Sprintf("%v", arg))
