@@ -5,16 +5,18 @@ weight = 130
 description = "Ark's internal ECS architecture."
 +++
 
-Ark uses an archetype-based architecture. Therefore the name :wink:.
+Ark uses an archetype-based architecture. Therefore the name 😉.
 
 This chapter explains the concept and Ark's take on it.
 
 ## Archetypes
 
-The ASCII graph below illustrates the approach.
-Components for entities are stored in so-called archetypes. Archetypes represent unique combinations of components. This means that component data for all entities with exactly the same component is stored in the same archetype.
+The ASCII graph below illustrates the approach of archetypes.
+Each archetype stores the component data for all entities with exactly the same components.
+Archetype storage can be imagined as a table, entities in rows and components in columns.
+Additionally, an archetype has a column for the actual entity (1st column in the figure).
 
-In the illustration below, the first archetype holds entities with (only/exactly) the components A, B and C,
+In the illustration below, the first archetype holds all entities with (only/exactly) the components A, B and C,
 as well as their components.
 Similarly, the second archetype contains all entities with A and C, and their components.
 
@@ -38,34 +40,35 @@ Similarly, the second archetype contains all entities with A and C, and their co
 ```
 *Illustration of Ark's archetype-based architecture.*
 
-The exact component composition of each archetype is encoded in a bitmask for fast comparison.
-Thus, queries can easily identify their relevant archetypes, and then simply iterate entities linearly, which is very fast
-and cache-friendly. Components can be accessed through a query very efficiently (&approx;1ns).
+The component composition of each archetype is encoded in a bitmask for fast comparison.
+This way, queries can easily identify their relevant archetypes, and then simply iterate entities linearly,
+which is very fast and cache-friendly.
+Components can be accessed through a query very efficiently (&approx;1ns).
 
 ## World entity access
 
-For getting components by entity, e.g. for hierarchies, the world contains a list that is indexed by the entity ID (left-most in the figure). For each entity, it references its current archetype and the position of the entity in the archetype. This way, getting components for entities (i.e. random access) is fast, although not as fast as in queries (≈2ns vs. 1ns).
+For getting components for entity outside of queries, the world contains a list that is indexed by the entity ID (left-most in the figure above). For each entity, it references its current archetype and the position of the entity in the archetype. This way, getting components for entities (i.e. random access) is fast, although not as fast as in queries (≈2ns vs. 1ns).
 
 Note that the entities list also contains entities that are currently not alive,
-because they were removed.
-These entities are recycled when new entities are requested from the {{< api ecs World >}}.
+because they were removed from the {{< api ecs World >}}.
+These entities are recycled when new entities are requested from the world.
 Therefore, besides the ID shown in the illustration, each entity also has a generation
-variable. It is incremented on each "reincarnation" of an entity.
-Thus, it allows to distinguish recycled from dead entities, as well as from previous or later "incarnations".
+variable. It is incremented on each "reincarnation" of an entity,
+which it allows to distinguish recycled from dead entities, as well as from previous or later "incarnations".
 
 ## Performance
 
 Obviously, archetypes are an optimization for iteration speed.
 But they also come with a downside. Adding or removing components to/from an entity requires moving all the components of the entity to another archetype.
 This takes roughly 10-20ns per involved component.
-To reduce the number of archetype changes, it is recommended to add/remove/exchange multiple components at the same time rather than one after the other.
+To reduce the number of archetype changes, it is recommended to add/remove/exchange multiple components at the same time rather than one after the other (see chapter [Performance tips](../performance) for more details).
 
 For more numbers on performance, see chapter [Benchmarks](../benchmarks). 
 
 ## Details
 
 Actually, the explanation above is quite simplified.
-Particularly it leaves out [Entity Relations](../relations) and the *archetypes graph* and *nodes*.
+Particularly it leaves out [Entity Relations](../relations) and the *archetypes graph*.
 
 ### Archetype graph
 
@@ -92,27 +95,27 @@ If the required node was still not found, a new node is created.
 Then, the next transition it processed and so on, until the final node is found.
 Only then, an archetype is created for the node.
 
-As a result, the graph will in most cases not be fully connected.
+As a result, the graph will usually not be fully connected.
 There will also not be all possible nodes (combinations of components) present.
 Nodes that are only traversed by the search but never receive entities contain no archetype and are called inactive.
 
-The graph stabilizes quickly.
+During a game or simulation run, the graph stabilizes quickly.
 Then, only the fast following of transitions is required to find an archetype when components are added or removed.
 Transitions are stored in the nodes with lookup approx. 10 times faster than Go's `map`.
 
 ### Entity relations
 
-The *archetype nodes* explained above are utilized to implement Ark's [Entity Relations](../relations) feature.
-When an archetype contains a relation components, the respective node contains an archetype "table"
-for each entity that is a target of that relation.
+At the beginning of this chapter, archetypes were described as being tables.
+However, with Ark's [Entity Relations](../relations) feature, archetypes can contain multiple tables,
+one for each unique combination of relationship targets.
 As an example, we have components `A`, `B` and `R`, where `R` is a relation.
 Further, we have two parent entities `E1` and `E2`.
 When you create some entities with components `A B R(E1)` and `A B R(E2)`, i.e. with relation targets `E1` and `E2`,
-the following node is created:
+the following archetype is created:
 
 ```text
 
-  Node [ A B R ]
+  Archetype [ A B R ]
     |
     |--- E1   E Comps
     |        |3|A|B|R|
@@ -124,17 +127,19 @@ the following node is created:
              |5|A|B|R|
 ```
 
-When querying without specifying a target, the "inner" archetypes are simply iterated if the node matches the filter.
-When querying with a relation target (and the node matches), the archetype for the target entity is looked up in a standard Go `map`.
+When querying without specifying a target, the archetype's tables are simply iterated if the node matches the filter.
+When querying with a relation target (and the archetype matches), the tables for the target entity is looked up in a standard Go `map`.
+
+If the archetype contains multiple relation components, a `map` lookup is used to get all tables matching the target that is specified first. These tables are simply iterated if no further target is specified. If more than one target is specified, the selected tables are checked for these further targets and skipped if they don't match.
 
 ### Archetype removal
 
-Normal archetypes without a relation are never removed, because they are not a temporary thing.
+Normal archetype tables without a relation are never removed, because they are not a temporary thing.
 For relation archetypes, however, things are different.
 Once a target entity dies, it will never appear again (actually it could, after dying another 4294967294 times).
 
-In Ark, empty archetypes with a dead target are recycled.
+In Ark, empty tables with a dead target are recycled.
 They are deactivated, but their allocated memory for entities and components is retained.
-When an archetype in the same node, but for another target entity is requested, it is reused.
-To be able to efficiently detect whether an archetype can be removed,
+When a table in the same archetype, but for another target entity is requested, a recycled table is reused if available.
+To be able to efficiently detect whether a table can be removed,
 a bitset is used to keep track of entities that are the target of a relation.
