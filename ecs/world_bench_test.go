@@ -16,11 +16,11 @@ func BenchmarkCreateEntity1Comp_1000(b *testing.B) {
 	w.RemoveEntities(filter.Batch(), nil)
 
 	for b.Loop() {
-		b.StartTimer()
 		for range 1000 {
 			_ = builder.NewEntityFn(nil)
 		}
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
 	}
 }
