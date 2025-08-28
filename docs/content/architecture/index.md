@@ -90,6 +90,7 @@ The previous explanation offers a simplified view of archetypes. To fully unders
 
 When components are added to or removed from an entity, the system must locate the corresponding archetype that matches the new component composition. To accelerate this process, Ark uses a dynamic graph of archetype nodes (or just nodes).
 The figure below illustrates the concept.
+
 Each arrow represents the transition between two archetypes when a single component is added (solid arrow head)
 or removed (empty arrow head).
 Following these transitions, the archetype resulting from addition and/or removal of an arbitrary number
@@ -153,7 +154,7 @@ If the archetype contains multiple relation components, a `map` lookup is used t
 
 Normal archetype tables without a relation are never removed, because they are not considered temporary.
 For relation archetypes, however, things are different.
-Once a target entity dies, it will never appear again (actually it could, after dying another 4294967294 times, but let’s not count on that).
+Once a target entity dies, it will never appear again (actually it could, after dying another 4,294,967,294 times).
 
 In Ark, empty tables with a dead target are recycled.
 They are deactivated, but their allocated memory for entities and components is retained.
