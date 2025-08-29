@@ -220,12 +220,14 @@ func (s *storage) createArchetype(node *node) *archetype {
 	index := len(s.archetypes)
 	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, &s.registry))
 	archetype := &s.archetypes[index]
-	if archetype.HasRelations() {
-		s.relationArchetypes = append(s.relationArchetypes, archetype.id)
-	}
+
 	for _, id := range archetype.components {
 		s.archetypesMap[id.id] = append(s.archetypesMap[id.id], archetype)
 	}
+	if archetype.HasRelations() {
+		s.relationArchetypes = append(s.relationArchetypes, archetype.id)
+	}
+
 	return archetype
 }
 
