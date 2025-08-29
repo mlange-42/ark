@@ -2,6 +2,10 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.4.6...main)
 
+### Performance
+
+- Adds a mapping from components to archetypes to speed up queries in case of many archetypes (#269)
+
 ### Documentation
 
 - Adds a user guide chapter on Ark's archetype-based architecture (#262, #270)

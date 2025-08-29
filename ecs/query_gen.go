@@ -65,10 +65,11 @@ func (q *Query0) nextTableOrArchetype() bool {
 
 func (q *Query0) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	archetypes := q.world.storage.archetypes
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := &archetypes[q.cursor.archetype]
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}
@@ -136,6 +137,7 @@ type Query1[A any] struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
+	lastComp   uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -182,10 +184,11 @@ func (q *Query1[A]) nextTableOrArchetype() bool {
 
 func (q *Query1[A]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	archetypes := q.world.storage.archetypesMap[q.lastComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := archetypes[q.cursor.archetype]
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}
@@ -253,6 +256,7 @@ type Query2[A any, B any] struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
+	lastComp   uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -300,10 +304,11 @@ func (q *Query2[A, B]) nextTableOrArchetype() bool {
 
 func (q *Query2[A, B]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	archetypes := q.world.storage.archetypesMap[q.lastComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := archetypes[q.cursor.archetype]
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}
@@ -375,6 +380,7 @@ type Query3[A any, B any, C any] struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
+	lastComp   uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -423,10 +429,11 @@ func (q *Query3[A, B, C]) nextTableOrArchetype() bool {
 
 func (q *Query3[A, B, C]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	archetypes := q.world.storage.archetypesMap[q.lastComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := archetypes[q.cursor.archetype]
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}
@@ -500,6 +507,7 @@ type Query4[A any, B any, C any, D any] struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
+	lastComp   uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -549,10 +557,11 @@ func (q *Query4[A, B, C, D]) nextTableOrArchetype() bool {
 
 func (q *Query4[A, B, C, D]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	archetypes := q.world.storage.archetypesMap[q.lastComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := archetypes[q.cursor.archetype]
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}
@@ -628,6 +637,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
+	lastComp   uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -678,10 +688,11 @@ func (q *Query5[A, B, C, D, E]) nextTableOrArchetype() bool {
 
 func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	archetypes := q.world.storage.archetypesMap[q.lastComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := archetypes[q.cursor.archetype]
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}
@@ -759,6 +770,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
+	lastComp   uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -810,10 +822,11 @@ func (q *Query6[A, B, C, D, E, F]) nextTableOrArchetype() bool {
 
 func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	archetypes := q.world.storage.archetypesMap[q.lastComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := archetypes[q.cursor.archetype]
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}
@@ -893,6 +906,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
+	lastComp   uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -945,10 +959,11 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTableOrArchetype() bool {
 
 func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	archetypes := q.world.storage.archetypesMap[q.lastComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := archetypes[q.cursor.archetype]
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}
@@ -1030,6 +1045,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
+	lastComp   uint8
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -1083,10 +1099,11 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTableOrArchetype() bool {
 
 func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	archetypes := q.world.storage.archetypesMap[q.lastComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := archetypes[q.cursor.archetype]
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}

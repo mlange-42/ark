@@ -38,6 +38,11 @@ Secondly, all components of the same type (like `Position`) are stored in a dedi
 A query only accesses the required components (i.e. columns), although entities may possess many more components.
 Memory access is therefore completely linear and contiguous, and the CPUs cache is used as efficiently as possible.
 
+> [!TIP]
+> To maximize query performance, order your query parameters strategically:
+> place the rarest component last.
+> See the chapter on [Performance tips](../performance#component-order-in-queries) for details.
+
 ## World lock
 
 The world gets locked for [component operations](../operations/) when a query is created.
