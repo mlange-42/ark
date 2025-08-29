@@ -4,7 +4,7 @@
 
 ### Documentation
 
-- Adds a user guide chapter on Ark's archetype-based architecture (#262)
+- Adds a user guide chapter on Ark's archetype-based architecture (#262, #270)
 
 ## [[v0.4.6]](https://github.com/mlange-42/ark/compare/v0.4.5...v0.4.6)
 

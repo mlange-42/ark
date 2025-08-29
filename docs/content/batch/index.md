@@ -5,7 +5,7 @@ weight = 70
 description = "Ark's queries and filters."
 +++
 
-In an archetype-based ECS, creation and removal of entities or components are relatively costly operations.
+In an [archetype](../architecture)-based ECS, creation and removal of entities or components are relatively costly operations.
 For these operations, Ark provides batched versions.
 This allows to create or manipulate a large number of entities much faster than one by one.
 Most batch methods come in two flavors. A "normal" one, and one that runs a callback function on each affected entity.

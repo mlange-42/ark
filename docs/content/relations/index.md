@@ -29,7 +29,7 @@ However, we are not able to leverage the power of queries to e.g. get all childr
 To make entity relations even more useful and efficient, Ark supports them as a first class feature.
 Relations are added to and removed from entities just like components,
 and hence can be queried like components, with the usual efficiency.
-This is achieved by creating separate archetypes
+This is achieved by creating separate [archetypes](../architecture)
 for relations with different target entities.
 
 ## Relation components
@@ -127,7 +127,7 @@ This means that the filter matches entities with any target.
 
 Entities that are the target of any relationships can be removed from the world like any other entity.
 When this happens, all entities that have this target in a relation get assigned to the zero entity as target.
-The respective archetype is de-activated and marked for potential re-use for another target entity.
+The respective [archetype](../architecture) is de-activated and marked for potential re-use for another target entity.
 
 ## Limitation
 
