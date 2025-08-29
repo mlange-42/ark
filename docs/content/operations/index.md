@@ -37,7 +37,7 @@ Component mappers are also used to access components for specific entities:
 ## Component exchange
 
 Adding and removing components are relatively costly operations,
-as entities and their components must be moved between archetypes.
+as entities and their components must be moved between [archetypes](../architecture).
 It is most efficient to perform component additions and removals in a single operation,
 instead of using multiple operations.
 

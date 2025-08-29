@@ -27,7 +27,7 @@ The current entity can be obtained with {{< api ecs Query2.Entity >}}.
 
 ## Query performance
 
-Queries iteration is what an archetype-based ECS is optimized for, and it is really fast.
+Queries iteration is what an [archetype](../architecture)-based ECS is optimized for, and it is really fast.
 This has two reasons.
 
 Firstly, all entities with the same component composition are stored in the same archetype, or "table".
@@ -90,7 +90,7 @@ Instead, use {{< api ecs Map.Has >}}, {{< api ecs Map.Get >}} or similar methods
 
 ## Filter caching
 
-Although queries are highly performant, a huge number of archetypes (like hundreds or thousands) may cause a slowdown.
+Although queries are highly performant, a huge number of [archetypes](../architecture) (like hundreds or thousands) may cause a slowdown.
 To prevent this slowdown, filters can be registered to the world's filter cache via
 {{< api ecs Filter2.Register >}}:
 

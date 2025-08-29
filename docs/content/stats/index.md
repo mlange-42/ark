@@ -5,7 +5,7 @@ weight = 90
 description = "Ark's world statistics feature for engine insights."
 +++
 Ark only exposes the API required for actual use.
-Therefore, internals like the number of archetypes, memory used to store components etc. are not directly accessible.
+Therefore, internals like the number of [archetypes](../architecture), memory used to store components etc. are not directly accessible.
 
 However, it might sometimes be useful to have access to such metrics,
 for example in order to judge effects of different ways of implementing something.

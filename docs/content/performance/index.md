@@ -9,14 +9,14 @@ It will probably not get into your way in this regard.
 Experience shows that in simulation built with Ark, ECS code like queries, entity creation etc.
 takes between 5% and 15% of the total CPU time.
 Keep in mind that this is not "on top" of the simulation, but replaces the overhead any other implementation for storing and iterating entities would have.
-Due to its cache-friendliness, archetype-based ECS can outperform e.g. an [Array of Structs](https://en.wikipedia.org/wiki/AoS_and_SoA) implementation, particularly for simulations with many entities and/or many variables per entity.
+Due to its cache-friendliness, [archetype](../architecture)-based ECS can outperform e.g. an [Array of Structs](https://en.wikipedia.org/wiki/AoS_and_SoA) implementation, particularly for simulations with many entities and/or many variables per entity.
 
 Nevertheless, each ECS has its strengths and weaknesses.
 This chapter provides tips on what you should pay attention to in order to get the most out of Ark.
 
 ## Optimized for Iteration
 
-Being an archetype-based ECS, Ark is optimized for queries and iteration.
+Being an [archetype](../architecture)-based ECS, Ark is optimized for queries and iteration.
 Adding and removing components is comparatively costly with this architecture,
 because components must be moved around between archetypes.
 The runtime difference between accessing a component and adding/removing a component is at least one order of magnitude.
@@ -40,7 +40,7 @@ For fast memory access, the use of slices in components should be avoided. Use f
 
 ## Filter caching
 
-When working with many archetypes, queries can be sped up by caching the underlying filter.
+When working with many [archetypes](../architecture), queries can be sped up by caching the underlying filter.
 This way, the filter is not checked against archetypes during query iteration.
 Instead, the archetypes relevant for the filter are cached,
 and checks are only required when new archetypes are created.
@@ -66,7 +66,7 @@ which would be slower.
 ## Component operations
 
 As explained above, operations like adding and removing components or creating entities are relatively
-costly in an archetype-based ECS.
+costly in an [archetype](../architecture)-based ECS.
 However, Ark provides some optimizations here,
 and following a few principles can help keeping the performance cost at a minimum.
 
@@ -75,7 +75,7 @@ and following a few principles can help keeping the performance cost at a minimu
 Different components are a great way to represent different states of otherwise similar entities.
 For example, it is completely valid to build a [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine)
 to model behavior, using components to represent states.
-However, each state transition results in moving an entity and its components between archetypes.
+However, each state transition results in moving an entity and its components between [archetypes](../architecture).
 Thus, when transitions occur frequently (faster than approx. every 20 ticks),
 different components are not the most efficient way to represent states.
 Alternatively, states could be represented by a variable in a single component,
@@ -88,7 +88,7 @@ and what is left to be managed inside query loops.
 
 ### Multiple at once, Exchange
 
-As explained above, moving entities between archetypes is relatively costly.
+As explained above, moving entities between [archetypes](../architecture) is relatively costly.
 It is necessary when adding or removing components,
 but multiple components can be added or removed with a single transition between archetypes.
 
