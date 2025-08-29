@@ -223,6 +223,7 @@ func (s *storage) createArchetype(node *node) *archetype {
 
 	for _, id := range archetype.components {
 		s.archetypesMap[id.id] = append(s.archetypesMap[id.id], archetype)
+		s.registry.addArchetype(id.id)
 	}
 	if archetype.HasRelations() {
 		s.relationArchetypes = append(s.relationArchetypes, archetype.id)
