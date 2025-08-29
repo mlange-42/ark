@@ -33,15 +33,12 @@ This has two reasons.
 Firstly, all entities with the same component composition are stored in the same archetype, or "table".
 This means that filters only need to be checked against archetypes,
 and the entities of a matching archetype can be iterated without any further checks.
+Further, Ark maintains a mapping from each component to the set of archetypes that include it.
+This is used to reduce the number of filter checks by pre-selecting archetypes by the most "rare" component of a query.
 
 Secondly, all components of the same type (like `Position`) are stored in a dedicated column of the archetype.
 A query only accesses the required components (i.e. columns), although entities may possess many more components.
 Memory access is therefore completely linear and contiguous, and the CPUs cache is used as efficiently as possible.
-
-> [!TIP]
-> To maximize query performance, order your query parameters strategically:
-> place the rarest component last.
-> See the chapter on [Performance tips](../performance#component-order-in-queries) for details.
 
 ## World lock
 
