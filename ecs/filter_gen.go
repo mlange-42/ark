@@ -302,7 +302,7 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 			index:     0,
 			maxIndex:  -1,
 		},
-		firstComp: f.ids[0].id,
+		lastComp: f.ids[len(f.ids)-1].id,
 	}
 }
 
@@ -473,7 +473,7 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 			index:     0,
 			maxIndex:  -1,
 		},
-		firstComp: f.ids[0].id,
+		lastComp: f.ids[len(f.ids)-1].id,
 	}
 }
 
@@ -649,7 +649,7 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 			index:     0,
 			maxIndex:  -1,
 		},
-		firstComp: f.ids[0].id,
+		lastComp: f.ids[len(f.ids)-1].id,
 	}
 }
 
@@ -826,7 +826,7 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 			index:     0,
 			maxIndex:  -1,
 		},
-		firstComp: f.ids[0].id,
+		lastComp: f.ids[len(f.ids)-1].id,
 	}
 }
 
@@ -1004,7 +1004,7 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 			index:     0,
 			maxIndex:  -1,
 		},
-		firstComp: f.ids[0].id,
+		lastComp: f.ids[len(f.ids)-1].id,
 	}
 }
 
@@ -1183,7 +1183,7 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 			index:     0,
 			maxIndex:  -1,
 		},
-		firstComp: f.ids[0].id,
+		lastComp: f.ids[len(f.ids)-1].id,
 	}
 }
 
@@ -1363,7 +1363,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 			index:     0,
 			maxIndex:  -1,
 		},
-		firstComp: f.ids[0].id,
+		lastComp: f.ids[len(f.ids)-1].id,
 	}
 }
 
@@ -1544,7 +1544,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 			index:     0,
 			maxIndex:  -1,
 		},
-		firstComp: f.ids[0].id,
+		lastComp: f.ids[len(f.ids)-1].id,
 	}
 }
 

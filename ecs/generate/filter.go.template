@@ -164,7 +164,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 			maxIndex:  -1,
 		},
 		{{if ne . 0 -}}
-		firstComp: f.ids[0].id,
+		lastComp: f.ids[len(f.ids)-1].id,
 		{{- end}}
 	}
 }
