@@ -14,6 +14,7 @@ type registry struct {
 	Used       bitMask                // Mapping from IDs to used status.
 	Trivial    bitMask                // Mapping from IDs to whether types are trivial.
 	Archetypes []int                  // Number of archetypes for each component.
+	generation int
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
@@ -24,6 +25,7 @@ func newRegistry() registry {
 		Used:       bitMask{},
 		IDs:        []uint8{},
 		Archetypes: make([]int, maskTotalBits),
+		generation: 1,
 	}
 }
 
@@ -72,6 +74,11 @@ func (r *registry) unregisterLastComponent() {
 
 func (r *registry) addArchetype(id uint8) {
 	r.Archetypes[id]++
+	r.generation++
+}
+
+func (r *registry) getGeneration() int {
+	return r.generation
 }
 
 // Returns the ID of the component present in the smallest number of archetypes.

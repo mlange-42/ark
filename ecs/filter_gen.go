@@ -9,12 +9,13 @@ package ecs
 //
 // See [Filter2] for a usage example.
 type Filter0 struct {
-	world        *World
-	ids          []ID
-	relations    []RelationID
-	components   []*componentStorage
-	filter       filter
-	cache        cacheID
+	world      *World
+	ids        []ID
+	relations  []RelationID
+	components []*componentStorage
+	filter     filter
+	cache      cacheID
+
 	numRelations uint8
 }
 
@@ -172,6 +173,8 @@ type Filter1[A any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	rareComp     uint8
+	generation   int
 	numRelations uint8
 }
 
@@ -302,7 +305,7 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 			index:     0,
 			maxIndex:  -1,
 		},
-		rareComp: f.ids[0].id,
+		rareComp: f.rareComp,
 	}
 }
 
@@ -344,6 +347,8 @@ type Filter2[A any, B any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	rareComp     uint8
+	generation   int
 	numRelations uint8
 }
 
@@ -458,6 +463,12 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 	var cache *cacheEntry
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
+	} else {
+		reg := &f.world.storage.registry
+		if f.generation != reg.getGeneration() {
+			f.rareComp = reg.rareComponent(f.ids).id
+			f.generation = reg.getGeneration()
+		}
 	}
 
 	return Query2[A, B]{
@@ -473,7 +484,7 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 			index:     0,
 			maxIndex:  -1,
 		},
-		rareComp: f.world.storage.registry.rareComponent(f.ids).id,
+		rareComp: f.rareComp,
 	}
 }
 
@@ -517,6 +528,8 @@ type Filter3[A any, B any, C any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	rareComp     uint8
+	generation   int
 	numRelations uint8
 }
 
@@ -634,6 +647,12 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 	var cache *cacheEntry
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
+	} else {
+		reg := &f.world.storage.registry
+		if f.generation != reg.getGeneration() {
+			f.rareComp = reg.rareComponent(f.ids).id
+			f.generation = reg.getGeneration()
+		}
 	}
 
 	return Query3[A, B, C]{
@@ -649,7 +668,7 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 			index:     0,
 			maxIndex:  -1,
 		},
-		rareComp: f.world.storage.registry.rareComponent(f.ids).id,
+		rareComp: f.rareComp,
 	}
 }
 
@@ -693,6 +712,8 @@ type Filter4[A any, B any, C any, D any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	rareComp     uint8
+	generation   int
 	numRelations uint8
 }
 
@@ -811,6 +832,12 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 	var cache *cacheEntry
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
+	} else {
+		reg := &f.world.storage.registry
+		if f.generation != reg.getGeneration() {
+			f.rareComp = reg.rareComponent(f.ids).id
+			f.generation = reg.getGeneration()
+		}
 	}
 
 	return Query4[A, B, C, D]{
@@ -826,7 +853,7 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 			index:     0,
 			maxIndex:  -1,
 		},
-		rareComp: f.world.storage.registry.rareComponent(f.ids).id,
+		rareComp: f.rareComp,
 	}
 }
 
@@ -870,6 +897,8 @@ type Filter5[A any, B any, C any, D any, E any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	rareComp     uint8
+	generation   int
 	numRelations uint8
 }
 
@@ -989,6 +1018,12 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 	var cache *cacheEntry
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
+	} else {
+		reg := &f.world.storage.registry
+		if f.generation != reg.getGeneration() {
+			f.rareComp = reg.rareComponent(f.ids).id
+			f.generation = reg.getGeneration()
+		}
 	}
 
 	return Query5[A, B, C, D, E]{
@@ -1004,7 +1039,7 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 			index:     0,
 			maxIndex:  -1,
 		},
-		rareComp: f.world.storage.registry.rareComponent(f.ids).id,
+		rareComp: f.rareComp,
 	}
 }
 
@@ -1048,6 +1083,8 @@ type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	rareComp     uint8
+	generation   int
 	numRelations uint8
 }
 
@@ -1168,6 +1205,12 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 	var cache *cacheEntry
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
+	} else {
+		reg := &f.world.storage.registry
+		if f.generation != reg.getGeneration() {
+			f.rareComp = reg.rareComponent(f.ids).id
+			f.generation = reg.getGeneration()
+		}
 	}
 
 	return Query6[A, B, C, D, E, F]{
@@ -1183,7 +1226,7 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 			index:     0,
 			maxIndex:  -1,
 		},
-		rareComp: f.world.storage.registry.rareComponent(f.ids).id,
+		rareComp: f.rareComp,
 	}
 }
 
@@ -1227,6 +1270,8 @@ type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	rareComp     uint8
+	generation   int
 	numRelations uint8
 }
 
@@ -1348,6 +1393,12 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 	var cache *cacheEntry
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
+	} else {
+		reg := &f.world.storage.registry
+		if f.generation != reg.getGeneration() {
+			f.rareComp = reg.rareComponent(f.ids).id
+			f.generation = reg.getGeneration()
+		}
 	}
 
 	return Query7[A, B, C, D, E, F, G]{
@@ -1363,7 +1414,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 			index:     0,
 			maxIndex:  -1,
 		},
-		rareComp: f.world.storage.registry.rareComponent(f.ids).id,
+		rareComp: f.rareComp,
 	}
 }
 
@@ -1407,6 +1458,8 @@ type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	rareComp     uint8
+	generation   int
 	numRelations uint8
 }
 
@@ -1529,6 +1582,12 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 	var cache *cacheEntry
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
+	} else {
+		reg := &f.world.storage.registry
+		if f.generation != reg.getGeneration() {
+			f.rareComp = reg.rareComponent(f.ids).id
+			f.generation = reg.getGeneration()
+		}
 	}
 
 	return Query8[A, B, C, D, E, F, G, H]{
@@ -1544,7 +1603,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 			index:     0,
 			maxIndex:  -1,
 		},
-		rareComp: f.world.storage.registry.rareComponent(f.ids).id,
+		rareComp: f.rareComp,
 	}
 }
 
