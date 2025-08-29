@@ -27,6 +27,10 @@ type Filter{{.}}{{$generics}} struct {
 	components    []*componentStorage
 	filter        filter
 	cache         cacheID
+	{{if ne . 0 -}}
+	rareComp      uint8
+	generation    int
+	{{- end}}
 	numRelations  uint8
 }
 
@@ -149,6 +153,14 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	}
+	{{- if gt . 1}} else {
+		reg := &f.world.storage.registry
+		if f.generation != reg.getGeneration() {
+			f.rareComp = reg.rareComponent(f.ids).id
+			f.generation = reg.getGeneration()
+		}
+	}
+	{{- end}}
 
 	return Query{{.}}{{$genericsShort}}{
 		world:      f.world,
@@ -164,7 +176,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 			maxIndex:  -1,
 		},
 		{{if ne . 0 -}}
-		lastComp: f.ids[len(f.ids)-1].id,
+		rareComp: f.rareComp,
 		{{- end}}
 	}
 }

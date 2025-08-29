@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"fmt"
+	"math"
 	"reflect"
 )
 
@@ -12,6 +13,8 @@ type registry struct {
 	IDs        []uint8                // List of IDs.
 	Used       bitMask                // Mapping from IDs to used status.
 	Trivial    bitMask                // Mapping from IDs to whether types are trivial.
+	Archetypes []int                  // Number of archetypes for each component.
+	generation int
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
@@ -21,6 +24,8 @@ func newRegistry() registry {
 		Types:      make([]reflect.Type, maskTotalBits),
 		Used:       bitMask{},
 		IDs:        []uint8{},
+		Archetypes: make([]int, maskTotalBits),
+		generation: 1,
 	}
 }
 
@@ -65,6 +70,29 @@ func (r *registry) unregisterLastComponent() {
 	r.Types[newID] = nil
 	r.Used.Set(id, false)
 	r.IDs = r.IDs[:len(r.IDs)-1]
+}
+
+func (r *registry) addArchetype(id uint8) {
+	r.Archetypes[id]++
+	r.generation++
+}
+
+func (r *registry) getGeneration() int {
+	return r.generation
+}
+
+// Returns the ID of the component present in the smallest number of archetypes.
+func (r *registry) rareComponent(ids []ID) ID {
+	minCount := math.MaxInt
+	var rareID ID
+	for _, id := range ids {
+		count := r.Archetypes[id.id]
+		if count < minCount {
+			minCount = count
+			rareID = id
+		}
+	}
+	return rareID
 }
 
 // componentRegistry keeps track of component IDs.

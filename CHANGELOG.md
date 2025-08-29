@@ -4,7 +4,7 @@
 
 ### Performance
 
-- Adds a mapping from components to archetypes to speed up queries in case of many archetypes (#269)
+- Adds a mapping from components to archetypes to speed up queries in case of many archetypes (#269, #271)
 
 ### Documentation
 

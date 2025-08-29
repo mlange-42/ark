@@ -38,12 +38,6 @@ A good (or rather, bad) example is a `Tree` component with `X`, `Y`, `Biomass`, 
 
 For fast memory access, the use of slices in components should be avoided. Use fixed-size arrays where possible.
 
-## Component order in queries
-
-Ark accelerates queries by maintaining a mapping from each component to the set of archetypes that include it. This can reduce the number of archetypes a query needs to scan significantly, especially in worlds with a high number of archetypes.
-
-To maximize query performance, order your query parameters strategically: place the rarest component last. In this context, "rare" refers to components that appear in the fewest number of archetypes. By filtering with the most selective component at the end, Ark can narrow down the candidate archetypes most efficiently.
-
 ## Filter caching
 
 When working with many [archetypes](../architecture), queries can be sped up by caching the underlying filter.

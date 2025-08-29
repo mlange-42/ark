@@ -44,6 +44,36 @@ func TestComponentRegistryOverflow(t *testing.T) {
 	})
 }
 
+func TestAddArchetype(t *testing.T) {
+	reg := newComponentRegistry()
+
+	id0 := reg.registerComponent(reflect.TypeOf((*Position)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*Velocity)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*Heading)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*ChildOf)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*ChildOf2)(nil)).Elem(), maskTotalBits)
+
+	reg.addArchetype(id0)
+
+	assert.Equal(t, maskTotalBits, len(reg.Archetypes))
+	assert.Equal(t, []int{1, 0}, reg.Archetypes[:2])
+}
+
+func TestRareComponent(t *testing.T) {
+	reg := newComponentRegistry()
+
+	id0 := reg.registerComponent(reflect.TypeOf((*Position)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*Velocity)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*Heading)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*ChildOf)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*ChildOf2)(nil)).Elem(), maskTotalBits)
+
+	reg.addArchetype(id0)
+
+	assert.Equal(t, ID{1}, reg.rareComponent([]ID{{0}, {1}}))
+	assert.Equal(t, ID{1}, reg.rareComponent([]ID{{1}, {0}}))
+}
+
 func BenchmarkRegistryGet(b *testing.B) {
 	w := NewWorld(1024)
 
@@ -61,5 +91,39 @@ func BenchmarkTypeEquality(b *testing.B) {
 
 	for b.Loop() {
 		_ = tp1 == tp2
+	}
+}
+
+func BenchmarkRareComponent2(b *testing.B) {
+	reg := newComponentRegistry()
+
+	id0 := reg.registerComponent(reflect.TypeOf((*Position)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*Velocity)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*Heading)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*ChildOf)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*ChildOf2)(nil)).Elem(), maskTotalBits)
+
+	reg.addArchetype(id0)
+	ids := []ID{{0}, {1}}
+
+	for b.Loop() {
+		reg.rareComponent(ids)
+	}
+}
+
+func BenchmarkRareComponent5(b *testing.B) {
+	reg := newComponentRegistry()
+
+	id0 := reg.registerComponent(reflect.TypeOf((*Position)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*Velocity)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*Heading)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*ChildOf)(nil)).Elem(), maskTotalBits)
+	reg.registerComponent(reflect.TypeOf((*ChildOf2)(nil)).Elem(), maskTotalBits)
+
+	reg.addArchetype(id0)
+	ids := []ID{{0}, {1}, {2}, {3}, {4}}
+
+	for b.Loop() {
+		reg.rareComponent(ids)
 	}
 }
