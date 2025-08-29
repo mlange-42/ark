@@ -1,6 +1,10 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.4.6...main)
+## [[v0.4.7]](https://github.com/mlange-42/ark/compare/v0.4.6...v0.4.7)
+
+### Performance
+
+- Adds a mapping from components to archetypes to speed up queries in case of many archetypes (#269)
 
 ### Documentation
 

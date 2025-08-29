@@ -45,6 +45,9 @@ type Query{{.}}{{$generics}} struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
+	{{if ne . 0 -}}
+	firstComp  uint8
+	{{- end}}
 }
 
 {{if . -}}
@@ -95,10 +98,15 @@ func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {
 
 func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	{{if eq . 0 -}}
+	archetypes := q.world.storage.archetypes
+	{{- else -}}
+	archetypes := q.world.storage.archetypesMap[q.firstComp]
+	{{- end}}
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := {{if eq . 0}}&{{end}}archetypes[q.cursor.archetype]
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}
