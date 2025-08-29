@@ -164,7 +164,11 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 			maxIndex:  -1,
 		},
 		{{if ne . 0 -}}
-		lastComp: f.ids[len(f.ids)-1].id,
+		{{if eq . 1 -}}
+		rareComp: f.ids[0].id,
+		{{- else -}}
+		rareComp: f.world.storage.registry.rareComponent(f.ids).id,
+		{{- end}}
 		{{- end}}
 	}
 }

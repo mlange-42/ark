@@ -59,7 +59,7 @@ func TestAddArchetype(t *testing.T) {
 	assert.Equal(t, []int{1, 0}, reg.Archetypes[:2])
 }
 
-func TestRareArchetype(t *testing.T) {
+func TestRareComponent(t *testing.T) {
 	reg := newComponentRegistry()
 
 	id0 := reg.registerComponent(reflect.TypeOf((*Position)(nil)).Elem(), maskTotalBits)
@@ -70,8 +70,8 @@ func TestRareArchetype(t *testing.T) {
 
 	reg.addArchetype(id0)
 
-	assert.Equal(t, ID{1}, reg.rareArchetype([]ID{{0}, {1}}))
-	assert.Equal(t, ID{1}, reg.rareArchetype([]ID{{1}, {0}}))
+	assert.Equal(t, ID{1}, reg.rareComponent([]ID{{0}, {1}}))
+	assert.Equal(t, ID{1}, reg.rareComponent([]ID{{1}, {0}}))
 }
 
 func BenchmarkRegistryGet(b *testing.B) {
@@ -94,7 +94,7 @@ func BenchmarkTypeEquality(b *testing.B) {
 	}
 }
 
-func BenchmarkRareArchetype2(b *testing.B) {
+func BenchmarkRareComponent2(b *testing.B) {
 	reg := newComponentRegistry()
 
 	id0 := reg.registerComponent(reflect.TypeOf((*Position)(nil)).Elem(), maskTotalBits)
@@ -107,11 +107,11 @@ func BenchmarkRareArchetype2(b *testing.B) {
 	ids := []ID{{0}, {1}}
 
 	for b.Loop() {
-		reg.rareArchetype(ids)
+		reg.rareComponent(ids)
 	}
 }
 
-func BenchmarkRareArchetype5(b *testing.B) {
+func BenchmarkRareComponent5(b *testing.B) {
 	reg := newComponentRegistry()
 
 	id0 := reg.registerComponent(reflect.TypeOf((*Position)(nil)).Elem(), maskTotalBits)
@@ -124,6 +124,6 @@ func BenchmarkRareArchetype5(b *testing.B) {
 	ids := []ID{{0}, {1}, {2}, {3}, {4}}
 
 	for b.Loop() {
-		reg.rareArchetype(ids)
+		reg.rareComponent(ids)
 	}
 }

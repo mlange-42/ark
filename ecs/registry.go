@@ -74,7 +74,8 @@ func (r *registry) addArchetype(id uint8) {
 	r.Archetypes[id]++
 }
 
-func (r *registry) rareArchetype(ids []ID) ID {
+// Returns the ID of the component present in the smallest number of archetypes.
+func (r *registry) rareComponent(ids []ID) ID {
 	minCount := math.MaxInt
 	var rareID ID
 	for _, id := range ids {

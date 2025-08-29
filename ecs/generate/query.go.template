@@ -46,7 +46,7 @@ type Query{{.}}{{$generics}} struct {
 	cursor     cursor
 	lock       uint8
 	{{if ne . 0 -}}
-	lastComp  uint8
+	rareComp  uint8
 	{{- end}}
 }
 
@@ -101,7 +101,7 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 	{{if eq . 0 -}}
 	archetypes := q.world.storage.archetypes
 	{{- else -}}
-	archetypes := q.world.storage.archetypesMap[q.lastComp]
+	archetypes := q.world.storage.archetypesMap[q.rareComp]
 	{{- end}}
 	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
