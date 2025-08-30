@@ -36,8 +36,8 @@ func TestQuery{{.}}(t *testing.T) {
 		e := mapper.NewEntity({{$mapArgs}})
 		compMapper.Remove(e)
 
-		e = mapper.NewEntity({{$mapArgs}})
-		posMapper.Add(e, &Position{})
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, {{$mapArgs}})
 	}
 
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))

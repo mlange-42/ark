@@ -40,7 +40,7 @@ type Filter{{.}}{{$generics}} struct {
 //
 // See [Filter2.New] for an example.
 {{- end}}
-func (_ *Filter{{.}}{{$genericsShort}}) New(world *World) *Filter{{.}}{{$genericsShort}} {
+func (*Filter{{.}}{{$genericsShort}}) New(world *World) *Filter{{.}}{{$genericsShort}} {
     return NewFilter{{.}}{{$genericsShort}}(world)
 }
 
@@ -59,6 +59,9 @@ func NewFilter{{.}}{{$generics}}(world *World) *Filter{{.}}{{$genericsShort}} {
 		ids:    ids,
 		filter: newFilter(ids...),
 		cache:  maxCacheID,
+		{{- if eq . 1}}
+		rareComp: ids[0].id,
+		{{- end}}
 	}
 }
 
