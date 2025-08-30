@@ -2,8 +2,6 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestFilter(t *testing.T) {
@@ -28,8 +26,11 @@ func TestFilter(t *testing.T) {
 		{NewUnsafeFilter(nil, id1, id2).Exclusive(), newMask(id1), false},
 	}
 
-	for _, test := range tests {
-		assert.Equal(t, test.matches, test.filter.matches(&test.mask))
+	for i, test := range tests {
+		result := test.filter.matches(&test.mask)
+		if result != test.matches {
+			t.Errorf("test %d: expected match=%v, got %v", i, test.matches, result)
+		}
 	}
 }
 

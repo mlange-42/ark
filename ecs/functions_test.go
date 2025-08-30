@@ -3,8 +3,6 @@ package ecs
 import (
 	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCompResIDs(t *testing.T) {
@@ -19,17 +17,36 @@ func TestCompResIDs(t *testing.T) {
 	res1ID := ResourceID[Position](&w)
 	res2ID := ResourceID[Velocity](&w)
 
-	assert.Equal(t, posID, tPosID)
-	assert.Equal(t, rotID, tRotID)
+	if posID != tPosID {
+		t.Errorf("expected posID == tPosID, got %v vs %v", posID, tPosID)
+	}
+	if rotID != tRotID {
+		t.Errorf("expected rotID == tRotID, got %v vs %v", rotID, tRotID)
+	}
 
-	assert.Equal(t, uint8(0), posID.id)
-	assert.Equal(t, uint8(1), rotID.id)
+	if posID.id != 0 {
+		t.Errorf("expected posID.id == 0, got %d", posID.id)
+	}
+	if rotID.id != 1 {
+		t.Errorf("expected rotID.id == 1, got %d", rotID.id)
+	}
 
-	assert.Equal(t, uint8(0), res1ID.id)
-	assert.Equal(t, uint8(1), res2ID.id)
+	if res1ID.id != 0 {
+		t.Errorf("expected res1ID.id == 0, got %d", res1ID.id)
+	}
+	if res2ID.id != 1 {
+		t.Errorf("expected res2ID.id == 1, got %d", res2ID.id)
+	}
 
-	assert.Equal(t, []ID{id(0), id(1)}, ComponentIDs(&w))
-	assert.Equal(t, []ResID{{id: 0}, {id: 1}}, ResourceIDs(&w))
+	expectedCompIDs := []ID{id(0), id(1)}
+	if got := ComponentIDs(&w); !reflect.DeepEqual(got, expectedCompIDs) {
+		t.Errorf("expected ComponentIDs %v, got %v", expectedCompIDs, got)
+	}
+
+	expectedResIDs := []ResID{{id: 0}, {id: 1}}
+	if got := ResourceIDs(&w); !reflect.DeepEqual(got, expectedResIDs) {
+		t.Errorf("expected ResourceIDs %v, got %v", expectedResIDs, got)
+	}
 }
 
 func TestRegisterComponents(t *testing.T) {
@@ -37,11 +54,15 @@ func TestRegisterComponents(t *testing.T) {
 
 	ComponentID[Position](&world)
 
-	assert.Equal(t, id(0), ComponentID[Position](&world))
-	assert.Equal(t, id(1), ComponentID[Velocity](&world))
+	if ComponentID[Position](&world) != id(0) {
+		t.Errorf("expected Position ID == 0")
+	}
+	if ComponentID[Velocity](&world) != id(1) {
+		t.Errorf("expected Velocity ID == 1")
+	}
 
 	world.lock()
-	assert.PanicsWithValue(t,
+	expectPanicWithValue(t,
 		"attempt to register a new component in a locked world",
 		func() {
 			ComponentID[Heading](&world)
@@ -54,27 +75,44 @@ func TestComponentInfo(t *testing.T) {
 	posID := ComponentID[Position](&w)
 
 	info, ok := ComponentInfo(&w, posID)
-	assert.True(t, ok)
-	assert.Equal(t, info.Type, reflect.TypeOf(Position{}))
+	if !ok {
+		t.Errorf("expected ComponentInfo to return ok=true for posID")
+	}
+	if info.Type != reflect.TypeOf(Position{}) {
+		t.Errorf("expected info.Type == Position, got %v", info.Type)
+	}
 
 	info, ok = ComponentInfo(&w, ID{id: 3})
-	assert.False(t, ok)
-	assert.Equal(t, info, CompInfo{})
+	if ok {
+		t.Errorf("expected ComponentInfo to return ok=false for unknown ID")
+	}
+	if info != (CompInfo{}) {
+		t.Errorf("expected empty CompInfo for unknown ID, got %v", info)
+	}
 
 	resID := ResourceID[Velocity](&w)
-
 	tp, ok := ResourceType(&w, resID)
-	assert.True(t, ok)
-	assert.Equal(t, tp, reflect.TypeOf(Velocity{}))
+	if !ok {
+		t.Errorf("expected ResourceType to return ok=true for resID")
+	}
+	if tp != reflect.TypeOf(Velocity{}) {
+		t.Errorf("expected ResourceType == Velocity, got %v", tp)
+	}
 
 	tp, ok = ResourceType(&w, ResID{id: 3})
-	assert.False(t, ok)
-	assert.Equal(t, tp, nil)
+	if ok {
+		t.Errorf("expected ResourceType to return ok=false for unknown ResID")
+	}
+	if tp != nil {
+		t.Errorf("expected nil type for unknown ResID, got %v", tp)
+	}
 }
 
 func TestCompType(t *testing.T) {
 	c := C[Position]()
-	assert.Equal(t, reflect.TypeFor[Position](), c.Type())
+	if c.Type() != reflect.TypeFor[Position]() {
+		t.Errorf("expected component type to be Position, got %v", c.Type())
+	}
 }
 
 func TestResourceTypeID(t *testing.T) {
@@ -83,9 +121,15 @@ func TestResourceTypeID(t *testing.T) {
 	id2 := ResourceTypeID(&w, reflect.TypeFor[Velocity]())
 	id3 := ResourceTypeID(&w, reflect.TypeFor[Position]())
 
-	assert.EqualValues(t, 0, id1.id)
-	assert.EqualValues(t, 1, id2.id)
-	assert.EqualValues(t, 0, id3.id)
+	if id1.id != 0 {
+		t.Errorf("expected id1.id == 0, got %d", id1.id)
+	}
+	if id2.id != 1 {
+		t.Errorf("expected id2.id == 1, got %d", id2.id)
+	}
+	if id3.id != 0 {
+		t.Errorf("expected id3.id == 0, got %d", id3.id)
+	}
 }
 
 func TestResourceShortcuts(t *testing.T) {
@@ -94,11 +138,12 @@ func TestResourceShortcuts(t *testing.T) {
 	AddResource(&w, &res)
 
 	res2 := GetResource[Position](&w)
-	assert.Equal(t, res, *res2)
+	if *res2 != res {
+		t.Errorf("expected GetResource to return %v, got %v", res, *res2)
+	}
 }
 
 func BenchmarkComponentID(b *testing.B) {
-
 	world := NewWorld(1024)
 	id := ComponentID[Position](&world)
 
@@ -109,7 +154,6 @@ func BenchmarkComponentID(b *testing.B) {
 }
 
 func BenchmarkTypeID(b *testing.B) {
-
 	world := NewWorld(1024)
 	id := ComponentID[Position](&world)
 	info, _ := ComponentInfo(&world, id)

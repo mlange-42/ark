@@ -4,8 +4,6 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestExchange1(t *testing.T) {
@@ -20,15 +18,23 @@ func TestExchange1(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Exchange(e, &CompA{})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
 	ex.ExchangeFn(e, func(a *CompA) {
 		a.X = 100
 	})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange1Add(t *testing.T) {
@@ -41,16 +47,23 @@ func TestExchange1Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
-
 	ex.AddFn(e, func(a *CompA) {
 		a.X = 100
 	})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange1Remove(t *testing.T) {
@@ -63,8 +76,12 @@ func TestExchange1Remove(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Remove(e)
-	assert.False(t, posMap.HasAll(e))
-	assert.False(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be false")
+	}
 }
 
 func TestExchange1AddBatch(t *testing.T) {
@@ -84,7 +101,9 @@ func TestExchange1AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.AddBatch(filter.Batch(), &CompA{})
@@ -94,10 +113,14 @@ func TestExchange1AddBatch(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	exchange.RemoveBatch(filter2.Batch(), nil)
 
@@ -106,7 +129,9 @@ func TestExchange1AddBatch(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange1AddBatchFn(t *testing.T) {
@@ -126,7 +151,9 @@ func TestExchange1AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -140,25 +167,35 @@ func TestExchange1AddBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	cnt = 0
 	exchange.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange1ExchangeBatch(t *testing.T) {
@@ -178,7 +215,9 @@ func TestExchange1ExchangeBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{})
@@ -187,10 +226,14 @@ func TestExchange1ExchangeBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange1ExchangeBatchFn(t *testing.T) {
@@ -210,7 +253,9 @@ func TestExchange1ExchangeBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -224,11 +269,17 @@ func TestExchange1ExchangeBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange2(t *testing.T) {
@@ -243,15 +294,23 @@ func TestExchange2(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Exchange(e, &CompA{}, &CompB{})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
 	ex.ExchangeFn(e, func(a *CompA, b *CompB) {
 		a.X = 100
 	})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange2Add(t *testing.T) {
@@ -264,16 +323,23 @@ func TestExchange2Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
-
 	ex.AddFn(e, func(a *CompA, b *CompB) {
 		a.X = 100
 	})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange2Remove(t *testing.T) {
@@ -286,8 +352,12 @@ func TestExchange2Remove(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Remove(e)
-	assert.False(t, posMap.HasAll(e))
-	assert.False(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be false")
+	}
 }
 
 func TestExchange2AddBatch(t *testing.T) {
@@ -307,7 +377,9 @@ func TestExchange2AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{})
@@ -317,10 +389,14 @@ func TestExchange2AddBatch(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	exchange.RemoveBatch(filter2.Batch(), nil)
 
@@ -329,7 +405,9 @@ func TestExchange2AddBatch(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange2AddBatchFn(t *testing.T) {
@@ -349,7 +427,9 @@ func TestExchange2AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -363,25 +443,35 @@ func TestExchange2AddBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	cnt = 0
 	exchange.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange2ExchangeBatch(t *testing.T) {
@@ -401,7 +491,9 @@ func TestExchange2ExchangeBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{})
@@ -410,10 +502,14 @@ func TestExchange2ExchangeBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange2ExchangeBatchFn(t *testing.T) {
@@ -433,7 +529,9 @@ func TestExchange2ExchangeBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -447,11 +545,17 @@ func TestExchange2ExchangeBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange3(t *testing.T) {
@@ -466,15 +570,23 @@ func TestExchange3(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
 	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC) {
 		a.X = 100
 	})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange3Add(t *testing.T) {
@@ -487,16 +599,23 @@ func TestExchange3Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
-
 	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC) {
 		a.X = 100
 	})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange3Remove(t *testing.T) {
@@ -509,8 +628,12 @@ func TestExchange3Remove(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Remove(e)
-	assert.False(t, posMap.HasAll(e))
-	assert.False(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be false")
+	}
 }
 
 func TestExchange3AddBatch(t *testing.T) {
@@ -530,7 +653,9 @@ func TestExchange3AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{})
@@ -540,10 +665,14 @@ func TestExchange3AddBatch(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	exchange.RemoveBatch(filter2.Batch(), nil)
 
@@ -552,7 +681,9 @@ func TestExchange3AddBatch(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange3AddBatchFn(t *testing.T) {
@@ -572,7 +703,9 @@ func TestExchange3AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -586,25 +719,35 @@ func TestExchange3AddBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	cnt = 0
 	exchange.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange3ExchangeBatch(t *testing.T) {
@@ -624,7 +767,9 @@ func TestExchange3ExchangeBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{})
@@ -633,10 +778,14 @@ func TestExchange3ExchangeBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange3ExchangeBatchFn(t *testing.T) {
@@ -656,7 +805,9 @@ func TestExchange3ExchangeBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -670,11 +821,17 @@ func TestExchange3ExchangeBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange4(t *testing.T) {
@@ -689,15 +846,23 @@ func TestExchange4(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
 	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD) {
 		a.X = 100
 	})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange4Add(t *testing.T) {
@@ -710,16 +875,23 @@ func TestExchange4Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
-
 	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD) {
 		a.X = 100
 	})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange4Remove(t *testing.T) {
@@ -732,8 +904,12 @@ func TestExchange4Remove(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Remove(e)
-	assert.False(t, posMap.HasAll(e))
-	assert.False(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be false")
+	}
 }
 
 func TestExchange4AddBatch(t *testing.T) {
@@ -753,7 +929,9 @@ func TestExchange4AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{})
@@ -763,10 +941,14 @@ func TestExchange4AddBatch(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	exchange.RemoveBatch(filter2.Batch(), nil)
 
@@ -775,7 +957,9 @@ func TestExchange4AddBatch(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange4AddBatchFn(t *testing.T) {
@@ -795,7 +979,9 @@ func TestExchange4AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -809,25 +995,35 @@ func TestExchange4AddBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	cnt = 0
 	exchange.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange4ExchangeBatch(t *testing.T) {
@@ -847,7 +1043,9 @@ func TestExchange4ExchangeBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{})
@@ -856,10 +1054,14 @@ func TestExchange4ExchangeBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange4ExchangeBatchFn(t *testing.T) {
@@ -879,7 +1081,9 @@ func TestExchange4ExchangeBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -893,11 +1097,17 @@ func TestExchange4ExchangeBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange5(t *testing.T) {
@@ -912,15 +1122,23 @@ func TestExchange5(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
 	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 		a.X = 100
 	})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange5Add(t *testing.T) {
@@ -933,16 +1151,23 @@ func TestExchange5Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
-
 	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 		a.X = 100
 	})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange5Remove(t *testing.T) {
@@ -955,8 +1180,12 @@ func TestExchange5Remove(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Remove(e)
-	assert.False(t, posMap.HasAll(e))
-	assert.False(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be false")
+	}
 }
 
 func TestExchange5AddBatch(t *testing.T) {
@@ -976,7 +1205,9 @@ func TestExchange5AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
@@ -986,10 +1217,14 @@ func TestExchange5AddBatch(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	exchange.RemoveBatch(filter2.Batch(), nil)
 
@@ -998,7 +1233,9 @@ func TestExchange5AddBatch(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange5AddBatchFn(t *testing.T) {
@@ -1018,7 +1255,9 @@ func TestExchange5AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -1032,25 +1271,35 @@ func TestExchange5AddBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	cnt = 0
 	exchange.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange5ExchangeBatch(t *testing.T) {
@@ -1070,7 +1319,9 @@ func TestExchange5ExchangeBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
@@ -1079,10 +1330,14 @@ func TestExchange5ExchangeBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange5ExchangeBatchFn(t *testing.T) {
@@ -1102,7 +1357,9 @@ func TestExchange5ExchangeBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -1116,11 +1373,17 @@ func TestExchange5ExchangeBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange6(t *testing.T) {
@@ -1135,15 +1398,23 @@ func TestExchange6(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
 	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 		a.X = 100
 	})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange6Add(t *testing.T) {
@@ -1156,16 +1427,23 @@ func TestExchange6Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
-
 	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 		a.X = 100
 	})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange6Remove(t *testing.T) {
@@ -1178,8 +1456,12 @@ func TestExchange6Remove(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Remove(e)
-	assert.False(t, posMap.HasAll(e))
-	assert.False(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be false")
+	}
 }
 
 func TestExchange6AddBatch(t *testing.T) {
@@ -1199,7 +1481,9 @@ func TestExchange6AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
@@ -1209,10 +1493,14 @@ func TestExchange6AddBatch(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	exchange.RemoveBatch(filter2.Batch(), nil)
 
@@ -1221,7 +1509,9 @@ func TestExchange6AddBatch(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange6AddBatchFn(t *testing.T) {
@@ -1241,7 +1531,9 @@ func TestExchange6AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -1255,25 +1547,35 @@ func TestExchange6AddBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	cnt = 0
 	exchange.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange6ExchangeBatch(t *testing.T) {
@@ -1293,7 +1595,9 @@ func TestExchange6ExchangeBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
@@ -1302,10 +1606,14 @@ func TestExchange6ExchangeBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange6ExchangeBatchFn(t *testing.T) {
@@ -1325,7 +1633,9 @@ func TestExchange6ExchangeBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -1339,11 +1649,17 @@ func TestExchange6ExchangeBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange7(t *testing.T) {
@@ -1358,15 +1674,23 @@ func TestExchange7(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
 	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 		a.X = 100
 	})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange7Add(t *testing.T) {
@@ -1379,16 +1703,23 @@ func TestExchange7Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
-
 	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 		a.X = 100
 	})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange7Remove(t *testing.T) {
@@ -1401,8 +1732,12 @@ func TestExchange7Remove(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Remove(e)
-	assert.False(t, posMap.HasAll(e))
-	assert.False(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be false")
+	}
 }
 
 func TestExchange7AddBatch(t *testing.T) {
@@ -1422,7 +1757,9 @@ func TestExchange7AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
@@ -1432,10 +1769,14 @@ func TestExchange7AddBatch(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	exchange.RemoveBatch(filter2.Batch(), nil)
 
@@ -1444,7 +1785,9 @@ func TestExchange7AddBatch(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange7AddBatchFn(t *testing.T) {
@@ -1464,7 +1807,9 @@ func TestExchange7AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -1478,25 +1823,35 @@ func TestExchange7AddBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	cnt = 0
 	exchange.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange7ExchangeBatch(t *testing.T) {
@@ -1516,7 +1871,9 @@ func TestExchange7ExchangeBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
@@ -1525,10 +1882,14 @@ func TestExchange7ExchangeBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange7ExchangeBatchFn(t *testing.T) {
@@ -1548,7 +1909,9 @@ func TestExchange7ExchangeBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -1562,11 +1925,17 @@ func TestExchange7ExchangeBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange8(t *testing.T) {
@@ -1581,15 +1950,23 @@ func TestExchange8(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Exchange(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
 	ex.ExchangeFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 		a.X = 100
 	})
-	assert.False(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange8Add(t *testing.T) {
@@ -1602,16 +1979,23 @@ func TestExchange8Add(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 
 	e = posMap.NewEntity(&Position{}, &Velocity{})
-
 	ex.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 		a.X = 100
 	})
-	assert.True(t, posMap.HasAll(e))
-	assert.True(t, mapper.HasAll(e))
+	if !posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be true")
+	}
+	if !mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be true")
+	}
 }
 
 func TestExchange8Remove(t *testing.T) {
@@ -1624,8 +2008,12 @@ func TestExchange8Remove(t *testing.T) {
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
 	ex.Remove(e)
-	assert.False(t, posMap.HasAll(e))
-	assert.False(t, mapper.HasAll(e))
+	if posMap.HasAll(e) {
+		t.Errorf("expected posMap.HasAll(e) to be false")
+	}
+	if mapper.HasAll(e) {
+		t.Errorf("expected mapper.HasAll(e) to be false")
+	}
 }
 
 func TestExchange8AddBatch(t *testing.T) {
@@ -1645,7 +2033,9 @@ func TestExchange8AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
@@ -1655,10 +2045,14 @@ func TestExchange8AddBatch(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	exchange.RemoveBatch(filter2.Batch(), nil)
 
@@ -1667,7 +2061,9 @@ func TestExchange8AddBatch(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange8AddBatchFn(t *testing.T) {
@@ -1687,7 +2083,9 @@ func TestExchange8AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -1701,25 +2099,35 @@ func TestExchange8AddBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected pos.X > 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	cnt = 0
 	exchange.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected cnt to be 0 after removal, got %d", cnt)
+	}
 }
 
 func TestExchange8ExchangeBatch(t *testing.T) {
@@ -1739,7 +2147,9 @@ func TestExchange8ExchangeBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
@@ -1748,10 +2158,14 @@ func TestExchange8ExchangeBatch(t *testing.T) {
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }
 
 func TestExchange8ExchangeBatchFn(t *testing.T) {
@@ -1771,7 +2185,9 @@ func TestExchange8ExchangeBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	if cnt != 2*n+1 {
+		t.Errorf("expected cnt to be %d, got %d", 2*n+1, cnt)
+	}
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -1785,9 +2201,15 @@ func TestExchange8ExchangeBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
-		assert.False(t, posMap.HasAll(query.Entity()))
+		if a.X != float64(cnt) {
+			t.Errorf("expected a.X to be %f, got %f", float64(cnt), a.X)
+		}
+		if posMap.HasAll(query.Entity()) {
+			t.Errorf("expected posMap.HasAll(entity) to be false")
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	if cnt != 2*n {
+		t.Errorf("expected cnt to be %d, got %d", 2*n, cnt)
+	}
 }

@@ -3,20 +3,26 @@ package ecs
 import (
 	"encoding/json"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestEntity(t *testing.T) {
 	e := newEntity(100)
-	assert.EqualValues(t, 100, e.ID())
-	assert.EqualValues(t, 0, e.Gen())
+	if e.ID() != 100 {
+		t.Errorf("expected ID to be 100, got %d", e.ID())
+	}
+	if e.Gen() != 0 {
+		t.Errorf("expected Gen to be 0, got %d", e.Gen())
+	}
 }
 
 func TestEntityIndex(t *testing.T) {
 	index := entityIndex{}
-	assert.EqualValues(t, 0, index.table)
-	assert.EqualValues(t, 0, index.row)
+	if index.table != 0 {
+		t.Errorf("expected table to be 0, got %d", index.table)
+	}
+	if index.row != 0 {
+		t.Errorf("expected row to be 0, got %d", index.row)
+	}
 }
 
 func TestReservedEntities(t *testing.T) {
@@ -25,12 +31,22 @@ func TestReservedEntities(t *testing.T) {
 	zero := Entity{}
 	wildcard := Entity{1, 0}
 
-	assert.False(t, w.Alive(zero))
-	assert.False(t, w.Alive(wildcard))
+	if w.Alive(zero) {
+		t.Errorf("expected zero entity to be not alive")
+	}
+	if w.Alive(wildcard) {
+		t.Errorf("expected wildcard entity to be not alive")
+	}
 
-	assert.True(t, zero.IsZero())
-	assert.False(t, wildcard.IsZero())
-	assert.True(t, wildcard.isWildcard())
+	if !zero.IsZero() {
+		t.Errorf("expected zero.IsZero() to be true")
+	}
+	if wildcard.IsZero() {
+		t.Errorf("expected wildcard.IsZero() to be false")
+	}
+	if !wildcard.isWildcard() {
+		t.Errorf("expected wildcard.isWildcard() to be true")
+	}
 }
 
 func TestEntityMarshal(t *testing.T) {
@@ -38,17 +54,21 @@ func TestEntityMarshal(t *testing.T) {
 
 	jsonData, err := json.Marshal(&e)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("unexpected error during marshal: %v", err)
 	}
 
 	e2 := Entity{}
 	err = json.Unmarshal(jsonData, &e2)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("unexpected error during unmarshal: %v", err)
 	}
 
-	assert.Equal(t, e2, e)
+	if e2 != e {
+		t.Errorf("expected unmarshaled entity to equal original, got %+v vs %+v", e2, e)
+	}
 
 	err = e2.UnmarshalJSON([]byte("pft"))
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Errorf("expected error from UnmarshalJSON with invalid input, got nil")
+	}
 }
