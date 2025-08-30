@@ -4,18 +4,14 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestMap1(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map1[CompA]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{})
@@ -23,79 +19,85 @@ func TestMap1(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a := mapper.Get(entity)
-		assert.NotNil(t, a)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA) {})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap1Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap1[CompA](&w)
 	entity := w.NewEntity()
-
 	a := mapper.Get(entity)
-	assert.Nil(t, a)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
 	a = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
 }
 
 func TestMap1NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap1[CompA](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{})
-
 	filter := NewFilter1[CompA](&w)
 	query := filter.Query()
 	cnt := 0
@@ -105,16 +107,18 @@ func TestMap1NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap1NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap1[CompA](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{})
 	}
@@ -123,7 +127,6 @@ func TestMap1NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter1[CompA](&w)
 	query := filter.Query()
 	cnt := 0
@@ -133,34 +136,38 @@ func TestMap1NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap1Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap1[ChildOf](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -168,11 +175,9 @@ func TestMap1Relations(t *testing.T) {
 func TestMap1AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap1[CompA](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -182,39 +187,41 @@ func TestMap1AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap1AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap1[CompA](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -224,39 +231,47 @@ func TestMap1AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap1SetRelationsBatch(t *testing.T) {
@@ -265,47 +280,42 @@ func TestMap1SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap1[ChildOf](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap2(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map2[CompA, CompB]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{})
@@ -313,83 +323,97 @@ func TestMap2(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB) {})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap2Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap2[CompA, CompB](&w)
 	entity := w.NewEntity()
-
 	a, b := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
 	a, b = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
 }
 
 func TestMap2NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap2[CompA, CompB](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{})
-
 	filter := NewFilter2[CompA, CompB](&w)
 	query := filter.Query()
 	cnt := 0
@@ -399,16 +423,18 @@ func TestMap2NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap2NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap2[CompA, CompB](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{})
 	}
@@ -417,7 +443,6 @@ func TestMap2NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter2[CompA, CompB](&w)
 	query := filter.Query()
 	cnt := 0
@@ -427,34 +452,38 @@ func TestMap2NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap2Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap2[ChildOf, CompB](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -462,11 +491,9 @@ func TestMap2Relations(t *testing.T) {
 func TestMap2AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap2[CompA, CompB](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -476,39 +503,41 @@ func TestMap2AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap2AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap2[CompA, CompB](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -518,39 +547,47 @@ func TestMap2AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap2SetRelationsBatch(t *testing.T) {
@@ -559,47 +596,42 @@ func TestMap2SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap2[ChildOf, CompB](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap3(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map3[CompA, CompB, CompC]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
@@ -607,87 +639,109 @@ func TestMap3(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b, c := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b, c = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC) {})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap3Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap3[CompA, CompB, CompC](&w)
 	entity := w.NewEntity()
-
 	a, b, c := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
 	a, b, c = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
 }
 
 func TestMap3NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap3[CompA, CompB, CompC](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{})
-
 	filter := NewFilter3[CompA, CompB, CompC](&w)
 	query := filter.Query()
 	cnt := 0
@@ -697,16 +751,18 @@ func TestMap3NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap3NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap3[CompA, CompB, CompC](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
 	}
@@ -715,7 +771,6 @@ func TestMap3NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter3[CompA, CompB, CompC](&w)
 	query := filter.Query()
 	cnt := 0
@@ -725,34 +780,38 @@ func TestMap3NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap3Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap3[ChildOf, CompB, CompC](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -760,11 +819,9 @@ func TestMap3Relations(t *testing.T) {
 func TestMap3AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap3[CompA, CompB, CompC](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -774,39 +831,41 @@ func TestMap3AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap3AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap3[CompA, CompB, CompC](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -816,39 +875,47 @@ func TestMap3AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap3SetRelationsBatch(t *testing.T) {
@@ -857,47 +924,42 @@ func TestMap3SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap3[ChildOf, CompB, CompC](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap4(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map4[CompA, CompB, CompC, CompD]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
@@ -905,91 +967,121 @@ func TestMap4(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b, c, d := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b, c, d = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD) {})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap4Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
 	entity := w.NewEntity()
-
 	a, b, c, d := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
 	a, b, c, d = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
 }
 
 func TestMap4NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{})
-
 	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
 	query := filter.Query()
 	cnt := 0
@@ -999,16 +1091,18 @@ func TestMap4NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap4NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
 	}
@@ -1017,7 +1111,6 @@ func TestMap4NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
 	query := filter.Query()
 	cnt := 0
@@ -1027,34 +1120,38 @@ func TestMap4NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap4Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap4[ChildOf, CompB, CompC, CompD](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -1062,11 +1159,9 @@ func TestMap4Relations(t *testing.T) {
 func TestMap4AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -1076,39 +1171,41 @@ func TestMap4AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap4AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -1118,39 +1215,47 @@ func TestMap4AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap4SetRelationsBatch(t *testing.T) {
@@ -1159,47 +1264,42 @@ func TestMap4SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap4[ChildOf, CompB, CompC, CompD](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap5(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map5[CompA, CompB, CompC, CompD, CompE]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
@@ -1207,95 +1307,133 @@ func TestMap5(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b, c, d, e := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b, c, d, e = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap5Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
 	entity := w.NewEntity()
-
 	a, b, c, d, e := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
 	a, b, c, d, e = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
 }
 
 func TestMap5NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
-
 	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
 	query := filter.Query()
 	cnt := 0
@@ -1305,16 +1443,18 @@ func TestMap5NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap5NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	}
@@ -1323,7 +1463,6 @@ func TestMap5NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
 	query := filter.Query()
 	cnt := 0
@@ -1333,34 +1472,38 @@ func TestMap5NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap5Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap5[ChildOf, CompB, CompC, CompD, CompE](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -1368,11 +1511,9 @@ func TestMap5Relations(t *testing.T) {
 func TestMap5AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -1382,39 +1523,41 @@ func TestMap5AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap5AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -1424,39 +1567,47 @@ func TestMap5AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap5SetRelationsBatch(t *testing.T) {
@@ -1465,47 +1616,42 @@ func TestMap5SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap5[ChildOf, CompB, CompC, CompD, CompE](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap6(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map6[CompA, CompB, CompC, CompD, CompE, CompF]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
@@ -1513,99 +1659,145 @@ func TestMap6(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b, c, d, e, f := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b, c, d, e, f = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap6Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	entity := w.NewEntity()
-
 	a, b, c, d, e, f := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
 	a, b, c, d, e, f = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
 }
 
 func TestMap6NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
-
 	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	query := filter.Query()
 	cnt := 0
@@ -1615,16 +1807,18 @@ func TestMap6NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap6NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	}
@@ -1633,7 +1827,6 @@ func TestMap6NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	query := filter.Query()
 	cnt := 0
@@ -1643,34 +1836,38 @@ func TestMap6NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap6Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -1678,11 +1875,9 @@ func TestMap6Relations(t *testing.T) {
 func TestMap6AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -1692,39 +1887,41 @@ func TestMap6AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap6AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -1734,39 +1931,47 @@ func TestMap6AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap6SetRelationsBatch(t *testing.T) {
@@ -1775,47 +1980,42 @@ func TestMap6SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap7(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map7[CompA, CompB, CompC, CompD, CompE, CompF, CompG]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
@@ -1823,103 +2023,157 @@ func TestMap7(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b, c, d, e, f, g := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b, c, d, e, f, g = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap7Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	entity := w.NewEntity()
-
 	a, b, c, d, e, f, g := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
 	a, b, c, d, e, f, g = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
 }
 
 func TestMap7NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
-
 	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	query := filter.Query()
 	cnt := 0
@@ -1929,16 +2183,18 @@ func TestMap7NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap7NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	}
@@ -1947,7 +2203,6 @@ func TestMap7NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	query := filter.Query()
 	cnt := 0
@@ -1957,34 +2212,38 @@ func TestMap7NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap7Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -1992,11 +2251,9 @@ func TestMap7Relations(t *testing.T) {
 func TestMap7AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -2006,39 +2263,41 @@ func TestMap7AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap7AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -2048,39 +2307,47 @@ func TestMap7AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap7SetRelationsBatch(t *testing.T) {
@@ -2089,47 +2356,42 @@ func TestMap7SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap8(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
@@ -2137,107 +2399,169 @@ func TestMap8(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b, c, d, e, f, g, h := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.NotNil(t, h)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if h == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b, c, d, e, f, g, h = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.NotNil(t, h)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if h == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap8Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	entity := w.NewEntity()
-
 	a, b, c, d, e, f, g, h := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-	assert.Nil(t, h)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
+	if h != nil {
+		t.Errorf("expected nil, got %v", h)
+	}
 	a, b, c, d, e, f, g, h = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-	assert.Nil(t, h)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
+	if h != nil {
+		t.Errorf("expected nil, got %v", h)
+	}
 }
 
 func TestMap8NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
-
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
 	cnt := 0
@@ -2247,16 +2571,18 @@ func TestMap8NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap8NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	}
@@ -2265,7 +2591,6 @@ func TestMap8NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
 	cnt := 0
@@ -2275,34 +2600,38 @@ func TestMap8NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap8Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -2310,11 +2639,9 @@ func TestMap8Relations(t *testing.T) {
 func TestMap8AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -2324,39 +2651,41 @@ func TestMap8AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap8AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -2366,39 +2695,47 @@ func TestMap8AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap8SetRelationsBatch(t *testing.T) {
@@ -2407,47 +2744,42 @@ func TestMap8SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap9(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
@@ -2455,111 +2787,181 @@ func TestMap9(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b, c, d, e, f, g, h, i := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.NotNil(t, h)
-		assert.NotNil(t, i)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if h == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if i == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b, c, d, e, f, g, h, i = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.NotNil(t, h)
-		assert.NotNil(t, i)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if h == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if i == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap9Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
 	entity := w.NewEntity()
-
 	a, b, c, d, e, f, g, h, i := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-	assert.Nil(t, h)
-	assert.Nil(t, i)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
+	if h != nil {
+		t.Errorf("expected nil, got %v", h)
+	}
+	if i != nil {
+		t.Errorf("expected nil, got %v", i)
+	}
 	a, b, c, d, e, f, g, h, i = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-	assert.Nil(t, h)
-	assert.Nil(t, i)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
+	if h != nil {
+		t.Errorf("expected nil, got %v", h)
+	}
+	if i != nil {
+		t.Errorf("expected nil, got %v", i)
+	}
 }
 
 func TestMap9NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
-
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
 	cnt := 0
@@ -2569,16 +2971,18 @@ func TestMap9NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap9NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
 	}
@@ -2587,7 +2991,6 @@ func TestMap9NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
 	cnt := 0
@@ -2597,34 +3000,38 @@ func TestMap9NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap9Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap9[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -2632,11 +3039,9 @@ func TestMap9Relations(t *testing.T) {
 func TestMap9AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -2646,39 +3051,41 @@ func TestMap9AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap9AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -2688,39 +3095,47 @@ func TestMap9AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap9SetRelationsBatch(t *testing.T) {
@@ -2729,47 +3144,42 @@ func TestMap9SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap9[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap10(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
@@ -2777,116 +3187,194 @@ func TestMap10(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b, c, d, e, f, g, h, i, j := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.NotNil(t, h)
-		assert.NotNil(t, i)
-		assert.NotNil(t, j)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if h == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if i == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if j == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b, c, d, e, f, g, h, i, j = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.NotNil(t, h)
-		assert.NotNil(t, i)
-		assert.NotNil(t, j)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if h == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if i == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if j == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
 		})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap10Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
 	entity := w.NewEntity()
-
 	a, b, c, d, e, f, g, h, i, j := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-	assert.Nil(t, h)
-	assert.Nil(t, i)
-	assert.Nil(t, j)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
+	if h != nil {
+		t.Errorf("expected nil, got %v", h)
+	}
+	if i != nil {
+		t.Errorf("expected nil, got %v", i)
+	}
+	if j != nil {
+		t.Errorf("expected nil, got %v", j)
+	}
 	a, b, c, d, e, f, g, h, i, j = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-	assert.Nil(t, h)
-	assert.Nil(t, i)
-	assert.Nil(t, j)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
+	if h != nil {
+		t.Errorf("expected nil, got %v", h)
+	}
+	if i != nil {
+		t.Errorf("expected nil, got %v", i)
+	}
+	if j != nil {
+		t.Errorf("expected nil, got %v", j)
+	}
 }
 
 func TestMap10NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
-
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
 	cnt := 0
@@ -2896,16 +3384,18 @@ func TestMap10NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap10NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
 	}
@@ -2914,7 +3404,6 @@ func TestMap10NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
 	cnt := 0
@@ -2924,34 +3413,38 @@ func TestMap10NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap10Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap10[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -2959,11 +3452,9 @@ func TestMap10Relations(t *testing.T) {
 func TestMap10AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -2973,39 +3464,41 @@ func TestMap10AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap10AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -3015,39 +3508,47 @@ func TestMap10AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap10SetRelationsBatch(t *testing.T) {
@@ -3056,47 +3557,42 @@ func TestMap10SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap10[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap11(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
@@ -3104,120 +3600,206 @@ func TestMap11(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b, c, d, e, f, g, h, i, j, k := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.NotNil(t, h)
-		assert.NotNil(t, i)
-		assert.NotNil(t, j)
-		assert.NotNil(t, k)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if h == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if i == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if j == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if k == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b, c, d, e, f, g, h, i, j, k = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.NotNil(t, h)
-		assert.NotNil(t, i)
-		assert.NotNil(t, j)
-		assert.NotNil(t, k)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if h == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if i == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if j == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if k == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
 		})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap11Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
 	entity := w.NewEntity()
-
 	a, b, c, d, e, f, g, h, i, j, k := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-	assert.Nil(t, h)
-	assert.Nil(t, i)
-	assert.Nil(t, j)
-	assert.Nil(t, k)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
+	if h != nil {
+		t.Errorf("expected nil, got %v", h)
+	}
+	if i != nil {
+		t.Errorf("expected nil, got %v", i)
+	}
+	if j != nil {
+		t.Errorf("expected nil, got %v", j)
+	}
+	if k != nil {
+		t.Errorf("expected nil, got %v", k)
+	}
 	a, b, c, d, e, f, g, h, i, j, k = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-	assert.Nil(t, h)
-	assert.Nil(t, i)
-	assert.Nil(t, j)
-	assert.Nil(t, k)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
+	if h != nil {
+		t.Errorf("expected nil, got %v", h)
+	}
+	if i != nil {
+		t.Errorf("expected nil, got %v", i)
+	}
+	if j != nil {
+		t.Errorf("expected nil, got %v", j)
+	}
+	if k != nil {
+		t.Errorf("expected nil, got %v", k)
+	}
 }
 
 func TestMap11NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
-
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
 	cnt := 0
@@ -3227,16 +3809,18 @@ func TestMap11NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap11NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
 	}
@@ -3245,7 +3829,6 @@ func TestMap11NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
 	cnt := 0
@@ -3255,34 +3838,38 @@ func TestMap11NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap11Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap11[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -3290,11 +3877,9 @@ func TestMap11Relations(t *testing.T) {
 func TestMap11AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -3304,39 +3889,41 @@ func TestMap11AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap11AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -3346,39 +3933,47 @@ func TestMap11AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap11SetRelationsBatch(t *testing.T) {
@@ -3387,47 +3982,42 @@ func TestMap11SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap11[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 func TestMap12(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL]
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
@@ -3435,124 +4025,218 @@ func TestMap12(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		a, b, c, d, e, f, g, h, i, j, k, l := mapper.Get(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.NotNil(t, h)
-		assert.NotNil(t, i)
-		assert.NotNil(t, j)
-		assert.NotNil(t, k)
-		assert.NotNil(t, l)
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if h == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if i == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if j == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if k == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if l == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		a, b, c, d, e, f, g, h, i, j, k, l = mapper.GetUnchecked(entity)
-		assert.NotNil(t, a)
-		assert.NotNil(t, b)
-		assert.NotNil(t, c)
-		assert.NotNil(t, d)
-		assert.NotNil(t, e)
-		assert.NotNil(t, f)
-		assert.NotNil(t, g)
-		assert.NotNil(t, h)
-		assert.NotNil(t, i)
-		assert.NotNil(t, j)
-		assert.NotNil(t, k)
-		assert.NotNil(t, l)
-		assert.True(t, mapper.HasAll(entity))
+		if a == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if b == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if c == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if d == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if e == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if f == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if g == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if h == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if i == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if j == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if k == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if l == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Add(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Set(Entity{}, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.AddFn(Entity{}, func(a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {
 		})
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap12Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
 	entity := w.NewEntity()
-
 	a, b, c, d, e, f, g, h, i, j, k, l := mapper.Get(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-	assert.Nil(t, h)
-	assert.Nil(t, i)
-	assert.Nil(t, j)
-	assert.Nil(t, k)
-	assert.Nil(t, l)
-
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
+	if h != nil {
+		t.Errorf("expected nil, got %v", h)
+	}
+	if i != nil {
+		t.Errorf("expected nil, got %v", i)
+	}
+	if j != nil {
+		t.Errorf("expected nil, got %v", j)
+	}
+	if k != nil {
+		t.Errorf("expected nil, got %v", k)
+	}
+	if l != nil {
+		t.Errorf("expected nil, got %v", l)
+	}
 	a, b, c, d, e, f, g, h, i, j, k, l = mapper.GetUnchecked(entity)
-	assert.Nil(t, a)
-	assert.Nil(t, b)
-	assert.Nil(t, c)
-	assert.Nil(t, d)
-	assert.Nil(t, e)
-	assert.Nil(t, f)
-	assert.Nil(t, g)
-	assert.Nil(t, h)
-	assert.Nil(t, i)
-	assert.Nil(t, j)
-	assert.Nil(t, k)
-	assert.Nil(t, l)
+	if a != nil {
+		t.Errorf("expected nil, got %v", a)
+	}
+	if b != nil {
+		t.Errorf("expected nil, got %v", b)
+	}
+	if c != nil {
+		t.Errorf("expected nil, got %v", c)
+	}
+	if d != nil {
+		t.Errorf("expected nil, got %v", d)
+	}
+	if e != nil {
+		t.Errorf("expected nil, got %v", e)
+	}
+	if f != nil {
+		t.Errorf("expected nil, got %v", f)
+	}
+	if g != nil {
+		t.Errorf("expected nil, got %v", g)
+	}
+	if h != nil {
+		t.Errorf("expected nil, got %v", h)
+	}
+	if i != nil {
+		t.Errorf("expected nil, got %v", i)
+	}
+	if j != nil {
+		t.Errorf("expected nil, got %v", j)
+	}
+	if k != nil {
+		t.Errorf("expected nil, got %v", k)
+	}
+	if l != nil {
+		t.Errorf("expected nil, got %v", l)
+	}
 }
 
 func TestMap12NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
-
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
 	cnt := 0
@@ -3562,16 +4246,18 @@ func TestMap12NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap12NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
-
 	for range n {
 		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
 	}
@@ -3580,7 +4266,6 @@ func TestMap12NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
 	cnt := 0
@@ -3590,34 +4275,38 @@ func TestMap12NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap12Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap12[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func() {
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func() {
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func() {
+	expectPanic(t, func() {
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -3625,11 +4314,9 @@ func TestMap12Relations(t *testing.T) {
 func TestMap12AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -3639,39 +4326,41 @@ func TestMap12AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap12AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
@@ -3681,39 +4370,47 @@ func TestMap12AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap12SetRelationsBatch(t *testing.T) {
@@ -3722,36 +4419,33 @@ func TestMap12SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap12[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
 	childMap := NewMap[ChildOf](&w)
-
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{}, RelIdx(0, parent1))
 	mapper.NewBatch(n, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func() {
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func() {
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }

@@ -2,8 +2,6 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestIDMap(t *testing.T) {
@@ -23,33 +21,41 @@ func TestIDMap(t *testing.T) {
 	m.Set(big2, &e200)
 
 	e, ok := m.Get(0)
-	assert.True(t, ok)
-	assert.Equal(t, e0, *e)
+	if !ok || *e != e0 {
+		t.Errorf("expected Get(0) to return %v, got %v", e0, e)
+	}
 
 	e, ok = m.Get(1)
-	assert.True(t, ok)
-	assert.Equal(t, e1, *e)
+	if !ok || *e != e1 {
+		t.Errorf("expected Get(1) to return %v, got %v", e1, e)
+	}
 
 	e, ok = m.Get(big1)
-	assert.True(t, ok)
-	assert.Equal(t, e121, *e)
+	if !ok || *e != e121 {
+		t.Errorf("expected Get(big1) to return %v, got %v", e121, e)
+	}
 
 	e, ok = m.Get(big2)
-	assert.True(t, ok)
-	assert.Equal(t, e200, *e)
+	if !ok || *e != e200 {
+		t.Errorf("expected Get(big2) to return %v, got %v", e200, e)
+	}
 
 	e, ok = m.Get(15)
-	assert.False(t, ok)
-	assert.Nil(t, e)
+	if ok || e != nil {
+		t.Errorf("expected Get(15) to return nil, got %v", e)
+	}
 
 	m.Remove(0)
 	m.Remove(1)
 
 	e, ok = m.Get(0)
-	assert.False(t, ok)
-	assert.Nil(t, e)
+	if ok || e != nil {
+		t.Errorf("expected Get(0) after removal to return nil, got %v", e)
+	}
 
-	assert.Nil(t, m.chunks[0])
+	if m.chunks[0] != nil {
+		t.Errorf("expected m.chunks[0] to be nil after removals")
+	}
 }
 
 func TestIDMapPointers(t *testing.T) {
@@ -69,37 +75,44 @@ func TestIDMapPointers(t *testing.T) {
 	m.Set(big2, e200)
 
 	e, ok := m.GetPointer(0)
-	assert.True(t, ok)
-	assert.Equal(t, e0, *e)
+	if !ok || *e != e0 {
+		t.Errorf("expected GetPointer(0) to return %v, got %v", e0, *e)
+	}
 
 	e, ok = m.GetPointer(1)
-	assert.True(t, ok)
-	assert.Equal(t, e1, *e)
+	if !ok || *e != e1 {
+		t.Errorf("expected GetPointer(1) to return %v, got %v", e1, *e)
+	}
 
 	e, ok = m.GetPointer(big1)
-	assert.True(t, ok)
-	assert.Equal(t, e121, *e)
+	if !ok || *e != e121 {
+		t.Errorf("expected GetPointer(big1) to return %v, got %v", e121, *e)
+	}
 
 	e, ok = m.GetPointer(big2)
-	assert.True(t, ok)
-	assert.Equal(t, e200, *e)
+	if !ok || *e != e200 {
+		t.Errorf("expected GetPointer(big2) to return %v, got %v", e200, *e)
+	}
 
 	e, ok = m.GetPointer(15)
-	assert.False(t, ok)
-	assert.Nil(t, e)
+	if ok || e != nil {
+		t.Errorf("expected GetPointer(15) to return nil, got %v", e)
+	}
 
 	m.Remove(0)
 	m.Remove(1)
 
 	e, ok = m.GetPointer(0)
-	assert.False(t, ok)
-	assert.Nil(t, e)
+	if ok || e != nil {
+		t.Errorf("expected GetPointer(0) after removal to return nil, got %v", e)
+	}
 
-	assert.Nil(t, m.chunks[0])
+	if m.chunks[0] != nil {
+		t.Errorf("expected m.chunks[0] to be nil after removals")
+	}
 }
 
 func BenchmarkIdMapping_IDMap(b *testing.B) {
-
 	entities := [maskTotalBits]Entity{}
 	m := newIDMap[*Entity]()
 
@@ -108,7 +121,7 @@ func BenchmarkIdMapping_IDMap(b *testing.B) {
 		m.Set(uint8(i), &entities[i])
 	}
 
-	var ptr *Entity = nil
+	var ptr *Entity
 	for i := 0; b.Loop(); i++ {
 		ptr, _ = m.Get(uint8(i % maskTotalBits))
 	}
@@ -116,7 +129,6 @@ func BenchmarkIdMapping_IDMap(b *testing.B) {
 }
 
 func BenchmarkIdMapping_Array(b *testing.B) {
-
 	entities := [maskTotalBits]Entity{}
 	m := [maskTotalBits]*Entity{}
 
@@ -125,7 +137,7 @@ func BenchmarkIdMapping_Array(b *testing.B) {
 		m[i] = &entities[i]
 	}
 
-	var ptr *Entity = nil
+	var ptr *Entity
 	for i := 0; b.Loop(); i++ {
 		ptr = m[i%maskTotalBits]
 	}
@@ -133,7 +145,6 @@ func BenchmarkIdMapping_Array(b *testing.B) {
 }
 
 func BenchmarkIdMapping_HashMap(b *testing.B) {
-
 	entities := [maskTotalBits]Entity{}
 	m := make(map[uint8]*Entity, maskTotalBits)
 
@@ -142,7 +153,7 @@ func BenchmarkIdMapping_HashMap(b *testing.B) {
 		m[uint8(i)] = &entities[i]
 	}
 
-	var ptr *Entity = nil
+	var ptr *Entity
 	for i := 0; b.Loop(); i++ {
 		ptr = m[uint8(i%maskTotalBits)]
 	}
@@ -150,7 +161,6 @@ func BenchmarkIdMapping_HashMap(b *testing.B) {
 }
 
 func BenchmarkIdMapping_HashMapEntity(b *testing.B) {
-
 	entities := [maskTotalBits]Entity{}
 	m := make(map[Entity]*Entity, maskTotalBits)
 
@@ -159,7 +169,7 @@ func BenchmarkIdMapping_HashMapEntity(b *testing.B) {
 		m[Entity{entityID(i), 0}] = &entities[i]
 	}
 
-	var ptr *Entity = nil
+	var ptr *Entity
 	for i := 0; b.Loop(); i++ {
 		ptr = m[Entity{entityID(i % maskTotalBits), 0}]
 	}

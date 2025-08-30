@@ -5,23 +5,18 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 {{range makeRange 1 12}}
 {{- $n := . -}}
 {{- $upper := upperLetters . -}}
 {{- $lower := lowerLetters . -}}
-
 {{- $generics := join "[Comp" ", Comp" "]" $upper -}}
 {{- $args := arguments $lower $upper "" "Comp" -}}
 {{- $mapArgs := join "&Comp" "{}, &Comp" "{}" $upper -}}
 {{- $comps := join "" ", " "" $lower -}}
-
 {{- $genericsRel := replace $generics "CompA" "ChildOf" -}}
 {{- $mapArgsRel := replace $mapArgs "CompA" "ChildOf" -}}
-
 {{- $nFilter := $n -}}
 {{- if gt $n 8}}{{- $nFilter = 8 -}}{{end -}}
 {{- $upperFilter := upperLetters $nFilter -}}
@@ -32,11 +27,9 @@ import (
 func TestMap{{.}}(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
-
 	var mapper *Map{{.}}{{$generics}}
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
-
 	entities := []Entity{}
 	for range n {
 		e := mapper.NewEntity({{$mapArgs}})
@@ -44,87 +37,93 @@ func TestMap{{.}}(t *testing.T) {
 		e = w.NewEntity()
 		mapper.Add(e, {{$mapArgs}})
 		entities = append(entities, e)
-
 		e = mapper.NewEntityFn(func({{$args}}){
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 		e = w.NewEntity()
 		mapper.AddFn(e, func({{$args}}){
 			a.X = 100
 		})
-		assert.Equal(t, CompA{100, 0}, *mapA.Get(e))
+		if a := mapA.Get(e); a.X != 100 {
+			t.Errorf("expected 100, got %f", a.X)
+		}
 		w.RemoveEntity(e)
 	}
-
 	for _, entity := range entities {
 		{{$values}} := mapper.Get(entity)
 		{{- range $lower}}
-		assert.NotNil(t, {{.}})
+		if {{.}} == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		{{- end}}
 		{{$values}} = mapper.GetUnchecked(entity)
 		{{- range $lower}}
-		assert.NotNil(t, {{.}})
+		if {{.}} == nil {
+			t.Errorf("expected non-nil, got nil")
+		}
 		{{- end}}
-		assert.True(t, mapper.HasAll(entity))
+		if !mapper.HasAll(entity) {
+			t.Errorf("expected true, got false")
+		}
 		mapper.Set(entity, {{$mapArgs}})
 	}
-
 	for _, e := range entities {
 		mapper.Remove(e)
-		assert.False(t, mapper.HasAll(e))
+		if mapper.HasAll(e) {
+			t.Errorf("expected false, got true")
+		}
 	}
-
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		mapper.Get(Entity{})
 	})
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		mapper.HasAll(Entity{})
 	})
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		mapper.Add(Entity{}, {{$mapArgs}})
 	})
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		mapper.Set(Entity{}, {{$mapArgs}})
 	})
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		mapper.AddFn(Entity{}, func({{$args}}){})
 	})
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		mapper.Remove(Entity{})
 	})
 }
 
 func TestMap{{.}}Nil(t *testing.T) {
 	w := NewWorld(4)
-
 	mapper := NewMap{{.}}{{$generics}}(&w)
 	entity := w.NewEntity()
-
 	{{$values}} := mapper.Get(entity)
 	{{- range $lower}}
-	assert.Nil(t, {{.}})
+	if {{.}} != nil {
+		t.Errorf("expected nil, got %v", {{.}})
+	}
 	{{- end}}
-	
 	{{$values}} = mapper.GetUnchecked(entity)
 	{{- range $lower}}
-	assert.Nil(t, {{.}})
+	if {{.}} != nil {
+		t.Errorf("expected nil, got %v", {{.}})
+	}
 	{{- end}}
 }
 
 func TestMap{{.}}NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap{{.}}{{$generics}}(&w)
-
 	for range n {
 		_ = mapper.NewEntity({{$mapArgs}})
 	}
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, {{$mapArgs}})
-
 	filter := NewFilter{{$nFilter}}{{$genericsFilter}}(&w)
 	query := filter.Query()
 	cnt := 0
@@ -134,16 +133,18 @@ func TestMap{{.}}NewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != n*3 {
+		t.Errorf("expected %d, got %d", n*3, cnt)
+	}
 }
 
 func TestMap{{.}}NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap{{.}}{{$generics}}(&w)
-
 	for range n {
 		_ = mapper.NewEntity({{$mapArgs}})
 	}
@@ -152,7 +153,6 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 		a.X = 5
 		a.Y = 6
 	})
-
 	filter := NewFilter{{$nFilter}}{{$genericsFilter}}(&w)
 	query := filter.Query()
 	cnt := 0
@@ -162,34 +162,38 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.HasAll(lastEntity))
-	assert.Equal(t, 3*n, cnt)
-
+	if !mapper.HasAll(lastEntity) {
+		t.Errorf("expected true, got false")
+	}
+	if cnt != 3*n {
+		t.Errorf("expected %d, got %d", 3*n, cnt)
+	}
 	mapper.NewBatchFn(5, nil)
 }
 
 func TestMap{{.}}Relations(t *testing.T) {
 	w := NewWorld(8)
-
 	mapper := NewMap{{.}}{{$genericsRel}}(&w)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
-
 	e := mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent1))
-	assert.Equal(t, parent1, mapper.GetRelation(e, 0))
-	assert.Equal(t, parent1, mapper.GetRelationUnchecked(e, 0))
-
+	if mapper.GetRelation(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelation(e, 0))
+	}
+	if mapper.GetRelationUnchecked(e, 0) != parent1 {
+		t.Errorf("expected %v, got %v", parent1, mapper.GetRelationUnchecked(e, 0))
+	}
 	mapper.SetRelations(e, RelIdx(0, parent2))
-	assert.Equal(t, parent2, mapper.GetRelation(e, 0))
-
-	assert.Panics(t, func(){
+	if mapper.GetRelation(e, 0) != parent2 {
+		t.Errorf("expected %v, got %v", parent2, mapper.GetRelation(e, 0))
+	}
+	expectPanic(t, func(){
 		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
 	})
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		mapper.SetRelations(e)
 	})
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		mapper.GetRelation(Entity{}, 0)
 	})
 }
@@ -197,11 +201,9 @@ func TestMap{{.}}Relations(t *testing.T) {
 func TestMap{{.}}AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap{{.}}{{$generics}}(&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
 		pos.X = float64(cnt)
@@ -211,39 +213,41 @@ func TestMap{{.}}AddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), {{$mapArgs}})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	mapper.RemoveBatch(filter2.Batch(), nil)
-	
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap{{.}}AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
-
 	mapper := NewMap{{.}}{{$generics}}(&w)
 	posMap := NewMap1[Position](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
-
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
 		pos.X = float64(cnt)
@@ -253,39 +257,47 @@ func TestMap{{.}}AddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
-
+	if cnt != 2*n+1 {
+		t.Errorf("expected %d, got %d", 2*n+1, cnt)
+	}
 	filter := NewFilter1[Position](&w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, {{$args}}){
 		a.X = float64(cnt)
 		cnt++
 	})
-
 	filter2 := NewFilter1[CompA](&w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		if a.X != float64(cnt) {
+			t.Errorf("expected %f, got %f", float64(cnt), a.X)
+		}
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		if pos.X <= 0.0 {
+			t.Errorf("expected greater than 0.0, got %f", pos.X)
+		}
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-	
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity){
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
-	
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 }
 
 func TestMap{{.}}SetRelationsBatch(t *testing.T) {
@@ -294,37 +306,34 @@ func TestMap{{.}}SetRelationsBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap{{.}}{{$genericsRel}}(&w)
 	childMap := NewMap[ChildOf](&w)
-	
 	mapper.NewBatch(n, {{$mapArgsRel}}, RelIdx(0, parent1))
 	mapper.NewBatch(n, {{$mapArgsRel}}, RelIdx(0, parent2))
-
 	filter := NewFilter1[ChildOf](&w)
-
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		if childMap.GetRelation(entity) != parent3 {
+			t.Errorf("expected %v, got %v", parent3, childMap.GetRelation(entity))
+		}
 	}, RelIdx(0, parent3))
-
 	query := filter.Query(RelIdx(0, parent2))
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
-	assert.Panics(t, func(){
-		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
-			assert.Equal(t, parent3, childMap.GetRelation(entity))
-		})
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
+	expectPanic(t, func(){
+		mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {})
 	})
 }
 {{end -}}

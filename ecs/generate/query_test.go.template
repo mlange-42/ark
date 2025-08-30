@@ -5,425 +5,446 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 {{range makeRange 1 8}}
 {{- $n := . -}}
 {{- $upper := upperLetters . -}}
 {{- $lower := lowerLetters . -}}
-
 {{- $generics := join "[Comp" ", Comp" "]" $upper -}}
 {{- $mapArgs := join "&Comp" "{}, &Comp" "{}" $upper -}}
 {{- $comps := join "" ", " "" $lower -}}
-
 {{- $genericsRel := replace $generics "CompA" "ChildOf" -}}
 {{- $mapArgsRel := replace $mapArgs "CompA" "ChildOf" -}}
 
 func TestQuery{{.}}(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
-
 	posMapper := NewMap[Position](&w)
 	mapper := NewMap{{.}}{{$generics}}(&w)
 	compMapper := NewMap[CompA](&w)
 	posVelMapper := NewMap2[Position, Velocity](&w)
-
 	for range n {
 		_ = mapper.NewEntity({{$mapArgs}})
-
 		e := mapper.NewEntity({{$mapArgs}})
 		compMapper.Remove(e)
-
 		e = posMapper.NewEntity(&Position{})
 		mapper.Add(e, {{$mapArgs}})
 	}
-
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
-
 	// normal filter
 	var filter *Filter{{.}}{{$generics}}
 	filter = filter.New(&w)
 	query := filter.Query()
-	assert.Equal(t, 2*n, query.Count())
-
+	if query.Count() != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, query.Count())
+	}
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	// filter without
 	filter = NewFilter{{.}}{{$generics}}(&w).Without(C[Position]())
 	query = filter.Query()
-	assert.Equal(t, n, query.Count())
-
+	if query.Count() != n {
+		t.Errorf("expected %d, got %d", n, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-	
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
 	// filter exclusive
 	filter = NewFilter{{.}}{{$generics}}(&w).Exclusive()
 	query = filter.Query()
-	assert.Equal(t, n, query.Count())
-
+	if query.Count() != n {
+		t.Errorf("expected %d, got %d", n, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-	
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
 	// filter with
 	filter = NewFilter{{.}}{{$generics}}(&w).With(C[Position]())
 	query = filter.Query()
-	assert.Equal(t, n, query.Count())
-
+	if query.Count() != n {
+		t.Errorf("expected %d, got %d", n, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
 	_ = filter.Batch()
 }
 
 func TestQuery{{.}}Empty(t *testing.T) {
 	w := NewWorld(4)
-
 	posMap := NewMap[Position](&w)
 	mapper := NewMap{{.}}{{$generics}}(&w)
-
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
-
 	w.RemoveEntity(mapper.NewEntityFn(nil))
-
 	filter := NewFilter{{.}}{{$generics}}(&w)
 	query := filter.Query()
-	assert.Equal(t, 0, query.Count())
-	
-	assert.Panics(t, func() { query.Get() })
-	assert.Panics(t, func() { query.Entity() })
-
+	if query.Count() != 0 {
+		t.Errorf("expected 0, got %d", query.Count())
+	}
+	expectPanic(t, func() { query.Get() })
+	expectPanic(t, func() { query.Entity() })
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
-
-	assert.Panics(t, func() { query.Get() })
-	assert.Panics(t, func() { query.Entity() })
-	assert.Panics(t, func() { query.Next() })
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
+	expectPanic(t, func() { query.Get() })
+	expectPanic(t, func() { query.Entity() })
+	expectPanic(t, func() { query.Next() })
 }
 
 func TestQuery{{.}}Relations(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap{{.}}{{$genericsRel}}(&w)
-
 	for range n {
 		_ = mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent1))
 		_ = mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent2))
 		e := mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent3))
 		w.RemoveEntity(e)
 	}
-
 	// normal filter
 	filter := NewFilter{{.}}{{$genericsRel}}(&w)
 	query := filter.Query()
-	assert.Equal(t, 2*n, query.Count())
-
+	if query.Count() != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, query.Count())
+	}
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	// relation filter 1
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
-	assert.Equal(t, n, query.Count())
-
+	if query.Count() != n {
+		t.Errorf("expected %d, got %d", n, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
-		assert.Equal(t, parent2, query.GetRelation(0))
+		if query.GetRelation(0) != parent2 {
+			t.Errorf("expected %v, got %v", parent2, query.GetRelation(0))
+		}
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
 	// relation filter 2
 	filter = NewFilter{{.}}{{$genericsRel}}(&w)
 	query = filter.Query(RelIdx(0, parent2))
-	assert.Equal(t, n, query.Count())
-
+	if query.Count() != n {
+		t.Errorf("expected %d, got %d", n, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
-		assert.Equal(t, parent2, query.GetRelation(0))
+		if query.GetRelation(0) != parent2 {
+			t.Errorf("expected %v, got %v", parent2, query.GetRelation(0))
+		}
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
 }
 
 func TestQuery{{.}}Registered(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	mapper := NewMap{{.}}{{$genericsRel}}(&w)
-
 	for range n {
 		_ = mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent1))
 		_ = mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent2))
 		e := mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent3))
 		w.RemoveEntity(e)
 	}
-
 	// normal filter
 	filter := NewFilter{{.}}{{$genericsRel}}(&w).Register()
 	query := filter.Query()
-	assert.Equal(t, 2*n, query.Count())
-
+	if query.Count() != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, query.Count())
+	}
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	batch := filter.Batch()
-	assert.Equal(t, filter.filter, *batch.filter)
-	assert.Equal(t, filter.relations, batch.relations)
-
+	if *batch.filter != filter.filter {
+		t.Errorf("expected %v, got %v", filter.filter, *batch.filter)
+	}
+	if len(batch.relations) != len(filter.relations) {
+		t.Errorf("expected %v, got %v", filter.relations, batch.relations)
+	} else {
+		for i := range batch.relations {
+			if batch.relations[i] != filter.relations[i] {
+				t.Errorf("expected %v, got %v", filter.relations[i], batch.relations[i])
+			}
+		}
+	}
 	filter.Unregister()
-
 	// relation filter 1
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
-	assert.Equal(t, n, query.Count())
-
+	if query.Count() != n {
+		t.Errorf("expected %d, got %d", n, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
-		assert.Equal(t, parent2, query.GetRelation(0))
+		if query.GetRelation(0) != parent2 {
+			t.Errorf("expected %v, got %v", parent2, query.GetRelation(0))
+		}
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-	
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
 	batch = filter.Batch()
-	assert.Equal(t, filter.filter, *batch.filter)
-	assert.Equal(t, 0, len(batch.relations))
-
+	if *batch.filter != filter.filter {
+		t.Errorf("expected %v, got %v", filter.filter, *batch.filter)
+	}
+	if len(batch.relations) != 0 {
+		t.Errorf("expected 0, got %d", len(batch.relations))
+	}
 	filter.Unregister()
-
 	// relation filter 2
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
-	assert.Equal(t, n, query.Count())
-
+	if query.Count() != n {
+		t.Errorf("expected %d, got %d", n, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		{{blanks .}} = query.Get()
-		assert.Equal(t, parent2, query.GetRelation(0))
+		if query.GetRelation(0) != parent2 {
+			t.Errorf("expected %v, got %v", parent2, query.GetRelation(0))
+		}
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-	
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
 	batch = filter.Batch(RelIdx(0, parent2))
-	assert.Equal(t, filter.filter, *batch.filter)
-	assert.Equal(t, 1, len(batch.relations))
-
-	assert.Panics(t, func(){
+	if *batch.filter != filter.filter {
+		t.Errorf("expected %v, got %v", filter.filter, *batch.filter)
+	}
+	if len(batch.relations) != 1 {
+		t.Errorf("expected 1, got %d", len(batch.relations))
+	}
+	expectPanic(t, func(){
 		filter.Exclusive()
 	})
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		filter.Register()
 	})
-	
 	filter.Unregister()
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		filter.Unregister()
 	})
 }
-
 {{end -}}
 
 func TestQuery0(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
-
 	posMapper := NewMap[Position](&w)
-
 	for range n {
 		_ = w.NewEntity()
 		e := w.NewEntity()
 		posMapper.Add(e, &Position{})
 	}
-
 	// normal filter
 	var filter *Filter0
 	filter = filter.New(&w)
 	query := filter.Query()
-	assert.Equal(t, 2*n, query.Count())
-
+	if query.Count() != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, query.Count())
+	}
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	// filter without
 	filter = NewFilter0(&w).Without(C[Position]())
 	query = filter.Query()
-	assert.Equal(t, n, query.Count())
-
+	if query.Count() != n {
+		t.Errorf("expected %d, got %d", n, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
 	// filter exclusive
 	filter = NewFilter0(&w).Exclusive()
 	query = filter.Query()
-	assert.Equal(t, n, query.Count())
-
+	if query.Count() != n {
+		t.Errorf("expected %d, got %d", n, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
-	
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
 	// filter with
 	filter = NewFilter0(&w).With(C[Position]())
 	query = filter.Query()
-	assert.Equal(t, n, query.Count())
-
+	if query.Count() != n {
+		t.Errorf("expected %d, got %d", n, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
+	if cnt != n {
+		t.Errorf("expected %d, got %d", n, cnt)
+	}
 }
 
 func TestQuery0Empty(t *testing.T) {
 	w := NewWorld(4)
-
 	posMap := NewMap[Position](&w)
-
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
-	
 	filter := NewFilter0(&w)
 	query := filter.Query()
-	assert.Equal(t, 10, query.Count())
+	if query.Count() != 10 {
+		t.Errorf("expected 10, got %d", query.Count())
+	}
 	query.Close()
-
 	filter = NewFilter0(&w).Without(C[Position]())
 	query = filter.Query()
-	assert.Equal(t, 0, query.Count())
-
-	assert.Panics(t, func() { query.Entity() })
-
+	if query.Count() != 0 {
+		t.Errorf("expected 0, got %d", query.Count())
+	}
+	expectPanic(t, func() { query.Entity() })
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, cnt, 0)
-
-	assert.Panics(t, func() { query.Entity() })
-	assert.Panics(t, func() { query.Next() })
+	if cnt != 0 {
+		t.Errorf("expected 0, got %d", cnt)
+	}
+	expectPanic(t, func() { query.Entity() })
+	expectPanic(t, func() { query.Next() })
 }
 
 func TestQuery0Relations(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
-
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
-
 	childMapper := NewMap[ChildOf](&w)
-
 	for range n {
 		e := w.NewEntity()
 		childMapper.Add(e, &ChildOf{}, parent1)
-
 		e = w.NewEntity()
 		childMapper.Add(e, &ChildOf{}, parent2)
-
 		e = w.NewEntity()
 		childMapper.Add(e, &ChildOf{}, parent3)
 	}
-
 	// normal filter
 	filter := NewFilter0(&w)
 	query := filter.Query()
-	assert.Equal(t, 3*n+3, query.Count())
-
+	if query.Count() != 3*n+3 {
+		t.Errorf("expected %d, got %d", 3*n+3, query.Count())
+	}
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n+3)
-	
+	if cnt != 3*n+3 {
+		t.Errorf("expected %d, got %d", 3*n+3, cnt)
+	}
 	// registered filter
 	filter = NewFilter0(&w).Register()
 	query = filter.Query()
-	assert.Equal(t, 3*n+3, query.Count())
-
+	if query.Count() != 3*n+3 {
+		t.Errorf("expected %d, got %d", 3*n+3, query.Count())
+	}
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, cnt, 3*n+3)
-
-	assert.Panics(t, func(){
+	if cnt != 3*n+3 {
+		t.Errorf("expected %d, got %d", 3*n+3, cnt)
+	}
+	expectPanic(t, func(){
 		filter.Exclusive()
 	})
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		filter.Register()
 	})
-	
 	filter.Unregister()
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		filter.Unregister()
 	})
 }
@@ -431,36 +452,44 @@ func TestQuery0Relations(t *testing.T) {
 func TestQuery0Registered(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
-
 	for range n {
 		w.NewEntity()
 		w.NewEntity()
 	}
-
 	filter := NewFilter0(&w).Register()
 	query := filter.Query()
-	assert.Equal(t, 2*n, query.Count())
-
+	if query.Count() != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, query.Count())
+	}
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
-
+	if cnt != 2*n {
+		t.Errorf("expected %d, got %d", 2*n, cnt)
+	}
 	batch := filter.Batch()
-	assert.Equal(t, filter.filter, *batch.filter)
-	assert.Equal(t, filter.relations, batch.relations)
-
-	assert.Panics(t, func(){
+	if *batch.filter != filter.filter {
+		t.Errorf("expected %v, got %v", filter.filter, *batch.filter)
+	}
+	if len(batch.relations) != len(filter.relations) {
+		t.Errorf("expected %v, got %v", filter.relations, batch.relations)
+	} else {
+		for i := range batch.relations {
+			if batch.relations[i] != filter.relations[i] {
+				t.Errorf("expected %v, got %v", filter.relations[i], batch.relations[i])
+			}
+		}
+	}
+	expectPanic(t, func(){
 		filter.Exclusive()
 	})
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		filter.Register()
 	})
-	
 	filter.Unregister()
-	assert.Panics(t, func(){
+	expectPanic(t, func(){
 		filter.Unregister()
 	})
 }

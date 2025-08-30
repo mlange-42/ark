@@ -11,3 +11,13 @@ func expectPanicWithValue(t *testing.T, expected interface{}, f func()) {
 	}()
 	f()
 }
+
+func expectPanic(t *testing.T, f func()) {
+	t.Helper()
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("expected panic, but none occurred")
+		}
+	}()
+	f()
+}
