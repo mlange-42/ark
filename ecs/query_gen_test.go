@@ -12,9 +12,9 @@ func TestQuery1(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
+	posMapper := NewMap[Position](&w)
 	mapper := NewMap1[CompA](&w)
 	compMapper := NewMap[CompA](&w)
-	posMapper := NewMap[Position](&w)
 	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
@@ -23,8 +23,8 @@ func TestQuery1(t *testing.T) {
 		e := mapper.NewEntity(&CompA{})
 		compMapper.Remove(e)
 
-		e = mapper.NewEntity(&CompA{})
-		posMapper.Add(e, &Position{})
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{})
 	}
 
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
@@ -266,9 +266,9 @@ func TestQuery2(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
+	posMapper := NewMap[Position](&w)
 	mapper := NewMap2[CompA, CompB](&w)
 	compMapper := NewMap[CompA](&w)
-	posMapper := NewMap[Position](&w)
 	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
@@ -277,8 +277,8 @@ func TestQuery2(t *testing.T) {
 		e := mapper.NewEntity(&CompA{}, &CompB{})
 		compMapper.Remove(e)
 
-		e = mapper.NewEntity(&CompA{}, &CompB{})
-		posMapper.Add(e, &Position{})
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{})
 	}
 
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
@@ -520,9 +520,9 @@ func TestQuery3(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
+	posMapper := NewMap[Position](&w)
 	mapper := NewMap3[CompA, CompB, CompC](&w)
 	compMapper := NewMap[CompA](&w)
-	posMapper := NewMap[Position](&w)
 	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
@@ -531,8 +531,8 @@ func TestQuery3(t *testing.T) {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
 		compMapper.Remove(e)
 
-		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
-		posMapper.Add(e, &Position{})
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{})
 	}
 
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
@@ -774,9 +774,9 @@ func TestQuery4(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
+	posMapper := NewMap[Position](&w)
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
 	compMapper := NewMap[CompA](&w)
-	posMapper := NewMap[Position](&w)
 	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
@@ -785,8 +785,8 @@ func TestQuery4(t *testing.T) {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
 		compMapper.Remove(e)
 
-		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
-		posMapper.Add(e, &Position{})
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
 	}
 
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
@@ -1028,9 +1028,9 @@ func TestQuery5(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
+	posMapper := NewMap[Position](&w)
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
 	compMapper := NewMap[CompA](&w)
-	posMapper := NewMap[Position](&w)
 	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
@@ -1039,8 +1039,8 @@ func TestQuery5(t *testing.T) {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 		compMapper.Remove(e)
 
-		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
-		posMapper.Add(e, &Position{})
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 	}
 
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
@@ -1282,9 +1282,9 @@ func TestQuery6(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
+	posMapper := NewMap[Position](&w)
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	compMapper := NewMap[CompA](&w)
-	posMapper := NewMap[Position](&w)
 	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
@@ -1293,8 +1293,8 @@ func TestQuery6(t *testing.T) {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 		compMapper.Remove(e)
 
-		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
-		posMapper.Add(e, &Position{})
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 	}
 
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
@@ -1536,9 +1536,9 @@ func TestQuery7(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
+	posMapper := NewMap[Position](&w)
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	compMapper := NewMap[CompA](&w)
-	posMapper := NewMap[Position](&w)
 	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
@@ -1547,8 +1547,8 @@ func TestQuery7(t *testing.T) {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 		compMapper.Remove(e)
 
-		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
-		posMapper.Add(e, &Position{})
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 	}
 
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
@@ -1790,9 +1790,9 @@ func TestQuery8(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
+	posMapper := NewMap[Position](&w)
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	compMapper := NewMap[CompA](&w)
-	posMapper := NewMap[Position](&w)
 	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
@@ -1801,8 +1801,8 @@ func TestQuery8(t *testing.T) {
 		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 		compMapper.Remove(e)
 
-		e = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
-		posMapper.Add(e, &Position{})
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 	}
 
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))

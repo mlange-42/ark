@@ -25,9 +25,9 @@ func TestQuery{{.}}(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
+	posMapper := NewMap[Position](&w)
 	mapper := NewMap{{.}}{{$generics}}(&w)
 	compMapper := NewMap[CompA](&w)
-	posMapper := NewMap[Position](&w)
 	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
@@ -36,8 +36,8 @@ func TestQuery{{.}}(t *testing.T) {
 		e := mapper.NewEntity({{$mapArgs}})
 		compMapper.Remove(e)
 
-		e = mapper.NewEntity({{$mapArgs}})
-		posMapper.Add(e, &Position{})
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, {{$mapArgs}})
 	}
 
 	w.RemoveEntity(posVelMapper.NewEntityFn(nil))
