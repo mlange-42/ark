@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 type Position struct {
@@ -93,9 +91,9 @@ type CompL struct {
 
 func TestID(t *testing.T) {
 	id := ID{12}
-	assert.EqualValues(t, 12, id.Index())
+	expectEqual(t, id.Index(), uint8(12))
 	rid := ResID{13}
-	assert.EqualValues(t, 13, rid.Index())
+	expectEqual(t, rid.Index(), uint8(13))
 }
 
 func TestTypeSizes(t *testing.T) {

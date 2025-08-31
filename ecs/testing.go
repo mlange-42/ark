@@ -22,6 +22,27 @@ func expectPanic(t *testing.T, f func()) {
 	f()
 }
 
+func expectEqual(t *testing.T, got, want interface{}) {
+	t.Helper()
+	if got != want {
+		t.Errorf("expected %v, got %v", want, got)
+	}
+}
+
+func expectTrue(t *testing.T, cond bool) {
+	t.Helper()
+	if !cond {
+		t.Errorf("expected condition to be true, but was false")
+	}
+}
+
+func expectFalse(t *testing.T, cond bool) {
+	t.Helper()
+	if cond {
+		t.Errorf("expected condition to be false, but was true")
+	}
+}
+
 func equalEntities(a, b []Entity) bool {
 	if len(a) != len(b) {
 		return false

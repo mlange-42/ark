@@ -4,48 +4,36 @@ import (
 	"reflect"
 	"testing"
 	"unsafe"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCopyPtr(t *testing.T) {
-	assert := assert.New(t)
+	type itemType uint8
 
-	type itemType uint8 // can be any type, result stays the same
-
-	// setup
 	var item itemType = 3
 	typeOfItem := reflect.TypeOf(item)
 	itemSize := sizeOf(typeOfItem)
 	targetItemIndex := 6
 	totalItems := 10
-	data := reflect.New(reflect.ArrayOf(int(totalItems), typeOfItem)).Elem()
-	dataPointer := data.Addr().UnsafePointer() // points to the start of data
+	data := reflect.New(reflect.ArrayOf(totalItems, typeOfItem)).Elem()
+	dataPointer := data.Addr().UnsafePointer()
 
 	getItem := func(index int) *itemType {
 		return (*itemType)(unsafe.Add(dataPointer, uintptr(index)*itemSize))
 	}
 
-	// check that the expected item is not there yet
 	for i := range totalItems {
-		assert.Equal(itemType(0), *getItem(i))
+		expectEqual(t, *getItem(i), itemType(0))
 	}
 
-	// copy the item to the right place
-	destination := unsafe.Add(
-		dataPointer,
-		uintptr(targetItemIndex)*itemSize,
-	)
-
+	destination := unsafe.Add(dataPointer, uintptr(targetItemIndex)*itemSize)
 	source := unsafe.Pointer(&item)
 	copyPtr(source, destination, itemSize)
 
-	// check that only the expected item is now set
 	for i := range totalItems {
 		if i == targetItemIndex {
-			assert.Equal(item, *getItem(i))
+			expectEqual(t, *getItem(i), item)
 		} else {
-			assert.Equal(itemType(0), *getItem(i))
+			expectEqual(t, *getItem(i), itemType(0))
 		}
 	}
 }
@@ -53,43 +41,29 @@ func TestCopyPtr(t *testing.T) {
 func TestPagedSlice(t *testing.T) {
 	a := pagedSlice[int32]{}
 
-	var i int32
-	for i = range 66 {
+	for i := int32(0); i < 66; i++ {
 		a.Add(i)
-		assert.Equal(t, i, *a.Get(i))
-		assert.Equal(t, i+1, a.Len())
+		expectEqual(t, *a.Get(i), i)
+		expectEqual(t, a.Len(), i+1)
 	}
 
 	a.Set(3, 100)
-	assert.Equal(t, int32(100), *a.Get(3))
+	expectEqual(t, *a.Get(3), int32(100))
 }
 
 func TestIsTrivial(t *testing.T) {
-	assert.True(t, isTrivial(reflect.TypeFor[[5]int]()))
-	assert.True(t, isTrivial(reflect.TypeFor[struct{}]()))
-	assert.True(t, isTrivial(reflect.TypeFor[struct {
-		A int
-	}]()))
-	assert.True(t, isTrivial(reflect.TypeFor[struct {
-		A struct{ A int }
-	}]()))
+	expectTrue(t, isTrivial(reflect.TypeFor[[5]int]()))
+	expectTrue(t, isTrivial(reflect.TypeFor[struct{}]()))
+	expectTrue(t, isTrivial(reflect.TypeFor[struct{ A int }]()))
+	expectTrue(t, isTrivial(reflect.TypeFor[struct{ A struct{ A int } }]()))
 
-	assert.False(t, isTrivial(nil))
-	assert.False(t, isTrivial(reflect.TypeFor[[]int]()))
-	assert.False(t, isTrivial(reflect.TypeFor[[5]string]()))
-
-	assert.False(t, isTrivial(reflect.TypeFor[struct {
-		S []int
-	}]()))
-	assert.False(t, isTrivial(reflect.TypeFor[struct {
-		S []string
-	}]()))
-	assert.False(t, isTrivial(reflect.TypeFor[struct {
-		S [5]string
-	}]()))
-	assert.False(t, isTrivial(reflect.TypeFor[struct {
-		A struct{ S string }
-	}]()))
+	expectFalse(t, isTrivial(nil))
+	expectFalse(t, isTrivial(reflect.TypeFor[[]int]()))
+	expectFalse(t, isTrivial(reflect.TypeFor[[5]string]()))
+	expectFalse(t, isTrivial(reflect.TypeFor[struct{ S []int }]()))
+	expectFalse(t, isTrivial(reflect.TypeFor[struct{ S []string }]()))
+	expectFalse(t, isTrivial(reflect.TypeFor[struct{ S [5]string }]()))
+	expectFalse(t, isTrivial(reflect.TypeFor[struct{ A struct{ S string } }]()))
 }
 
 func BenchmarkSizeOf(b *testing.B) {
