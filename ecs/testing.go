@@ -21,3 +21,27 @@ func expectPanic(t *testing.T, f func()) {
 	}()
 	f()
 }
+
+func equalEntities(a, b []Entity) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func equalRelations(a, b []RelationID) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}

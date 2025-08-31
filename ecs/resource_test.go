@@ -4,24 +4,27 @@ import (
 	"testing"
 
 	"github.com/mlange-42/ark/ecs"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestResource(t *testing.T) {
 	w := ecs.NewWorld(1024)
 	get := ecs.NewResource[Grid](&w)
-
-	assert.False(t, get.Has())
+	if get.Has() {
+		t.Errorf("expected resource to not exist")
+	}
 	gridResource := NewGrid(100, 200)
 	get.Add(&gridResource)
-
-	assert.True(t, get.Has())
+	if !get.Has() {
+		t.Errorf("expected resource to exist")
+	}
 	grid := get.Get()
-
-	assert.Equal(t, Grid{100, 200}, *grid)
-
+	if *grid != (Grid{100, 200}) {
+		t.Errorf("expected grid to be %v, got %v", Grid{100, 200}, *grid)
+	}
 	get.Remove()
-	assert.False(t, get.Has())
+	if get.Has() {
+		t.Errorf("expected resource to not exist")
+	}
 }
 
 type ResInterface interface {
@@ -40,14 +43,15 @@ func (r *ResImpl) MyMethod() string {
 
 func TestResourceInterface(t *testing.T) {
 	w := ecs.NewWorld()
-
 	res := NewRes()
 	ecs.AddResource(&w, &res)
-
 	resOut := *ecs.GetResource[ResInterface](&w)
-
-	assert.NotNil(t, resOut)
-	assert.Equal(t, "test", resOut.MyMethod())
+	if resOut == nil {
+		t.Errorf("expected resource to not be nil")
+	}
+	if resOut.MyMethod() != "test" {
+		t.Errorf("expected MyMethod to return 'test', got '%s'", resOut.MyMethod())
+	}
 }
 
 func ExampleResource() {
