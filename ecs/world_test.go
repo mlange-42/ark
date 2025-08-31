@@ -22,7 +22,7 @@ func TestWorldNewEntity(t *testing.T) {
 	expectFalse(t, w.Alive(Entity{}))
 	for i := range 10 {
 		e := w.NewEntity()
-		expectEqual(t, e.id, i+2)
+		expectEqual(t, e.id, entityID(i+2))
 		expectEqual(t, e.gen, 0)
 		expectTrue(t, w.Alive(e))
 	}
@@ -110,7 +110,7 @@ func TestWorldNewEntities(t *testing.T) {
 
 	cnt := 0
 	w.NewEntities(n, func(entity Entity) {
-		expectEqual(t, entity.ID(), cnt+2)
+		expectEqual(t, entity.ID(), uint32(cnt+2))
 		cnt++
 	})
 	expectEqual(t, cnt, n)
@@ -272,15 +272,23 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 	}
 
 	archetype := &w.storage.archetypes[1]
-	expectEqual(t, archetype.tables.tables, []tableID{3, 2})
-	expectEqual(t, archetype.freeTables, []tableID{1})
+	if !equalSlices(archetype.tables.tables, []tableID{3, 2}) {
+		t.Errorf("expected %v, got %v", []tableID{3, 2}, archetype.tables.tables)
+	}
+	if !equalSlices(archetype.freeTables, []tableID{1}) {
+		t.Errorf("expected %v, got %v", []tableID{1}, archetype.freeTables)
+	}
 
 	for _, e := range entities {
 		childMap.SetRelation(e, parent3)
 		expectEqual(t, childMap.GetRelation(e), parent3)
 	}
-	expectEqual(t, archetype.tables.tables, []tableID{3, 2, 1})
-	expectEqual(t, archetype.freeTables, []tableID{})
+	if !equalSlices(archetype.tables.tables, []tableID{3, 2, 1}) {
+		t.Errorf("expected %v, got %v", []tableID{3, 2, 1}, archetype.tables.tables)
+	}
+	if !equalSlices(archetype.freeTables, []tableID{}) {
+		t.Errorf("expected %v, got %v", []tableID{}, archetype.freeTables)
+	}
 
 	filter := NewFilter2[Position, ChildOf](&w)
 	query := filter.Query(RelIdx(1, parent3))
@@ -561,6 +569,10 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 	for q.Next() {
 		sl := q.Get()
 		e := q.Entity()
-		expectEqual(t, sl.Slice, []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4})
+
+		want := []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}
+		if !equalSlices(sl.Slice, want) {
+			t.Errorf("expected %v, got %v", want, sl.Slice)
+		}
 	}
 }

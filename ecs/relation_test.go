@@ -26,7 +26,7 @@ func TestToRelations(t *testing.T) {
 	inRelations := relations{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
 	var out []RelationID
 	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
-	if !equalRelations(out, []RelationID{
+	if !equalSlices(out, []RelationID{
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}) {
@@ -40,7 +40,7 @@ func TestToRelations(t *testing.T) {
 	})
 	inRelations = relations{RelID(childID, Entity{2, 0}), RelID(child2ID, Entity{3, 0})}
 	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
-	if !equalRelations(out, []RelationID{
+	if !equalSlices(out, []RelationID{
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}) {
@@ -51,7 +51,7 @@ func TestToRelations(t *testing.T) {
 	}
 	inRelations = relations{Rel[ChildOf](Entity{2, 0}), Rel[ChildOf2](Entity{3, 0})}
 	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
-	if !equalRelations(out, []RelationID{
+	if !equalSlices(out, []RelationID{
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}) {
@@ -62,7 +62,7 @@ func TestToRelations(t *testing.T) {
 	}
 	inRelations = relations{Rel[ChildOf](Entity{2, 0})}
 	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
-	if !equalRelations(out, []RelationID{
+	if !equalSlices(out, []RelationID{
 		{component: childID, target: Entity{2, 0}},
 	}) {
 		t.Errorf("expected %v, got %v", []RelationID{
@@ -71,7 +71,7 @@ func TestToRelations(t *testing.T) {
 	}
 	inRelations = relations{Rel[ChildOf2](Entity{3, 0})}
 	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, uint8(len(out)))
-	if !equalRelations(out, []RelationID{
+	if !equalSlices(out, []RelationID{
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}) {

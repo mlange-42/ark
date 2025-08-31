@@ -22,7 +22,7 @@ func expectPanic(t *testing.T, f func()) {
 	f()
 }
 
-func expectEqual(t *testing.T, got, want interface{}) {
+func expectEqual[T comparable](t *testing.T, got, want T) {
 	t.Helper()
 	if got != want {
 		t.Errorf("expected %v, got %v", want, got)
@@ -43,19 +43,7 @@ func expectFalse(t *testing.T, cond bool) {
 	}
 }
 
-func equalEntities(a, b []Entity) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-	return true
-}
-
-func equalRelations(a, b []RelationID) bool {
+func equalSlices[T comparable](a, b []T) bool {
 	if len(a) != len(b) {
 		return false
 	}
