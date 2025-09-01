@@ -10,6 +10,10 @@
 
 - Adds a user guide chapter on Ark's archetype-based architecture (#262, #270)
 
+### Other
+
+- Gets rid of the `stretchr/testify` dependency (#275)
+
 ## [[v0.4.6]](https://github.com/mlange-42/ark/compare/v0.4.5...v0.4.6)
 
 ### Bugfixes

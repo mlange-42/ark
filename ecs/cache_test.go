@@ -2,8 +2,6 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestFilterCache(t *testing.T) {
@@ -19,19 +17,19 @@ func TestFilterCache(t *testing.T) {
 	filter2 := NewFilter2[Position, Velocity](&world).Register()
 	filter3 := NewFilter3[Position, Velocity, Heading](&world).Register()
 
-	assert.Equal(t, 0, int(filter2.cache))
-	assert.Equal(t, 1, int(filter3.cache))
+	expectEqual(t, 0, int(filter2.cache))
+	expectEqual(t, 1, int(filter3.cache))
 
-	assert.Equal(t, 2, len(world.storage.getTableIDs(&filter2.filter, filter2.relations)))
-	assert.Equal(t, 1, len(world.storage.getTableIDs(&filter3.filter, filter3.relations)))
+	expectEqual(t, 2, len(world.storage.getTableIDs(&filter2.filter, filter2.relations)))
+	expectEqual(t, 1, len(world.storage.getTableIDs(&filter3.filter, filter3.relations)))
 
-	assert.PanicsWithValue(t, "filter is already registered, can't register", func() { filter2.Register() })
+	expectPanicsWithValue(t, "filter is already registered, can't register", func() { filter2.Register() })
 
 	filter2.Unregister()
 	filter3.Unregister()
 
-	assert.PanicsWithValue(t, "filter is not registered, can't unregister", func() { filter2.Unregister() })
-	assert.PanicsWithValue(t, "no filter for id found to unregister", func() { world.storage.unregisterFilter(100) })
+	expectPanicsWithValue(t, "filter is not registered, can't unregister", func() { filter2.Unregister() })
+	expectPanicsWithValue(t, "no filter for id found to unregister", func() { world.storage.unregisterFilter(100) })
 }
 
 func TestFilterCacheRelation(t *testing.T) {
@@ -57,34 +55,34 @@ func TestFilterCacheRelation(t *testing.T) {
 
 	posMap.NewBatch(10, &Position{})
 
-	assert.Equal(t, 0, len(c1.tables))
-	assert.Equal(t, 0, len(c2.tables))
-	assert.Equal(t, 0, len(c3.tables))
+	expectEqual(t, 0, len(c1.tables))
+	expectEqual(t, 0, len(c2.tables))
+	expectEqual(t, 0, len(c3.tables))
 
 	e1 := childMap.NewEntity(&ChildOf{}, RelIdx(0, target1))
-	assert.Equal(t, 1, len(c1.tables))
-	assert.Equal(t, 1, len(c2.tables))
+	expectEqual(t, 1, len(c1.tables))
+	expectEqual(t, 1, len(c2.tables))
 
 	childMap.NewEntity(&ChildOf{}, RelIdx(0, target3))
-	assert.Equal(t, 2, len(c1.tables))
-	assert.Equal(t, 1, len(c2.tables))
+	expectEqual(t, 2, len(c1.tables))
+	expectEqual(t, 1, len(c2.tables))
 
 	child2Map.NewEntity(&ChildOf2{}, RelIdx(0, target2))
 
 	world.RemoveEntity(e1)
 	world.RemoveEntity(target1)
-	assert.Equal(t, 1, len(c1.tables))
-	assert.Equal(t, 0, len(c2.tables))
+	expectEqual(t, 1, len(c1.tables))
+	expectEqual(t, 0, len(c2.tables))
 
 	childMap.NewEntity(&ChildOf{}, RelIdx(0, target2))
 	posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, target2))
 	posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, target3))
 	posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, target4))
 
-	assert.Equal(t, 5, len(c1.tables))
-	assert.Equal(t, 2, len(c3.tables))
+	expectEqual(t, 5, len(c1.tables))
+	expectEqual(t, 2, len(c3.tables))
 
 	world.RemoveEntities(NewFilter0(&world).Batch(), nil)
-	assert.Equal(t, 0, len(c1.tables))
-	assert.Equal(t, 0, len(c2.tables))
+	expectEqual(t, 0, len(c1.tables))
+	expectEqual(t, 0, len(c2.tables))
 }

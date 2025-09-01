@@ -1,27 +1,24 @@
-package ecs_test
+package ecs
 
 import (
 	"testing"
-
-	"github.com/mlange-42/ark/ecs"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestResource(t *testing.T) {
-	w := ecs.NewWorld(1024)
-	get := ecs.NewResource[Grid](&w)
+	w := NewWorld(1024)
+	get := NewResource[Grid](&w)
 
-	assert.False(t, get.Has())
+	expectFalse(t, get.Has())
 	gridResource := NewGrid(100, 200)
 	get.Add(&gridResource)
 
-	assert.True(t, get.Has())
+	expectTrue(t, get.Has())
 	grid := get.Get()
 
-	assert.Equal(t, Grid{100, 200}, *grid)
+	expectEqual(t, Grid{100, 200}, *grid)
 
 	get.Remove()
-	assert.False(t, get.Has())
+	expectFalse(t, get.Has())
 }
 
 type ResInterface interface {
@@ -39,33 +36,13 @@ func (r *ResImpl) MyMethod() string {
 }
 
 func TestResourceInterface(t *testing.T) {
-	w := ecs.NewWorld()
+	w := NewWorld()
 
 	res := NewRes()
-	ecs.AddResource(&w, &res)
+	AddResource(&w, &res)
 
-	resOut := *ecs.GetResource[ResInterface](&w)
+	resOut := *GetResource[ResInterface](&w)
 
-	assert.NotNil(t, resOut)
-	assert.Equal(t, "test", resOut.MyMethod())
-}
-
-func ExampleResource() {
-	// Create a world.
-	world := ecs.NewWorld()
-
-	// Create a resource.
-	gridResource := NewGrid(100, 100)
-	// Add it to the world.
-	ecs.AddResource(&world, &gridResource)
-
-	// Resource access in systems.
-	// Create and store a resource accessor.
-	gridAccess := ecs.NewResource[Grid](&world)
-
-	// Use the resource.
-	grid := gridAccess.Get()
-	entity := grid.Get(13, 42)
-	_ = entity
-	// Output:
+	expectNotNil(t, resOut)
+	expectEqual(t, "test", resOut.MyMethod())
 }

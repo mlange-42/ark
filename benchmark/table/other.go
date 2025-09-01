@@ -5,7 +5,6 @@ import (
 
 	"github.com/mlange-42/ark/benchmark"
 	"github.com/mlange-42/ark/ecs"
-	"github.com/stretchr/testify/assert"
 )
 
 func benchesOther() []benchmark.Benchmark {
@@ -21,7 +20,10 @@ func newWorld(b *testing.B) {
 	for b.Loop() {
 		w = ecs.NewWorld()
 	}
-	assert.False(b, w.IsLocked())
+
+	if w.IsLocked() {
+		b.Errorf("World must be locked")
+	}
 }
 
 func resetWorld(b *testing.B) {
@@ -29,7 +31,10 @@ func resetWorld(b *testing.B) {
 	for b.Loop() {
 		w.Reset()
 	}
-	assert.False(b, w.IsLocked())
+
+	if w.IsLocked() {
+		b.Errorf("World must be locked")
+	}
 }
 
 func componentID(b *testing.B) {
@@ -41,5 +46,8 @@ func componentID(b *testing.B) {
 	for b.Loop() {
 		id = ecs.ComponentID[comp1](&w)
 	}
-	assert.Equal(b, origID, id)
+
+	if id != origID {
+		b.Errorf("Expected %v, got %v", origID, id)
+	}
 }

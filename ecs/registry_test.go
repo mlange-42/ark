@@ -3,8 +3,6 @@ package ecs
 import (
 	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestComponentRegistry(t *testing.T) {
@@ -14,24 +12,24 @@ func TestComponentRegistry(t *testing.T) {
 	rotType := reflect.TypeOf((*Velocity)(nil)).Elem()
 
 	reg.registerComponent(posType, maskTotalBits)
-	assert.Equal(t, []uint8{uint8(0)}, reg.IDs)
+	expectSlicesEqual(t, []uint8{uint8(0)}, reg.IDs)
 
 	reg.registerComponent(rotType, maskTotalBits)
 	reg.unregisterLastComponent()
-	assert.Equal(t, []uint8{uint8(0)}, reg.IDs)
+	expectSlicesEqual(t, []uint8{uint8(0)}, reg.IDs)
 
 	id0, _ := reg.ComponentID(posType)
 	id1, _ := reg.ComponentID(rotType)
-	assert.Equal(t, uint8(0), id0)
-	assert.Equal(t, uint8(1), id1)
+	expectEqual(t, uint8(0), id0)
+	expectEqual(t, uint8(1), id1)
 
-	assert.Equal(t, []uint8{uint8(0), uint8(1)}, reg.IDs)
+	expectSlicesEqual(t, []uint8{uint8(0), uint8(1)}, reg.IDs)
 
 	t1, _ := reg.ComponentType(uint8(0))
 	t2, _ := reg.ComponentType(uint8(1))
 
-	assert.Equal(t, posType, t1)
-	assert.Equal(t, rotType, t2)
+	expectEqual(t, posType, t1)
+	expectEqual(t, rotType, t2)
 }
 
 func TestComponentRegistryOverflow(t *testing.T) {
@@ -39,7 +37,7 @@ func TestComponentRegistryOverflow(t *testing.T) {
 
 	reg.registerComponent(reflect.TypeOf((*Position)(nil)).Elem(), 1)
 
-	assert.PanicsWithValue(t, "exceeded the maximum of 1 component types or resource types", func() {
+	expectPanicsWithValue(t, "exceeded the maximum of 1 component types or resource types", func() {
 		reg.registerComponent(reflect.TypeOf((*Velocity)(nil)).Elem(), 1)
 	})
 }
@@ -55,8 +53,8 @@ func TestAddArchetype(t *testing.T) {
 
 	reg.addArchetype(id0)
 
-	assert.Equal(t, maskTotalBits, len(reg.Archetypes))
-	assert.Equal(t, []int{1, 0}, reg.Archetypes[:2])
+	expectEqual(t, maskTotalBits, len(reg.Archetypes))
+	expectSlicesEqual(t, []int{1, 0}, reg.Archetypes[:2])
 }
 
 func TestRareComponent(t *testing.T) {
@@ -70,8 +68,8 @@ func TestRareComponent(t *testing.T) {
 
 	reg.addArchetype(id0)
 
-	assert.Equal(t, ID{1}, reg.rareComponent([]ID{{0}, {1}}))
-	assert.Equal(t, ID{1}, reg.rareComponent([]ID{{1}, {0}}))
+	expectEqual(t, ID{1}, reg.rareComponent([]ID{{0}, {1}}))
+	expectEqual(t, ID{1}, reg.rareComponent([]ID{{1}, {0}}))
 }
 
 func BenchmarkRegistryGet(b *testing.B) {

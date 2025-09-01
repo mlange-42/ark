@@ -2,8 +2,6 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestIDMap(t *testing.T) {
@@ -23,33 +21,33 @@ func TestIDMap(t *testing.T) {
 	m.Set(big2, &e200)
 
 	e, ok := m.Get(0)
-	assert.True(t, ok)
-	assert.Equal(t, e0, *e)
+	expectTrue(t, ok)
+	expectEqual(t, e0, *e)
 
 	e, ok = m.Get(1)
-	assert.True(t, ok)
-	assert.Equal(t, e1, *e)
+	expectTrue(t, ok)
+	expectEqual(t, e1, *e)
 
 	e, ok = m.Get(big1)
-	assert.True(t, ok)
-	assert.Equal(t, e121, *e)
+	expectTrue(t, ok)
+	expectEqual(t, e121, *e)
 
 	e, ok = m.Get(big2)
-	assert.True(t, ok)
-	assert.Equal(t, e200, *e)
+	expectTrue(t, ok)
+	expectEqual(t, e200, *e)
 
 	e, ok = m.Get(15)
-	assert.False(t, ok)
-	assert.Nil(t, e)
+	expectFalse(t, ok)
+	expectNil(t, e)
 
 	m.Remove(0)
 	m.Remove(1)
 
 	e, ok = m.Get(0)
-	assert.False(t, ok)
-	assert.Nil(t, e)
+	expectFalse(t, ok)
+	expectNil(t, e)
 
-	assert.Nil(t, m.chunks[0])
+	expectNil(t, m.chunks[0])
 }
 
 func TestIDMapPointers(t *testing.T) {
@@ -69,33 +67,33 @@ func TestIDMapPointers(t *testing.T) {
 	m.Set(big2, e200)
 
 	e, ok := m.GetPointer(0)
-	assert.True(t, ok)
-	assert.Equal(t, e0, *e)
+	expectTrue(t, ok)
+	expectEqual(t, e0, *e)
 
 	e, ok = m.GetPointer(1)
-	assert.True(t, ok)
-	assert.Equal(t, e1, *e)
+	expectTrue(t, ok)
+	expectEqual(t, e1, *e)
 
 	e, ok = m.GetPointer(big1)
-	assert.True(t, ok)
-	assert.Equal(t, e121, *e)
+	expectTrue(t, ok)
+	expectEqual(t, e121, *e)
 
 	e, ok = m.GetPointer(big2)
-	assert.True(t, ok)
-	assert.Equal(t, e200, *e)
+	expectTrue(t, ok)
+	expectEqual(t, e200, *e)
 
 	e, ok = m.GetPointer(15)
-	assert.False(t, ok)
-	assert.Nil(t, e)
+	expectFalse(t, ok)
+	expectNil(t, e)
 
 	m.Remove(0)
 	m.Remove(1)
 
 	e, ok = m.GetPointer(0)
-	assert.False(t, ok)
-	assert.Nil(t, e)
+	expectFalse(t, ok)
+	expectNil(t, e)
 
-	assert.Nil(t, m.chunks[0])
+	expectNil(t, m.chunks[0])
 }
 
 func BenchmarkIdMapping_IDMap(b *testing.B) {

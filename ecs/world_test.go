@@ -5,34 +5,32 @@ import (
 	"math/rand/v2"
 	"runtime"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewWorld(t *testing.T) {
 	w := NewWorld(1024)
 
-	assert.Equal(t, 2, len(w.storage.entities))
-	assert.Equal(t, 1, len(w.storage.tables))
-	assert.Equal(t, 1, len(w.storage.archetypes))
-	assert.Equal(t, 1, len(w.storage.archetypes[0].tables.tables))
+	expectEqual(t, 2, len(w.storage.entities))
+	expectEqual(t, 1, len(w.storage.tables))
+	expectEqual(t, 1, len(w.storage.archetypes))
+	expectEqual(t, 1, len(w.storage.archetypes[0].tables.tables))
 }
 
 func TestWorldNewEntity(t *testing.T) {
 	w := NewWorld(8)
 
-	assert.False(t, w.Alive(Entity{}))
+	expectFalse(t, w.Alive(Entity{}))
 	for i := range 10 {
 		e := w.NewEntity()
-		assert.EqualValues(t, e.id, i+2)
-		assert.EqualValues(t, e.gen, 0)
-		assert.True(t, w.Alive(e))
+		expectEqual(t, i+2, int(e.id))
+		expectEqual(t, 0, e.gen)
+		expectTrue(t, w.Alive(e))
 	}
-	assert.Equal(t, 12, len(w.storage.entities))
+	expectEqual(t, 12, len(w.storage.entities))
 
 	idx := w.storage.entities[4]
-	assert.EqualValues(t, 0, idx.table)
-	assert.EqualValues(t, 2, idx.row)
+	expectEqual(t, 0, idx.table)
+	expectEqual(t, 2, idx.row)
 }
 
 func TestWorldExchange(t *testing.T) {
@@ -49,21 +47,21 @@ func TestWorldExchange(t *testing.T) {
 	w.exchange(e2, []ID{posID, velID}, nil, nil)
 	w.exchange(e3, []ID{posID, velID}, nil, nil)
 
-	assert.True(t, w.storage.has(e1, posID))
-	assert.False(t, w.storage.has(e1, velID))
+	expectTrue(t, w.storage.has(e1, posID))
+	expectFalse(t, w.storage.has(e1, velID))
 
-	assert.True(t, w.storage.has(e2, posID))
-	assert.True(t, w.storage.has(e2, velID))
+	expectTrue(t, w.storage.has(e2, posID))
+	expectTrue(t, w.storage.has(e2, velID))
 
 	pos := (*Position)(w.storage.get(e1, posID))
 	pos.X = 100
 
 	pos = (*Position)(w.storage.get(e1, posID))
-	assert.Equal(t, pos.X, 100.0)
+	expectEqual(t, pos.X, 100.0)
 
 	w.exchange(e2, nil, []ID{posID}, nil)
-	assert.False(t, w.storage.has(e2, posID))
-	assert.True(t, w.storage.has(e2, velID))
+	expectFalse(t, w.storage.has(e2, posID))
+	expectTrue(t, w.storage.has(e2, velID))
 }
 
 func TestWorldRemoveEntity(t *testing.T) {
@@ -74,7 +72,7 @@ func TestWorldRemoveEntity(t *testing.T) {
 	entities := make([]Entity, 0, 100)
 	for range 100 {
 		e := mapper.NewEntity(&Position{}, &Velocity{})
-		assert.True(t, w.Alive(e))
+		expectTrue(t, w.Alive(e))
 		entities = append(entities, e)
 	}
 
@@ -82,14 +80,14 @@ func TestWorldRemoveEntity(t *testing.T) {
 	query := filter.Query()
 	cnt := 0
 	for query.Next() {
-		assert.True(t, w.Alive(query.Entity()))
+		expectTrue(t, w.Alive(query.Entity()))
 		cnt++
 	}
-	assert.Equal(t, 100, cnt)
+	expectEqual(t, 100, cnt)
 
 	for _, e := range entities {
 		w.RemoveEntity(e)
-		assert.False(t, w.Alive(e))
+		expectFalse(t, w.Alive(e))
 	}
 
 	query = filter.Query()
@@ -97,13 +95,13 @@ func TestWorldRemoveEntity(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	expectEqual(t, 0, cnt)
 
 	e := w.NewEntity()
 	w.RemoveEntity(e)
-	assert.False(t, w.Alive(e))
+	expectFalse(t, w.Alive(e))
 
-	assert.PanicsWithValue(t, "can't remove a dead entity", func() { w.RemoveEntity(e) })
+	expectPanicsWithValue(t, "can't remove a dead entity", func() { w.RemoveEntity(e) })
 }
 
 func TestWorldNewEntities(t *testing.T) {
@@ -112,10 +110,10 @@ func TestWorldNewEntities(t *testing.T) {
 
 	cnt := 0
 	w.NewEntities(n, func(entity Entity) {
-		assert.EqualValues(t, cnt+2, entity.ID())
+		expectEqual(t, cnt+2, int(entity.ID()))
 		cnt++
 	})
-	assert.Equal(t, n, cnt)
+	expectEqual(t, n, cnt)
 
 	w.NewEntities(n, nil)
 
@@ -125,7 +123,7 @@ func TestWorldNewEntities(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	expectEqual(t, 2*n, cnt)
 }
 
 func TestWorldRemoveEntities(t *testing.T) {
@@ -146,21 +144,21 @@ func TestWorldRemoveEntities(t *testing.T) {
 	posVelMap.NewBatchFn(n, func(entity Entity, _ *Position, _ *Velocity) {
 		cnt++
 	})
-	assert.Equal(t, n*3, cnt)
+	expectEqual(t, n*3, cnt)
 
 	filter := NewFilter2[Position, Velocity](&w)
 	cnt = 0
 	w.RemoveEntities(filter.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, n, cnt)
+	expectEqual(t, n, cnt)
 
 	filter2 := NewFilter1[Position](&w).Register()
 	cnt = 0
 	w.RemoveEntities(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, n, cnt)
+	expectEqual(t, n, cnt)
 
 	filter3 := NewFilter0(&w)
 	query := filter3.Query()
@@ -168,7 +166,7 @@ func TestWorldRemoveEntities(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
+	expectEqual(t, n, cnt)
 }
 
 func TestWorldRelations(t *testing.T) {
@@ -182,8 +180,8 @@ func TestWorldRelations(t *testing.T) {
 	parent3 := w.NewEntity()
 
 	mapper1 := NewMap3[Position, ChildOf, ChildOf2](&w)
-	assert.True(t, w.storage.registry.IsRelation[ComponentID[ChildOf](&w).id])
-	assert.True(t, w.storage.registry.IsRelation[ComponentID[ChildOf2](&w).id])
+	expectTrue(t, w.storage.registry.IsRelation[ComponentID[ChildOf](&w).id])
+	expectTrue(t, w.storage.registry.IsRelation[ComponentID[ChildOf2](&w).id])
 
 	for range 10 {
 		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel[ChildOf](parent1), RelIdx(2, parent1))
@@ -196,28 +194,28 @@ func TestWorldRelations(t *testing.T) {
 	filter := NewFilter3[Position, ChildOf, ChildOf2](&w)
 
 	query := filter.Query()
-	assert.Equal(t, 50, query.Count())
+	expectEqual(t, 50, query.Count())
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 50, cnt)
+	expectEqual(t, 50, cnt)
 
 	query = filter.Query(RelIdx(1, parent1), RelIdx(2, parent2))
-	assert.Equal(t, 10, query.Count())
+	expectEqual(t, 10, query.Count())
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 10, cnt)
+	expectEqual(t, 10, cnt)
 
 	query = filter.Query(RelIdx(1, parent1))
-	assert.Equal(t, 30, query.Count())
+	expectEqual(t, 30, query.Count())
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 30, cnt)
+	expectEqual(t, 30, cnt)
 
 	mapper2 := NewMap2[Position, ChildOf](&w)
 	child2Map := NewMap1[ChildOf2](&w)
@@ -226,14 +224,14 @@ func TestWorldRelations(t *testing.T) {
 	child2Map.Add(e, &ChildOf2{}, RelIdx(0, parent2))
 
 	child2Map.SetRelations(e, RelIdx(0, parent1))
-	assert.Equal(t, parent1, child2Map.GetRelation(e, 0))
+	expectEqual(t, parent1, child2Map.GetRelation(e, 0))
 
 	child2Map.SetRelations(e, RelIdx(0, parent1))
-	assert.Equal(t, parent1, child2Map.GetRelation(e, 0))
+	expectEqual(t, parent1, child2Map.GetRelation(e, 0))
 
 	child2Map.Remove(e)
 
-	assert.PanicsWithValue(t, "entity has no component of type ChildOf2 to set relation target for", func() {
+	expectPanicsWithValue(t, "entity has no component of type ChildOf2 to set relation target for", func() {
 		child2Map.SetRelations(e, RelIdx(0, parent2))
 	})
 }
@@ -252,11 +250,11 @@ func TestWorldSetRelations(t *testing.T) {
 
 	e := map1.NewEntity(&ChildOf{}, parent1)
 	map2.Add(e, &ChildOf2{}, parent1)
-	assert.Equal(t, parent1, map1.GetRelation(e))
+	expectEqual(t, parent1, map1.GetRelation(e))
 
 	map1.SetRelation(e, parent2)
-	assert.Equal(t, parent2, map1.GetRelation(e))
-	assert.Equal(t, parent1, map2.GetRelation(e))
+	expectEqual(t, parent2, map1.GetRelation(e))
+	expectEqual(t, parent1, map2.GetRelation(e))
 }
 
 func TestWorldRelationRemoveTarget(t *testing.T) {
@@ -275,7 +273,7 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 	entities := []Entity{}
 	for range 32 {
 		e := posChildMap.NewEntity(&Position{X: -1, Y: 1}, &ChildOf{}, RelIdx(1, parent1))
-		assert.Equal(t, parent1, childMap.GetRelation(e))
+		expectEqual(t, parent1, childMap.GetRelation(e))
 		entities = append(entities, e)
 	}
 	_ = posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, parent2))
@@ -283,29 +281,29 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 	w.RemoveEntity(parent1)
 
 	for _, e := range entities {
-		assert.Equal(t, Entity{}, childMap.GetRelation(e))
+		expectEqual(t, Entity{}, childMap.GetRelation(e))
 	}
 
 	archetype := &w.storage.archetypes[1]
-	assert.Equal(t, []tableID{3, 2}, archetype.tables.tables)
-	assert.Equal(t, []tableID{1}, archetype.freeTables)
+	expectSlicesEqual(t, []tableID{3, 2}, archetype.tables.tables)
+	expectSlicesEqual(t, []tableID{1}, archetype.freeTables)
 
 	for _, e := range entities {
 		childMap.SetRelation(e, parent3)
-		assert.Equal(t, parent3, childMap.GetRelation(e))
+		expectEqual(t, parent3, childMap.GetRelation(e))
 	}
-	assert.Equal(t, []tableID{3, 2, 1}, archetype.tables.tables)
-	assert.Equal(t, []tableID{}, archetype.freeTables)
+	expectSlicesEqual(t, []tableID{3, 2, 1}, archetype.tables.tables)
+	expectSlicesEqual(t, []tableID{}, archetype.freeTables)
 
 	filter := NewFilter2[Position, ChildOf](&w)
 	query := filter.Query(RelIdx(1, parent3))
 	cnt := 0
 	for query.Next() {
 		pos, _ := query.Get()
-		assert.Equal(t, Position{X: -1, Y: 1}, *pos)
+		expectEqual(t, Position{X: -1, Y: 1}, *pos)
 		cnt++
 	}
-	assert.Equal(t, 32, cnt)
+	expectEqual(t, 32, cnt)
 }
 
 func TestWorldReset(t *testing.T) {
@@ -334,14 +332,14 @@ func TestWorldReset(t *testing.T) {
 
 	world.Reset()
 
-	assert.Equal(t, 0, int(world.storage.tables[0].Len()))
-	assert.Equal(t, 0, int(world.storage.tables[1].Len()))
-	assert.Equal(t, 0, world.storage.entityPool.Len())
-	assert.Equal(t, 2, len(world.storage.entities))
-	assert.Equal(t, 2, len(world.storage.isTarget))
+	expectEqual(t, 0, int(world.storage.tables[0].Len()))
+	expectEqual(t, 0, int(world.storage.tables[1].Len()))
+	expectEqual(t, 0, world.storage.entityPool.Len())
+	expectEqual(t, 2, len(world.storage.entities))
+	expectEqual(t, 2, len(world.storage.isTarget))
 
 	query := NewUnsafeFilter(&world).Query()
-	assert.Equal(t, 0, query.Count())
+	expectEqual(t, 0, query.Count())
 	query.Close()
 
 	e1 = u.NewEntity(posID)
@@ -349,11 +347,11 @@ func TestWorldReset(t *testing.T) {
 	u.NewEntity(posID, velID)
 	u.NewEntity(posID, velID)
 
-	assert.Equal(t, Entity{2, 0}, e1)
-	assert.Equal(t, Entity{3, 0}, e2)
+	expectEqual(t, Entity{2, 0}, e1)
+	expectEqual(t, Entity{3, 0}, e2)
 
 	query = NewUnsafeFilter(&world).Query()
-	assert.Equal(t, 4, query.Count())
+	expectEqual(t, 4, query.Count())
 	query.Close()
 }
 
@@ -361,15 +359,15 @@ func TestWorldLock(t *testing.T) {
 	w := NewWorld()
 
 	l1 := w.lock()
-	assert.True(t, w.IsLocked())
-	assert.PanicsWithValue(t, "attempt to modify a locked world", func() { w.checkLocked() })
+	expectTrue(t, w.IsLocked())
+	expectPanicsWithValue(t, "attempt to modify a locked world", func() { w.checkLocked() })
 
 	l2 := w.lock()
-	assert.True(t, w.IsLocked())
+	expectTrue(t, w.IsLocked())
 	w.unlock(l1)
-	assert.True(t, w.IsLocked())
+	expectTrue(t, w.IsLocked())
 	w.unlock(l2)
-	assert.False(t, w.IsLocked())
+	expectFalse(t, w.IsLocked())
 }
 
 func TestWorldRemoveGC(t *testing.T) {
@@ -392,8 +390,8 @@ func TestWorldRemoveGC(t *testing.T) {
 	runtime.GC()
 	runtime.ReadMemStats(&mem2)
 	heap := int(mem2.HeapInuse - mem1.HeapInuse)
-	assert.Greater(t, heap, 8000000)
-	assert.Less(t, heap, 10000000)
+	expectGreater(t, heap, 8000000)
+	expectLess(t, heap, 10000000)
 
 	rand.Shuffle(len(entities), func(i, j int) {
 		entities[i], entities[j] = entities[j], entities[i]
@@ -406,7 +404,7 @@ func TestWorldRemoveGC(t *testing.T) {
 	runtime.GC()
 	runtime.ReadMemStats(&mem2)
 	heap = int(mem2.HeapInuse - mem1.HeapInuse)
-	assert.Less(t, heap, 800000)
+	expectLess(t, heap, 800000)
 
 	_ = mapper.NewEntity(&SliceComp{})
 }
@@ -432,7 +430,7 @@ func TestWorldPointerStressTest(t *testing.T) {
 		query := filter.Query()
 		for query.Next() {
 			ptr := query.Get()
-			assert.EqualValues(t, ptr.Ptr.Pos.X, int(query.Entity().id))
+			expectEqual(t, ptr.Ptr.Pos.X, float64(query.Entity().id))
 			entities = append(entities, query.Entity())
 		}
 		rand.Shuffle(len(entities), func(i, j int) { entities[i], entities[j] = entities[j], entities[i] })
@@ -458,7 +456,7 @@ func TestWorldPanics(t *testing.T) {
 	w.exchange(e, nil, nil, nil)
 	w.RemoveEntity(e)
 
-	assert.PanicsWithValue(t, "exchange operation has no effect, but relations were specified. Use SetRelation(s) instead", func() {
+	expectPanicsWithValue(t, "exchange operation has no effect, but relations were specified. Use SetRelation(s) instead", func() {
 		e := w.NewEntity()
 		w.exchange(e, nil, nil, []RelationID{RelID(childID, e)})
 		w.RemoveEntity(e)
@@ -468,7 +466,7 @@ func TestWorldPanics(t *testing.T) {
 	w.exchangeBatch(nil, nil, nil, nil, nil)
 	w.RemoveEntity(e)
 
-	assert.PanicsWithValue(t, "exchange operation has no effect, but relations were specified. Use SetRelationBatch instead", func() {
+	expectPanicsWithValue(t, "exchange operation has no effect, but relations were specified. Use SetRelationBatch instead", func() {
 		e := w.NewEntity()
 		w.exchangeBatch(nil, nil, nil, []RelationID{RelID(childID, e)}, nil)
 		w.RemoveEntity(e)
@@ -521,7 +519,7 @@ func TestWorldCreateManyTables(t *testing.T) {
 	dataMap := NewMap1[Position](&w)
 
 	id := ComponentID[Position](&w)
-	assert.True(t, w.storage.registry.IsTrivial[id.id])
+	expectTrue(t, w.storage.registry.IsTrivial[id.id])
 
 	entities := make([]Entity, 0)
 	for i := range n {
@@ -530,7 +528,7 @@ func TestWorldCreateManyTables(t *testing.T) {
 
 	filter := NewFilter1[Position](&w)
 	q := filter.Query()
-	assert.Equal(t, n, q.Count())
+	expectEqual(t, n, q.Count())
 	q.Close()
 
 	relMap := NewMap1[ChildOf](&w)
@@ -539,7 +537,7 @@ func TestWorldCreateManyTables(t *testing.T) {
 	}
 
 	q = filter.Query()
-	assert.Equal(t, n, q.Count())
+	expectEqual(t, n, q.Count())
 	q.Close()
 }
 
@@ -550,7 +548,7 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 	dataMap := NewMap1[SliceComp](&w)
 
 	id := ComponentID[SliceComp](&w)
-	assert.False(t, w.storage.registry.IsTrivial[id.id])
+	expectFalse(t, w.storage.registry.IsTrivial[id.id])
 
 	entities := make([]Entity, 0)
 	for range n {
@@ -562,7 +560,7 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 
 	filter := NewFilter1[SliceComp](&w)
 	q := filter.Query()
-	assert.Equal(t, n, q.Count())
+	expectEqual(t, n, q.Count())
 	q.Close()
 
 	velMap := NewMap1[Velocity](&w)
@@ -576,10 +574,10 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 	}
 
 	q = filter.Query()
-	assert.Equal(t, n, q.Count())
+	expectEqual(t, n, q.Count())
 	for q.Next() {
 		sl := q.Get()
 		e := q.Entity()
-		assert.Equal(t, []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}, sl.Slice)
+		expectSlicesEqual(t, []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}, sl.Slice)
 	}
 }

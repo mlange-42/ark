@@ -2,8 +2,6 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestQuery(t *testing.T) {
@@ -29,37 +27,37 @@ func TestQuery(t *testing.T) {
 	// normal filter
 	filter := NewUnsafeFilter(&w, compA, compB, compC)
 	query := filter.Query()
-	assert.Equal(t, 2*n, query.Count())
+	expectEqual(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
 		_ = query.Get(compA)
-		assert.True(t, query.Has(compA))
+		expectTrue(t, query.Has(compA))
 		cnt++
 	}
-	assert.Equal(t, cnt, 2*n)
+	expectEqual(t, cnt, 2*n)
 
 	// filter without
 	filter = NewUnsafeFilter(&w, compA, compB, compC).Without(posID)
 	query = filter.Query()
-	assert.Equal(t, n, query.Count())
+	expectEqual(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		_ = query.Get(compA)
-		assert.True(t, query.Has(compA))
-		assert.False(t, query.Has(posID))
-		assert.Equal(t, []ID{{0}, {1}, {2}}, query.IDs().data)
+		expectTrue(t, query.Has(compA))
+		expectFalse(t, query.Has(posID))
+		expectSlicesEqual(t, []ID{{0}, {1}, {2}}, query.IDs().data)
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	expectEqual(t, cnt, n)
 
 	// filter exclusive
 	filter = NewUnsafeFilter(&w, compA, compB, compC).Exclusive()
 	query = filter.Query()
-	assert.Equal(t, n, query.Count())
+	expectEqual(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
@@ -67,7 +65,7 @@ func TestQuery(t *testing.T) {
 		_ = query.Get(compA)
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	expectEqual(t, cnt, n)
 }
 
 func TestQueryEmpty(t *testing.T) {
@@ -86,20 +84,20 @@ func TestQueryEmpty(t *testing.T) {
 
 	filter := NewUnsafeFilter(&w, compA, compB, compC)
 	query := filter.Query()
-	assert.Equal(t, 0, query.Count())
+	expectEqual(t, 0, query.Count())
 
-	assert.Panics(t, func() { query.Get(compA) })
-	assert.Panics(t, func() { query.Entity() })
+	expectPanics(t, func() { query.Get(compA) })
+	expectPanics(t, func() { query.Entity() })
 
 	cnt := 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	expectEqual(t, 0, cnt)
 
-	assert.Panics(t, func() { query.Get(compA) })
-	assert.Panics(t, func() { query.Entity() })
-	assert.Panics(t, func() { query.Next() })
+	expectPanics(t, func() { query.Get(compA) })
+	expectPanics(t, func() { query.Entity() })
+	expectPanics(t, func() { query.Next() })
 }
 
 func TestQueryRelations(t *testing.T) {
@@ -125,7 +123,7 @@ func TestQueryRelations(t *testing.T) {
 	// normal filter
 	filter := NewUnsafeFilter(&w, childID, compB, compC)
 	query := filter.Query()
-	assert.Equal(t, 2*n, query.Count())
+	expectEqual(t, 2*n, query.Count())
 
 	cnt := 0
 	for query.Next() {
@@ -133,21 +131,21 @@ func TestQueryRelations(t *testing.T) {
 		_ = query.Get(childID)
 		cnt++
 	}
-	assert.Equal(t, cnt, 2*n)
+	expectEqual(t, cnt, 2*n)
 
 	// relation filter
 	filter = NewUnsafeFilter(&w, childID, compB, compC)
 	query = filter.Query(RelID(childID, parent2))
-	assert.Equal(t, n, query.Count())
+	expectEqual(t, n, query.Count())
 
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()
 		_ = query.Get(childID)
-		assert.Equal(t, parent2, query.GetRelation(childID))
+		expectEqual(t, parent2, query.GetRelation(childID))
 		cnt++
 	}
-	assert.Equal(t, cnt, n)
+	expectEqual(t, cnt, n)
 }
 
 func TestQueryCount(t *testing.T) {
@@ -174,7 +172,7 @@ func TestQueryCount(t *testing.T) {
 		counter++
 	}
 
-	assert.Equal(t, count, counter, "Number of entities should match count")
+	expectEqual(t, count, counter, "Number of entities should match count")
 
 	filter2 := NewUnsafeFilter(&world)
 	query2 := filter2.Query()
@@ -185,5 +183,5 @@ func TestQueryCount(t *testing.T) {
 		counter++
 	}
 
-	assert.Equal(t, count, counter, "Number of entities should match count")
+	expectEqual(t, count, counter, "Number of entities should match count")
 }

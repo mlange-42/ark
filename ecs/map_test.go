@@ -2,8 +2,6 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestMap(t *testing.T) {
@@ -17,54 +15,54 @@ func TestMap(t *testing.T) {
 	posMap.Add(e1, &Position{})
 	velMap.Add(e1, &Velocity{})
 
-	assert.True(t, posMap.Has(e1))
-	assert.True(t, velMap.Has(e1))
+	expectTrue(t, posMap.Has(e1))
+	expectTrue(t, velMap.Has(e1))
 
 	pos := posMap.Get(e1)
 	pos.X = 100
 
 	pos = posMap.Get(e1)
-	assert.Equal(t, 100.0, pos.X)
+	expectEqual(t, 100.0, pos.X)
 
 	posMap.Set(e1, &Position{X: -1, Y: -2})
 	pos = posMap.Get(e1)
-	assert.Equal(t, -1.0, pos.X)
+	expectEqual(t, -1.0, pos.X)
 
 	posMap.Remove(e1)
-	assert.False(t, posMap.Has(e1))
+	expectFalse(t, posMap.Has(e1))
 
 	pos = posMap.Get(e1)
-	assert.Nil(t, pos)
+	expectNil(t, pos)
 	pos = posMap.GetUnchecked(e1)
-	assert.Nil(t, pos)
+	expectNil(t, pos)
 
 	e2 := posMap.NewEntityFn(func(a *Position) {
 		a.X = 100
 	})
-	assert.Equal(t, 100.0, posMap.Get(e2).X)
+	expectEqual(t, 100.0, posMap.Get(e2).X)
 
 	posMap.Remove(e2)
 	posMap.AddFn(e2, func(a *Position) {
 		a.X = 200
 	})
-	assert.Equal(t, 200.0, posMap.Get(e2).X)
+	expectEqual(t, 200.0, posMap.Get(e2).X)
 
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		posMap.Get(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		posMap.Has(Entity{})
 	})
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		posMap.Add(Entity{}, &Position{})
 	})
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		posMap.Set(Entity{}, &Position{})
 	})
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		posMap.AddFn(Entity{}, func(a *Position) {})
 	})
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		posMap.Remove(Entity{})
 	})
 }
@@ -77,7 +75,7 @@ func TestMapNewEntity(t *testing.T) {
 	e := posMap.NewEntity(&Position{X: 1, Y: 2})
 
 	pos := posMap.Get(e)
-	assert.Equal(t, Position{X: 1, Y: 2}, *pos)
+	expectEqual(t, Position{X: 1, Y: 2}, *pos)
 }
 
 func TestMapNewBatch(t *testing.T) {
@@ -101,8 +99,8 @@ func TestMapNewBatch(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.Has(lastEntity))
-	assert.Equal(t, n*3, cnt)
+	expectTrue(t, mapper.Has(lastEntity))
+	expectEqual(t, n*3, cnt)
 }
 
 func TestMapNewBatchFn(t *testing.T) {
@@ -129,8 +127,8 @@ func TestMapNewBatchFn(t *testing.T) {
 		lastEntity = query.Entity()
 		cnt++
 	}
-	assert.True(t, mapper.Has(lastEntity))
-	assert.Equal(t, 3*n, cnt)
+	expectTrue(t, mapper.Has(lastEntity))
+	expectEqual(t, 3*n, cnt)
 
 	mapper.NewBatchFn(5, nil)
 }
@@ -152,7 +150,7 @@ func TestMapAddBatch(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	expectEqual(t, 2*n+1, cnt)
 
 	filter := NewFilter1[Position](&w)
 	mapper.AddBatch(filter.Batch(), &CompA{})
@@ -162,10 +160,10 @@ func TestMapAddBatch(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		expectGreater(t, pos.X, 0.0)
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	expectEqual(t, 2*n, cnt)
 
 	mapper.RemoveBatch(filter2.Batch(), nil)
 
@@ -174,7 +172,7 @@ func TestMapAddBatch(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	expectEqual(t, 0, cnt)
 }
 
 func TestMapAddBatchFn(t *testing.T) {
@@ -194,7 +192,7 @@ func TestMapAddBatchFn(t *testing.T) {
 		pos.X = float64(cnt)
 		cnt++
 	})
-	assert.Equal(t, 2*n+1, cnt)
+	expectEqual(t, 2*n+1, cnt)
 
 	filter := NewFilter1[Position](&w)
 	cnt = 0
@@ -208,25 +206,25 @@ func TestMapAddBatchFn(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		a := query.Get()
-		assert.EqualValues(t, cnt, a.X)
+		expectEqual(t, float64(cnt), a.X)
 		pos := posMap.Get(query.Entity())
-		assert.Greater(t, pos.X, 0.0)
+		expectGreater(t, pos.X, 0.0)
 		cnt++
 	}
-	assert.Equal(t, 2*n, cnt)
+	expectEqual(t, 2*n, cnt)
 
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
-	assert.Equal(t, 2*n, cnt)
+	expectEqual(t, 2*n, cnt)
 
 	query = filter2.Query()
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	expectEqual(t, 0, cnt)
 }
 
 func TestMapSliceComponent(t *testing.T) {
@@ -241,7 +239,7 @@ func TestMapSliceComponent(t *testing.T) {
 		sl.Slice = []int{cnt + 1, cnt + 2, cnt + 3, cnt + 4}
 		cnt++
 	})
-	assert.Equal(t, n, cnt)
+	expectEqual(t, n, cnt)
 
 	filter := NewFilter1[SliceComp](&w)
 	cnt = 0
@@ -255,10 +253,10 @@ func TestMapSliceComponent(t *testing.T) {
 	cnt = 0
 	for query.Next() {
 		sl := query.Get()
-		assert.EqualValues(t, []int{cnt + 1, cnt + 2, cnt + 3, cnt + 4}, sl.Slice)
+		expectSlicesEqual(t, []int{cnt + 1, cnt + 2, cnt + 3, cnt + 4}, sl.Slice)
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
+	expectEqual(t, n, cnt)
 }
 
 func TestMapRelation(t *testing.T) {
@@ -272,29 +270,29 @@ func TestMapRelation(t *testing.T) {
 	e := w.NewEntity()
 
 	childMap.Add(e, &ChildOf{}, parent1)
-	assert.Equal(t, parent1, childMap.GetRelation(e))
-	assert.Equal(t, parent1, childMap.GetRelationUnchecked(e))
+	expectEqual(t, parent1, childMap.GetRelation(e))
+	expectEqual(t, parent1, childMap.GetRelationUnchecked(e))
 
 	childMap.SetRelation(e, parent2)
-	assert.Equal(t, parent2, childMap.GetRelation(e))
-	assert.Equal(t, parent2, childMap.GetRelationUnchecked(e))
+	expectEqual(t, parent2, childMap.GetRelation(e))
+	expectEqual(t, parent2, childMap.GetRelationUnchecked(e))
 
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		childMap.GetRelation(Entity{})
 	})
 
 	childMap.SetRelation(e, Entity{})
-	assert.Equal(t, Entity{}, childMap.GetRelation(e))
-	assert.Equal(t, Entity{}, childMap.GetRelationUnchecked(e))
+	expectEqual(t, Entity{}, childMap.GetRelation(e))
+	expectEqual(t, Entity{}, childMap.GetRelationUnchecked(e))
 
 	deadParent := w.NewEntity()
 	w.RemoveEntity(deadParent)
-	assert.PanicsWithValue(t,
+	expectPanicsWithValue(t,
 		"can't use a dead entity as relation target, except for the zero entity",
 		func() {
 			childMap.SetRelation(e, deadParent)
 		})
-	assert.PanicsWithValue(t,
+	expectPanicsWithValue(t,
 		"relation targets must be fully specified",
 		func() {
 			childMap.NewEntity(&ChildOf{})
@@ -317,7 +315,7 @@ func TestMapRelationBatch(t *testing.T) {
 	filter := NewFilter1[ChildOf](&w)
 
 	childMap.SetRelationBatch(filter.Batch(RelIdx(0, parent2)), parent3, func(entity Entity) {
-		assert.Equal(t, parent3, childMap.GetRelation(entity))
+		expectEqual(t, parent3, childMap.GetRelation(entity))
 	})
 
 	query := filter.Query(RelIdx(0, parent2))
@@ -325,12 +323,12 @@ func TestMapRelationBatch(t *testing.T) {
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, 0, cnt)
+	expectEqual(t, 0, cnt)
 
 	query = filter.Query(RelIdx(0, parent3))
 	cnt = 0
 	for query.Next() {
 		cnt++
 	}
-	assert.Equal(t, n, cnt)
+	expectEqual(t, n, cnt)
 }
