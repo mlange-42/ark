@@ -2,8 +2,6 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewTable(t *testing.T) {
@@ -15,20 +13,20 @@ func TestNewTable(t *testing.T) {
 	arch := newArchetype(0, 0, &bitMask{}, []ID{posID, velID}, []tableID{0}, &w.storage.registry)
 	table := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 2), []RelationID{})
 
-	assert.Equal(t, 2, len(table.columns))
-	assert.EqualValues(t, 0, table.components[posID.id].index)
-	assert.EqualValues(t, 1, table.components[velID.id].index)
+	expectEqual(t, 2, len(table.columns))
+	expectEqual(t, 0, table.components[posID.id].index)
+	expectEqual(t, 1, table.components[velID.id].index)
 
 	for i := range 9 {
 		table.Add(Entity{entityID(i + 2), 0})
 	}
-	assert.EqualValues(t, 9, table.len)
-	assert.EqualValues(t, 16, table.cap)
+	expectEqual(t, 9, table.len)
+	expectEqual(t, 16, table.cap)
 
 	table2 := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 2), []RelationID{})
 	table2.AddAllEntities(&table, uint32(table.Len()))
-	assert.EqualValues(t, 9, table2.len)
-	assert.EqualValues(t, 16, table2.cap)
+	expectEqual(t, 9, table2.len)
+	expectEqual(t, 16, table2.cap)
 }
 
 func TestTableMatches(t *testing.T) {
@@ -49,13 +47,13 @@ func TestTableMatches(t *testing.T) {
 		[]RelationID{{component: childID, target: Entity{2, 0}}},
 	)
 
-	assert.True(t, table.MatchesExact([]RelationID{{component: childID, target: Entity{2, 0}}}))
-	assert.False(t, table.MatchesExact([]RelationID{{component: childID, target: Entity{3, 0}}}))
+	expectTrue(t, table.MatchesExact([]RelationID{{component: childID, target: Entity{2, 0}}}))
+	expectFalse(t, table.MatchesExact([]RelationID{{component: childID, target: Entity{3, 0}}}))
 
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		table.MatchesExact([]RelationID{})
 	})
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		table.MatchesExact([]RelationID{{component: posID, target: Entity{2, 0}}})
 	})
 }
@@ -74,7 +72,7 @@ func TestTableReset(t *testing.T) {
 	for i := range 75 {
 		table.Add(Entity{entityID(i + 2), 0})
 	}
-	assert.EqualValues(t, 75, table.len)
+	expectEqual(t, 75, table.len)
 	table.Reset()
-	assert.EqualValues(t, 0, table.len)
+	expectEqual(t, 0, table.len)
 }

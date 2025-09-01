@@ -30,6 +30,14 @@ func expectGreater[T ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | 
 	}
 }
 
+func expectLess[T ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~float32 | ~float64](t *testing.T, got, max T, msgAndArgs ...interface{}) {
+	t.Helper()
+	if got >= max {
+		base := fmt.Sprintf("expected value < %v, got %v", max, got)
+		t.Error(base + formatMsg(msgAndArgs...))
+	}
+}
+
 func expectTrue(t *testing.T, cond bool, msgAndArgs ...interface{}) {
 	t.Helper()
 	if !cond {

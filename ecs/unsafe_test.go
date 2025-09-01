@@ -3,15 +3,13 @@ package ecs
 import (
 	"fmt"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestUnsafe(t *testing.T) {
 	w := NewWorld(1024)
 	u := w.Unsafe()
 
-	assert.Equal(t, &w, u.world)
+	expectEqual(t, &w, u.world)
 }
 
 func TestUnsafeNewEntity(t *testing.T) {
@@ -23,8 +21,8 @@ func TestUnsafeNewEntity(t *testing.T) {
 
 	e := u.NewEntity(posID, velID)
 
-	assert.True(t, u.Has(e, posID))
-	assert.True(t, u.Has(e, velID))
+	expectTrue(t, u.Has(e, posID))
+	expectTrue(t, u.Has(e, velID))
 }
 
 func TestUnsafeGet(t *testing.T) {
@@ -36,23 +34,23 @@ func TestUnsafeGet(t *testing.T) {
 
 	e := u.NewEntity(posID)
 
-	assert.True(t, u.Has(e, posID))
-	assert.False(t, u.Has(e, velID))
+	expectTrue(t, u.Has(e, posID))
+	expectFalse(t, u.Has(e, velID))
 
-	assert.True(t, u.HasUnchecked(e, posID))
-	assert.False(t, u.HasUnchecked(e, velID))
+	expectTrue(t, u.HasUnchecked(e, posID))
+	expectFalse(t, u.HasUnchecked(e, velID))
 
 	pos := (*Position)(u.Get(e, posID))
 	pos.X = 100
 
 	pos2 := (*Position)(u.GetUnchecked(e, posID))
 
-	assert.Equal(t, pos, pos2)
+	expectEqual(t, pos, pos2)
 
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		u.Get(Entity{}, posID)
 	})
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		u.Has(Entity{}, posID)
 	})
 }
@@ -70,12 +68,12 @@ func TestUnsafeRelations(t *testing.T) {
 
 	e := u.NewEntityRel([]ID{posID, childID, child2ID}, RelID(childID, parent1), RelID(child2ID, parent2))
 
-	assert.Equal(t, parent1, u.GetRelation(e, childID))
-	assert.Equal(t, parent2, u.GetRelationUnchecked(e, child2ID))
+	expectEqual(t, parent1, u.GetRelation(e, childID))
+	expectEqual(t, parent2, u.GetRelationUnchecked(e, child2ID))
 
 	u.SetRelations(e, RelID(childID, parent2), RelID(child2ID, parent1))
-	assert.Equal(t, parent2, u.GetRelation(e, childID))
-	assert.Equal(t, parent1, u.GetRelationUnchecked(e, child2ID))
+	expectEqual(t, parent2, u.GetRelation(e, childID))
+	expectEqual(t, parent1, u.GetRelationUnchecked(e, child2ID))
 }
 
 func TestUnsafeAddRemove(t *testing.T) {
@@ -88,25 +86,25 @@ func TestUnsafeAddRemove(t *testing.T) {
 	e1 := w.NewEntity()
 	u.Add(e1, posID)
 
-	assert.True(t, u.Has(e1, posID))
+	expectTrue(t, u.Has(e1, posID))
 
 	e2 := w.NewEntity()
 	u.AddRel(e2, []ID{posID, childID}, RelID(childID, e1))
 
-	assert.True(t, u.Has(e2, posID))
-	assert.True(t, u.Has(e2, childID))
-	assert.Equal(t, e1, u.GetRelation(e2, childID))
+	expectTrue(t, u.Has(e2, posID))
+	expectTrue(t, u.Has(e2, childID))
+	expectEqual(t, e1, u.GetRelation(e2, childID))
 
 	u.Remove(e1, posID)
-	assert.False(t, u.Has(e1, posID))
+	expectFalse(t, u.Has(e1, posID))
 
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		u.Add(Entity{}, posID)
 	})
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		u.AddRel(Entity{}, []ID{posID, childID}, RelID(childID, e1))
 	})
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		u.Remove(Entity{}, posID)
 	})
 }
@@ -122,14 +120,14 @@ func TestUnsafeExchange(t *testing.T) {
 	e := u.NewEntity(posID)
 
 	u.Exchange(e, []ID{childID}, []ID{posID}, RelID(childID, parent))
-	assert.False(t, u.Has(e, posID))
-	assert.True(t, u.Has(e, childID))
+	expectFalse(t, u.Has(e, posID))
+	expectTrue(t, u.Has(e, childID))
 
 	child := (*ChildOf)(u.Get(e, childID))
-	assert.NotNil(t, child)
-	assert.Equal(t, parent, u.GetRelation(e, childID))
+	expectNotNil(t, child)
+	expectEqual(t, parent, u.GetRelation(e, childID))
 
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		u.Exchange(Entity{}, []ID{childID}, []ID{posID})
 	})
 }
@@ -143,15 +141,15 @@ func TestUnsafeIDs(t *testing.T) {
 
 	e := u.NewEntity(posID, velID)
 	ids := u.IDs(e)
-	assert.Equal(t, []ID{posID, velID}, ids.data)
+	expectSlicesEqual(t, []ID{posID, velID}, ids.data)
 
-	assert.Equal(t, 2, ids.Len())
-	assert.Equal(t, posID, ids.Get(0))
-	assert.Equal(t, velID, ids.Get(1))
-	assert.Equal(t, posID.Index(), ids.Get(0).Index())
-	assert.Equal(t, velID.Index(), ids.Get(1).Index())
+	expectEqual(t, 2, ids.Len())
+	expectEqual(t, posID, ids.Get(0))
+	expectEqual(t, velID, ids.Get(1))
+	expectEqual(t, posID.Index(), ids.Get(0).Index())
+	expectEqual(t, velID.Index(), ids.Get(1).Index())
 
-	assert.Panics(t, func() {
+	expectPanics(t, func() {
 		u.IDs(Entity{})
 	})
 }
@@ -174,17 +172,17 @@ func TestUnsafeEntityDump(t *testing.T) {
 	w2 := NewWorld(1024)
 	w2.Unsafe().LoadEntities(&eData)
 
-	assert.True(t, w2.Alive(e1))
-	assert.True(t, w2.Alive(e4))
-	assert.True(t, w2.Alive(e5))
+	expectTrue(t, w2.Alive(e1))
+	expectTrue(t, w2.Alive(e4))
+	expectTrue(t, w2.Alive(e5))
 
-	assert.False(t, w2.Alive(e2))
-	assert.False(t, w2.Alive(e3))
+	expectFalse(t, w2.Alive(e2))
+	expectFalse(t, w2.Alive(e3))
 
-	//assert.Equal(t, w.Ids(e1), []ID{})
+	//expectEqual(t, w.Ids(e1), []ID{})
 
 	query := NewUnsafeFilter(&w2).Query()
-	assert.Equal(t, query.Count(), 3)
+	expectEqual(t, query.Count(), 3)
 	query.Close()
 }
 
@@ -199,11 +197,11 @@ func TestUnsafeEntityDumpEmpty(t *testing.T) {
 	e1 := w2.NewEntity()
 	e2 := w2.NewEntity()
 
-	assert.True(t, w2.Alive(e1))
-	assert.True(t, w2.Alive(e2))
+	expectTrue(t, w2.Alive(e1))
+	expectTrue(t, w2.Alive(e2))
 
 	query := NewUnsafeFilter(&w2).Query()
-	assert.Equal(t, 2, query.Count())
+	expectEqual(t, 2, query.Count())
 	query.Close()
 }
 
@@ -217,7 +215,7 @@ func TestUnsafeEntityDumpFail(t *testing.T) {
 	e1 := w2.NewEntity()
 	w2.RemoveEntity(e1)
 
-	assert.PanicsWithValue(t, "can set entity data only on a fresh or reset world",
+	expectPanicsWithValue(t, "can set entity data only on a fresh or reset world",
 		func() {
 			w2.Unsafe().LoadEntities(&eData)
 		})
