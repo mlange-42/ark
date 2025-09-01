@@ -38,6 +38,28 @@ func expectFalse(t *testing.T, cond bool, msg ...any) {
 	}
 }
 
+func expectNil(t *testing.T, val interface{}, msg ...any) {
+	t.Helper()
+	if val != nil {
+		if len(msg) > 0 {
+			t.Errorf("expected nil, got %v: %s", val, fmt.Sprint(msg...))
+		} else {
+			t.Errorf("expected nil, got %v", val)
+		}
+	}
+}
+
+func expectNotNil(t *testing.T, val interface{}, msg ...any) {
+	t.Helper()
+	if val == nil {
+		if len(msg) > 0 {
+			t.Errorf("expected non-nil value, but got nil: %s", fmt.Sprint(msg...))
+		} else {
+			t.Errorf("expected non-nil value, but got nil")
+		}
+	}
+}
+
 func expectSlicesEqual[T comparable](t *testing.T, want, got []T, msg ...any) {
 	t.Helper()
 	if len(got) != len(want) {
@@ -60,7 +82,7 @@ func expectSlicesEqual[T comparable](t *testing.T, want, got []T, msg ...any) {
 	}
 }
 
-func expectPanicWithValue(t *testing.T, expected interface{}, f func(), msg ...any) {
+func expectPanicsWithValue(t *testing.T, expected interface{}, f func(), msg ...any) {
 	t.Helper()
 	defer func() {
 		if r := recover(); r != expected {
@@ -74,7 +96,7 @@ func expectPanicWithValue(t *testing.T, expected interface{}, f func(), msg ...a
 	f()
 }
 
-func expectPanic(t *testing.T, f func(), msg ...any) {
+func expectPanics(t *testing.T, f func(), msg ...any) {
 	t.Helper()
 	defer func() {
 		if r := recover(); r == nil {
