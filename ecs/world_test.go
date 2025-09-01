@@ -272,23 +272,15 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 	}
 
 	archetype := &w.storage.archetypes[1]
-	if !equalSlices(archetype.tables.tables, []tableID{3, 2}) {
-		t.Errorf("expected %v, got %v", []tableID{3, 2}, archetype.tables.tables)
-	}
-	if !equalSlices(archetype.freeTables, []tableID{1}) {
-		t.Errorf("expected %v, got %v", []tableID{1}, archetype.freeTables)
-	}
+	expectSlicesEqual(t, archetype.tables.tables, []tableID{3, 2})
+	expectSlicesEqual(t, archetype.freeTables, []tableID{1})
 
 	for _, e := range entities {
 		childMap.SetRelation(e, parent3)
 		expectEqual(t, childMap.GetRelation(e), parent3)
 	}
-	if !equalSlices(archetype.tables.tables, []tableID{3, 2, 1}) {
-		t.Errorf("expected %v, got %v", []tableID{3, 2, 1}, archetype.tables.tables)
-	}
-	if !equalSlices(archetype.freeTables, []tableID{}) {
-		t.Errorf("expected %v, got %v", []tableID{}, archetype.freeTables)
-	}
+	expectSlicesEqual(t, archetype.tables.tables, []tableID{3, 2, 1})
+	expectSlicesEqual(t, archetype.freeTables, []tableID{})
 
 	filter := NewFilter2[Position, ChildOf](&w)
 	query := filter.Query(RelIdx(1, parent3))
@@ -571,8 +563,6 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 		e := q.Entity()
 
 		want := []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}
-		if !equalSlices(sl.Slice, want) {
-			t.Errorf("expected %v, got %v", want, sl.Slice)
-		}
+		expectSlicesEqual(t, sl.Slice, want)
 	}
 }

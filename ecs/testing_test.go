@@ -1,6 +1,9 @@
 package ecs
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func expectPanicWithValue(t *testing.T, expected interface{}, f func()) {
 	t.Helper()
@@ -22,35 +25,57 @@ func expectPanic(t *testing.T, f func()) {
 	f()
 }
 
-func expectEqual[T comparable](t *testing.T, got, want T) {
+func expectEqual[T comparable](t *testing.T, got, want T, msg ...any) {
 	t.Helper()
 	if got != want {
-		t.Errorf("expected %v, got %v", want, got)
-	}
-}
-
-func expectTrue(t *testing.T, cond bool) {
-	t.Helper()
-	if !cond {
-		t.Errorf("expected condition to be true, but was false")
-	}
-}
-
-func expectFalse(t *testing.T, cond bool) {
-	t.Helper()
-	if cond {
-		t.Errorf("expected condition to be false, but was true")
-	}
-}
-
-func equalSlices[T comparable](a, b []T) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if a[i] != b[i] {
-			return false
+		if len(msg) > 0 {
+			t.Errorf("expected %v, got %v: %s", want, got, fmt.Sprint(msg...))
+		} else {
+			t.Errorf("expected %v, got %v", want, got)
 		}
 	}
-	return true
+}
+
+func expectTrue(t *testing.T, cond bool, msg ...any) {
+	t.Helper()
+	if !cond {
+		if len(msg) > 0 {
+			t.Errorf("expected condition to be true, but was false: %s", fmt.Sprint(msg...))
+		} else {
+			t.Errorf("expected condition to be true, but was false")
+		}
+	}
+}
+
+func expectFalse(t *testing.T, cond bool, msg ...any) {
+	t.Helper()
+	if cond {
+		if len(msg) > 0 {
+			t.Errorf("expected condition to be false, but was true: %s", fmt.Sprint(msg...))
+		} else {
+			t.Errorf("expected condition to be false, but was true")
+		}
+	}
+}
+
+func expectSlicesEqual[T comparable](t *testing.T, got, want []T, msg ...any) {
+	t.Helper()
+	if len(got) != len(want) {
+		if len(msg) > 0 {
+			t.Errorf("slice length mismatch: expected %d, got %d: %s", len(want), len(got), fmt.Sprint(msg...))
+		} else {
+			t.Errorf("slice length mismatch: expected %d, got %d", len(want), len(got))
+		}
+		return
+	}
+	for i := range got {
+		if got[i] != want[i] {
+			if len(msg) > 0 {
+				t.Errorf("slice mismatch at index %d: expected %v, got %v: %s", i, want[i], got[i], fmt.Sprint(msg...))
+			} else {
+				t.Errorf("slice mismatch at index %d: expected %v, got %v", i, want[i], got[i])
+			}
+			return
+		}
+	}
 }

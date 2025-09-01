@@ -18,9 +18,8 @@ func TestEntityPool(t *testing.T) {
 	for range 5 {
 		_ = p.Get()
 	}
-	if !equalSlices(expectedAll, p.entities) {
-		t.Errorf("Wrong initial entities")
-	}
+	expectSlicesEqual(t, p.entities, expectedAll, "Wrong initial entities")
+
 	expectPanicWithValue(t, "can't recycle reserved zero or wildcard entity", func() { p.Recycle(p.entities[0]) })
 	expectPanicWithValue(t, "can't recycle reserved zero or wildcard entity", func() { p.Recycle(p.entities[1]) })
 	e0 := p.entities[reservedEntities]
@@ -37,9 +36,8 @@ func TestEntityPool(t *testing.T) {
 	if p.Alive(e0Old) {
 		t.Errorf("Recycled entity of old generation should not be alive")
 	}
-	if !equalSlices(expectedAll, p.entities) {
-		t.Errorf("Wrong entities after get/recycle")
-	}
+	expectSlicesEqual(t, p.entities, expectedAll, "Wrong entities after get/recycle")
+
 	e0Old = p.entities[reservedEntities]
 	for i := range 5 {
 		p.Recycle(p.entities[i+reservedEntities])

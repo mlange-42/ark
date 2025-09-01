@@ -142,9 +142,7 @@ func TestUnsafeIDs(t *testing.T) {
 	e := u.NewEntity(posID, velID)
 	ids := u.IDs(e)
 
-	if !equalSlices(ids.data, []ID{posID, velID}) {
-		t.Errorf("expected %v, got %v", []ID{posID, velID}, ids.data)
-	}
+	expectSlicesEqual(t, ids.data, []ID{posID, velID})
 	expectEqual(t, ids.Len(), 2)
 	expectEqual(t, ids.Get(0), posID)
 	expectEqual(t, ids.Get(1), velID)
