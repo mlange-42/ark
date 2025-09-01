@@ -3,142 +3,99 @@ package ecs
 import (
 	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 )
 
-func expectEqual[T comparable](t *testing.T, want, got T, msg ...any) {
+func expectEqual[T comparable](t *testing.T, want, got T, msg ...string) {
 	t.Helper()
 	if got != want {
 		base := fmt.Sprintf("expected %v, got %v", want, got)
-		if len(msg) > 0 {
-			t.Error(base + ": " + fmt.Sprint(msg...))
-		} else {
-			t.Error(base)
-		}
+		t.Error(base + formatMsg(msg...))
 	}
 }
 
-func expectNotEqual[T comparable](t *testing.T, notWant, got T, msg ...any) {
+func expectNotEqual[T comparable](t *testing.T, notWant, got T, msg ...string) {
 	t.Helper()
 	if got == notWant {
 		base := fmt.Sprintf("expected value not equal to %v, but got %v", notWant, got)
-		if len(msg) > 0 {
-			t.Error(base + ": " + fmt.Sprint(msg...))
-		} else {
-			t.Error(base)
-		}
+		t.Error(base + formatMsg(msg...))
 	}
 }
 
-func expectGreater[T ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~float32 | ~float64](t *testing.T, got, min T, msg ...any) {
+func expectGreater[T ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~float32 | ~float64](t *testing.T, got, min T, msg ...string) {
 	t.Helper()
 	if got <= min {
 		base := fmt.Sprintf("expected value > %v, got %v", min, got)
-		if len(msg) > 0 {
-			t.Error(base + ": " + fmt.Sprint(msg...))
-		} else {
-			t.Error(base)
-		}
+		t.Error(base + formatMsg(msg...))
 	}
 }
 
-func expectTrue(t *testing.T, cond bool, msg ...any) {
+func expectTrue(t *testing.T, cond bool, msg ...string) {
 	t.Helper()
 	if !cond {
 		base := "expected condition to be true, but was false"
-		if len(msg) > 0 {
-			t.Error(base + ": " + fmt.Sprint(msg...))
-		} else {
-			t.Error(base)
-		}
+		t.Error(base + formatMsg(msg...))
 	}
 }
 
-func expectFalse(t *testing.T, cond bool, msg ...any) {
+func expectFalse(t *testing.T, cond bool, msg ...string) {
 	t.Helper()
 	if cond {
 		base := "expected condition to be false, but was true"
-		if len(msg) > 0 {
-			t.Error(base + ": " + fmt.Sprint(msg...))
-		} else {
-			t.Error(base)
-		}
+		t.Error(base + formatMsg(msg...))
 	}
 }
 
-func expectNil(t *testing.T, val interface{}, msg ...any) {
+func expectNil(t *testing.T, val interface{}, msg ...string) {
 	t.Helper()
 	if val != nil && !isReallyNil(val) {
 		base := fmt.Sprintf("expected nil, got %v", val)
-		if len(msg) > 0 {
-			t.Error(base + ": " + fmt.Sprint(msg...))
-		} else {
-			t.Error(base)
-		}
+		t.Error(base + formatMsg(msg...))
 	}
 }
 
-func expectNotNil(t *testing.T, val interface{}, msg ...any) {
+func expectNotNil(t *testing.T, val interface{}, msg ...string) {
 	t.Helper()
 	if val == nil || isReallyNil(val) {
 		base := "expected non-nil value, but got nil"
-		if len(msg) > 0 {
-			t.Error(base + ": " + fmt.Sprint(msg...))
-		} else {
-			t.Error(base)
-		}
+		t.Error(base + formatMsg(msg...))
 	}
 }
 
-func expectSlicesEqual[T comparable](t *testing.T, want, got []T, msg ...any) {
+func expectSlicesEqual[T comparable](t *testing.T, want, got []T, msg ...string) {
 	t.Helper()
 	if len(got) != len(want) {
 		base := fmt.Sprintf("slice length mismatch: expected %d, got %d", len(want), len(got))
-		if len(msg) > 0 {
-			t.Error(base + ": " + fmt.Sprint(msg...))
-		} else {
-			t.Error(base)
-		}
+		t.Error(base + formatMsg(msg...))
 		return
 	}
 	for i := range got {
 		if got[i] != want[i] {
 			base := fmt.Sprintf("slice mismatch at index %d: expected %v, got %v", i, want[i], got[i])
-			if len(msg) > 0 {
-				t.Error(base + ": " + fmt.Sprint(msg...))
-			} else {
-				t.Error(base)
-			}
+			t.Error(base + formatMsg(msg...))
 			return
 		}
 	}
 }
 
-func expectPanicsWithValue(t *testing.T, expected interface{}, f func(), msg ...any) {
+func expectPanicsWithValue(t *testing.T, expected interface{}, f func(), msg ...string) {
 	t.Helper()
 	defer func() {
 		if r := recover(); r != expected {
 			base := fmt.Sprintf("expected panic with %v, got %v", expected, r)
-			if len(msg) > 0 {
-				t.Error(base + ": " + fmt.Sprint(msg...))
-			} else {
-				t.Error(base)
-			}
+			t.Error(base + formatMsg(msg...))
 		}
 	}()
 	f()
 }
 
-func expectPanics(t *testing.T, f func(), msg ...any) {
+func expectPanics(t *testing.T, f func(), msg ...string) {
 	t.Helper()
 	defer func() {
 		if r := recover(); r == nil {
 			base := "expected panic, but none occurred"
-			if len(msg) > 0 {
-				t.Error(base + ": " + fmt.Sprint(msg...))
-			} else {
-				t.Error(base)
-			}
+			t.Error(base + formatMsg(msg...))
 		}
 	}()
 	f()
@@ -152,4 +109,11 @@ func isReallyNil(val interface{}) bool {
 	default:
 		return false
 	}
+}
+
+func formatMsg(msg ...string) string {
+	if len(msg) == 0 {
+		return ""
+	}
+	return ": " + strings.Join(msg, " ")
 }
