@@ -5,26 +5,6 @@ import (
 	"testing"
 )
 
-func expectPanicWithValue(t *testing.T, expected interface{}, f func()) {
-	t.Helper()
-	defer func() {
-		if r := recover(); r != expected {
-			t.Errorf("expected panic with %v, got %v", expected, r)
-		}
-	}()
-	f()
-}
-
-func expectPanic(t *testing.T, f func()) {
-	t.Helper()
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("expected panic, but none occurred")
-		}
-	}()
-	f()
-}
-
 func expectEqual[T comparable](t *testing.T, got, want T, msg ...any) {
 	t.Helper()
 	if got != want {
@@ -78,4 +58,32 @@ func expectSlicesEqual[T comparable](t *testing.T, got, want []T, msg ...any) {
 			return
 		}
 	}
+}
+
+func expectPanicWithValue(t *testing.T, expected interface{}, f func(), msg ...any) {
+	t.Helper()
+	defer func() {
+		if r := recover(); r != expected {
+			if len(msg) > 0 {
+				t.Errorf("expected panic with %v, got %v: %s", expected, r, fmt.Sprint(msg...))
+			} else {
+				t.Errorf("expected panic with %v, got %v", expected, r)
+			}
+		}
+	}()
+	f()
+}
+
+func expectPanic(t *testing.T, f func(), msg ...any) {
+	t.Helper()
+	defer func() {
+		if r := recover(); r == nil {
+			if len(msg) > 0 {
+				t.Errorf("expected panic, but none occurred: %s", fmt.Sprint(msg...))
+			} else {
+				t.Errorf("expected panic, but none occurred")
+			}
+		}
+	}()
+	f()
 }
