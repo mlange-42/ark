@@ -2,8 +2,6 @@ package ecs
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestFilter(t *testing.T) {
@@ -29,7 +27,7 @@ func TestFilter(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		assert.Equal(t, test.matches, test.filter.matches(&test.mask))
+		expectEqual(t, test.matches, test.filter.matches(&test.mask))
 	}
 }
 

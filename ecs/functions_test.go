@@ -3,8 +3,6 @@ package ecs
 import (
 	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCompResIDs(t *testing.T) {
@@ -19,17 +17,17 @@ func TestCompResIDs(t *testing.T) {
 	res1ID := ResourceID[Position](&w)
 	res2ID := ResourceID[Velocity](&w)
 
-	assert.Equal(t, posID, tPosID)
-	assert.Equal(t, rotID, tRotID)
+	expectEqual(t, posID, tPosID)
+	expectEqual(t, rotID, tRotID)
 
-	assert.Equal(t, uint8(0), posID.id)
-	assert.Equal(t, uint8(1), rotID.id)
+	expectEqual(t, uint8(0), posID.id)
+	expectEqual(t, uint8(1), rotID.id)
 
-	assert.Equal(t, uint8(0), res1ID.id)
-	assert.Equal(t, uint8(1), res2ID.id)
+	expectEqual(t, uint8(0), res1ID.id)
+	expectEqual(t, uint8(1), res2ID.id)
 
-	assert.Equal(t, []ID{id(0), id(1)}, ComponentIDs(&w))
-	assert.Equal(t, []ResID{{id: 0}, {id: 1}}, ResourceIDs(&w))
+	expectSlicesEqual(t, []ID{id(0), id(1)}, ComponentIDs(&w))
+	expectSlicesEqual(t, []ResID{{id: 0}, {id: 1}}, ResourceIDs(&w))
 }
 
 func TestRegisterComponents(t *testing.T) {
@@ -37,11 +35,11 @@ func TestRegisterComponents(t *testing.T) {
 
 	ComponentID[Position](&world)
 
-	assert.Equal(t, id(0), ComponentID[Position](&world))
-	assert.Equal(t, id(1), ComponentID[Velocity](&world))
+	expectEqual(t, id(0), ComponentID[Position](&world))
+	expectEqual(t, id(1), ComponentID[Velocity](&world))
 
 	world.lock()
-	assert.PanicsWithValue(t,
+	expectPanicsWithValue(t,
 		"attempt to register a new component in a locked world",
 		func() {
 			ComponentID[Heading](&world)
@@ -54,27 +52,27 @@ func TestComponentInfo(t *testing.T) {
 	posID := ComponentID[Position](&w)
 
 	info, ok := ComponentInfo(&w, posID)
-	assert.True(t, ok)
-	assert.Equal(t, info.Type, reflect.TypeOf(Position{}))
+	expectTrue(t, ok)
+	expectEqual(t, info.Type, reflect.TypeOf(Position{}))
 
 	info, ok = ComponentInfo(&w, ID{id: 3})
-	assert.False(t, ok)
-	assert.Equal(t, info, CompInfo{})
+	expectFalse(t, ok)
+	expectEqual(t, info, CompInfo{})
 
 	resID := ResourceID[Velocity](&w)
 
 	tp, ok := ResourceType(&w, resID)
-	assert.True(t, ok)
-	assert.Equal(t, tp, reflect.TypeOf(Velocity{}))
+	expectTrue(t, ok)
+	expectEqual(t, tp, reflect.TypeOf(Velocity{}))
 
 	tp, ok = ResourceType(&w, ResID{id: 3})
-	assert.False(t, ok)
-	assert.Equal(t, tp, nil)
+	expectFalse(t, ok)
+	expectEqual(t, tp, nil)
 }
 
 func TestCompType(t *testing.T) {
 	c := C[Position]()
-	assert.Equal(t, reflect.TypeFor[Position](), c.Type())
+	expectEqual(t, reflect.TypeFor[Position](), c.Type())
 }
 
 func TestResourceTypeID(t *testing.T) {
@@ -83,9 +81,9 @@ func TestResourceTypeID(t *testing.T) {
 	id2 := ResourceTypeID(&w, reflect.TypeFor[Velocity]())
 	id3 := ResourceTypeID(&w, reflect.TypeFor[Position]())
 
-	assert.EqualValues(t, 0, id1.id)
-	assert.EqualValues(t, 1, id2.id)
-	assert.EqualValues(t, 0, id3.id)
+	expectEqual(t, 0, id1.id)
+	expectEqual(t, 1, id2.id)
+	expectEqual(t, 0, id3.id)
 }
 
 func TestResourceShortcuts(t *testing.T) {
@@ -94,7 +92,7 @@ func TestResourceShortcuts(t *testing.T) {
 	AddResource(&w, &res)
 
 	res2 := GetResource[Position](&w)
-	assert.Equal(t, res, *res2)
+	expectEqual(t, res, *res2)
 }
 
 func BenchmarkComponentID(b *testing.B) {
