@@ -28,6 +28,7 @@ It is the successor of [Arche](https://github.com/mlange-42/arche).
 - Fast [batch operations](https://mlange-42.github.io/ark/batch/) for mass manipulation.
 - No systems. Just queries. Use your own structure (or the [Tools](https://github.com/mlange-42/ark#tools)).
 - World serialization and deserialization with [ark-serde](https://github.com/mlange-42/ark-serde).
+- Zero [dependencies](https://github.com/mlange-42/ark/blob/main/go.mod), &approx;100% [test coverage](https://badge.coveralls.io/github/mlange-42/ark?branch=main).
 
 ## Installation
 
