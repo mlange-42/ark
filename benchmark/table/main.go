@@ -8,7 +8,7 @@ import (
 	"github.com/mlange-42/ark/benchmark"
 )
 
-const version = "v0.4.7"
+const version = "v0.4.8"
 
 func main() {
 	fmt.Printf("Last run: %s  \n", time.Now().Format(time.RFC1123))
