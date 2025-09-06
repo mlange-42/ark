@@ -197,9 +197,10 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter{{.}}{{$genericsRel}}(&w)
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
 
-	e := query.EntityAt(2*n-1)
+	e := query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
@@ -213,9 +214,10 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
 
-	e = query.EntityAt(n - 1)
+	e = query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
@@ -230,7 +232,11 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter{{.}}{{$genericsRel}}(&w)
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -262,7 +268,11 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter{{.}}{{$genericsRel}}(&w).Register()
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
@@ -281,7 +291,11 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -301,8 +315,12 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
 
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
+	
 	cnt = 0
 	for query.Next() {
 		_ = query.Entity()

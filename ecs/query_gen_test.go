@@ -184,9 +184,10 @@ func TestQuery1Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter1[ChildOf](&w)
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
 
-	e := query.EntityAt(2*n - 1)
+	e := query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
@@ -200,9 +201,10 @@ func TestQuery1Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter1[ChildOf](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
 
-	e = query.EntityAt(n - 1)
+	e = query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
@@ -217,7 +219,11 @@ func TestQuery1Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter1[ChildOf](&w)
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -249,7 +255,11 @@ func TestQuery1Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter1[ChildOf](&w).Register()
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
@@ -268,7 +278,11 @@ func TestQuery1Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter1[ChildOf](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -288,7 +302,11 @@ func TestQuery1Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter1[ChildOf](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -496,9 +514,10 @@ func TestQuery2Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter2[ChildOf, CompB](&w)
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
 
-	e := query.EntityAt(2*n - 1)
+	e := query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
@@ -512,9 +531,10 @@ func TestQuery2Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter2[ChildOf, CompB](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
 
-	e = query.EntityAt(n - 1)
+	e = query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
@@ -529,7 +549,11 @@ func TestQuery2Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter2[ChildOf, CompB](&w)
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -561,7 +585,11 @@ func TestQuery2Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter2[ChildOf, CompB](&w).Register()
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
@@ -580,7 +608,11 @@ func TestQuery2Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter2[ChildOf, CompB](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -600,7 +632,11 @@ func TestQuery2Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter2[ChildOf, CompB](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -808,9 +844,10 @@ func TestQuery3Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter3[ChildOf, CompB, CompC](&w)
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
 
-	e := query.EntityAt(2*n - 1)
+	e := query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
@@ -824,9 +861,10 @@ func TestQuery3Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter3[ChildOf, CompB, CompC](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
 
-	e = query.EntityAt(n - 1)
+	e = query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
@@ -841,7 +879,11 @@ func TestQuery3Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter3[ChildOf, CompB, CompC](&w)
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -873,7 +915,11 @@ func TestQuery3Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter3[ChildOf, CompB, CompC](&w).Register()
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
@@ -892,7 +938,11 @@ func TestQuery3Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter3[ChildOf, CompB, CompC](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -912,7 +962,11 @@ func TestQuery3Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter3[ChildOf, CompB, CompC](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -1120,9 +1174,10 @@ func TestQuery4Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter4[ChildOf, CompB, CompC, CompD](&w)
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
 
-	e := query.EntityAt(2*n - 1)
+	e := query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
@@ -1136,9 +1191,10 @@ func TestQuery4Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
 
-	e = query.EntityAt(n - 1)
+	e = query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
@@ -1153,7 +1209,11 @@ func TestQuery4Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w)
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -1185,7 +1245,11 @@ func TestQuery4Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter4[ChildOf, CompB, CompC, CompD](&w).Register()
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
@@ -1204,7 +1268,11 @@ func TestQuery4Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -1224,7 +1292,11 @@ func TestQuery4Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -1432,9 +1504,10 @@ func TestQuery5Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w)
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
 
-	e := query.EntityAt(2*n - 1)
+	e := query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
@@ -1448,9 +1521,10 @@ func TestQuery5Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
 
-	e = query.EntityAt(n - 1)
+	e = query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
@@ -1465,7 +1539,11 @@ func TestQuery5Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w)
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -1497,7 +1575,11 @@ func TestQuery5Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w).Register()
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
@@ -1516,7 +1598,11 @@ func TestQuery5Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -1536,7 +1622,11 @@ func TestQuery5Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -1744,9 +1834,10 @@ func TestQuery6Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
 
-	e := query.EntityAt(2*n - 1)
+	e := query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
@@ -1760,9 +1851,10 @@ func TestQuery6Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
 
-	e = query.EntityAt(n - 1)
+	e = query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
@@ -1777,7 +1869,11 @@ func TestQuery6Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -1809,7 +1905,11 @@ func TestQuery6Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Register()
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
@@ -1828,7 +1928,11 @@ func TestQuery6Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -1848,7 +1952,11 @@ func TestQuery6Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -2056,9 +2164,10 @@ func TestQuery7Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
 
-	e := query.EntityAt(2*n - 1)
+	e := query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
@@ -2072,9 +2181,10 @@ func TestQuery7Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
 
-	e = query.EntityAt(n - 1)
+	e = query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
@@ -2089,7 +2199,11 @@ func TestQuery7Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -2121,7 +2235,11 @@ func TestQuery7Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Register()
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
@@ -2140,7 +2258,11 @@ func TestQuery7Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -2160,7 +2282,11 @@ func TestQuery7Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -2368,9 +2494,10 @@ func TestQuery8Relations(t *testing.T) {
 	// normal filter
 	filter := NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
 
-	e := query.EntityAt(2*n - 1)
+	e := query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
@@ -2384,9 +2511,10 @@ func TestQuery8Relations(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
 
-	e = query.EntityAt(n - 1)
+	e = query.EntityAt(count - 1)
 	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
@@ -2401,7 +2529,11 @@ func TestQuery8Relations(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -2433,7 +2565,11 @@ func TestQuery8Registered(t *testing.T) {
 	// normal filter
 	filter := NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Register()
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
@@ -2452,7 +2588,11 @@ func TestQuery8Registered(t *testing.T) {
 	// relation filter 1
 	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -2472,7 +2612,11 @@ func TestQuery8Registered(t *testing.T) {
 	// relation filter 2
 	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Register()
 	query = filter.Query(RelIdx(0, parent2))
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
