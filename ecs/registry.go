@@ -14,7 +14,7 @@ type registry struct {
 	Used       bitMask                // Mapping from IDs to used status.
 	Trivial    bitMask                // Mapping from IDs to whether types are trivial.
 	Archetypes []int                  // Number of archetypes for each component.
-	generation int
+	generation uint32                 // Generation to indicate changes to archetype count per component.
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
@@ -77,7 +77,7 @@ func (r *registry) addArchetype(id uint8) {
 	r.generation++
 }
 
-func (r *registry) getGeneration() int {
+func (r *registry) getGeneration() uint32 {
 	return r.generation
 }
 

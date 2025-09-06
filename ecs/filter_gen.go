@@ -173,8 +173,8 @@ type Filter1[A any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	generation   uint32
 	rareComp     uint8
-	generation   int
 	numRelations uint8
 }
 
@@ -348,8 +348,8 @@ type Filter2[A any, B any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	generation   uint32
 	rareComp     uint8
-	generation   int
 	numRelations uint8
 }
 
@@ -529,8 +529,8 @@ type Filter3[A any, B any, C any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	generation   uint32
 	rareComp     uint8
-	generation   int
 	numRelations uint8
 }
 
@@ -713,8 +713,8 @@ type Filter4[A any, B any, C any, D any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	generation   uint32
 	rareComp     uint8
-	generation   int
 	numRelations uint8
 }
 
@@ -898,8 +898,8 @@ type Filter5[A any, B any, C any, D any, E any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	generation   uint32
 	rareComp     uint8
-	generation   int
 	numRelations uint8
 }
 
@@ -1084,8 +1084,8 @@ type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	generation   uint32
 	rareComp     uint8
-	generation   int
 	numRelations uint8
 }
 
@@ -1271,8 +1271,8 @@ type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	generation   uint32
 	rareComp     uint8
-	generation   int
 	numRelations uint8
 }
 
@@ -1459,8 +1459,8 @@ type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	components   []*componentStorage
 	filter       filter
 	cache        cacheID
+	generation   uint32
 	rareComp     uint8
-	generation   int
 	numRelations uint8
 }
 
