@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.4.8...main)
+
+### Performance
+
+- Uses component to archetype mapping to speed up `QueryX.Count` (#278)
+
 ## [[v0.4.8]](https://github.com/mlange-42/ark/compare/v0.4.7...v0.4.8)
 
 ### Bugfixes

@@ -28,8 +28,8 @@ type Filter{{.}}{{$generics}} struct {
 	filter        filter
 	cache         cacheID
 	{{if ne . 0 -}}
+	generation    uint32
 	rareComp      uint8
-	generation    int
 	{{- end}}
 	numRelations  uint8
 }
