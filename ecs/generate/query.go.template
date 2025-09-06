@@ -74,6 +74,26 @@ func (q *Query{{.}}{{$genericsShort}}) Count() int {
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
 
+// EntityAt returns the entity at a given index.
+//
+// The method is particularly useful for random sampling of entities from a query.
+// However, performance depends on the number of archetypes in the world and in the query.
+// In worlds with many archetypes, it is recommended to use a registered/cached filter.
+//
+// Do not use this to iterate a query! Use [Query{{.}}.Next] instead.
+//
+// Panics if the index is out of range, as indicated by [Query{{.}}.Count].
+func (q *Query{{.}}{{$genericsShort}}) EntityAt(index int) Entity {
+	if q.cache == nil {
+		{{if . -}}
+		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
+		{{- else -}}
+		return entityAt(&q.world.storage, q.filter, q.relations, uint32(index))
+		{{- end}}
+	}
+	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+}
+
 // Close closes the Query and unlocks the world.
 //
 // Automatically called when iteration completes.
