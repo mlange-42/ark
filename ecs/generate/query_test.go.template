@@ -100,7 +100,13 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 
 	posMapper := NewMap[Position](&w)
 	mapper := NewMap{{.}}{{$generics}}(&w)
+	compMapper := NewMap[CompA](&w)
+	compBMapper := NewMap[CompB](&w)
 
+	for range n {
+		e := mapper.NewEntity({{$mapArgs}})
+		compMapper.Remove(e)
+	}
 	for range n {
 		_ = mapper.NewEntity({{$mapArgs}})
 	}
@@ -108,6 +114,8 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 		e := posMapper.NewEntity(&Position{})
 		mapper.Add(e, {{$mapArgs}})
 	}
+	{{if gt . 1}}compMapper.NewEntity(&CompA{}){{end}}
+	compBMapper.NewEntity(&CompB{})
 
 	// Normal filter
 	var filter *Filter{{.}}{{$generics}}
@@ -118,7 +126,7 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 
 	for i := range count {
 		e := query.EntityAt(i)
-		expectEqual(t, i+2, int(e.ID()))
+		expectEqual(t, n+i+2, int(e.ID()))
 	}
 	expectPanicsWithValue(t, "Entity index 4294967295 out of bounds for query with 20 entities", func() { query.EntityAt(-1) })
 	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
@@ -132,7 +140,7 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 
 	for i := range count {
 		e := query.EntityAt(i)
-		expectEqual(t, i+2, int(e.ID()))
+		expectEqual(t, n+i+2, int(e.ID()))
 	}
 	expectPanicsWithValue(t, "Entity index 4294967295 out of bounds for query with 20 entities", func() { query.EntityAt(-1) })
 	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
