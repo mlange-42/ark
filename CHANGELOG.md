@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.4.8]](https://github.com/mlange-42/ark/compare/v0.4.7...v0.4.8)
+
+### Bugfixes
+
+- Fixes component to archetype mapping for pointer persistence (#277)
+
 ## [[v0.4.7]](https://github.com/mlange-42/ark/compare/v0.4.6...v0.4.7)
 
 ### Performance

@@ -99,14 +99,19 @@ func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {
 func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 	q.tables = nil
 	{{if eq . 0 -}}
-	archetypes := q.world.storage.archetypes
+	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	{{- else -}}
+	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
 	archetypes := q.world.storage.archetypesMap[q.rareComp]
 	{{- end}}
-	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := {{if eq . 0}}&{{end}}archetypes[q.cursor.archetype]
+		{{if eq . 0 -}}
+		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		{{- else -}}
+		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
+		{{- end}}
+		
 		if !q.filter.matches(archetype.mask) {
 			continue
 		}
