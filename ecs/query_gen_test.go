@@ -395,7 +395,7 @@ func TestQuery2EntityAt(t *testing.T) {
 	}
 
 	// Normal filter
-	var filter *Filter1[CompA]
+	var filter *Filter2[CompA, CompB]
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
@@ -693,7 +693,7 @@ func TestQuery3EntityAt(t *testing.T) {
 	}
 
 	// Normal filter
-	var filter *Filter1[CompA]
+	var filter *Filter3[CompA, CompB, CompC]
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
@@ -991,7 +991,7 @@ func TestQuery4EntityAt(t *testing.T) {
 	}
 
 	// Normal filter
-	var filter *Filter1[CompA]
+	var filter *Filter4[CompA, CompB, CompC, CompD]
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
@@ -1289,7 +1289,7 @@ func TestQuery5EntityAt(t *testing.T) {
 	}
 
 	// Normal filter
-	var filter *Filter1[CompA]
+	var filter *Filter5[CompA, CompB, CompC, CompD, CompE]
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
@@ -1587,7 +1587,7 @@ func TestQuery6EntityAt(t *testing.T) {
 	}
 
 	// Normal filter
-	var filter *Filter1[CompA]
+	var filter *Filter6[CompA, CompB, CompC, CompD, CompE, CompF]
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
@@ -1885,7 +1885,7 @@ func TestQuery7EntityAt(t *testing.T) {
 	}
 
 	// Normal filter
-	var filter *Filter1[CompA]
+	var filter *Filter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG]
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
@@ -2183,7 +2183,7 @@ func TestQuery8EntityAt(t *testing.T) {
 	}
 
 	// Normal filter
-	var filter *Filter1[CompA]
+	var filter *Filter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH]
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()

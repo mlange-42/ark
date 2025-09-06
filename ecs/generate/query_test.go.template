@@ -110,7 +110,7 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 	}
 
 	// Normal filter
-	var filter *Filter1[CompA]
+	var filter *Filter{{.}}{{$generics}}
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
