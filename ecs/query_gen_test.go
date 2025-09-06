@@ -81,6 +81,48 @@ func TestQuery1(t *testing.T) {
 	_ = filter.Batch()
 }
 
+func TestQuery1EntityAt(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](&w)
+	mapper := NewMap1[CompA](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{})
+	}
+	for range n {
+		e := posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{})
+	}
+
+	// Normal filter
+	var filter *Filter1[CompA]
+	filter = filter.New(&w)
+	query := filter.Query()
+	count := uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+
+	// Registered filter
+	filter = filter.New(&w)
+	filter.Register()
+	query = filter.Query()
+	count = uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+}
+
 func TestQuery1Empty(t *testing.T) {
 	w := NewWorld(4)
 
@@ -333,6 +375,48 @@ func TestQuery2(t *testing.T) {
 	expectEqual(t, n, cnt)
 
 	_ = filter.Batch()
+}
+
+func TestQuery2EntityAt(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](&w)
+	mapper := NewMap2[CompA, CompB](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{})
+	}
+	for range n {
+		e := posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{})
+	}
+
+	// Normal filter
+	var filter *Filter1[CompA]
+	filter = filter.New(&w)
+	query := filter.Query()
+	count := uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+
+	// Registered filter
+	filter = filter.New(&w)
+	filter.Register()
+	query = filter.Query()
+	count = uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
 }
 
 func TestQuery2Empty(t *testing.T) {
@@ -589,6 +673,48 @@ func TestQuery3(t *testing.T) {
 	_ = filter.Batch()
 }
 
+func TestQuery3EntityAt(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](&w)
+	mapper := NewMap3[CompA, CompB, CompC](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
+	}
+	for range n {
+		e := posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{})
+	}
+
+	// Normal filter
+	var filter *Filter1[CompA]
+	filter = filter.New(&w)
+	query := filter.Query()
+	count := uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+
+	// Registered filter
+	filter = filter.New(&w)
+	filter.Register()
+	query = filter.Query()
+	count = uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+}
+
 func TestQuery3Empty(t *testing.T) {
 	w := NewWorld(4)
 
@@ -841,6 +967,48 @@ func TestQuery4(t *testing.T) {
 	expectEqual(t, n, cnt)
 
 	_ = filter.Batch()
+}
+
+func TestQuery4EntityAt(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](&w)
+	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
+	}
+	for range n {
+		e := posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
+	}
+
+	// Normal filter
+	var filter *Filter1[CompA]
+	filter = filter.New(&w)
+	query := filter.Query()
+	count := uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+
+	// Registered filter
+	filter = filter.New(&w)
+	filter.Register()
+	query = filter.Query()
+	count = uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
 }
 
 func TestQuery4Empty(t *testing.T) {
@@ -1097,6 +1265,48 @@ func TestQuery5(t *testing.T) {
 	_ = filter.Batch()
 }
 
+func TestQuery5EntityAt(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](&w)
+	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+	}
+	for range n {
+		e := posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+	}
+
+	// Normal filter
+	var filter *Filter1[CompA]
+	filter = filter.New(&w)
+	query := filter.Query()
+	count := uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+
+	// Registered filter
+	filter = filter.New(&w)
+	filter.Register()
+	query = filter.Query()
+	count = uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+}
+
 func TestQuery5Empty(t *testing.T) {
 	w := NewWorld(4)
 
@@ -1349,6 +1559,48 @@ func TestQuery6(t *testing.T) {
 	expectEqual(t, n, cnt)
 
 	_ = filter.Batch()
+}
+
+func TestQuery6EntityAt(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](&w)
+	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+	}
+	for range n {
+		e := posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+	}
+
+	// Normal filter
+	var filter *Filter1[CompA]
+	filter = filter.New(&w)
+	query := filter.Query()
+	count := uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+
+	// Registered filter
+	filter = filter.New(&w)
+	filter.Register()
+	query = filter.Query()
+	count = uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
 }
 
 func TestQuery6Empty(t *testing.T) {
@@ -1605,6 +1857,48 @@ func TestQuery7(t *testing.T) {
 	_ = filter.Batch()
 }
 
+func TestQuery7EntityAt(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](&w)
+	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+	}
+	for range n {
+		e := posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+	}
+
+	// Normal filter
+	var filter *Filter1[CompA]
+	filter = filter.New(&w)
+	query := filter.Query()
+	count := uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+
+	// Registered filter
+	filter = filter.New(&w)
+	filter.Register()
+	query = filter.Query()
+	count = uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+}
+
 func TestQuery7Empty(t *testing.T) {
 	w := NewWorld(4)
 
@@ -1859,6 +2153,48 @@ func TestQuery8(t *testing.T) {
 	_ = filter.Batch()
 }
 
+func TestQuery8EntityAt(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](&w)
+	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+
+	for range n {
+		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+	}
+	for range n {
+		e := posMapper.NewEntity(&Position{})
+		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+	}
+
+	// Normal filter
+	var filter *Filter1[CompA]
+	filter = filter.New(&w)
+	query := filter.Query()
+	count := uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+
+	// Registered filter
+	filter = filter.New(&w)
+	filter.Register()
+	query = filter.Query()
+	count = uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+}
+
 func TestQuery8Empty(t *testing.T) {
 	w := NewWorld(4)
 
@@ -2096,6 +2432,46 @@ func TestQuery0(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, n, cnt)
+}
+
+func TestQuery0EntityAt(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](&w)
+
+	for range n {
+		_ = w.NewEntity()
+	}
+	for range n {
+		_ = posMapper.NewEntity(&Position{})
+	}
+
+	// Normal filter
+	var filter *Filter0
+	filter = filter.New(&w)
+	query := filter.Query()
+	count := uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+
+	// Registered filter
+	filter = filter.New(&w)
+	filter.Register()
+	query = filter.Query()
+	count = uint32(query.Count())
+	expectEqual(t, 2*n, int(count))
+
+	for i := range count {
+		e := query.EntityAt(i)
+		expectEqual(t, i+2, uint32(e.ID()))
+	}
+	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
 }
 
 func TestQuery0Empty(t *testing.T) {

@@ -2,8 +2,8 @@ package ecs
 
 import "fmt"
 
-func entityAtCache(storage *storage, cache *cacheEntry, relations []RelationID, index int) Entity {
-	count := 0
+func entityAtCache(storage *storage, cache *cacheEntry, relations []RelationID, index uint32) Entity {
+	count := uint32(0)
 	for _, tableID := range cache.tables {
 		table := &storage.tables[tableID]
 		if table.Len() == 0 {
@@ -12,7 +12,7 @@ func entityAtCache(storage *storage, cache *cacheEntry, relations []RelationID, 
 		if !table.Matches(relations) {
 			continue
 		}
-		len := table.Len()
+		len := uint32(table.Len())
 		if count+len > index {
 			return table.GetEntity(uintptr(index - count))
 		}
@@ -21,8 +21,8 @@ func entityAtCache(storage *storage, cache *cacheEntry, relations []RelationID, 
 	panic(fmt.Sprintf("Entity index %d out of bounds for query with %d entities", index, count))
 }
 
-func entityAt(storage *storage, filter *filter, relations []RelationID, index int) Entity {
-	count := 0
+func entityAt(storage *storage, filter *filter, relations []RelationID, index uint32) Entity {
+	count := uint32(0)
 	for arch := range storage.archetypes {
 		archetype := &storage.archetypes[arch]
 		if !filter.matches(archetype.mask) {
@@ -31,7 +31,7 @@ func entityAt(storage *storage, filter *filter, relations []RelationID, index in
 
 		if !archetype.HasRelations() {
 			table := &storage.tables[archetype.tables.tables[0]]
-			len := table.Len()
+			len := uint32(table.Len())
 			if count+len > index {
 				return table.GetEntity(uintptr(index - count))
 			}
@@ -45,7 +45,7 @@ func entityAt(storage *storage, filter *filter, relations []RelationID, index in
 			if !table.Matches(relations) {
 				continue
 			}
-			len := table.Len()
+			len := uint32(table.Len())
 			if count+len > index {
 				return table.GetEntity(uintptr(index - count))
 			}
@@ -55,8 +55,8 @@ func entityAt(storage *storage, filter *filter, relations []RelationID, index in
 	panic(fmt.Sprintf("Entity index %d out of bounds for query with %d entities", index, count))
 }
 
-func entityAtComponent(storage *storage, filter *filter, relations []RelationID, rareComp uint8, index int) Entity {
-	count := 0
+func entityAtComponent(storage *storage, filter *filter, relations []RelationID, rareComp uint8, index uint32) Entity {
+	count := uint32(0)
 	archetypes := storage.archetypesMap[rareComp]
 	for _, arch := range archetypes {
 		archetype := &storage.archetypes[arch]
@@ -66,7 +66,7 @@ func entityAtComponent(storage *storage, filter *filter, relations []RelationID,
 
 		if !archetype.HasRelations() {
 			table := &storage.tables[archetype.tables.tables[0]]
-			len := table.Len()
+			len := uint32(table.Len())
 			if count+len > index {
 				return table.GetEntity(uintptr(index - count))
 			}
@@ -80,7 +80,7 @@ func entityAtComponent(storage *storage, filter *filter, relations []RelationID,
 			if !table.Matches(relations) {
 				continue
 			}
-			len := table.Len()
+			len := uint32(table.Len())
 			if count+len > index {
 				return table.GetEntity(uintptr(index - count))
 			}

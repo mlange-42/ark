@@ -83,7 +83,7 @@ func (q *Query{{.}}{{$genericsShort}}) Count() int {
 // Do not use this to iterate a query! Use [Query.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
-func (q *Query{{.}}{{$genericsShort}}) EntityAt(index int) Entity {
+func (q *Query{{.}}{{$genericsShort}}) EntityAt(index uint32) Entity {
 	if q.cache == nil {
 		{{if . -}}
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, index)

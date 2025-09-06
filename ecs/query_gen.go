@@ -49,7 +49,7 @@ func (q *Query0) Count() int {
 // Do not use this to iterate a query! Use [Query.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
-func (q *Query0) EntityAt(index int) Entity {
+func (q *Query0) EntityAt(index uint32) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, index)
 	}
@@ -183,7 +183,7 @@ func (q *Query1[A]) Count() int {
 // Do not use this to iterate a query! Use [Query.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
-func (q *Query1[A]) EntityAt(index int) Entity {
+func (q *Query1[A]) EntityAt(index uint32) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, index)
 	}
@@ -319,7 +319,7 @@ func (q *Query2[A, B]) Count() int {
 // Do not use this to iterate a query! Use [Query.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
-func (q *Query2[A, B]) EntityAt(index int) Entity {
+func (q *Query2[A, B]) EntityAt(index uint32) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, index)
 	}
@@ -460,7 +460,7 @@ func (q *Query3[A, B, C]) Count() int {
 // Do not use this to iterate a query! Use [Query.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
-func (q *Query3[A, B, C]) EntityAt(index int) Entity {
+func (q *Query3[A, B, C]) EntityAt(index uint32) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, index)
 	}
@@ -604,7 +604,7 @@ func (q *Query4[A, B, C, D]) Count() int {
 // Do not use this to iterate a query! Use [Query.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
-func (q *Query4[A, B, C, D]) EntityAt(index int) Entity {
+func (q *Query4[A, B, C, D]) EntityAt(index uint32) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, index)
 	}
@@ -751,7 +751,7 @@ func (q *Query5[A, B, C, D, E]) Count() int {
 // Do not use this to iterate a query! Use [Query.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
-func (q *Query5[A, B, C, D, E]) EntityAt(index int) Entity {
+func (q *Query5[A, B, C, D, E]) EntityAt(index uint32) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, index)
 	}
@@ -901,7 +901,7 @@ func (q *Query6[A, B, C, D, E, F]) Count() int {
 // Do not use this to iterate a query! Use [Query.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
-func (q *Query6[A, B, C, D, E, F]) EntityAt(index int) Entity {
+func (q *Query6[A, B, C, D, E, F]) EntityAt(index uint32) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, index)
 	}
@@ -1054,7 +1054,7 @@ func (q *Query7[A, B, C, D, E, F, G]) Count() int {
 // Do not use this to iterate a query! Use [Query.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
-func (q *Query7[A, B, C, D, E, F, G]) EntityAt(index int) Entity {
+func (q *Query7[A, B, C, D, E, F, G]) EntityAt(index uint32) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, index)
 	}
@@ -1210,7 +1210,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Count() int {
 // Do not use this to iterate a query! Use [Query.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
-func (q *Query8[A, B, C, D, E, F, G, H]) EntityAt(index int) Entity {
+func (q *Query8[A, B, C, D, E, F, G, H]) EntityAt(index uint32) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, index)
 	}
