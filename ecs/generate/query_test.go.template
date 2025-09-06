@@ -191,6 +191,9 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	query := filter.Query()
 	expectEqual(t, 2*n, query.Count())
 
+	e := query.EntityAt(2*n-1)
+	expectEqual(t, 24, int(e.ID()))
+
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
@@ -203,6 +206,9 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
 	expectEqual(t, n, query.Count())
+
+	e = query.EntityAt(n - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -477,6 +483,9 @@ func TestQuery0Relations(t *testing.T) {
 	filter := NewFilter0(&w)
 	query := filter.Query()
 	expectEqual(t, 3*n+3, query.Count())
+	
+	e := query.EntityAt(3*n+2)
+	expectEqual(t, 34, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
