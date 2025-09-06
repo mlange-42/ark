@@ -153,7 +153,7 @@ func (q *Query1[A]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query1[A]) Count() int {
 	if q.cache == nil {
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -273,7 +273,7 @@ func (q *Query2[A, B]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query2[A, B]) Count() int {
 	if q.cache == nil {
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -398,7 +398,7 @@ func (q *Query3[A, B, C]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query3[A, B, C]) Count() int {
 	if q.cache == nil {
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -526,7 +526,7 @@ func (q *Query4[A, B, C, D]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query4[A, B, C, D]) Count() int {
 	if q.cache == nil {
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -657,7 +657,7 @@ func (q *Query5[A, B, C, D, E]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query5[A, B, C, D, E]) Count() int {
 	if q.cache == nil {
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -791,7 +791,7 @@ func (q *Query6[A, B, C, D, E, F]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query6[A, B, C, D, E, F]) Count() int {
 	if q.cache == nil {
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -928,7 +928,7 @@ func (q *Query7[A, B, C, D, E, F, G]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query7[A, B, C, D, E, F, G]) Count() int {
 	if q.cache == nil {
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -1068,7 +1068,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query8[A, B, C, D, E, F, G, H]) Count() int {
 	if q.cache == nil {
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }

@@ -40,3 +40,30 @@ func countQuery(storage *storage, filter *filter, relations []RelationID) int {
 	}
 	return count
 }
+
+func countQueryComponent(storage *storage, filter *filter, relations []RelationID, rareComp uint8) int {
+	count := 0
+	archetypes := storage.archetypesMap[rareComp]
+	for _, arch := range archetypes {
+		archetype := &storage.archetypes[arch]
+		if !filter.matches(archetype.mask) {
+			continue
+		}
+
+		if !archetype.HasRelations() {
+			table := &storage.tables[archetype.tables.tables[0]]
+			count += table.Len()
+			continue
+		}
+
+		tables := archetype.GetTables(relations)
+		for _, tab := range tables {
+			table := &storage.tables[tab]
+			if !table.Matches(relations) {
+				continue
+			}
+			count += table.Len()
+		}
+	}
+	return count
+}
