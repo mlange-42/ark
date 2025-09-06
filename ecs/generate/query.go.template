@@ -80,9 +80,9 @@ func (q *Query{{.}}{{$genericsShort}}) Count() int {
 // However, performance depends on the number of archetypes in the world and in the query.
 // In worlds with many archetypes, it is recommended to use a registered/cached filter.
 //
-// Do not use this to iterate a query! Use [Query.Next] instead.
+// Do not use this to iterate a query! Use [Query{{.}}.Next] instead.
 //
-// Panics if the index is out of range, as indicated by [Query.Count].
+// Panics if the index is out of range, as indicated by [Query{{.}}.Count].
 func (q *Query{{.}}{{$genericsShort}}) EntityAt(index int) Entity {
 	if q.cache == nil {
 		{{if . -}}

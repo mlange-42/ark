@@ -27,7 +27,11 @@ func TestQuery(t *testing.T) {
 	// normal filter
 	filter := NewUnsafeFilter(&w, compA, compB, compC)
 	query := filter.Query()
-	expectEqual(t, 2*n, query.Count())
+	count := query.Count()
+	expectEqual(t, 2*n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 31, int(e.ID()))
 
 	cnt := 0
 	for query.Next() {
@@ -41,7 +45,11 @@ func TestQuery(t *testing.T) {
 	// filter without
 	filter = NewUnsafeFilter(&w, compA, compB, compC).Without(posID)
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 29, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
@@ -57,7 +65,11 @@ func TestQuery(t *testing.T) {
 	// filter exclusive
 	filter = NewUnsafeFilter(&w, compA, compB, compC).Exclusive()
 	query = filter.Query()
-	expectEqual(t, n, query.Count())
+	count = query.Count()
+	expectEqual(t, n, count)
+
+	e = query.EntityAt(count - 1)
+	expectEqual(t, 29, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {

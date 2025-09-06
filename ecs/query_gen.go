@@ -46,9 +46,9 @@ func (q *Query0) Count() int {
 // However, performance depends on the number of archetypes in the world and in the query.
 // In worlds with many archetypes, it is recommended to use a registered/cached filter.
 //
-// Do not use this to iterate a query! Use [Query.Next] instead.
+// Do not use this to iterate a query! Use [Query0.Next] instead.
 //
-// Panics if the index is out of range, as indicated by [Query.Count].
+// Panics if the index is out of range, as indicated by [Query0.Count].
 func (q *Query0) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, uint32(index))
@@ -180,9 +180,9 @@ func (q *Query1[A]) Count() int {
 // However, performance depends on the number of archetypes in the world and in the query.
 // In worlds with many archetypes, it is recommended to use a registered/cached filter.
 //
-// Do not use this to iterate a query! Use [Query.Next] instead.
+// Do not use this to iterate a query! Use [Query1.Next] instead.
 //
-// Panics if the index is out of range, as indicated by [Query.Count].
+// Panics if the index is out of range, as indicated by [Query1.Count].
 func (q *Query1[A]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
@@ -316,9 +316,9 @@ func (q *Query2[A, B]) Count() int {
 // However, performance depends on the number of archetypes in the world and in the query.
 // In worlds with many archetypes, it is recommended to use a registered/cached filter.
 //
-// Do not use this to iterate a query! Use [Query.Next] instead.
+// Do not use this to iterate a query! Use [Query2.Next] instead.
 //
-// Panics if the index is out of range, as indicated by [Query.Count].
+// Panics if the index is out of range, as indicated by [Query2.Count].
 func (q *Query2[A, B]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
@@ -457,9 +457,9 @@ func (q *Query3[A, B, C]) Count() int {
 // However, performance depends on the number of archetypes in the world and in the query.
 // In worlds with many archetypes, it is recommended to use a registered/cached filter.
 //
-// Do not use this to iterate a query! Use [Query.Next] instead.
+// Do not use this to iterate a query! Use [Query3.Next] instead.
 //
-// Panics if the index is out of range, as indicated by [Query.Count].
+// Panics if the index is out of range, as indicated by [Query3.Count].
 func (q *Query3[A, B, C]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
@@ -601,9 +601,9 @@ func (q *Query4[A, B, C, D]) Count() int {
 // However, performance depends on the number of archetypes in the world and in the query.
 // In worlds with many archetypes, it is recommended to use a registered/cached filter.
 //
-// Do not use this to iterate a query! Use [Query.Next] instead.
+// Do not use this to iterate a query! Use [Query4.Next] instead.
 //
-// Panics if the index is out of range, as indicated by [Query.Count].
+// Panics if the index is out of range, as indicated by [Query4.Count].
 func (q *Query4[A, B, C, D]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
@@ -748,9 +748,9 @@ func (q *Query5[A, B, C, D, E]) Count() int {
 // However, performance depends on the number of archetypes in the world and in the query.
 // In worlds with many archetypes, it is recommended to use a registered/cached filter.
 //
-// Do not use this to iterate a query! Use [Query.Next] instead.
+// Do not use this to iterate a query! Use [Query5.Next] instead.
 //
-// Panics if the index is out of range, as indicated by [Query.Count].
+// Panics if the index is out of range, as indicated by [Query5.Count].
 func (q *Query5[A, B, C, D, E]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
@@ -898,9 +898,9 @@ func (q *Query6[A, B, C, D, E, F]) Count() int {
 // However, performance depends on the number of archetypes in the world and in the query.
 // In worlds with many archetypes, it is recommended to use a registered/cached filter.
 //
-// Do not use this to iterate a query! Use [Query.Next] instead.
+// Do not use this to iterate a query! Use [Query6.Next] instead.
 //
-// Panics if the index is out of range, as indicated by [Query.Count].
+// Panics if the index is out of range, as indicated by [Query6.Count].
 func (q *Query6[A, B, C, D, E, F]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
@@ -1051,9 +1051,9 @@ func (q *Query7[A, B, C, D, E, F, G]) Count() int {
 // However, performance depends on the number of archetypes in the world and in the query.
 // In worlds with many archetypes, it is recommended to use a registered/cached filter.
 //
-// Do not use this to iterate a query! Use [Query.Next] instead.
+// Do not use this to iterate a query! Use [Query7.Next] instead.
 //
-// Panics if the index is out of range, as indicated by [Query.Count].
+// Panics if the index is out of range, as indicated by [Query7.Count].
 func (q *Query7[A, B, C, D, E, F, G]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
@@ -1207,9 +1207,9 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Count() int {
 // However, performance depends on the number of archetypes in the world and in the query.
 // In worlds with many archetypes, it is recommended to use a registered/cached filter.
 //
-// Do not use this to iterate a query! Use [Query.Next] instead.
+// Do not use this to iterate a query! Use [Query8.Next] instead.
 //
-// Panics if the index is out of range, as indicated by [Query.Count].
+// Panics if the index is out of range, as indicated by [Query8.Count].
 func (q *Query8[A, B, C, D, E, F, G, H]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))

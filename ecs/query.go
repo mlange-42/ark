@@ -28,6 +28,19 @@ func (q *UnsafeQuery) Count() int {
 	return countQuery(&q.world.storage, &q.filter, q.relations)
 }
 
+// EntityAt returns the entity at a given index.
+//
+// The method is particularly useful for random sampling of entities from a query.
+// However, performance depends on the number of archetypes in the world and in the query.
+// In worlds with many archetypes, it is recommended to use a registered/cached filter.
+//
+// Do not use this to iterate a query! Use [Query.Next] instead.
+//
+// Panics if the index is out of range, as indicated by [Query.Count].
+func (q *UnsafeQuery) EntityAt(index int) Entity {
+	return entityAt(&q.world.storage, &q.filter, q.relations, uint32(index))
+}
+
 // IDs returns the IDs of all component of the current [Entity]n.
 func (q *UnsafeQuery) IDs() IDs {
 	return newIDs(q.table.ids)
