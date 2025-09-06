@@ -6,6 +6,10 @@
 
 - Uses component to archetype mapping to speed up `QueryX.Count` (#278)
 
+### Other
+
+- Adds debug and non-debug versions for unsafe queries (#279)
+
 ## [[v0.4.8]](https://github.com/mlange-42/ark/compare/v0.4.7...v0.4.8)
 
 ### Bugfixes
