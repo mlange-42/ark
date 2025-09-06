@@ -2,9 +2,13 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.4.8...main)
 
+### Features
+
+- Adds methods `QueryX.EntityAt` and `Query.EntityAt` for drawing random entities (#280)
+
 ### Performance
 
-- Uses component to archetype mapping to speed up `QueryX.Count` (#278)
+- Uses component to archetype mapping to speed up `QueryX.Count` and `QueryX.EntityAt` (#278)
 
 ### Other
 

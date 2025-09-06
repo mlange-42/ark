@@ -2711,6 +2711,7 @@ func TestQuery0EntityAt(t *testing.T) {
 	w := NewWorld(4)
 
 	posMapper := NewMap[Position](&w)
+	compMapper := NewMap[CompA](&w)
 
 	for range n {
 		_ = w.NewEntity()
@@ -2718,6 +2719,8 @@ func TestQuery0EntityAt(t *testing.T) {
 	for range n {
 		_ = posMapper.NewEntity(&Position{})
 	}
+	e := compMapper.NewEntity(&CompA{})
+	w.RemoveEntity(e)
 
 	// Normal filter
 	var filter *Filter0
