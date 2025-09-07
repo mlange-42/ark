@@ -8,7 +8,8 @@
 
 ### Performance
 
-- Uses component to archetype mapping to speed up `QueryX.Count` and `QueryX.EntityAt` (#278)
+- Uses component index to speed up `QueryX.Count` and `QueryX.EntityAt` (#278)
+- Includes `FilterX.With` args in component index optimization (#282)
 
 ### Other
 
@@ -18,13 +19,13 @@
 
 ### Bugfixes
 
-- Fixes component to archetype mapping for pointer persistence (#277)
+- Fixes component index for pointer persistence (#277)
 
 ## [[v0.4.7]](https://github.com/mlange-42/ark/compare/v0.4.6...v0.4.7)
 
 ### Performance
 
-- Adds a mapping from components to archetypes to speed up queries in case of many archetypes (#269, #271, #272)
+- Adds a component index (mapping from components to archetypes) to speed up queries in case of many archetypes (#269, #271, #272)
 
 ### Documentation
 

@@ -45,8 +45,9 @@ type Query{{.}}{{$generics}} struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
-	{{if ne . 0 -}}
-	rareComp  uint8
+	rareComp   uint8
+	{{if eq . 0 -}}
+	hasRareComp bool
 	{{- end}}
 }
 
@@ -68,7 +69,11 @@ func (q *Query{{.}}{{$genericsShort}}) Count() int {
 		{{if . -}}
 		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
 		{{- else -}}
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		if q.hasRareComp {
+			return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		} else {
+			return countQuery(&q.world.storage, q.filter, q.relations)
+		}
 		{{- end}}
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)

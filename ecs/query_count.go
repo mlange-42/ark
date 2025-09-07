@@ -18,7 +18,7 @@ func entityAtCache(storage *storage, cache *cacheEntry, relations []RelationID, 
 		}
 		count += len
 	}
-	panic(fmt.Sprintf("Entity index %d out of bounds for query with %d entities", index, count))
+	panic(fmt.Sprintf("entity index %d out of bounds for query with %d entities", index, count))
 }
 
 func entityAt(storage *storage, filter *filter, relations []RelationID, index uint32) Entity {
@@ -52,7 +52,7 @@ func entityAt(storage *storage, filter *filter, relations []RelationID, index ui
 			count += len
 		}
 	}
-	panic(fmt.Sprintf("Entity index %d out of bounds for query with %d entities", index, count))
+	panic(fmt.Sprintf("entity index %d out of bounds for query with %d entities", index, count))
 }
 
 func entityAtComponent(storage *storage, filter *filter, relations []RelationID, rareComp uint8, index uint32) Entity {
@@ -87,7 +87,7 @@ func entityAtComponent(storage *storage, filter *filter, relations []RelationID,
 			count += len
 		}
 	}
-	panic(fmt.Sprintf("Entity index %d out of bounds for query with %d entities", index, count))
+	panic(fmt.Sprintf("entity index %d out of bounds for query with %d entities", index, count))
 }
 
 func countQueryCache(storage *storage, cache *cacheEntry, relations []RelationID) int {

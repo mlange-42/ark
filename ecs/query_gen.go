@@ -16,15 +16,17 @@ type cursor struct {
 //
 // See [Query2] for a usage example.
 type Query0 struct {
-	world      *World
-	filter     *filter
-	table      *table
-	cache      *cacheEntry
-	relations  []RelationID
-	tables     []tableID
-	components []*componentStorage
-	cursor     cursor
-	lock       uint8
+	world       *World
+	filter      *filter
+	table       *table
+	cache       *cacheEntry
+	relations   []RelationID
+	tables      []tableID
+	components  []*componentStorage
+	cursor      cursor
+	lock        uint8
+	rareComp    uint8
+	hasRareComp bool
 }
 
 // Count counts the entities matching this query.
@@ -35,7 +37,11 @@ type Query0 struct {
 // Does not iterate or close the query.
 func (q *Query0) Count() int {
 	if q.cache == nil {
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		if q.hasRareComp {
+			return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		} else {
+			return countQuery(&q.world.storage, q.filter, q.relations)
+		}
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
