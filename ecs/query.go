@@ -25,7 +25,7 @@ func (q *UnsafeQuery) GetRelation(comp ID) Entity {
 
 // Count returns the number of entities matching this query.
 func (q *UnsafeQuery) Count() int {
-	return countQuery(&q.world.storage, &q.filter, q.relations)
+	return countQuery(&q.world.storage, &q.filter, q.relations, q.world.storage.allArchetypes)
 }
 
 // EntityAt returns the entity at a given index.
@@ -38,7 +38,7 @@ func (q *UnsafeQuery) Count() int {
 //
 // Panics if the index is out of range, as indicated by [Query.Count].
 func (q *UnsafeQuery) EntityAt(index int) Entity {
-	return entityAt(&q.world.storage, &q.filter, q.relations, uint32(index))
+	return entityAt(&q.world.storage, &q.filter, q.relations, q.world.storage.allArchetypes, uint32(index))
 }
 
 // IDs returns the IDs of all component of the current [Entity]n.

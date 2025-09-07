@@ -10,6 +10,7 @@ type storage struct {
 	isTarget           []bool             // Whether each entity is a target of a relationship
 	graph              graph              // Graph for fast archetype traversal
 	archetypes         []archetype        // All archetypes
+	allArchetypes      []archetypeID      // list of all archetype IDs to simplify usage of componentIndex
 	componentIndex     [][]archetypeID    // Archetypes indexed by components IDs; each archetype appears under all its component IDs
 	relationArchetypes []archetypeID      // All archetypes with relationships
 	tables             []table            // All tables
@@ -52,6 +53,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 		entityPool:     newEntityPool(uint32(config.initialCapacity), reservedEntities),
 		graph:          newGraph(),
 		archetypes:     archetypes,
+		allArchetypes:  []archetypeID{0},
 		componentIndex: make([][]archetypeID, 0, maskTotalBits),
 		tables:         tables,
 		components:     make([]componentStorage, 0, maskTotalBits),
@@ -221,6 +223,7 @@ func (s *storage) createArchetype(node *node) *archetype {
 	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, &s.registry))
 	archetype := &s.archetypes[index]
 
+	s.allArchetypes = append(s.allArchetypes, archetype.id)
 	for _, id := range archetype.components {
 		s.componentIndex[id.id] = append(s.componentIndex[id.id], archetype.id)
 		s.registry.addArchetype(id.id)
