@@ -64,6 +64,10 @@ func (q *Query{{.}}{{$genericsShort}}) GetRelation(index int) Entity {
 // However, this is still much faster than manual counting via iteration.
 //
 // Does not iterate or close the query.
+{{- if ne . 2 }}
+//
+// See [Query2.Count] for an example.
+{{- end}}
 func (q *Query{{.}}{{$genericsShort}}) Count() int {
 	if q.cache == nil {
 		{{if . -}}
@@ -88,6 +92,10 @@ func (q *Query{{.}}{{$genericsShort}}) Count() int {
 // Do not use this to iterate a query! Use [Query{{.}}.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query{{.}}.Count].
+{{- if ne . 2 }}
+//
+// See [Query2.EntityAt] for an example.
+{{- end}}
 func (q *Query{{.}}{{$genericsShort}}) EntityAt(index int) Entity {
 	if q.cache == nil {
 		{{if . -}}

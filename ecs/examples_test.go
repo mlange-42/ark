@@ -1,6 +1,10 @@
 package ecs_test
 
-import "github.com/mlange-42/ark/ecs"
+import (
+	"math/rand/v2"
+
+	"github.com/mlange-42/ark/ecs"
+)
 
 func NewGrid(width, height int) Grid {
 	return Grid{
@@ -66,6 +70,49 @@ func ExampleQuery2() {
 		_, _, _ = pos, vel, entity
 	}
 	// Output:
+}
+
+func ExampleQuery2_Count() {
+	world := ecs.NewWorld()
+
+	// Create a filter.
+	filter := ecs.NewFilter2[Position, Velocity](&world)
+
+	// Query the filter
+	query := filter.Query()
+
+	// Get the number of entities matching the query
+	count := query.Count()
+
+	// Close the query
+	// This is required if the query is not iterated
+	query.Close()
+
+	_ = count
+}
+
+func ExampleQuery2_EntityAt() {
+	world := ecs.NewWorld()
+
+	// Create a filter.
+	filter := ecs.NewFilter2[Position, Velocity](&world)
+
+	// Query the filter
+	query := filter.Query()
+
+	// Get the number of entities matching the query
+	count := query.Count()
+
+	// Get random entities from the query
+	e1 := query.EntityAt(rand.IntN(count))
+	e2 := query.EntityAt(rand.IntN(count))
+	e3 := query.EntityAt(rand.IntN(count))
+
+	// Close the query
+	// This is required if the query is not iterated
+	query.Close()
+
+	_, _, _ = e1, e2, e3
 }
 
 func ExampleMap() {

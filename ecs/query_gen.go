@@ -35,6 +35,8 @@ type Query0 struct {
 // However, this is still much faster than manual counting via iteration.
 //
 // Does not iterate or close the query.
+//
+// See [Query2.Count] for an example.
 func (q *Query0) Count() int {
 	if q.cache == nil {
 		if q.hasRareComp {
@@ -55,6 +57,8 @@ func (q *Query0) Count() int {
 // Do not use this to iterate a query! Use [Query0.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query0.Count].
+//
+// See [Query2.EntityAt] for an example.
 func (q *Query0) EntityAt(index int) Entity {
 	if q.cache == nil {
 		if q.hasRareComp {
@@ -183,6 +187,8 @@ func (q *Query1[A]) GetRelation(index int) Entity {
 // However, this is still much faster than manual counting via iteration.
 //
 // Does not iterate or close the query.
+//
+// See [Query2.Count] for an example.
 func (q *Query1[A]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
@@ -199,6 +205,8 @@ func (q *Query1[A]) Count() int {
 // Do not use this to iterate a query! Use [Query1.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query1.Count].
+//
+// See [Query2.EntityAt] for an example.
 func (q *Query1[A]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
@@ -460,6 +468,8 @@ func (q *Query3[A, B, C]) GetRelation(index int) Entity {
 // However, this is still much faster than manual counting via iteration.
 //
 // Does not iterate or close the query.
+//
+// See [Query2.Count] for an example.
 func (q *Query3[A, B, C]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
@@ -476,6 +486,8 @@ func (q *Query3[A, B, C]) Count() int {
 // Do not use this to iterate a query! Use [Query3.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query3.Count].
+//
+// See [Query2.EntityAt] for an example.
 func (q *Query3[A, B, C]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
@@ -604,6 +616,8 @@ func (q *Query4[A, B, C, D]) GetRelation(index int) Entity {
 // However, this is still much faster than manual counting via iteration.
 //
 // Does not iterate or close the query.
+//
+// See [Query2.Count] for an example.
 func (q *Query4[A, B, C, D]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
@@ -620,6 +634,8 @@ func (q *Query4[A, B, C, D]) Count() int {
 // Do not use this to iterate a query! Use [Query4.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query4.Count].
+//
+// See [Query2.EntityAt] for an example.
 func (q *Query4[A, B, C, D]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
@@ -751,6 +767,8 @@ func (q *Query5[A, B, C, D, E]) GetRelation(index int) Entity {
 // However, this is still much faster than manual counting via iteration.
 //
 // Does not iterate or close the query.
+//
+// See [Query2.Count] for an example.
 func (q *Query5[A, B, C, D, E]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
@@ -767,6 +785,8 @@ func (q *Query5[A, B, C, D, E]) Count() int {
 // Do not use this to iterate a query! Use [Query5.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query5.Count].
+//
+// See [Query2.EntityAt] for an example.
 func (q *Query5[A, B, C, D, E]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
@@ -901,6 +921,8 @@ func (q *Query6[A, B, C, D, E, F]) GetRelation(index int) Entity {
 // However, this is still much faster than manual counting via iteration.
 //
 // Does not iterate or close the query.
+//
+// See [Query2.Count] for an example.
 func (q *Query6[A, B, C, D, E, F]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
@@ -917,6 +939,8 @@ func (q *Query6[A, B, C, D, E, F]) Count() int {
 // Do not use this to iterate a query! Use [Query6.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query6.Count].
+//
+// See [Query2.EntityAt] for an example.
 func (q *Query6[A, B, C, D, E, F]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
@@ -1054,6 +1078,8 @@ func (q *Query7[A, B, C, D, E, F, G]) GetRelation(index int) Entity {
 // However, this is still much faster than manual counting via iteration.
 //
 // Does not iterate or close the query.
+//
+// See [Query2.Count] for an example.
 func (q *Query7[A, B, C, D, E, F, G]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
@@ -1070,6 +1096,8 @@ func (q *Query7[A, B, C, D, E, F, G]) Count() int {
 // Do not use this to iterate a query! Use [Query7.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query7.Count].
+//
+// See [Query2.EntityAt] for an example.
 func (q *Query7[A, B, C, D, E, F, G]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
@@ -1210,6 +1238,8 @@ func (q *Query8[A, B, C, D, E, F, G, H]) GetRelation(index int) Entity {
 // However, this is still much faster than manual counting via iteration.
 //
 // Does not iterate or close the query.
+//
+// See [Query2.Count] for an example.
 func (q *Query8[A, B, C, D, E, F, G, H]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
@@ -1226,6 +1256,8 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Count() int {
 // Do not use this to iterate a query! Use [Query8.Next] instead.
 //
 // Panics if the index is out of range, as indicated by [Query8.Count].
+//
+// See [Query2.EntityAt] for an example.
 func (q *Query8[A, B, C, D, E, F, G, H]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))

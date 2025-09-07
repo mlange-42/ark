@@ -11,6 +11,10 @@
 - Uses component index to speed up `QueryX.Count` and `QueryX.EntityAt` (#278)
 - Includes `FilterX.With` args in component index optimization (#282)
 
+### Documentation
+
+- Adds more examples for queries to API reference (#283)
+
 ### Other
 
 - Adds debug and non-debug versions for unsafe queries (#279)
