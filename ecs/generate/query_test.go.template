@@ -44,6 +44,10 @@ func TestQuery{{.}}(t *testing.T) {
 	query := filter.Query()
 	expectEqual(t, 2*n, query.Count())
 
+	expectPanicsWithValue(t, "can't modify a filter that was already queried", func() { 
+		filter.With(C[Position]())
+	})
+
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
@@ -128,8 +132,8 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 		e := query.EntityAt(i)
 		expectEqual(t, n+i+2, int(e.ID()))
 	}
-	expectPanicsWithValue(t, "Entity index 4294967295 out of bounds for query with 20 entities", func() { query.EntityAt(-1) })
-	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+	expectPanicsWithValue(t, "entity index 4294967295 out of bounds for query with 20 entities", func() { query.EntityAt(-1) })
+	expectPanicsWithValue(t, "entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
 
 	// Registered filter
 	filter = filter.New(&w)
@@ -142,8 +146,8 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 		e := query.EntityAt(i)
 		expectEqual(t, n+i+2, int(e.ID()))
 	}
-	expectPanicsWithValue(t, "Entity index 4294967295 out of bounds for query with 20 entities", func() { query.EntityAt(-1) })
-	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+	expectPanicsWithValue(t, "entity index 4294967295 out of bounds for query with 20 entities", func() { query.EntityAt(-1) })
+	expectPanicsWithValue(t, "entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
 }
 
 func TestQuery{{.}}Empty(t *testing.T) {
@@ -367,6 +371,10 @@ func TestQuery0(t *testing.T) {
 	query := filter.Query()
 	expectEqual(t, 2*n, query.Count())
 
+	expectPanicsWithValue(t, "can't modify a filter that was already queried", func() {
+		filter.With(C[Position]())
+	})
+
 	cnt := 0
 	for query.Next() {
 		_ = query.Entity()
@@ -438,8 +446,8 @@ func TestQuery0EntityAt(t *testing.T) {
 		e := query.EntityAt(i)
 		expectEqual(t, i+2, int(e.ID()))
 	}
-	expectPanicsWithValue(t, "Entity index 4294967295 out of bounds for query with 20 entities", func() { query.EntityAt(-1) })
-	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+	expectPanicsWithValue(t, "entity index 4294967295 out of bounds for query with 20 entities", func() { query.EntityAt(-1) })
+	expectPanicsWithValue(t, "entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
 
 	// Registered filter
 	filter = filter.New(&w)
@@ -452,8 +460,8 @@ func TestQuery0EntityAt(t *testing.T) {
 		e := query.EntityAt(i)
 		expectEqual(t, i+2, int(e.ID()))
 	}
-	expectPanicsWithValue(t, "Entity index 4294967295 out of bounds for query with 20 entities", func() { query.EntityAt(-1) })
-	expectPanicsWithValue(t, "Entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
+	expectPanicsWithValue(t, "entity index 4294967295 out of bounds for query with 20 entities", func() { query.EntityAt(-1) })
+	expectPanicsWithValue(t, "entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
 }
 
 func TestQuery0Empty(t *testing.T) {

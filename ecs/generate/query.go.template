@@ -45,8 +45,9 @@ type Query{{.}}{{$generics}} struct {
 	components []*componentStorage
 	cursor     cursor
 	lock       uint8
-	{{if ne . 0 -}}
-	rareComp  uint8
+	rareComp   uint8
+	{{if eq . 0 -}}
+	hasRareComp bool
 	{{- end}}
 }
 
@@ -66,9 +67,13 @@ func (q *Query{{.}}{{$genericsShort}}) GetRelation(index int) Entity {
 func (q *Query{{.}}{{$genericsShort}}) Count() int {
 	if q.cache == nil {
 		{{if . -}}
-		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 		{{- else -}}
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		if q.hasRareComp {
+			return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
+		} else {
+			return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes)
+		}
 		{{- end}}
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
@@ -86,9 +91,13 @@ func (q *Query{{.}}{{$genericsShort}}) Count() int {
 func (q *Query{{.}}{{$genericsShort}}) EntityAt(index int) Entity {
 	if q.cache == nil {
 		{{if . -}}
-		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
+		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 		{{- else -}}
-		return entityAt(&q.world.storage, q.filter, q.relations, uint32(index))
+		if q.hasRareComp {
+			return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
+		} else {
+			return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes, uint32(index))
+		}
 		{{- end}}
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
@@ -122,19 +131,20 @@ func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {
 
 func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 	q.tables = nil
-	{{if eq . 0 -}}
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	{{if . -}}
+	archetypes := q.world.storage.componentIndex[q.rareComp]
 	{{- else -}}
-	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
-	archetypes := q.world.storage.archetypesMap[q.rareComp]
+	var archetypes []archetypeID
+	if q.hasRareComp {
+		archetypes = q.world.storage.componentIndex[q.rareComp]
+	} else {
+		archetypes = q.world.storage.allArchetypes
+	}
 	{{- end}}
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		{{if eq . 0 -}}
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		{{- else -}}
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
-		{{- end}}
 		
 		if !q.filter.matches(archetype.mask) {
 			continue

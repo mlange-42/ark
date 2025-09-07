@@ -16,15 +16,17 @@ type cursor struct {
 //
 // See [Query2] for a usage example.
 type Query0 struct {
-	world      *World
-	filter     *filter
-	table      *table
-	cache      *cacheEntry
-	relations  []RelationID
-	tables     []tableID
-	components []*componentStorage
-	cursor     cursor
-	lock       uint8
+	world       *World
+	filter      *filter
+	table       *table
+	cache       *cacheEntry
+	relations   []RelationID
+	tables      []tableID
+	components  []*componentStorage
+	cursor      cursor
+	lock        uint8
+	rareComp    uint8
+	hasRareComp bool
 }
 
 // Count counts the entities matching this query.
@@ -35,7 +37,11 @@ type Query0 struct {
 // Does not iterate or close the query.
 func (q *Query0) Count() int {
 	if q.cache == nil {
-		return countQuery(&q.world.storage, q.filter, q.relations)
+		if q.hasRareComp {
+			return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
+		} else {
+			return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes)
+		}
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -51,7 +57,11 @@ func (q *Query0) Count() int {
 // Panics if the index is out of range, as indicated by [Query0.Count].
 func (q *Query0) EntityAt(index int) Entity {
 	if q.cache == nil {
-		return entityAt(&q.world.storage, q.filter, q.relations, uint32(index))
+		if q.hasRareComp {
+			return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
+		} else {
+			return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes, uint32(index))
+		}
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
 }
@@ -81,10 +91,16 @@ func (q *Query0) nextTableOrArchetype() bool {
 
 func (q *Query0) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
+	var archetypes []archetypeID
+	if q.hasRareComp {
+		archetypes = q.world.storage.componentIndex[q.rareComp]
+	} else {
+		archetypes = q.world.storage.allArchetypes
+	}
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
-		archetype := &q.world.storage.archetypes[q.cursor.archetype]
+		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
 
 		if !q.filter.matches(archetype.mask) {
 			continue
@@ -169,7 +185,7 @@ func (q *Query1[A]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query1[A]) Count() int {
 	if q.cache == nil {
-		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -185,7 +201,7 @@ func (q *Query1[A]) Count() int {
 // Panics if the index is out of range, as indicated by [Query1.Count].
 func (q *Query1[A]) EntityAt(index int) Entity {
 	if q.cache == nil {
-		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
+		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
 }
@@ -216,8 +232,8 @@ func (q *Query1[A]) nextTableOrArchetype() bool {
 
 func (q *Query1[A]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
-	archetypes := q.world.storage.archetypesMap[q.rareComp]
+	archetypes := q.world.storage.componentIndex[q.rareComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
@@ -305,7 +321,7 @@ func (q *Query2[A, B]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query2[A, B]) Count() int {
 	if q.cache == nil {
-		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -321,7 +337,7 @@ func (q *Query2[A, B]) Count() int {
 // Panics if the index is out of range, as indicated by [Query2.Count].
 func (q *Query2[A, B]) EntityAt(index int) Entity {
 	if q.cache == nil {
-		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
+		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
 }
@@ -353,8 +369,8 @@ func (q *Query2[A, B]) nextTableOrArchetype() bool {
 
 func (q *Query2[A, B]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
-	archetypes := q.world.storage.archetypesMap[q.rareComp]
+	archetypes := q.world.storage.componentIndex[q.rareComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
@@ -446,7 +462,7 @@ func (q *Query3[A, B, C]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query3[A, B, C]) Count() int {
 	if q.cache == nil {
-		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -462,7 +478,7 @@ func (q *Query3[A, B, C]) Count() int {
 // Panics if the index is out of range, as indicated by [Query3.Count].
 func (q *Query3[A, B, C]) EntityAt(index int) Entity {
 	if q.cache == nil {
-		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
+		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
 }
@@ -495,8 +511,8 @@ func (q *Query3[A, B, C]) nextTableOrArchetype() bool {
 
 func (q *Query3[A, B, C]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
-	archetypes := q.world.storage.archetypesMap[q.rareComp]
+	archetypes := q.world.storage.componentIndex[q.rareComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
@@ -590,7 +606,7 @@ func (q *Query4[A, B, C, D]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query4[A, B, C, D]) Count() int {
 	if q.cache == nil {
-		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -606,7 +622,7 @@ func (q *Query4[A, B, C, D]) Count() int {
 // Panics if the index is out of range, as indicated by [Query4.Count].
 func (q *Query4[A, B, C, D]) EntityAt(index int) Entity {
 	if q.cache == nil {
-		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
+		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
 }
@@ -640,8 +656,8 @@ func (q *Query4[A, B, C, D]) nextTableOrArchetype() bool {
 
 func (q *Query4[A, B, C, D]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
-	archetypes := q.world.storage.archetypesMap[q.rareComp]
+	archetypes := q.world.storage.componentIndex[q.rareComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
@@ -737,7 +753,7 @@ func (q *Query5[A, B, C, D, E]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query5[A, B, C, D, E]) Count() int {
 	if q.cache == nil {
-		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -753,7 +769,7 @@ func (q *Query5[A, B, C, D, E]) Count() int {
 // Panics if the index is out of range, as indicated by [Query5.Count].
 func (q *Query5[A, B, C, D, E]) EntityAt(index int) Entity {
 	if q.cache == nil {
-		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
+		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
 }
@@ -788,8 +804,8 @@ func (q *Query5[A, B, C, D, E]) nextTableOrArchetype() bool {
 
 func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
-	archetypes := q.world.storage.archetypesMap[q.rareComp]
+	archetypes := q.world.storage.componentIndex[q.rareComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
@@ -887,7 +903,7 @@ func (q *Query6[A, B, C, D, E, F]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query6[A, B, C, D, E, F]) Count() int {
 	if q.cache == nil {
-		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -903,7 +919,7 @@ func (q *Query6[A, B, C, D, E, F]) Count() int {
 // Panics if the index is out of range, as indicated by [Query6.Count].
 func (q *Query6[A, B, C, D, E, F]) EntityAt(index int) Entity {
 	if q.cache == nil {
-		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
+		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
 }
@@ -939,8 +955,8 @@ func (q *Query6[A, B, C, D, E, F]) nextTableOrArchetype() bool {
 
 func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
-	archetypes := q.world.storage.archetypesMap[q.rareComp]
+	archetypes := q.world.storage.componentIndex[q.rareComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
@@ -1040,7 +1056,7 @@ func (q *Query7[A, B, C, D, E, F, G]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query7[A, B, C, D, E, F, G]) Count() int {
 	if q.cache == nil {
-		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -1056,7 +1072,7 @@ func (q *Query7[A, B, C, D, E, F, G]) Count() int {
 // Panics if the index is out of range, as indicated by [Query7.Count].
 func (q *Query7[A, B, C, D, E, F, G]) EntityAt(index int) Entity {
 	if q.cache == nil {
-		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
+		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
 }
@@ -1093,8 +1109,8 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTableOrArchetype() bool {
 
 func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
-	archetypes := q.world.storage.archetypesMap[q.rareComp]
+	archetypes := q.world.storage.componentIndex[q.rareComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
@@ -1196,7 +1212,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) GetRelation(index int) Entity {
 // Does not iterate or close the query.
 func (q *Query8[A, B, C, D, E, F, G, H]) Count() int {
 	if q.cache == nil {
-		return countQueryComponent(&q.world.storage, q.filter, q.relations, q.rareComp)
+		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -1212,7 +1228,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Count() int {
 // Panics if the index is out of range, as indicated by [Query8.Count].
 func (q *Query8[A, B, C, D, E, F, G, H]) EntityAt(index int) Entity {
 	if q.cache == nil {
-		return entityAtComponent(&q.world.storage, q.filter, q.relations, q.rareComp, uint32(index))
+		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
 }
@@ -1250,8 +1266,8 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTableOrArchetype() bool {
 
 func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 	q.tables = nil
-	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
-	archetypes := q.world.storage.archetypesMap[q.rareComp]
+	archetypes := q.world.storage.componentIndex[q.rareComp]
+	maxArchIndex := int32(len(archetypes) - 1)
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]

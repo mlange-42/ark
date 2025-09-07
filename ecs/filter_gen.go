@@ -9,13 +9,14 @@ package ecs
 //
 // See [Filter2] for a usage example.
 type Filter0 struct {
-	world      *World
-	ids        []ID
-	relations  []RelationID
-	components []*componentStorage
-	filter     filter
-	cache      cacheID
-
+	world        *World
+	ids          []ID
+	relations    []RelationID
+	components   []*componentStorage
+	filter       filter
+	cache        cacheID
+	generation   uint32
+	rareComp     uint8
 	numRelations uint8
 }
 
@@ -44,9 +45,10 @@ func NewFilter0(world *World) *Filter0 {
 // With specifies additional components to filter for.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter0) With(comps ...Comp) *Filter0 {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
+		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id, true)
 	}
 	return f
@@ -55,7 +57,7 @@ func (f *Filter0) With(comps ...Comp) *Filter0 {
 // Without specifies components to exclude.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter0) Without(comps ...Comp) *Filter0 {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -67,7 +69,7 @@ func (f *Filter0) Without(comps ...Comp) *Filter0 {
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter0) Exclusive() *Filter0 {
-	f.checkCached()
+	f.checkModify()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -103,7 +105,7 @@ func (f *Filter0) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter0.Batch] or [Filter0.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter0) Query(rel ...Relation) Query0 {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:0], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -115,6 +117,12 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 	var cache *cacheEntry
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
+	} else {
+		reg := &f.world.storage.registry
+		if f.generation != reg.getGeneration() {
+			f.rareComp = reg.rareComponent(f.ids).id
+			f.generation = reg.getGeneration()
+		}
 	}
 
 	return Query0{
@@ -130,6 +138,8 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 			index:     0,
 			maxIndex:  -1,
 		},
+		rareComp:    f.rareComp,
+		hasRareComp: len(f.ids) > 0,
 	}
 }
 
@@ -142,7 +152,7 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 // Otherwise, changes to the origin filter or calls to [Filter0.Batch] or [Filter0.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter0) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:0], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -154,9 +164,12 @@ func (f *Filter0) Batch(rel ...Relation) *Batch {
 	}
 }
 
-func (f *Filter0) checkCached() {
+func (f *Filter0) checkModify() {
 	if f.cache != maxCacheID {
 		panic("can't modify a cached filter")
+	}
+	if f.generation != 0 {
+		panic("can't modify a filter that was already queried")
 	}
 }
 
@@ -195,20 +208,20 @@ func NewFilter1[A any](world *World) *Filter1[A] {
 	}
 
 	return &Filter1[A]{
-		world:    world,
-		ids:      ids,
-		filter:   newFilter(ids...),
-		cache:    maxCacheID,
-		rareComp: ids[0].id,
+		world:  world,
+		ids:    ids,
+		filter: newFilter(ids...),
+		cache:  maxCacheID,
 	}
 }
 
 // With specifies additional components to filter for.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter1[A]) With(comps ...Comp) *Filter1[A] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
+		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id, true)
 	}
 	return f
@@ -217,7 +230,7 @@ func (f *Filter1[A]) With(comps ...Comp) *Filter1[A] {
 // Without specifies components to exclude.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -229,7 +242,7 @@ func (f *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter1[A]) Exclusive() *Filter1[A] {
-	f.checkCached()
+	f.checkModify()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -240,8 +253,8 @@ func (f *Filter1[A]) Exclusive() *Filter1[A] {
 //
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter1[A]) Relations(rel ...Relation) *Filter1[A] {
-	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.checkModify()
+	f.relations = relations(rel).toRelations(f.world, f.ids[:1], f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -277,7 +290,7 @@ func (f *Filter1[A]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter1.Batch] or [Filter1.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:1], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -291,6 +304,12 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 	var cache *cacheEntry
 	if f.cache != maxCacheID {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
+	} else {
+		reg := &f.world.storage.registry
+		if f.generation != reg.getGeneration() {
+			f.rareComp = reg.rareComponent(f.ids).id
+			f.generation = reg.getGeneration()
+		}
 	}
 
 	return Query1[A]{
@@ -319,7 +338,7 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 // Otherwise, changes to the origin filter or calls to [Filter1.Batch] or [Filter1.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter1[A]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:1], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -331,9 +350,12 @@ func (f *Filter1[A]) Batch(rel ...Relation) *Batch {
 	}
 }
 
-func (f *Filter1[A]) checkCached() {
+func (f *Filter1[A]) checkModify() {
 	if f.cache != maxCacheID {
 		panic("can't modify a cached filter")
+	}
+	if f.generation != 0 {
+		panic("can't modify a filter that was already queried")
 	}
 }
 
@@ -379,9 +401,10 @@ func NewFilter2[A any, B any](world *World) *Filter2[A, B] {
 // With specifies additional components to filter for.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter2[A, B]) With(comps ...Comp) *Filter2[A, B] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
+		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id, true)
 	}
 	return f
@@ -390,7 +413,7 @@ func (f *Filter2[A, B]) With(comps ...Comp) *Filter2[A, B] {
 // Without specifies components to exclude.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -402,7 +425,7 @@ func (f *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
-	f.checkCached()
+	f.checkModify()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -413,8 +436,8 @@ func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 //
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter2[A, B]) Relations(rel ...Relation) *Filter2[A, B] {
-	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.checkModify()
+	f.relations = relations(rel).toRelations(f.world, f.ids[:2], f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -450,7 +473,7 @@ func (f *Filter2[A, B]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter2.Batch] or [Filter2.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:2], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -498,7 +521,7 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 // Otherwise, changes to the origin filter or calls to [Filter2.Batch] or [Filter2.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter2[A, B]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:2], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -510,9 +533,12 @@ func (f *Filter2[A, B]) Batch(rel ...Relation) *Batch {
 	}
 }
 
-func (f *Filter2[A, B]) checkCached() {
+func (f *Filter2[A, B]) checkModify() {
 	if f.cache != maxCacheID {
 		panic("can't modify a cached filter")
+	}
+	if f.generation != 0 {
+		panic("can't modify a filter that was already queried")
 	}
 }
 
@@ -563,9 +589,10 @@ func NewFilter3[A any, B any, C any](world *World) *Filter3[A, B, C] {
 // With specifies additional components to filter for.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter3[A, B, C]) With(comps ...Comp) *Filter3[A, B, C] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
+		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id, true)
 	}
 	return f
@@ -574,7 +601,7 @@ func (f *Filter3[A, B, C]) With(comps ...Comp) *Filter3[A, B, C] {
 // Without specifies components to exclude.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -586,7 +613,7 @@ func (f *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
-	f.checkCached()
+	f.checkModify()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -597,8 +624,8 @@ func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
 //
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter3[A, B, C]) Relations(rel ...Relation) *Filter3[A, B, C] {
-	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.checkModify()
+	f.relations = relations(rel).toRelations(f.world, f.ids[:3], f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -634,7 +661,7 @@ func (f *Filter3[A, B, C]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter3.Batch] or [Filter3.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:3], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -682,7 +709,7 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 // Otherwise, changes to the origin filter or calls to [Filter3.Batch] or [Filter3.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter3[A, B, C]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:3], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -694,9 +721,12 @@ func (f *Filter3[A, B, C]) Batch(rel ...Relation) *Batch {
 	}
 }
 
-func (f *Filter3[A, B, C]) checkCached() {
+func (f *Filter3[A, B, C]) checkModify() {
 	if f.cache != maxCacheID {
 		panic("can't modify a cached filter")
+	}
+	if f.generation != 0 {
+		panic("can't modify a filter that was already queried")
 	}
 }
 
@@ -748,9 +778,10 @@ func NewFilter4[A any, B any, C any, D any](world *World) *Filter4[A, B, C, D] {
 // With specifies additional components to filter for.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter4[A, B, C, D]) With(comps ...Comp) *Filter4[A, B, C, D] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
+		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id, true)
 	}
 	return f
@@ -759,7 +790,7 @@ func (f *Filter4[A, B, C, D]) With(comps ...Comp) *Filter4[A, B, C, D] {
 // Without specifies components to exclude.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -771,7 +802,7 @@ func (f *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
-	f.checkCached()
+	f.checkModify()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -782,8 +813,8 @@ func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 //
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter4[A, B, C, D]) Relations(rel ...Relation) *Filter4[A, B, C, D] {
-	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.checkModify()
+	f.relations = relations(rel).toRelations(f.world, f.ids[:4], f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -819,7 +850,7 @@ func (f *Filter4[A, B, C, D]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter4.Batch] or [Filter4.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:4], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -867,7 +898,7 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 // Otherwise, changes to the origin filter or calls to [Filter4.Batch] or [Filter4.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter4[A, B, C, D]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:4], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -879,9 +910,12 @@ func (f *Filter4[A, B, C, D]) Batch(rel ...Relation) *Batch {
 	}
 }
 
-func (f *Filter4[A, B, C, D]) checkCached() {
+func (f *Filter4[A, B, C, D]) checkModify() {
 	if f.cache != maxCacheID {
 		panic("can't modify a cached filter")
+	}
+	if f.generation != 0 {
+		panic("can't modify a filter that was already queried")
 	}
 }
 
@@ -934,9 +968,10 @@ func NewFilter5[A any, B any, C any, D any, E any](world *World) *Filter5[A, B, 
 // With specifies additional components to filter for.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter5[A, B, C, D, E]) With(comps ...Comp) *Filter5[A, B, C, D, E] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
+		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id, true)
 	}
 	return f
@@ -945,7 +980,7 @@ func (f *Filter5[A, B, C, D, E]) With(comps ...Comp) *Filter5[A, B, C, D, E] {
 // Without specifies components to exclude.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -957,7 +992,7 @@ func (f *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
-	f.checkCached()
+	f.checkModify()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -968,8 +1003,8 @@ func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
 //
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter5[A, B, C, D, E]) Relations(rel ...Relation) *Filter5[A, B, C, D, E] {
-	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.checkModify()
+	f.relations = relations(rel).toRelations(f.world, f.ids[:5], f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -1005,7 +1040,7 @@ func (f *Filter5[A, B, C, D, E]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter5.Batch] or [Filter5.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:5], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1053,7 +1088,7 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 // Otherwise, changes to the origin filter or calls to [Filter5.Batch] or [Filter5.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter5[A, B, C, D, E]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:5], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1065,9 +1100,12 @@ func (f *Filter5[A, B, C, D, E]) Batch(rel ...Relation) *Batch {
 	}
 }
 
-func (f *Filter5[A, B, C, D, E]) checkCached() {
+func (f *Filter5[A, B, C, D, E]) checkModify() {
 	if f.cache != maxCacheID {
 		panic("can't modify a cached filter")
+	}
+	if f.generation != 0 {
+		panic("can't modify a filter that was already queried")
 	}
 }
 
@@ -1121,9 +1159,10 @@ func NewFilter6[A any, B any, C any, D any, E any, F any](world *World) *Filter6
 // With specifies additional components to filter for.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter6[A, B, C, D, E, F]) With(comps ...Comp) *Filter6[A, B, C, D, E, F] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
+		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id, true)
 	}
 	return f
@@ -1132,7 +1171,7 @@ func (f *Filter6[A, B, C, D, E, F]) With(comps ...Comp) *Filter6[A, B, C, D, E, 
 // Without specifies components to exclude.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, E, F] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -1144,7 +1183,7 @@ func (f *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
-	f.checkCached()
+	f.checkModify()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -1155,8 +1194,8 @@ func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 //
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter6[A, B, C, D, E, F]) Relations(rel ...Relation) *Filter6[A, B, C, D, E, F] {
-	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.checkModify()
+	f.relations = relations(rel).toRelations(f.world, f.ids[:6], f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -1192,7 +1231,7 @@ func (f *Filter6[A, B, C, D, E, F]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter6.Batch] or [Filter6.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E, F] {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:6], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1240,7 +1279,7 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 // Otherwise, changes to the origin filter or calls to [Filter6.Batch] or [Filter6.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:6], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1252,9 +1291,12 @@ func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...Relation) *Batch {
 	}
 }
 
-func (f *Filter6[A, B, C, D, E, F]) checkCached() {
+func (f *Filter6[A, B, C, D, E, F]) checkModify() {
 	if f.cache != maxCacheID {
 		panic("can't modify a cached filter")
+	}
+	if f.generation != 0 {
+		panic("can't modify a filter that was already queried")
 	}
 }
 
@@ -1309,9 +1351,10 @@ func NewFilter7[A any, B any, C any, D any, E any, F any, G any](world *World) *
 // With specifies additional components to filter for.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter7[A, B, C, D, E, F, G]) With(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
+		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id, true)
 	}
 	return f
@@ -1320,7 +1363,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) With(comps ...Comp) *Filter7[A, B, C, D, 
 // Without specifies components to exclude.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -1332,7 +1375,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G] {
-	f.checkCached()
+	f.checkModify()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -1343,8 +1386,8 @@ func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G]
 //
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter7[A, B, C, D, E, F, G]) Relations(rel ...Relation) *Filter7[A, B, C, D, E, F, G] {
-	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.checkModify()
+	f.relations = relations(rel).toRelations(f.world, f.ids[:7], f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -1380,7 +1423,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter7.Batch] or [Filter7.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D, E, F, G] {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:7], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1428,7 +1471,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 // Otherwise, changes to the origin filter or calls to [Filter7.Batch] or [Filter7.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:7], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1440,9 +1483,12 @@ func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...Relation) *Batch {
 	}
 }
 
-func (f *Filter7[A, B, C, D, E, F, G]) checkCached() {
+func (f *Filter7[A, B, C, D, E, F, G]) checkModify() {
 	if f.cache != maxCacheID {
 		panic("can't modify a cached filter")
+	}
+	if f.generation != 0 {
+		panic("can't modify a filter that was already queried")
 	}
 }
 
@@ -1498,9 +1544,10 @@ func NewFilter8[A any, B any, C any, D any, E any, F any, G any, H any](world *W
 // With specifies additional components to filter for.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter8[A, B, C, D, E, F, G, H]) With(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
+		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id, true)
 	}
 	return f
@@ -1509,7 +1556,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) With(comps ...Comp) *Filter8[A, B, C, 
 // Without specifies components to exclude.
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
-	f.checkCached()
+	f.checkModify()
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
@@ -1521,7 +1568,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F, G, H] {
-	f.checkCached()
+	f.checkModify()
 	f.filter = f.filter.Exclusive()
 	return f
 }
@@ -1532,8 +1579,8 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 //
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Relations(rel ...Relation) *Filter8[A, B, C, D, E, F, G, H] {
-	f.checkCached()
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.checkModify()
+	f.relations = relations(rel).toRelations(f.world, f.ids[:8], f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -1569,7 +1616,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter8.Batch] or [Filter8.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C, D, E, F, G, H] {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:8], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1617,7 +1664,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 // Otherwise, changes to the origin filter or calls to [Filter8.Batch] or [Filter8.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids, f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, f.ids[:8], f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1629,8 +1676,11 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...Relation) *Batch {
 	}
 }
 
-func (f *Filter8[A, B, C, D, E, F, G, H]) checkCached() {
+func (f *Filter8[A, B, C, D, E, F, G, H]) checkModify() {
 	if f.cache != maxCacheID {
 		panic("can't modify a cached filter")
+	}
+	if f.generation != 0 {
+		panic("can't modify a filter that was already queried")
 	}
 }
