@@ -131,10 +131,10 @@ func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {
 
 func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 	q.tables = nil
-	var archetypes []archetypeID
 	{{if . -}}
-	archetypes = q.world.storage.componentIndex[q.rareComp]
+	archetypes := q.world.storage.componentIndex[q.rareComp]
 	{{- else -}}
+	var archetypes []archetypeID
 	if q.hasRareComp {
 		archetypes = q.world.storage.componentIndex[q.rareComp]
 	} else {
