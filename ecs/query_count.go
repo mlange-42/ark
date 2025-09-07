@@ -57,7 +57,7 @@ func entityAt(storage *storage, filter *filter, relations []RelationID, index ui
 
 func entityAtComponent(storage *storage, filter *filter, relations []RelationID, rareComp uint8, index uint32) Entity {
 	count := uint32(0)
-	archetypes := storage.archetypesMap[rareComp]
+	archetypes := storage.componentIndex[rareComp]
 	for _, arch := range archetypes {
 		archetype := &storage.archetypes[arch]
 		if !filter.matches(archetype.mask) {
@@ -133,7 +133,7 @@ func countQuery(storage *storage, filter *filter, relations []RelationID) int {
 
 func countQueryComponent(storage *storage, filter *filter, relations []RelationID, rareComp uint8) int {
 	count := 0
-	archetypes := storage.archetypesMap[rareComp]
+	archetypes := storage.componentIndex[rareComp]
 	for _, arch := range archetypes {
 		archetype := &storage.archetypes[arch]
 		if !filter.matches(archetype.mask) {

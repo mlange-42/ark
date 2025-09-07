@@ -10,7 +10,7 @@ type storage struct {
 	isTarget           []bool             // Whether each entity is a target of a relationship
 	graph              graph              // Graph for fast archetype traversal
 	archetypes         []archetype        // All archetypes
-	archetypesMap      [][]archetypeID    // Archetypes indexed by components IDs; each archetype appears under all its component IDs
+	componentIndex     [][]archetypeID    // Archetypes indexed by components IDs; each archetype appears under all its component IDs
 	relationArchetypes []archetypeID      // All archetypes with relationships
 	tables             []table            // All tables
 	components         []componentStorage // Component storages for fast random/world access
@@ -44,17 +44,17 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	tables := make([]table, 0, numArchetypes)
 	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, []Entity{}, []RelationID{}))
 	return storage{
-		config:        config,
-		registry:      reg,
-		cache:         newCache(),
-		entities:      entities,
-		isTarget:      isTarget,
-		entityPool:    newEntityPool(uint32(config.initialCapacity), reservedEntities),
-		graph:         newGraph(),
-		archetypes:    archetypes,
-		archetypesMap: make([][]archetypeID, 0, maskTotalBits),
-		tables:        tables,
-		components:    make([]componentStorage, 0, maskTotalBits),
+		config:         config,
+		registry:       reg,
+		cache:          newCache(),
+		entities:       entities,
+		isTarget:       isTarget,
+		entityPool:     newEntityPool(uint32(config.initialCapacity), reservedEntities),
+		graph:          newGraph(),
+		archetypes:     archetypes,
+		componentIndex: make([][]archetypeID, 0, maskTotalBits),
+		tables:         tables,
+		components:     make([]componentStorage, 0, maskTotalBits),
 	}
 }
 
@@ -88,7 +88,7 @@ func (s *storage) AddComponent(id uint8) {
 		panic("components can only be added to a storage sequentially")
 	}
 	s.components = append(s.components, componentStorage{columns: make([]*column, len(s.tables))})
-	s.archetypesMap = append(s.archetypesMap, []archetypeID{})
+	s.componentIndex = append(s.componentIndex, []archetypeID{})
 }
 
 // RemoveEntity removes the given entity from the world.
@@ -222,7 +222,7 @@ func (s *storage) createArchetype(node *node) *archetype {
 	archetype := &s.archetypes[index]
 
 	for _, id := range archetype.components {
-		s.archetypesMap[id.id] = append(s.archetypesMap[id.id], archetype.id)
+		s.componentIndex[id.id] = append(s.componentIndex[id.id], archetype.id)
 		s.registry.addArchetype(id.id)
 	}
 	if archetype.HasRelations() {

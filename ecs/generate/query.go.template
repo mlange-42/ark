@@ -130,8 +130,8 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 	{{if eq . 0 -}}
 	maxArchIndex := int32(len(q.world.storage.archetypes) - 1)
 	{{- else -}}
-	maxArchIndex := int32(len(q.world.storage.archetypesMap[q.rareComp]) - 1)
-	archetypes := q.world.storage.archetypesMap[q.rareComp]
+	maxArchIndex := int32(len(q.world.storage.componentIndex[q.rareComp]) - 1)
+	archetypes := q.world.storage.componentIndex[q.rareComp]
 	{{- end}}
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
