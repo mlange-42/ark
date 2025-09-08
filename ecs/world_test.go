@@ -178,6 +178,7 @@ func TestWorldRelations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
+	notParent := w.NewEntity()
 
 	mapper1 := NewMap3[Position, ChildOf, ChildOf2](&w)
 	expectTrue(t, w.storage.registry.IsRelation[ComponentID[ChildOf](&w).id])
@@ -216,6 +217,14 @@ func TestWorldRelations(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 30, cnt)
+
+	query = filter.Query(RelIdx(1, notParent))
+	expectEqual(t, 0, query.Count())
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	expectEqual(t, 0, cnt)
 
 	mapper2 := NewMap2[Position, ChildOf](&w)
 	child2Map := NewMap1[ChildOf2](&w)

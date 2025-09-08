@@ -2681,12 +2681,14 @@ func TestQuery0(t *testing.T) {
 	w := NewWorld(4)
 
 	posMapper := NewMap[Position](&w)
+	posVelMapper := NewMap2[Position, Velocity](&w)
 
 	for range n {
 		_ = w.NewEntity()
 		e := w.NewEntity()
 		posMapper.Add(e, &Position{})
 	}
+	w.RemoveEntity(posVelMapper.NewEntity(&Position{}, &Velocity{}))
 
 	// normal filter
 	var filter *Filter0
