@@ -122,13 +122,14 @@ func TestQueryRelations(t *testing.T) {
 	parent3 := w.NewEntity()
 
 	childID := ComponentID[ChildOf](&w)
+	childID2 := ComponentID[ChildOf2](&w)
 	compB := ComponentID[CompB](&w)
 	compC := ComponentID[CompC](&w)
 
 	for range n {
-		_ = u.NewEntityRel([]ID{childID, compB, compC}, RelID(childID, parent1))
-		_ = u.NewEntityRel([]ID{childID, compB, compC}, RelID(childID, parent2))
-		e := u.NewEntityRel([]ID{childID, compB, compC}, RelID(childID, parent3))
+		_ = u.NewEntityRel([]ID{childID, childID2, compB, compC}, RelID(childID, parent1), RelID(childID2, parent3))
+		_ = u.NewEntityRel([]ID{childID, childID2, compB, compC}, RelID(childID, parent2), RelID(childID2, parent3))
+		e := u.NewEntityRel([]ID{childID, childID2, compB, compC}, RelID(childID, parent3), RelID(childID2, parent3))
 		w.RemoveEntity(e)
 	}
 
@@ -158,6 +159,20 @@ func TestQueryRelations(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, cnt, n)
+
+	// multi relation filter
+	filter = NewUnsafeFilter(&w, childID2, childID, compB, compC)
+	query = filter.Query(RelID(childID2, parent3), RelID(childID, parent2))
+	expectEqual(t, n, query.Count())
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		_ = query.Get(childID2)
+		expectEqual(t, parent3, query.GetRelation(childID2))
+		cnt++
+	}
+	expectEqual(t, n, cnt)
 }
 
 func TestQueryCount(t *testing.T) {
