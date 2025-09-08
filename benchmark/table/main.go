@@ -9,10 +9,12 @@ import (
 )
 
 const version = "v0.5.0-dev"
+const goVersion = "1.25.1"
 
 func main() {
 	fmt.Printf("Last run: %s  \n", time.Now().Format(time.RFC1123))
 	fmt.Printf("Version: Ark %s  \n", version)
+	fmt.Printf("Go version: %s  \n", goVersion)
 	fmt.Printf("CPU: %s\n\n", cpuid.CPU.BrandName)
 
 	benchmark.RunBenchmarks("Query", benchesQuery(), benchmark.ToMarkdown)
