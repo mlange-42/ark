@@ -10,7 +10,7 @@ As such, they can be thought of as components that exist only once and are not a
 Examples could be the current game/simulation tick, a grid that your entities live on,
 or an acceleration structure for spatial indexing.
 
-A world can contain up to 256 resources (64 with build tag `tiny`).
+A world can contain up to 256 resources (64 with build tag `ark_tiny`).
 
 ## Adding resources
 

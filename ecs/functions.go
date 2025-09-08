@@ -5,7 +5,7 @@ import "reflect"
 // ComponentID returns the [ID] for a component type via generics.
 // Registers the type if it is not already registered.
 //
-// The number of unique component types per [World] is limited to 256 (64 with build tag tiny).
+// The number of unique component types per [World] is limited to 256 (64 with build tag ark_tiny).
 //
 // Panics if called on a locked world and the type is not registered yet.
 //
@@ -44,7 +44,7 @@ func ComponentInfo(w *World, id ID) (CompInfo, bool) {
 // TypeID returns the [ID] for a component type.
 // Registers the type if it is not already registered.
 //
-// The number of unique component types per [World] is limited to 256 (64 with build tag tiny).
+// The number of unique component types per [World] is limited to 256 (64 with build tag ark_tiny).
 func TypeID(w *World, tp reflect.Type) ID {
 	return w.componentID(tp)
 }
@@ -68,7 +68,7 @@ func (c Comp) Type() reflect.Type {
 // ResourceID returns the [ResID] for a resource type via generics.
 // Registers the type if it is not already registered.
 //
-// The number of resources per [World] is limited to 256 (64 with build tag tiny).
+// The number of resources per [World] is limited to 256 (64 with build tag ark_tiny).
 func ResourceID[T any](w *World) ResID {
 	return w.resourceID(reflect.TypeFor[T]())
 }
@@ -114,7 +114,7 @@ func GetResource[T any](w *World) *T {
 //
 // Uses reflection. For more efficiency when used repeatedly, use [Resource].
 //
-// The number of resources per [World] is limited to 256 (64 with build tag tiny).
+// The number of resources per [World] is limited to 256 (64 with build tag ark_tiny).
 //
 // See also [GetResource].
 func AddResource[T any](w *World, res *T) ResID {

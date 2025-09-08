@@ -1,4 +1,4 @@
-//go:build tiny
+//go:build ark_tiny
 
 package ecs
 

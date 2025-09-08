@@ -1,4 +1,4 @@
-//go:build debug
+//go:build ark_debug
 
 package ecs
 
