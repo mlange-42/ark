@@ -12,7 +12,7 @@ const (
 //
 // The memory footprint is reduced by using chunks, and only allocating chunks if they contain a key.
 //
-// The range of keys is limited from 0 to 255 (63 with build tag tiny).
+// The range of keys is limited from 0 to 255 (63 with build tag ark_tiny).
 type idMap[T any] struct {
 	zeroValue T
 	chunks    [][]T

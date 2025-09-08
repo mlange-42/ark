@@ -22,10 +22,10 @@ however, this is not always possible without degrading performance.
 As an example, {{< api ecs Query2.Get >}} panics (deliberately) with `invalid memory address or nil pointer dereference`
 when called after query iteration finished.
 
-In case of uninformative errors in queries or mappers, try to run your project using the build tag `debug`:
+In case of uninformative errors in queries or mappers, try to run your project using the build tag `ark_debug`:
 
 ```
-go run -tags debug .
+go run -tags ark_debug .
 ```
 
 This enables additional checks for more helpful error messages, at the cost of a performance penalty.

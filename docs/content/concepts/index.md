@@ -73,7 +73,7 @@ and only contain closely related state variables that are typically used togethe
 Components can also be labels or tags, which means that they don't contain any data
 but are just used to tag entities, like `Female` and `Male`.
 
-A world can contain up to 256 different component types (64 with build tag `tiny`).
+A world can contain up to 256 different component types (64 with build tag `ark_tiny`).
 
 See chapter [Component operations](../operations) for how to create entities with components,
 adding and removing components, and other details.

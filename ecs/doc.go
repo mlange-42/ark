@@ -50,14 +50,14 @@
 // # Build tags
 //
 // Ark provides two build tags:
-//   - tiny: Reduces the maximum number of components to 64, for faster mask-related operations and smaller archetype memory footprint.
-//   - debug: Improves error messages on incorrect use, at the cost of performance. Use this if you get panics from queries or maps.
+//   - ark_tiny: Reduces the maximum number of components to 64, for faster mask-related operations and smaller archetype memory footprint.
+//   - ark_debug: Improves error messages on incorrect use, at the cost of performance. Use this if you get panics from queries or maps.
 //
 // When building your application, use them like this:
 //
-//	go build -tags tiny .
-//	go build -tags debug .
-//	go build -tags tiny,debug .
+//	go build -tags ark_tiny .
+//	go build -tags ark_debug .
+//	go build -tags ark_tiny,ark_debug .
 //
 // [ark-serde]: https://github.com/mlange-42/ark-serde/
 // [User Guide]: https://mlange-42.github.io/ark/
