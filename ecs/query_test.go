@@ -163,7 +163,11 @@ func TestQueryRelations(t *testing.T) {
 	// multi relation filter
 	filter = NewUnsafeFilter(&w, childID2, childID, compB, compC)
 	query = filter.Query(RelID(childID2, parent3), RelID(childID, parent2))
-	expectEqual(t, n, query.Count())
+	count := query.Count()
+	expectEqual(t, n, count)
+
+	e := query.EntityAt(count - 1)
+	expectEqual(t, 24, int(e.ID()))
 
 	cnt = 0
 	for query.Next() {
