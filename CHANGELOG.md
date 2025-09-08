@@ -14,6 +14,7 @@
 ### Documentation
 
 - Adds more examples for queries to API reference (#283)
+- Adds a user guide chapter on design philosophy and limitations (#285)
 
 ### Other
 
