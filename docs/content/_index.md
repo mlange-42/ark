@@ -42,7 +42,7 @@ next = "/quickstart"
 </div>
 {{< /html >}}
 
-Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) for [Go](https://go.dev/). It is the successor of [Arche](https://github.com/mlange-42/arche).
+Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) for [Go](https://go.dev/).
 
 ## Ark's Features
 
