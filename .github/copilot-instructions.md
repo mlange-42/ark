@@ -11,6 +11,11 @@ Ark is an archetype-based Entity Component System (ECS) for Go.
 - `/docs`: Source files for the user guide at https://mlange-42.github.io/ark/, using Hugo.
 - `/benchmark`: Benchmark tests for performance evaluation.
 
+## Code guidelines
+
+- Unsafe code is used in performance-critical sections, and is encapsulated to avoid unsafe code in user-facing APIs.
+- The only place where `unsafe` is used in user-facing code it the unsafe API in `ecs/unsafe.go`, `ecs/query.go` and `ecs/filter.go`.
+
 ## Testing guidelines
 
 - Unit tests are required, and are required to pass before PRs can be merged.
