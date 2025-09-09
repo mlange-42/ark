@@ -18,7 +18,7 @@ git clone https://github.com/mlange-42/ark
 cd ark
 ```
 
-2. Run examples from the examples directory like this:
+2. Run examples from directory `examples` like this:
 
 ```
 cd examples
