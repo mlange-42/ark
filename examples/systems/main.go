@@ -1,4 +1,4 @@
-// Demonstrates how to implement systems.
+// Demonstrates how to implement systems and a scheduler.
 package main
 
 import (
