@@ -11,8 +11,9 @@ git clone https://github.com/mlange-42/ark
 cd ark
 ```
 
-2. Run examples from the project's root directory like this:
+2. Run examples from the examples directory like this:
 
 ```
-go run ./examples/<example>
+cd examples
+go run ./<example>
 ```

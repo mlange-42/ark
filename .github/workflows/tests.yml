@@ -134,4 +134,5 @@ jobs:
         run: |
           go run ./examples/readme
           go run ./examples/systems
-          go run ./examples/no_ecs
+          go run ./examples/entity_grid
+          go run ./examples/kdtree

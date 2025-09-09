@@ -1,4 +1,4 @@
-// Demonstrates that ECS can be mixed with non-ECS data structures, as long as they store entities.
+// Demonstrates that ECS can be mixed with non-ECS data structures, using a grid of entities.
 package main
 
 import (
