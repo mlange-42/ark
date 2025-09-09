@@ -137,5 +137,6 @@ jobs:
           go run ./kdtree
           go run ./parallel
           go run ./readme
+          go run ./relations
           go run ./systems
           go run ./world_lock
