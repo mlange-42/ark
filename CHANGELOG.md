@@ -16,6 +16,7 @@
 - Adds more examples for queries to API reference (#283)
 - Adds a user guide chapter on design philosophy and limitations (#285)
 - Adds stand-alone examples for world lock, kd-tree, entity relations and parallel simulations (#288)
+- Removes line numbers in user guide code blocks to fix copy button functionality (#291)
 
 ### Other
 

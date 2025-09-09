@@ -56,5 +56,5 @@ markup:
       unsafe: true
   highlight:
     lineNumbersInTable: false
-    lineNos: true
+    lineNos: false
     noClasses: false
