@@ -15,7 +15,7 @@
 
 - Adds more examples for queries to API reference (#283)
 - Adds a user guide chapter on design philosophy and limitations (#285)
-- Adds more stand-alone examples for world lock, kd-tree and parallel simulations (#288)
+- Adds stand-alone examples for world lock, kd-tree and parallel simulations (#288)
 
 ### Other
 
