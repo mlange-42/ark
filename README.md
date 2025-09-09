@@ -13,7 +13,6 @@
 [![Mentioned in Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go)
 
 Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) (ECS) for [Go](https://go.dev/).
-It is the successor of [Arche](https://github.com/mlange-42/arche).
 
 &mdash;&mdash;
 
