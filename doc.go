@@ -2,7 +2,8 @@
 //
 // See package [github.com/mlange-42/ark/ecs] for Ark's API.
 //
-// 🕮 Also read Ark's [User Guide]!
+// 🕮 Also read Ark's [User Guide] and take a look at the [examples]!
 //
 // [User Guide]: https://mlange-42.github.io/ark/
+// [examples]: https://github.com/mlange-42/ark/tree/main/examples
 package ark

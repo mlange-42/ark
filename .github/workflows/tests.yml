@@ -132,6 +132,11 @@ jobs:
         run: go get .
       - name: Run examples
         run: |
-          go run ./examples/readme
-          go run ./examples/systems
-          go run ./examples/no_ecs
+          cd examples
+          go run ./entity_grid
+          go run ./kdtree
+          go run ./parallel
+          go run ./readme
+          go run ./relations
+          go run ./systems
+          go run ./world_lock

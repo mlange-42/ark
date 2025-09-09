@@ -2,7 +2,7 @@
 //
 // See the top-level module [github.com/mlange-42/ark] for an overview.
 //
-// 🕮 Also read Ark's [User Guide]!
+// 🕮 Also read Ark's [User Guide] and take a look at the [examples]!
 //
 // # Outline
 //
@@ -61,4 +61,5 @@
 //
 // [ark-serde]: https://github.com/mlange-42/ark-serde/
 // [User Guide]: https://mlange-42.github.io/ark/
+// [examples]: https://github.com/mlange-42/ark/tree/main/examples
 package ecs
