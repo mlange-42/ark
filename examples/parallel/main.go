@@ -34,7 +34,7 @@ func main() {
 	// Collect and print done messages.
 	for j := 0; j < totalRuns; j++ {
 		job := <-results
-		fmt.Printf("Job %4d done after %6.1fms\n", job, float64(time.Since(start).Microseconds())/1000.0)
+		fmt.Printf("Job %3d done after %6.1fms\n", job, float64(time.Since(start).Microseconds())/1000.0)
 	}
 
 	fmt.Printf("Parallel (%d): %s\n", workers, time.Since(start))
