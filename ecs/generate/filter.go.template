@@ -114,7 +114,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Register() *Filter{{.}}{{$genericsShort}
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 

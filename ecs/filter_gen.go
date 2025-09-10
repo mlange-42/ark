@@ -82,7 +82,7 @@ func (f *Filter0) Register() *Filter0 {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
@@ -267,7 +267,7 @@ func (f *Filter1[A]) Register() *Filter1[A] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
@@ -450,7 +450,7 @@ func (f *Filter2[A, B]) Register() *Filter2[A, B] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
@@ -638,7 +638,7 @@ func (f *Filter3[A, B, C]) Register() *Filter3[A, B, C] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
@@ -827,7 +827,7 @@ func (f *Filter4[A, B, C, D]) Register() *Filter4[A, B, C, D] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
@@ -1017,7 +1017,7 @@ func (f *Filter5[A, B, C, D, E]) Register() *Filter5[A, B, C, D, E] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
@@ -1208,7 +1208,7 @@ func (f *Filter6[A, B, C, D, E, F]) Register() *Filter6[A, B, C, D, E, F] {
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
@@ -1400,7 +1400,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Register() *Filter7[A, B, C, D, E, F, G] 
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
@@ -1593,7 +1593,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Register() *Filter8[A, B, C, D, E, F, 
 	if f.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations)
+	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
