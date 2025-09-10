@@ -304,7 +304,13 @@ func TestQuery1Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 2
-	filter = NewFilter1[ChildOf](&w).Register()
+	filter = NewFilter1[ChildOf](&w)
+
+	// dummy query
+	query = filter.Query(RelIdx(0, parent1))
+	query.Close()
+
+	filter = filter.Register()
 	query = filter.Query(RelIdx(0, parent2))
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -638,7 +644,13 @@ func TestQuery2Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 2
-	filter = NewFilter2[ChildOf, CompB](&w).Register()
+	filter = NewFilter2[ChildOf, CompB](&w)
+
+	// dummy query
+	query = filter.Query(RelIdx(0, parent1))
+	query.Close()
+
+	filter = filter.Register()
 	query = filter.Query(RelIdx(0, parent2))
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -972,7 +984,13 @@ func TestQuery3Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 2
-	filter = NewFilter3[ChildOf, CompB, CompC](&w).Register()
+	filter = NewFilter3[ChildOf, CompB, CompC](&w)
+
+	// dummy query
+	query = filter.Query(RelIdx(0, parent1))
+	query.Close()
+
+	filter = filter.Register()
 	query = filter.Query(RelIdx(0, parent2))
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -1306,7 +1324,13 @@ func TestQuery4Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 2
-	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w).Register()
+	filter = NewFilter4[ChildOf, CompB, CompC, CompD](&w)
+
+	// dummy query
+	query = filter.Query(RelIdx(0, parent1))
+	query.Close()
+
+	filter = filter.Register()
 	query = filter.Query(RelIdx(0, parent2))
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -1640,7 +1664,13 @@ func TestQuery5Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 2
-	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w).Register()
+	filter = NewFilter5[ChildOf, CompB, CompC, CompD, CompE](&w)
+
+	// dummy query
+	query = filter.Query(RelIdx(0, parent1))
+	query.Close()
+
+	filter = filter.Register()
 	query = filter.Query(RelIdx(0, parent2))
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -1974,7 +2004,13 @@ func TestQuery6Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 2
-	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Register()
+	filter = NewFilter6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w)
+
+	// dummy query
+	query = filter.Query(RelIdx(0, parent1))
+	query.Close()
+
+	filter = filter.Register()
 	query = filter.Query(RelIdx(0, parent2))
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -2308,7 +2344,13 @@ func TestQuery7Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 2
-	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Register()
+	filter = NewFilter7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+
+	// dummy query
+	query = filter.Query(RelIdx(0, parent1))
+	query.Close()
+
+	filter = filter.Register()
 	query = filter.Query(RelIdx(0, parent2))
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -2642,7 +2684,13 @@ func TestQuery8Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 2
-	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Register()
+	filter = NewFilter8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+
+	// dummy query
+	query = filter.Query(RelIdx(0, parent1))
+	query.Close()
+
+	filter = filter.Register()
 	query = filter.Query(RelIdx(0, parent2))
 	count = query.Count()
 	expectEqual(t, n, count)

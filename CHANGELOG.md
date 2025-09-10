@@ -20,7 +20,7 @@
 
 ### Bugfixes
 
-- Prevents relations specified when querying from getting registered in cache (#292)
+- Prevents relations specified when querying from getting registered in cache later (#292)
 
 ### Other
 
