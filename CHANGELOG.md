@@ -4,7 +4,7 @@
 
 ### Bugfixes
 
-- Fixes crash on table creation when removing a relation component (#296, fixes #295)
+- Fixes crash on table creation when removing a relation component (#297, fixes #295)
 
 ## [[v0.5.0]](https://github.com/mlange-42/ark/compare/v0.4.8...v0.5.0)
 
