@@ -18,6 +18,10 @@
 - Adds stand-alone examples for world lock, kd-tree, entity relations and parallel simulations (#288)
 - Removes line numbers in user guide code blocks to fix copy button functionality (#291)
 
+### Bugfixes
+
+- Prevents relations specified when querying from getting registered in cache later (#292)
+
 ### Other
 
 - Adds debug and non-debug versions for unsafe queries (#279)

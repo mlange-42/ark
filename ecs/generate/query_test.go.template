@@ -317,7 +317,13 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 2
-	filter = NewFilter{{.}}{{$genericsRel}}(&w).Register()
+	filter = NewFilter{{.}}{{$genericsRel}}(&w)
+
+	// dummy query
+	query = filter.Query(RelIdx(0, parent1))
+	query.Close()
+
+	filter = filter.Register()
 	query = filter.Query(RelIdx(0, parent2))
 	count = query.Count()
 	expectEqual(t, n, count)
