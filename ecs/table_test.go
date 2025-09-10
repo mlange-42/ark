@@ -35,6 +35,7 @@ func TestTableMatches(t *testing.T) {
 	posID := ComponentID[Position](&w)
 	velID := ComponentID[Velocity](&w)
 	childID := ComponentID[ChildOf](&w)
+	child2ID := ComponentID[ChildOf2](&w)
 
 	compMap := make([]int16, maskTotalBits)
 	compMap[1] = 0
@@ -48,6 +49,7 @@ func TestTableMatches(t *testing.T) {
 	)
 
 	expectTrue(t, table.MatchesExact([]RelationID{{component: childID, target: Entity{2, 0}}}))
+	expectTrue(t, table.MatchesExact([]RelationID{{component: childID, target: Entity{2, 0}}, {component: child2ID, target: Entity{2, 0}}}))
 	expectFalse(t, table.MatchesExact([]RelationID{{component: childID, target: Entity{3, 0}}}))
 
 	expectPanics(t, func() {
