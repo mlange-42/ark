@@ -2,6 +2,10 @@
 
 ## [[v0.5.0]](https://github.com/mlange-42/ark/compare/v0.4.8...v0.5.0)
 
+### Breaking changes
+
+- Renames build tags to `ark_tiny` and `ark_debug` to avoid conflicts (#284)
+
 ### Features
 
 - Adds methods `QueryX.EntityAt` and `Query.EntityAt` for drawing random entities (#280)
@@ -25,7 +29,6 @@
 ### Other
 
 - Adds debug and non-debug versions for unsafe queries (#279)
-- Renames build tags to `ark_tiny` and `ark_debug` to avoid conflicts (#284)
 
 ## [[v0.4.8]](https://github.com/mlange-42/ark/compare/v0.4.7...v0.4.8)
 
