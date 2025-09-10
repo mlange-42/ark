@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.5.1]](https://github.com/mlange-42/ark/compare/v0.5.0...v0.5.1)
+
+### Bugfixes
+
+- Fixes crash on table creation when removing a relation component (#296, fixes #295)
+
 ## [[v0.5.0]](https://github.com/mlange-42/ark/compare/v0.4.8...v0.5.0)
 
 ### Breaking changes
