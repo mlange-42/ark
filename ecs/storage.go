@@ -73,10 +73,21 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 	}
 
 	var allRelations []RelationID
-	if len(relations) > 0 {
-		allRelations = appendNew(oldTable.relationIDs, relations...)
+	if len(remove) > 0 {
+		// filter out removed relations
+		allRelations = make([]RelationID, 0, len(oldTable.relationIDs)+len(relations))
+		for _, rel := range oldTable.relationIDs {
+			if arch.mask.Get(rel.component) {
+				allRelations = append(allRelations, rel)
+			}
+		}
+		allRelations = append(allRelations, relations...)
 	} else {
-		allRelations = oldTable.relationIDs
+		if len(relations) > 0 {
+			allRelations = appendNew(oldTable.relationIDs, relations...)
+		} else {
+			allRelations = oldTable.relationIDs
+		}
 	}
 	table, ok := arch.GetTable(s, allRelations)
 	if !ok {

@@ -245,6 +245,30 @@ func TestWorldRelations(t *testing.T) {
 	})
 }
 
+func TestWorldRelationsBug295(t *testing.T) {
+	world := NewWorld()
+	parentMap := NewMap1[Position](&world)
+	childMap := NewMap3[Velocity, ChildOf, ChildOf2](&world)
+
+	parent1 := parentMap.NewEntity(&Position{})
+	parent2 := parentMap.NewEntity(&Position{})
+	child := childMap.NewEntity(
+		&Velocity{},
+		&ChildOf{},
+		&ChildOf2{},
+		Rel[ChildOf](parent1),
+		Rel[ChildOf2](parent2),
+	)
+
+	inFarmMap1 := NewMap[ChildOf](&world)
+	inFarmMap2 := NewMap[ChildOf2](&world)
+
+	inFarmMap1.Remove(child)
+	expectEqual(t, parent2, inFarmMap2.GetRelation(child))
+
+	inFarmMap2.Remove(child)
+}
+
 func TestWorldSetRelations(t *testing.T) {
 	w := NewWorld(16)
 
