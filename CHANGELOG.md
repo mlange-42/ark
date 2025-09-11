@@ -2,9 +2,9 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.5.1...main)
 
-### Other
+### Documentation
 
-- Moves code generation to an internal package to exclude it from the API reference (#300)
+- Excludes code generation from the API reference by moving it to an internal package (#300)
 
 ## [[v0.5.1]](https://github.com/mlange-42/ark/compare/v0.5.0...v0.5.1)
 
