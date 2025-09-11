@@ -14,15 +14,15 @@ type genFile struct {
 }
 
 var files = []genFile{
-	{"./filter.go.template", "../filter_gen.go"},
-	{"./query.go.template", "../query_gen.go"},
-	{"./query_debug.go.template", "../query_debug_gen.go"},
-	{"./query_nodebug.go.template", "../query_nodebug_gen.go"},
-	{"./query_test.go.template", "../query_gen_test.go"},
-	{"./maps.go.template", "../maps_gen.go"},
-	{"./maps_test.go.template", "../maps_gen_test.go"},
-	{"./exchange.go.template", "../exchange_gen.go"},
-	{"./exchange_test.go.template", "../exchange_gen_test.go"},
+	{"./filter.go.template", "../../filter_gen.go"},
+	{"./query.go.template", "../../query_gen.go"},
+	{"./query_debug.go.template", "../../query_debug_gen.go"},
+	{"./query_nodebug.go.template", "../../query_nodebug_gen.go"},
+	{"./query_test.go.template", "../../query_gen_test.go"},
+	{"./maps.go.template", "../../maps_gen.go"},
+	{"./maps_test.go.template", "../../maps_gen_test.go"},
+	{"./exchange.go.template", "../../exchange_gen.go"},
+	{"./exchange_test.go.template", "../../exchange_gen_test.go"},
 }
 
 func main() {

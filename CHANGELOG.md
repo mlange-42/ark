@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.5.1...main)
+
+### Documentation
+
+- Excludes code generation from the API reference by moving it to an internal package (#300)
+
 ## [[v0.5.1]](https://github.com/mlange-42/ark/compare/v0.5.0...v0.5.1)
 
 ### Bugfixes
