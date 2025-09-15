@@ -97,7 +97,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Exclusive() *Filter{{.}}{{$genericsShort
 // Contrary, relation targets specified in [Filter{{.}}.Query] or [Filter{{.}}.Batch] are not cached.
 //
 // Relation components used here must be in the filter's parameters
-// or previously added via [Filter{{.}}.With].
+// or added via [Filter{{.}}.With] beforehand.
 //
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...Relation) *Filter{{.}}{{$genericsShort}} {
@@ -133,7 +133,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 //
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
 // Relation components used here must be in the filter's parameters
-// or previously added via [Filter{{.}}.With].
+// or added via [Filter{{.}}.With] beforehand.
 //
 // ⚠️ The returned [Query{{.}}] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -184,7 +184,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 //
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
 // Relation components used here must be in the filter's parameters
-// or previously added via [Filter{{.}}.With].
+// or added via [Filter{{.}}.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
