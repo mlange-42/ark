@@ -26,7 +26,7 @@ jobs:
         go test -v -covermode atomic -coverprofile="coverage.out" -coverpkg=./ecs ./...
         go tool cover -func="coverage.out"
     - name: Coveralls
-      continue-on-error: true
+      # continue-on-error: true
       uses: coverallsapp/github-action@v2
       with:
         path-to-lcov: coverage.out
