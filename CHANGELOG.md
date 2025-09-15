@@ -10,6 +10,10 @@
 
 - Excludes code generation from the API reference by moving it to an internal package (#300)
 
+### Bugfixes
+
+- Checks that queried/used relation components are actually part of filters and maps (#305, fixes #304)
+
 ## [[v0.5.1]](https://github.com/mlange-42/ark/compare/v0.5.0...v0.5.1)
 
 ### Bugfixes
