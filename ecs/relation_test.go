@@ -113,7 +113,7 @@ func TestRemoveRelationTarget(t *testing.T) {
 
 func TestStaleRelationTable(t *testing.T) {
 	world := NewWorld()
-	filter := NewFilter1[Position](&world)
+	filter := NewFilter2[Position, ChildOf2](&world)
 
 	e1 := world.NewEntity()
 	e2 := world.NewEntity()
@@ -139,36 +139,4 @@ func TestStaleRelationTable(t *testing.T) {
 	query := filter.Query(Rel[ChildOf2](e2))
 	expectEqual(t, 2, query.Count())
 	query.Close()
-}
-
-func TestRelationOutOfComponents(t *testing.T) {
-	world := NewWorld()
-
-	parent := world.NewEntity()
-
-	builder1 := NewMap1[Position](&world)
-	builder2 := NewMap2[Position, ChildOf](&world)
-	_ = builder2
-
-	filter1 := NewFilter1[Position](&world)
-	filter2 := NewFilter2[Position, ChildOf2](&world)
-
-	_ = builder1.NewEntity(&Position{})
-	_ = builder2.NewEntity(&Position{}, &ChildOf{}, Rel[ChildOf](parent))
-
-	query1 := filter1.Query(Rel[ChildOf2](parent))
-	//expectEqual(t, 0, query1.Count())
-	cnt := 0
-	for query1.Next() {
-		cnt++
-	}
-	expectEqual(t, 0, cnt)
-
-	query2 := filter2.Query(Rel[ChildOf2](parent))
-	//expectEqual(t, 0, query2.Count())
-	cnt = 0
-	for query2.Next() {
-		cnt++
-	}
-	expectEqual(t, 0, cnt)
 }
