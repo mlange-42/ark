@@ -26,11 +26,6 @@ func copyRange(src, dst reflect.Value, start, count int) {
 	reflect.Copy(dstSlice, srcSlice)
 }
 
-func sizeOf(tp reflect.Type) uintptr {
-	size, align := tp.Size(), uintptr(tp.Align())
-	return (size + (align - 1)) / align * align
-}
-
 // appends to a slice, but guaranties to return a new one and not alter the original.
 func appendNew[T any](sl []T, elems ...T) []T {
 	sl2 := make([]T, len(sl), len(sl)+len(elems))

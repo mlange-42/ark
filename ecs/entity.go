@@ -8,8 +8,8 @@ import (
 type entityID uint32
 
 var entityType = reflect.TypeFor[Entity]()
-var entitySize = sizeOf(entityType)
-var entityIndexSize = sizeOf(reflect.TypeFor[entityIndex]())
+var entitySize = entityType.Size()
+var entityIndexSize = reflect.TypeFor[entityIndex]().Size()
 
 //var wildcard = Entity{1, 0}
 

@@ -12,7 +12,7 @@ func TestCopyPtr(t *testing.T) {
 	// setup
 	var item itemType = 3
 	typeOfItem := reflect.TypeOf(item)
-	itemSize := sizeOf(typeOfItem)
+	itemSize := typeOfItem.Size()
 	targetItemIndex := 6
 	totalItems := 10
 	data := reflect.New(reflect.ArrayOf(int(totalItems), typeOfItem)).Elem()
@@ -91,6 +91,6 @@ func TestIsTrivial(t *testing.T) {
 func BenchmarkSizeOf(b *testing.B) {
 	tp := reflect.TypeFor[Position]()
 	for b.Loop() {
-		_ = sizeOf(tp)
+		_ = tp.Size()
 	}
 }

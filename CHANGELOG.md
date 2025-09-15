@@ -2,6 +2,10 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.5.1...main)
 
+### Performance
+
+- Simplifies calculation of item sizes by considering Go's alignment rules (#301)
+
 ### Documentation
 
 - Excludes code generation from the API reference by moving it to an internal package (#300)
