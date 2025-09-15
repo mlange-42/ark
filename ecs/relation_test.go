@@ -4,6 +4,11 @@ import (
 	"testing"
 )
 
+func all(ids ...ID) *bitMask {
+	mask := newMask(ids...)
+	return &mask
+}
+
 func TestRel(t *testing.T) {
 	r := RelIdx(1, Entity{5, 0})
 	expectEqual(t, relationIndex{1, Entity{5, 0}}, r.(relationIndex))
@@ -23,19 +28,30 @@ func TestToRelations(t *testing.T) {
 
 	inRelations := relations{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
 	var out []RelationID
-	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
+
+	ids := []ID{posID, childID, child2ID}
+	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}, out)
 
-	expectPanics(t, func() {
-		_ = inRelations.toRelations(&w, []ID{childID, child2ID, posID}, out, 0)
-	})
+	expectPanicsWithValue(t, "component with ID 2 is not a relation component",
+		func() {
+			ids := []ID{childID, child2ID, posID}
+			_ = inRelations.toRelations(&w, all(ids...), ids, out, 0)
+		})
+
+	expectPanicsWithValue(t, "component with ID 0 is not part of the filter or map",
+		func() {
+			ids := []ID{posID, childID, child2ID}
+			_ = inRelations.toRelations(&w, all(posID, child2ID), ids, out, 0)
+		})
 
 	inRelations = relations{RelID(childID, Entity{2, 0}), RelID(child2ID, Entity{3, 0})}
-	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
+
+	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
@@ -43,7 +59,7 @@ func TestToRelations(t *testing.T) {
 	}, out)
 
 	inRelations = relations{Rel[ChildOf](Entity{2, 0}), Rel[ChildOf2](Entity{3, 0})}
-	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
+	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
@@ -51,13 +67,13 @@ func TestToRelations(t *testing.T) {
 	}, out)
 
 	inRelations = relations{Rel[ChildOf](Entity{2, 0})}
-	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
+	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
 	}, out)
 
 	inRelations = relations{Rel[ChildOf2](Entity{3, 0})}
-	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, uint8(len(out)))
+	out = inRelations.toRelations(&w, all(ids...), ids, out, uint8(len(out)))
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
