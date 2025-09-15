@@ -114,8 +114,7 @@ func (f *Filter0) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter0.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter0.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter0.With] beforehand.
 //
 // ⚠️ The returned [Query0] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -161,8 +160,7 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter0.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter0.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter0.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
@@ -304,8 +302,7 @@ func (f *Filter1[A]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter1.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter1.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter1.With] beforehand.
 //
 // ⚠️ The returned [Query1] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -352,8 +349,7 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter1.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter1.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter1.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
@@ -492,8 +488,7 @@ func (f *Filter2[A, B]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter2.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter2.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter2.With] beforehand.
 //
 // ⚠️ The returned [Query2] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -540,8 +535,7 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter2.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter2.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter2.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
@@ -685,8 +679,7 @@ func (f *Filter3[A, B, C]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter3.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter3.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter3.With] beforehand.
 //
 // ⚠️ The returned [Query3] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -733,8 +726,7 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter3.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter3.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter3.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
@@ -879,8 +871,7 @@ func (f *Filter4[A, B, C, D]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter4.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter4.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter4.With] beforehand.
 //
 // ⚠️ The returned [Query4] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -927,8 +918,7 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter4.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter4.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter4.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
@@ -1074,8 +1064,7 @@ func (f *Filter5[A, B, C, D, E]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter5.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter5.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter5.With] beforehand.
 //
 // ⚠️ The returned [Query5] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -1122,8 +1111,7 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter5.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter5.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter5.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
@@ -1270,8 +1258,7 @@ func (f *Filter6[A, B, C, D, E, F]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter6.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter6.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter6.With] beforehand.
 //
 // ⚠️ The returned [Query6] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -1318,8 +1305,7 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter6.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter6.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter6.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
@@ -1467,8 +1453,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter7.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter7.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter7.With] beforehand.
 //
 // ⚠️ The returned [Query7] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -1515,8 +1500,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter7.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter7.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter7.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
@@ -1665,8 +1649,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter8.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter8.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter8.With] beforehand.
 //
 // ⚠️ The returned [Query8] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -1713,8 +1696,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter8.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter8.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter8.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
