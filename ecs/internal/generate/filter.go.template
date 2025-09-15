@@ -132,8 +132,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter{{.}}.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter{{.}}.With] beforehand.
 //
 // ⚠️ The returned [Query{{.}}] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -183,8 +182,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
-// Relation components used here must be in the filter's parameters
-// or added via [Filter{{.}}.With] beforehand.
+// Relation components must be in the filter's parameters or added via [Filter{{.}}.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
