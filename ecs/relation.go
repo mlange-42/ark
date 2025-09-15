@@ -126,11 +126,11 @@ func (r relations) toRelations(world *World, mask *bitMask, ids []ID, out []Rela
 	}
 	for _, rel := range r {
 		id := rel.id(ids, world)
-		if !mask.Get(id) {
-			panic(fmt.Sprintf("component with ID %d is not part of the filter or map", id.id))
-		}
 		world.storage.checkRelationTarget(rel.targetEntity())
 		world.storage.checkRelationComponent(id)
+		if !mask.Get(id) {
+			panic(fmt.Sprintf("requested relation component with ID %d was not specified in the filter or map", id.id))
+		}
 		out = append(out, RelationID{
 			component: id,
 			target:    rel.targetEntity(),

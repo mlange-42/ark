@@ -43,7 +43,7 @@ func TestToRelations(t *testing.T) {
 			_ = inRelations.toRelations(&w, all(ids...), ids, out, 0)
 		})
 
-	expectPanicsWithValue(t, "component with ID 0 is not part of the filter or map",
+	expectPanicsWithValue(t, "requested relation component with ID 0 was not specified in the filter or map",
 		func() {
 			ids := []ID{posID, childID, child2ID}
 			_ = inRelations.toRelations(&w, all(posID, child2ID), ids, out, 0)
