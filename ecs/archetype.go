@@ -64,7 +64,7 @@ func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, t
 		componentsMap[id.id] = int16(i)
 		tp := reg.Types[id.id]
 
-		itemSize := sizeOf(tp)
+		itemSize := tp.Size()
 		sizes[i] = uint32(itemSize)
 		if itemSize > maxSize {
 			maxSize = itemSize
