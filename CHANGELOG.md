@@ -4,7 +4,7 @@
 
 ### Performance
 
-- Speed up relation handling by making `Relation` interface a concrete type (#306)
+- Speeds up relation handling by making `Relation` interface a concrete type (#306)
 
 ## [[v0.5.2]](https://github.com/mlange-42/ark/compare/v0.5.1...v0.5.2)
 
