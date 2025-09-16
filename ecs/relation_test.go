@@ -11,7 +11,7 @@ func all(ids ...ID) *bitMask {
 
 func TestRel(t *testing.T) {
 	r := RelIdx(1, Entity{5, 0})
-	expectEqual(t, relationIndex{1, Entity{5, 0}}, r.(relationIndex))
+	expectEqual(t, RelationIndex{1, Entity{5, 0}}, r)
 }
 
 func TestRelID(t *testing.T) {
@@ -207,5 +207,11 @@ func BenchmarkToRelations1(b *testing.B) {
 
 	for b.Loop() {
 		_ = rels.toRelations(&world, &mask, ids, relations)
+	}
+}
+
+func BenchmarkRelIdx(b *testing.B) {
+	for b.Loop() {
+		_ = RelIdx(1, Entity{})
 	}
 }
