@@ -9,6 +9,7 @@
 ### Documentation
 
 - Excludes code generation from the API reference by moving it to an internal package (#300)
+- Clarifies the use of entity relations with filters and mappers in the API reference (#305)
 
 ### Bugfixes
 
