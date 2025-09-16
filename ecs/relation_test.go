@@ -140,3 +140,33 @@ func TestStaleRelationTable(t *testing.T) {
 	expectEqual(t, 2, query.Count())
 	query.Close()
 }
+
+func TestRelationChecks(t *testing.T) {
+	world := NewWorld()
+	builder1 := NewMap1[Position](&world)
+	builder2 := NewMap2[Position, ChildOf](&world)
+
+	parent := world.NewEntity()
+	builder1.NewEntity(&Position{})
+	e1 := builder2.NewEntity(&Position{}, &ChildOf{}, Rel[ChildOf](parent))
+	e2 := builder2.NewEntity(&Position{}, &ChildOf{}, Rel[ChildOf](parent))
+
+	expectPanicsWithValue(t, "requested relation component with ID 2 was not specified in the filter or map", func() {
+		builder2.NewEntity(&Position{}, &ChildOf{}, Rel[ChildOf2](parent))
+	})
+
+	exchange1 := NewExchange1[ChildOf2](&world).Removes(C[ChildOf]())
+	exchange1.Exchange(e1, &ChildOf2{}, Rel[ChildOf2](parent))
+
+	expectPanicsWithValue(t, "requested relation component with ID 1 was not specified in the filter or map", func() {
+		exchange1.Exchange(e2, &ChildOf2{}, Rel[ChildOf](parent))
+	})
+
+	filter1 := NewFilter1[Position](&world)
+	expectPanicsWithValue(t, "requested relation component with ID 1 was not specified in the filter or map", func() {
+		filter1.Query(Rel[ChildOf](parent))
+	})
+	filter2 := NewFilter1[Position](&world).With(C[ChildOf]())
+	query := filter2.Query(Rel[ChildOf](parent))
+	query.Close()
+}
