@@ -8,7 +8,7 @@ import (
 	"github.com/mlange-42/ark/benchmark"
 )
 
-const version = "v0.5.2"
+const version = "v0.5.3-dev"
 const goVersion = "1.25.1"
 
 func main() {
