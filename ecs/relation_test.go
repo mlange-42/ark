@@ -171,6 +171,18 @@ func TestRelationChecks(t *testing.T) {
 	query.Close()
 }
 
+func BenchmarkCreateRelationQuery(b *testing.B) {
+	world := NewWorld()
+	parent := world.NewEntity()
+
+	filter := NewFilter1[ChildOf](&world)
+
+	for b.Loop() {
+		q := filter.Query(RelIdx(0, parent))
+		q.Close()
+	}
+}
+
 func BenchmarkToRelations0(b *testing.B) {
 	world := NewWorld()
 
@@ -210,7 +222,7 @@ func BenchmarkToRelations1(b *testing.B) {
 	}
 }
 
-func BenchmarkRelIdx(b *testing.B) {
+func BenchmarkCreateRelIdx(b *testing.B) {
 	for b.Loop() {
 		_ = RelIdx(1, Entity{})
 	}
