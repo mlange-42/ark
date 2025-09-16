@@ -30,7 +30,7 @@ func TestToRelations(t *testing.T) {
 	var out []RelationID
 
 	ids := []ID{posID, childID, child2ID}
-	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
+	out = inRelations.toRelations(&w, all(ids...), ids, out[:0])
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
@@ -40,18 +40,18 @@ func TestToRelations(t *testing.T) {
 	expectPanicsWithValue(t, "component with ID 2 is not a relation component",
 		func() {
 			ids := []ID{childID, child2ID, posID}
-			_ = inRelations.toRelations(&w, all(ids...), ids, out, 0)
+			_ = inRelations.toRelations(&w, all(ids...), ids, out[:0])
 		})
 
 	expectPanicsWithValue(t, "requested relation component with ID 0 was not specified in the filter or map",
 		func() {
 			ids := []ID{posID, childID, child2ID}
-			_ = inRelations.toRelations(&w, all(posID, child2ID), ids, out, 0)
+			_ = inRelations.toRelations(&w, all(posID, child2ID), ids, out[:0])
 		})
 
 	inRelations = relations{RelID(childID, Entity{2, 0}), RelID(child2ID, Entity{3, 0})}
 
-	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
+	out = inRelations.toRelations(&w, all(ids...), ids, out[:0])
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
@@ -59,7 +59,7 @@ func TestToRelations(t *testing.T) {
 	}, out)
 
 	inRelations = relations{Rel[ChildOf](Entity{2, 0}), Rel[ChildOf2](Entity{3, 0})}
-	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
+	out = inRelations.toRelations(&w, all(ids...), ids, out[:0])
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
@@ -67,13 +67,13 @@ func TestToRelations(t *testing.T) {
 	}, out)
 
 	inRelations = relations{Rel[ChildOf](Entity{2, 0})}
-	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
+	out = inRelations.toRelations(&w, all(ids...), ids, out[:0])
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
 	}, out)
 
 	inRelations = relations{Rel[ChildOf2](Entity{3, 0})}
-	out = inRelations.toRelations(&w, all(ids...), ids, out, uint8(len(out)))
+	out = inRelations.toRelations(&w, all(ids...), ids, out)
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
@@ -169,4 +169,43 @@ func TestRelationChecks(t *testing.T) {
 	filter2 := NewFilter1[Position](&world).With(C[ChildOf]())
 	query := filter2.Query(Rel[ChildOf](parent))
 	query.Close()
+}
+
+func BenchmarkToRelations0(b *testing.B) {
+	world := NewWorld()
+
+	ids := []ID{
+		ComponentID[Position](&world),
+		ComponentID[ChildOf](&world),
+		ComponentID[ChildOf2](&world),
+	}
+	mask := newMask(ids...)
+
+	rels := relations{}
+	relations := []RelationID{}
+
+	for b.Loop() {
+		_ = rels.toRelations(&world, &mask, ids, relations)
+	}
+}
+
+func BenchmarkToRelations1(b *testing.B) {
+	world := NewWorld()
+	parent := world.NewEntity()
+
+	ids := []ID{
+		ComponentID[Position](&world),
+		ComponentID[ChildOf](&world),
+		ComponentID[ChildOf2](&world),
+	}
+	mask := newMask(ids...)
+
+	rels := relations{
+		RelIdx(1, parent),
+	}
+	relations := []RelationID{}
+
+	for b.Loop() {
+		_ = rels.toRelations(&world, &mask, ids, relations)
+	}
 }
