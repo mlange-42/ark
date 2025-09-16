@@ -20,12 +20,12 @@ type relationID struct {
 	component ID
 }
 
-// Relation is the common interface for specifying relationship targets.
-// It is implemented by [RelationType], [RelationIndex] and [RelationID].
+// Relation is the common type for specifying relationship targets.
+// It can be created with [Rel], [RelIdx] and [RelID].
 //
-//   - [RelationType] is safe, but has some run-time overhead for component [ID] lookup.
-//   - [RelationIndex] is fast but more error-prone.
-//   - [RelationID] is used in the [Unsafe] API.
+//   - [Rel] is safe, but has some run-time overhead for component [ID] lookup.
+//   - [RelIdx] is fast but more error-prone.
+//   - [RelID] is used in the [Unsafe] API.
 type Relation struct {
 	target        Entity
 	component     ID
