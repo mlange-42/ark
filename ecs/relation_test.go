@@ -215,10 +215,36 @@ func BenchmarkToRelations1(b *testing.B) {
 	rels := relationSlice{
 		RelIdx(1, parent),
 	}
-	relations := []relationID{}
+	relations := []relationID{
+		{}, {},
+	}
 
 	for b.Loop() {
-		_ = rels.toRelations(&world, &mask, ids, relations)
+		relations = rels.toRelations(&world, &mask, ids, relations[:0])
+	}
+}
+
+func BenchmarkToRelations2(b *testing.B) {
+	world := NewWorld()
+	parent := world.NewEntity()
+
+	ids := []ID{
+		ComponentID[Position](&world),
+		ComponentID[ChildOf](&world),
+		ComponentID[ChildOf2](&world),
+	}
+	mask := newMask(ids...)
+
+	rels := relationSlice{
+		RelIdx(1, parent),
+		RelIdx(2, parent),
+	}
+	relations := []relationID{
+		{}, {},
+	}
+
+	for b.Loop() {
+		relations = rels.toRelations(&world, &mask, ids, relations[:0])
 	}
 }
 

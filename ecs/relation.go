@@ -107,10 +107,21 @@ func RelIdx(index int, target Entity) Relation {
 type relationSlice []Relation
 
 func (r relationSlice) toRelations(world *World, mask *bitMask, ids []ID, out []relationID) []relationID {
-	// TODO: can this be made more efficient?
 	if len(r) == 0 {
 		return out
 	}
+	// Fast special case for a single relation (20% speedup)
+	if len(r) == 1 {
+		rel := r[0]
+		id := rel.id(ids, world)
+		world.storage.checkRelationTarget(rel.targetEntity())
+		world.storage.checkRelationComponent(id)
+		if !mask.Get(id) {
+			panic(fmt.Sprintf("requested relation component with ID %d was not specified in the filter or map", id.id))
+		}
+		return append(out, relationID{target: rel.target, component: id})
+	}
+	// Slower with loop for more than one relation
 	for _, rel := range r {
 		id := rel.id(ids, world)
 		world.storage.checkRelationTarget(rel.targetEntity())
