@@ -17,7 +17,7 @@ func removeBatch(world *World, batch *Batch, ids []ID, fn func(entity Entity)) {
 	world.exchangeBatch(batch, nil, ids, nil, process)
 }
 
-func setRelationsBatch(world *World, batch *Batch, fn func(entity Entity), relations []RelationID) {
+func setRelationsBatch(world *World, batch *Batch, fn func(entity Entity), relations []relationID) {
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
 		process = func(tableID tableID, start, len int) {

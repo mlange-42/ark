@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-func (w *World) newEntity(ids []ID, relations []RelationID) Entity {
+func (w *World) newEntity(ids []ID, relations []relationID) Entity {
 	w.checkLocked()
 	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
@@ -13,7 +13,7 @@ func (w *World) newEntity(ids []ID, relations []RelationID) Entity {
 	return entity
 }
 
-func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableID, int) {
+func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableID, int) {
 	w.checkLocked()
 	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
@@ -23,7 +23,7 @@ func (w *World) newEntities(count int, ids []ID, relations []RelationID) (tableI
 	return newTable.id, startIdx
 }
 
-func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []RelationID) {
+func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relationID) {
 	w.checkLocked()
 
 	if !w.Alive(entity) {
@@ -66,7 +66,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []Relation
 }
 
 func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
-	relations []RelationID, fn func(table tableID, start, len int)) {
+	relations []relationID, fn func(table tableID, start, len int)) {
 	w.checkLocked()
 
 	if len(add) == 0 && len(rem) == 0 {
@@ -99,7 +99,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	}
 }
 
-func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, relations []RelationID) (tableID, int, int) {
+func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, relations []relationID) (tableID, int, int) {
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
 	oldIDs := oldArchetype.components
@@ -137,7 +137,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, r
 }
 
 // setRelations sets the target entities for an entity relations.
-func (w *World) setRelations(entity Entity, relations []RelationID) {
+func (w *World) setRelations(entity Entity, relations []relationID) {
 	w.checkLocked()
 
 	if !w.storage.entityPool.Alive(entity) {
@@ -179,7 +179,7 @@ func (w *World) setRelations(entity Entity, relations []RelationID) {
 	w.storage.registerTargets(relations)
 }
 
-func (w *World) setRelationsBatch(batch *Batch, relations []RelationID, fn func(table tableID, start, len int)) {
+func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(table tableID, start, len int)) {
 	w.checkLocked()
 
 	if len(relations) == 0 {
@@ -211,7 +211,7 @@ func (w *World) setRelationsBatch(batch *Batch, relations []RelationID, fn func(
 	w.storage.registerTargets(relations)
 }
 
-func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []RelationID) (tableID, int, int) {
+func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relationID) (tableID, int, int) {
 	newRelations, changed := w.storage.getExchangeTargets(oldTable, relations)
 
 	if !changed {

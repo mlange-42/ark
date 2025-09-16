@@ -40,7 +40,7 @@ type Query{{.}}{{$generics}} struct {
 	{{- range $upper}}
 	column{{.}}    *column
 	{{- end}}
-	relations  []RelationID
+	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor

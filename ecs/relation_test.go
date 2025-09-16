@@ -11,12 +11,12 @@ func all(ids ...ID) *bitMask {
 
 func TestRel(t *testing.T) {
 	r := RelIdx(1, Entity{5, 0})
-	expectEqual(t, RelationIndex{1, Entity{5, 0}}, r)
+	expectEqual(t, RelIdx(1, Entity{5, 0}), r)
 }
 
 func TestRelID(t *testing.T) {
 	r := RelID(ID{10}, Entity{5, 0})
-	expectEqual(t, RelationID{ID{10}, Entity{5, 0}}, r)
+	expectEqual(t, RelID(ID{10}, Entity{5, 0}), r)
 }
 
 func TestToRelations(t *testing.T) {
@@ -26,13 +26,13 @@ func TestToRelations(t *testing.T) {
 	child2ID := ComponentID[ChildOf2](&w)
 	posID := ComponentID[Position](&w)
 
-	inRelations := relations{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
-	var out []RelationID
+	inRelations := relationSlice{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
+	var out []relationID
 
 	ids := []ID{posID, childID, child2ID}
 	out = inRelations.toRelations(&w, all(ids...), ids, out[:0])
 
-	expectSlicesEqual(t, []RelationID{
+	expectSlicesEqual(t, []relationID{
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}, out)
@@ -49,33 +49,33 @@ func TestToRelations(t *testing.T) {
 			_ = inRelations.toRelations(&w, all(posID, child2ID), ids, out[:0])
 		})
 
-	inRelations = relations{RelID(childID, Entity{2, 0}), RelID(child2ID, Entity{3, 0})}
+	inRelations = relationSlice{RelID(childID, Entity{2, 0}), RelID(child2ID, Entity{3, 0})}
 
 	out = inRelations.toRelations(&w, all(ids...), ids, out[:0])
 
-	expectSlicesEqual(t, []RelationID{
+	expectSlicesEqual(t, []relationID{
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}, out)
 
-	inRelations = relations{Rel[ChildOf](Entity{2, 0}), Rel[ChildOf2](Entity{3, 0})}
+	inRelations = relationSlice{Rel[ChildOf](Entity{2, 0}), Rel[ChildOf2](Entity{3, 0})}
 	out = inRelations.toRelations(&w, all(ids...), ids, out[:0])
 
-	expectSlicesEqual(t, []RelationID{
+	expectSlicesEqual(t, []relationID{
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}, out)
 
-	inRelations = relations{Rel[ChildOf](Entity{2, 0})}
+	inRelations = relationSlice{Rel[ChildOf](Entity{2, 0})}
 	out = inRelations.toRelations(&w, all(ids...), ids, out[:0])
-	expectSlicesEqual(t, []RelationID{
+	expectSlicesEqual(t, []relationID{
 		{component: childID, target: Entity{2, 0}},
 	}, out)
 
-	inRelations = relations{Rel[ChildOf2](Entity{3, 0})}
+	inRelations = relationSlice{Rel[ChildOf2](Entity{3, 0})}
 	out = inRelations.toRelations(&w, all(ids...), ids, out)
 
-	expectSlicesEqual(t, []RelationID{
+	expectSlicesEqual(t, []relationID{
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}, out)
@@ -193,8 +193,8 @@ func BenchmarkToRelations0(b *testing.B) {
 	}
 	mask := newMask(ids...)
 
-	rels := relations{}
-	relations := []RelationID{}
+	rels := relationSlice{}
+	relations := []relationID{}
 
 	for b.Loop() {
 		_ = rels.toRelations(&world, &mask, ids, relations)
@@ -212,10 +212,10 @@ func BenchmarkToRelations1(b *testing.B) {
 	}
 	mask := newMask(ids...)
 
-	rels := relations{
+	rels := relationSlice{
 		RelIdx(1, parent),
 	}
-	relations := []RelationID{}
+	relations := []relationID{}
 
 	for b.Loop() {
 		_ = rels.toRelations(&world, &mask, ids, relations)

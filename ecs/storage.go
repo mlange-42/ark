@@ -43,7 +43,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	archetypes := make([]archetype, 0, numArchetypes)
 	archetypes = append(archetypes, newArchetype(0, 0, &bitMask{}, []ID{}, []tableID{0}, &reg))
 	tables := make([]table, 0, numArchetypes)
-	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, []Entity{}, []RelationID{}))
+	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, []Entity{}, []relationID{}))
 	return storage{
 		config:         config,
 		registry:       reg,
@@ -60,7 +60,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []RelationID, outMask *bitMask) *table {
+func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []relationID, outMask *bitMask) *table {
 	startNode := s.archetypes[oldTable.archetype].node
 
 	node := s.graph.Find(startNode, add, remove, outMask)
@@ -72,10 +72,10 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		node.archetype = arch.id
 	}
 
-	var allRelations []RelationID
+	var allRelations []relationID
 	if len(remove) > 0 {
 		// filter out removed relations
-		allRelations = make([]RelationID, 0, len(oldTable.relationIDs)+len(relations))
+		allRelations = make([]relationID, 0, len(oldTable.relationIDs)+len(relations))
 		for _, rel := range oldTable.relationIDs {
 			if arch.mask.Get(rel.component) {
 				allRelations = append(allRelations, rel)
@@ -176,13 +176,13 @@ func (s *storage) getRelationUnchecked(entity Entity, comp ID) Entity {
 	return s.tables[s.entities[entity.id].table].GetRelation(comp)
 }
 
-func (s *storage) registerTargets(relations []RelationID) {
+func (s *storage) registerTargets(relations []relationID) {
 	for _, rel := range relations {
 		s.isTarget[rel.target.id] = true
 	}
 }
 
-func (s *storage) registerFilter(filter *filter, relations []RelationID) cacheID {
+func (s *storage) registerFilter(filter *filter, relations []relationID) cacheID {
 	return s.cache.register(s, filter, relations)
 }
 
@@ -246,7 +246,7 @@ func (s *storage) createArchetype(node *node) *archetype {
 	return archetype
 }
 
-func (s *storage) createTable(archetype *archetype, relations []RelationID) *table {
+func (s *storage) createTable(archetype *archetype, relations []relationID) *table {
 	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(archetype.components))
 
@@ -301,7 +301,7 @@ func (s *storage) createTable(archetype *archetype, relations []RelationID) *tab
 
 // Removes empty archetypes that have a target relation to the given entity.
 func (s *storage) cleanupArchetypes(target Entity) {
-	newRelations := []RelationID{}
+	newRelations := []relationID{}
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
 		len := len(archetype.tables.tables)
@@ -311,7 +311,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 			foundTarget := false
 			for _, rel := range table.relationIDs {
 				if rel.target.id == target.id {
-					newRelations = append(newRelations, RelationID{component: rel.component, target: Entity{}})
+					newRelations = append(newRelations, relationID{component: rel.component, target: Entity{}})
 					foundTarget = true
 				}
 			}
@@ -352,7 +352,7 @@ func (s *storage) moveEntities(src, dst *table, count uint32) {
 	src.Reset()
 }
 
-func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []RelationID) []RelationID {
+func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relationID) []relationID {
 	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(oldTable.columns))
 	for i := range oldTable.columns {
@@ -366,19 +366,19 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []Relat
 		targets[column.index] = rel.target
 	}
 
-	result := make([]RelationID, 0, len(oldTable.relationIDs))
+	result := make([]relationID, 0, len(oldTable.relationIDs))
 	for i, e := range targets {
 		if !oldTable.columns[i].isRelation {
 			continue
 		}
 		id := oldTable.ids[i]
-		result = append(result, RelationID{component: id, target: e})
+		result = append(result, relationID{component: id, target: e})
 	}
 
 	return result
 }
 
-func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([]RelationID, bool) {
+func (s *storage) getExchangeTargets(oldTable *table, relations []relationID) ([]relationID, bool) {
 	changed := false
 	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(oldTable.columns))
@@ -403,13 +403,13 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []RelationID) ([
 		return nil, false
 	}
 
-	result := make([]RelationID, 0, len(oldTable.relationIDs))
+	result := make([]relationID, 0, len(oldTable.relationIDs))
 	for i, e := range targets {
 		if !oldTable.columns[i].isRelation {
 			continue
 		}
 		id := oldTable.ids[i]
-		result = append(result, RelationID{component: id, target: e})
+		result = append(result, relationID{component: id, target: e})
 	}
 
 	return result, true
@@ -457,7 +457,7 @@ func (s *storage) getTables(batch *Batch) []tableID {
 	return tables
 }
 
-func (s *storage) getTableIDs(filter *filter, relations []RelationID) []tableID {
+func (s *storage) getTableIDs(filter *filter, relations []relationID) []tableID {
 	tables := []tableID{}
 
 	for i := range s.archetypes {

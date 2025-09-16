@@ -8,7 +8,8 @@ import "unsafe"
 // The unsafe API is significantly slower than the type-safe API,
 // and should only be used when component types are not known at compile time.
 type Unsafe struct {
-	world *World
+	world           *World
+	cachedRelations []relationID
 }
 
 // NewEntity creates a new entity with the given components.
@@ -17,8 +18,9 @@ func (u Unsafe) NewEntity(ids ...ID) Entity {
 }
 
 // NewEntityRel creates a new entity with the given components and relation targets.
-func (u Unsafe) NewEntityRel(ids []ID, relations ...RelationID) Entity {
-	return u.world.newEntity(ids, relations)
+func (u Unsafe) NewEntityRel(ids []ID, relations ...Relation) Entity {
+	u.cachedRelations = relationSlice(relations).toRelationIDs(u.cachedRelations[:0])
+	return u.world.newEntity(ids, u.cachedRelations)
 }
 
 // Get returns a pointer to the given component of an [Entity].
@@ -69,8 +71,9 @@ func (u Unsafe) GetRelationUnchecked(entity Entity, comp ID) Entity {
 }
 
 // SetRelations sets relation targets for an entity.
-func (u Unsafe) SetRelations(entity Entity, relations ...RelationID) {
-	u.world.setRelations(entity, relations)
+func (u Unsafe) SetRelations(entity Entity, relations ...Relation) {
+	u.cachedRelations = relationSlice(relations).toRelationIDs(u.cachedRelations[:0])
+	u.world.setRelations(entity, u.cachedRelations)
 }
 
 // Add the given components to an entity.
@@ -82,11 +85,12 @@ func (u Unsafe) Add(entity Entity, comp ...ID) {
 }
 
 // AddRel adds the given components and relation targets to an entity.
-func (u Unsafe) AddRel(entity Entity, comps []ID, relations ...RelationID) {
+func (u Unsafe) AddRel(entity Entity, comps []ID, relations ...Relation) {
 	if !u.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	u.world.exchange(entity, comps, nil, relations)
+	u.cachedRelations = relationSlice(relations).toRelationIDs(u.cachedRelations[:0])
+	u.world.exchange(entity, comps, nil, u.cachedRelations)
 }
 
 // Remove the given components from an entity.
@@ -98,11 +102,12 @@ func (u Unsafe) Remove(entity Entity, comp ...ID) {
 }
 
 // Exchange the given components on entity.
-func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...RelationID) {
+func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Relation) {
 	if !u.world.Alive(entity) {
 		panic("can't exchange components on a dead entity")
 	}
-	u.world.exchange(entity, add, remove, relations)
+	u.cachedRelations = relationSlice(relations).toRelationIDs(u.cachedRelations[:0])
+	u.world.exchange(entity, add, remove, u.cachedRelations)
 }
 
 // IDs returns all component IDs of an entity.

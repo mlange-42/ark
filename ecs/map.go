@@ -6,7 +6,7 @@ package ecs
 type Map[T any] struct {
 	world     *World
 	storage   *componentStorage
-	relations []RelationID
+	relations []relationID
 	id        ID
 	ids       [1]ID
 }

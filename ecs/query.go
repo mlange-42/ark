@@ -6,7 +6,7 @@ package ecs
 type UnsafeQuery struct {
 	world     *World
 	table     *table
-	relations []RelationID
+	relations []relationID
 	tables    []tableID
 	filter    filter
 	cursor    cursor

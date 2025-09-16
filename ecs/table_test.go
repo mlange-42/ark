@@ -11,7 +11,7 @@ func TestNewTable(t *testing.T) {
 	velID := ComponentID[Velocity](&w)
 
 	arch := newArchetype(0, 0, &bitMask{}, []ID{posID, velID}, []tableID{0}, &w.storage.registry)
-	table := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 2), []RelationID{})
+	table := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 2), []relationID{})
 
 	expectEqual(t, 2, len(table.columns))
 	expectEqual(t, 0, table.components[posID.id].index)
@@ -23,7 +23,7 @@ func TestNewTable(t *testing.T) {
 	expectEqual(t, 9, table.len)
 	expectEqual(t, 16, table.cap)
 
-	table2 := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 2), []RelationID{})
+	table2 := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 2), []relationID{})
 	table2.AddAllEntities(&table, uint32(table.Len()))
 	expectEqual(t, 9, table2.len)
 	expectEqual(t, 16, table2.cap)
@@ -45,18 +45,18 @@ func TestTableMatches(t *testing.T) {
 	arch := newArchetype(0, 0, &bitMask{}, []ID{posID, velID, childID}, []tableID{0}, &w.storage.registry)
 	table := newTable(0, &arch, 8, &w.storage.registry,
 		[]Entity{{}, {}, {2, 0}},
-		[]RelationID{{component: childID, target: Entity{2, 0}}},
+		[]relationID{{component: childID, target: Entity{2, 0}}},
 	)
 
-	expectTrue(t, table.MatchesExact([]RelationID{{component: childID, target: Entity{2, 0}}}))
-	expectTrue(t, table.MatchesExact([]RelationID{{component: childID, target: Entity{2, 0}}, {component: child2ID, target: Entity{2, 0}}}))
-	expectFalse(t, table.MatchesExact([]RelationID{{component: childID, target: Entity{3, 0}}}))
+	expectTrue(t, table.MatchesExact([]relationID{{component: childID, target: Entity{2, 0}}}))
+	expectTrue(t, table.MatchesExact([]relationID{{component: childID, target: Entity{2, 0}}, {component: child2ID, target: Entity{2, 0}}}))
+	expectFalse(t, table.MatchesExact([]relationID{{component: childID, target: Entity{3, 0}}}))
 
 	expectPanics(t, func() {
-		table.MatchesExact([]RelationID{})
+		table.MatchesExact([]relationID{})
 	})
 	expectPanics(t, func() {
-		table.MatchesExact([]RelationID{{component: posID, target: Entity{2, 0}}})
+		table.MatchesExact([]relationID{{component: posID, target: Entity{2, 0}}})
 	})
 }
 
@@ -67,7 +67,7 @@ func TestTableReset(t *testing.T) {
 	labelID := ComponentID[Label](&w)
 
 	arch := newArchetype(0, 0, &bitMask{}, []ID{posID, velID, labelID}, []tableID{0}, &w.storage.registry)
-	table := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 3), []RelationID{})
+	table := newTable(0, &arch, 8, &w.storage.registry, make([]Entity, 3), []relationID{})
 
 	table.Reset()
 

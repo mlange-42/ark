@@ -15,86 +15,77 @@ var relationTp = reflect.TypeFor[RelationMarker]()
 // E.g. to iterate over all entities that are the child of a certain parent entity.
 type RelationMarker struct{}
 
+type relationID struct {
+	target    Entity
+	component ID
+}
+
 // Relation is the common interface for specifying relationship targets.
 // It is implemented by [RelationType], [RelationIndex] and [RelationID].
 //
 //   - [RelationType] is safe, but has some run-time overhead for component [ID] lookup.
 //   - [RelationIndex] is fast but more error-prone.
 //   - [RelationID] is used in the [Unsafe] API.
-type Relation interface {
-	id(ids []ID, world *World) ID
-	targetEntity() Entity
+type Relation struct {
+	target        Entity
+	component     ID
+	componentType reflect.Type
+	index         uint8
 }
 
-// RelationID specifies an entity relation target by component [ID].
-// Create with [RelID].
-//
-// Implements [Relation].
-//
-// It is used in Ark's unsafe, ID-based API.
-type RelationID struct {
-	component ID
-	target    Entity
+func (r Relation) relationID() relationID {
+	if r.index < 255 || r.componentType != nil {
+		panic("only relations created with RelID can be used in the unsafe API")
+	}
+	return relationID{
+		target:    r.target,
+		component: r.component,
+	}
+}
+
+func relID(id ID, target Entity) relationID {
+	return relationID{
+		target:    target,
+		component: id,
+	}
+}
+
+// id returns the component ID of this RelationID.
+func (r Relation) id(ids []ID, world *World) ID {
+	if r.index < 255 {
+		return ids[r.index]
+	}
+	if r.componentType != nil {
+		return TypeID(world, r.componentType)
+	}
+	return r.component
+}
+
+// targetEntity returns the target [Entity] of this RelationID.
+func (r Relation) targetEntity() Entity {
+	return r.target
 }
 
 // RelID creates a new [Relation] for a component ID.
 //
 // It is used in Ark's unsafe, ID-based API.
-func RelID(id ID, target Entity) RelationID {
-	return RelationID{
-		component: id,
+func RelID(id ID, target Entity) Relation {
+	return Relation{
 		target:    target,
+		component: id,
+		index:     255,
 	}
-}
-
-// id returns the component ID of this RelationID.
-func (r RelationID) id(ids []ID, world *World) ID {
-	return r.component
-}
-
-// targetEntity returns the target [Entity] of this RelationID.
-func (r RelationID) targetEntity() Entity {
-	return r.target
-}
-
-// RelationType specifies an entity relation target by component type.
-// Create with [Rel].
-//
-// Implements [Relation].
-//
-// It can be used as a safer but slower alternative to [RelationIndex].
-type RelationType[C any] struct {
-	target Entity
 }
 
 // Rel creates a new [Relation] for a component type.
 //
 // It can be used as a safer but slower alternative to [RelIdx].
-func Rel[C any](target Entity) RelationType[C] {
-	return RelationType[C]{
-		target: target,
+func Rel[C any](target Entity) Relation {
+	return Relation{
+		target:        target,
+		componentType: reflect.TypeFor[C](),
+		index:         255,
 	}
-}
-
-// id returns the component ID of this RelationID.
-func (r RelationType[C]) id(ids []ID, world *World) ID {
-	return ComponentID[C](world)
-}
-
-// targetEntity returns the target [Entity] of this RelationID.
-func (r RelationType[C]) targetEntity() Entity {
-	return r.target
-}
-
-// RelationIndex specifies an entity relation target by component index.
-// Create with [RelIdx].
-//
-// Implements [Relation].
-//
-// It can be used as faster but more error-prone alternative to [Rel].
-type RelationIndex struct {
-	index  uint8
-	target Entity
 }
 
 // RelIdx creates a new [Relation] for a component index.
@@ -105,27 +96,17 @@ type RelationIndex struct {
 // of e.g. a [Map2] or [Filter2].
 // This should not be confused with component [ID] as obtained by [ComponentID]!
 // For component IDs, use [RelationID].
-func RelIdx(index int, target Entity) RelationIndex {
-	return RelationIndex{
+func RelIdx(index int, target Entity) Relation {
+	return Relation{
 		index:  uint8(index),
 		target: target,
 	}
 }
 
-// id returns the component ID of this RelationIndex.
-func (r RelationIndex) id(ids []ID, world *World) ID {
-	return ids[r.index]
-}
+// Helper for converting relationSlice
+type relationSlice []Relation
 
-// targetEntity returns the target [Entity] of this RelationIndex.
-func (r RelationIndex) targetEntity() Entity {
-	return r.target
-}
-
-// Helper for converting relations
-type relations []Relation
-
-func (r relations) toRelations(world *World, mask *bitMask, ids []ID, out []RelationID) []RelationID {
+func (r relationSlice) toRelations(world *World, mask *bitMask, ids []ID, out []relationID) []relationID {
 	// TODO: can this be made more efficient?
 	if len(r) == 0 {
 		return out
@@ -137,29 +118,30 @@ func (r relations) toRelations(world *World, mask *bitMask, ids []ID, out []Rela
 		if !mask.Get(id) {
 			panic(fmt.Sprintf("requested relation component with ID %d was not specified in the filter or map", id.id))
 		}
-		out = append(out, RelationID{
-			component: id,
-			target:    rel.targetEntity(),
-		})
+		out = append(out, relationID{target: rel.target, component: id})
 	}
 	return out
 }
 
-func (e Entity) toRelation(world *World, id ID, out []RelationID) []RelationID {
+func (r relationSlice) toRelationIDs(out []relationID) []relationID {
+	for _, rel := range r {
+		out = append(out, rel.relationID())
+	}
+	return out
+}
+
+func (e Entity) toRelation(world *World, id ID, out []relationID) []relationID {
 	world.storage.checkRelationTarget(e)
 	world.storage.checkRelationComponent(id)
 	out = out[:0]
-	out = append(out, RelationID{
-		component: id,
-		target:    e,
-	})
+	out = append(out, relationID{target: e, component: id})
 	return out
 }
 
 // Helper for converting relations
 type relationEntities []Entity
 
-func (r relationEntities) toRelation(world *World, id ID, out []RelationID) []RelationID {
+func (r relationEntities) toRelation(world *World, id ID, out []relationID) []relationID {
 	out = out[:0]
 	if len(r) == 0 {
 		return out
@@ -167,10 +149,7 @@ func (r relationEntities) toRelation(world *World, id ID, out []RelationID) []Re
 	for _, rel := range r {
 		world.storage.checkRelationTarget(rel)
 		world.storage.checkRelationComponent(id)
-		out = append(out, RelationID{
-			component: id,
-			target:    rel,
-		})
+		out = append(out, relationID{target: rel, component: id})
 	}
 	return out
 }
