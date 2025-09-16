@@ -148,6 +148,12 @@ func TestQueryRelations(t *testing.T) {
 
 	// relation filter
 	filter = NewUnsafeFilter(&w, childID, compB, compC)
+
+	expectPanicsWithValue(t, "only relations created with RelID can be used in the unsafe API",
+		func() {
+			filter.Query(Rel[ChildOf](parent2))
+		})
+
 	query = filter.Query(RelID(childID, parent2))
 	expectEqual(t, n, query.Count())
 
