@@ -92,19 +92,20 @@ func (f *Filter{{.}}{{$genericsShort}}) Exclusive() *Filter{{.}}{{$genericsShort
 	return f
 }
 
-{{if . -}}
 // Relations sets permanent entity relation targets for this filter.
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter{{.}}.Query] or [Filter{{.}}.Batch] are not cached.
 //
+// Relation components used here must be in the filter's parameters
+// or added via [Filter{{.}}.With] beforehand.
+//
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...Relation) *Filter{{.}}{{$genericsShort}} {
 	f.checkModify()
-	f.relations = relations(rel).toRelations(f.world, f.ids[:{{.}}], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
-{{- end}}
 
 // Register this filter to the world's filter cache.
 //
@@ -131,13 +132,14 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
+// Relation components must be in the filter's parameters or added via [Filter{{.}}.With] beforehand.
 //
 // ⚠️ The returned [Query{{.}}] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$genericsShort}} {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:{{.}}], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	if f.components == nil {
 		f.components = make([]*componentStorage, {{.}})
 		{{if .}}for i := range {{.}} {
@@ -180,13 +182,14 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
+// Relation components must be in the filter's parameters or added via [Filter{{.}}.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:{{.}}], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations

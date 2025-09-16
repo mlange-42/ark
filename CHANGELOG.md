@@ -9,6 +9,11 @@
 ### Documentation
 
 - Excludes code generation from the API reference by moving it to an internal package (#300)
+- Clarifies the use of entity relations with filters and mappers in the API reference (#305)
+
+### Bugfixes
+
+- Checks that queried/used relation components are actually part of filters and maps (#305, fixes #304)
 
 ## [[v0.5.1]](https://github.com/mlange-42/ark/compare/v0.5.0...v0.5.1)
 

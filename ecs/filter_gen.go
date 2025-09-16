@@ -74,6 +74,21 @@ func (f *Filter0) Exclusive() *Filter0 {
 	return f
 }
 
+// Relations sets permanent entity relation targets for this filter.
+// Relation targets set here are included in filter caching.
+// Contrary, relation targets specified in [Filter0.Query] or [Filter0.Batch] are not cached.
+//
+// Relation components used here must be in the filter's parameters
+// or added via [Filter0.With] beforehand.
+//
+// Can be called multiple times in chains, or once with multiple arguments.
+func (f *Filter0) Relations(rel ...Relation) *Filter0 {
+	f.checkModify()
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
+	f.numRelations = uint8(len(f.relations))
+	return f
+}
+
 // Register this filter to the world's filter cache.
 //
 // Registering filters is optional.
@@ -99,13 +114,14 @@ func (f *Filter0) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter0.Relations].
+// Relation components must be in the filter's parameters or added via [Filter0.With] beforehand.
 //
 // ⚠️ The returned [Query0] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter0.Batch] or [Filter0.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter0) Query(rel ...Relation) Query0 {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:0], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	if f.components == nil {
 		f.components = make([]*componentStorage, 0)
 
@@ -144,13 +160,14 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter0.Relations].
+// Relation components must be in the filter's parameters or added via [Filter0.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter0.Batch] or [Filter0.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter0) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:0], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -249,10 +266,13 @@ func (f *Filter1[A]) Exclusive() *Filter1[A] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter1.Query] or [Filter1.Batch] are not cached.
 //
+// Relation components used here must be in the filter's parameters
+// or added via [Filter1.With] beforehand.
+//
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter1[A]) Relations(rel ...Relation) *Filter1[A] {
 	f.checkModify()
-	f.relations = relations(rel).toRelations(f.world, f.ids[:1], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -282,13 +302,14 @@ func (f *Filter1[A]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter1.Relations].
+// Relation components must be in the filter's parameters or added via [Filter1.With] beforehand.
 //
 // ⚠️ The returned [Query1] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter1.Batch] or [Filter1.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:1], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	if f.components == nil {
 		f.components = make([]*componentStorage, 1)
 		for i := range 1 {
@@ -328,13 +349,14 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter1.Relations].
+// Relation components must be in the filter's parameters or added via [Filter1.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter1.Batch] or [Filter1.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter1[A]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:1], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -430,10 +452,13 @@ func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter2.Query] or [Filter2.Batch] are not cached.
 //
+// Relation components used here must be in the filter's parameters
+// or added via [Filter2.With] beforehand.
+//
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter2[A, B]) Relations(rel ...Relation) *Filter2[A, B] {
 	f.checkModify()
-	f.relations = relations(rel).toRelations(f.world, f.ids[:2], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -463,13 +488,14 @@ func (f *Filter2[A, B]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter2.Relations].
+// Relation components must be in the filter's parameters or added via [Filter2.With] beforehand.
 //
 // ⚠️ The returned [Query2] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter2.Batch] or [Filter2.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:2], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	if f.components == nil {
 		f.components = make([]*componentStorage, 2)
 		for i := range 2 {
@@ -509,13 +535,14 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter2.Relations].
+// Relation components must be in the filter's parameters or added via [Filter2.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter2.Batch] or [Filter2.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter2[A, B]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:2], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -616,10 +643,13 @@ func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter3.Query] or [Filter3.Batch] are not cached.
 //
+// Relation components used here must be in the filter's parameters
+// or added via [Filter3.With] beforehand.
+//
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter3[A, B, C]) Relations(rel ...Relation) *Filter3[A, B, C] {
 	f.checkModify()
-	f.relations = relations(rel).toRelations(f.world, f.ids[:3], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -649,13 +679,14 @@ func (f *Filter3[A, B, C]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter3.Relations].
+// Relation components must be in the filter's parameters or added via [Filter3.With] beforehand.
 //
 // ⚠️ The returned [Query3] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter3.Batch] or [Filter3.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:3], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	if f.components == nil {
 		f.components = make([]*componentStorage, 3)
 		for i := range 3 {
@@ -695,13 +726,14 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter3.Relations].
+// Relation components must be in the filter's parameters or added via [Filter3.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter3.Batch] or [Filter3.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter3[A, B, C]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:3], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -803,10 +835,13 @@ func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter4.Query] or [Filter4.Batch] are not cached.
 //
+// Relation components used here must be in the filter's parameters
+// or added via [Filter4.With] beforehand.
+//
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter4[A, B, C, D]) Relations(rel ...Relation) *Filter4[A, B, C, D] {
 	f.checkModify()
-	f.relations = relations(rel).toRelations(f.world, f.ids[:4], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -836,13 +871,14 @@ func (f *Filter4[A, B, C, D]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter4.Relations].
+// Relation components must be in the filter's parameters or added via [Filter4.With] beforehand.
 //
 // ⚠️ The returned [Query4] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter4.Batch] or [Filter4.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:4], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	if f.components == nil {
 		f.components = make([]*componentStorage, 4)
 		for i := range 4 {
@@ -882,13 +918,14 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter4.Relations].
+// Relation components must be in the filter's parameters or added via [Filter4.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter4.Batch] or [Filter4.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter4[A, B, C, D]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:4], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -991,10 +1028,13 @@ func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter5.Query] or [Filter5.Batch] are not cached.
 //
+// Relation components used here must be in the filter's parameters
+// or added via [Filter5.With] beforehand.
+//
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter5[A, B, C, D, E]) Relations(rel ...Relation) *Filter5[A, B, C, D, E] {
 	f.checkModify()
-	f.relations = relations(rel).toRelations(f.world, f.ids[:5], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -1024,13 +1064,14 @@ func (f *Filter5[A, B, C, D, E]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter5.Relations].
+// Relation components must be in the filter's parameters or added via [Filter5.With] beforehand.
 //
 // ⚠️ The returned [Query5] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter5.Batch] or [Filter5.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:5], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	if f.components == nil {
 		f.components = make([]*componentStorage, 5)
 		for i := range 5 {
@@ -1070,13 +1111,14 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter5.Relations].
+// Relation components must be in the filter's parameters or added via [Filter5.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter5.Batch] or [Filter5.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter5[A, B, C, D, E]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:5], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1180,10 +1222,13 @@ func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter6.Query] or [Filter6.Batch] are not cached.
 //
+// Relation components used here must be in the filter's parameters
+// or added via [Filter6.With] beforehand.
+//
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter6[A, B, C, D, E, F]) Relations(rel ...Relation) *Filter6[A, B, C, D, E, F] {
 	f.checkModify()
-	f.relations = relations(rel).toRelations(f.world, f.ids[:6], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -1213,13 +1258,14 @@ func (f *Filter6[A, B, C, D, E, F]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter6.Relations].
+// Relation components must be in the filter's parameters or added via [Filter6.With] beforehand.
 //
 // ⚠️ The returned [Query6] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter6.Batch] or [Filter6.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E, F] {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:6], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	if f.components == nil {
 		f.components = make([]*componentStorage, 6)
 		for i := range 6 {
@@ -1259,13 +1305,14 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter6.Relations].
+// Relation components must be in the filter's parameters or added via [Filter6.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter6.Batch] or [Filter6.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:6], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1370,10 +1417,13 @@ func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G]
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter7.Query] or [Filter7.Batch] are not cached.
 //
+// Relation components used here must be in the filter's parameters
+// or added via [Filter7.With] beforehand.
+//
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter7[A, B, C, D, E, F, G]) Relations(rel ...Relation) *Filter7[A, B, C, D, E, F, G] {
 	f.checkModify()
-	f.relations = relations(rel).toRelations(f.world, f.ids[:7], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -1403,13 +1453,14 @@ func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter7.Relations].
+// Relation components must be in the filter's parameters or added via [Filter7.With] beforehand.
 //
 // ⚠️ The returned [Query7] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter7.Batch] or [Filter7.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D, E, F, G] {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:7], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	if f.components == nil {
 		f.components = make([]*componentStorage, 7)
 		for i := range 7 {
@@ -1449,13 +1500,14 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter7.Relations].
+// Relation components must be in the filter's parameters or added via [Filter7.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter7.Batch] or [Filter7.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:7], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations
@@ -1561,10 +1613,13 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F,
 // Relation targets set here are included in filter caching.
 // Contrary, relation targets specified in [Filter8.Query] or [Filter8.Batch] are not cached.
 //
+// Relation components used here must be in the filter's parameters
+// or added via [Filter8.With] beforehand.
+//
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Relations(rel ...Relation) *Filter8[A, B, C, D, E, F, G, H] {
 	f.checkModify()
-	f.relations = relations(rel).toRelations(f.world, f.ids[:8], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -1594,13 +1649,14 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
 // This must be used each time before iterating a query.
 //
 // Relation targets provided here are added to those specified with [Filter8.Relations].
+// Relation components must be in the filter's parameters or added via [Filter8.With] beforehand.
 //
 // ⚠️ The returned [Query8] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter8.Batch] or [Filter8.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C, D, E, F, G, H] {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:8], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	if f.components == nil {
 		f.components = make([]*componentStorage, 8)
 		for i := range 8 {
@@ -1640,13 +1696,14 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 // Batch creates a [Batch] from this filter.
 //
 // Relation targets provided here are added to those specified with [Filter8.Relations].
+// Relation components must be in the filter's parameters or added via [Filter8.With] beforehand.
 //
 // ⚠️ The returned [Batch] filter should not be stored, but used immediately and re-generated
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter8.Batch] or [Filter8.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, f.ids[:8], f.relations, f.numRelations)
+	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations

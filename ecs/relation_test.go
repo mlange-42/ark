@@ -4,6 +4,11 @@ import (
 	"testing"
 )
 
+func all(ids ...ID) *bitMask {
+	mask := newMask(ids...)
+	return &mask
+}
+
 func TestRel(t *testing.T) {
 	r := RelIdx(1, Entity{5, 0})
 	expectEqual(t, relationIndex{1, Entity{5, 0}}, r.(relationIndex))
@@ -23,19 +28,30 @@ func TestToRelations(t *testing.T) {
 
 	inRelations := relations{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
 	var out []RelationID
-	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
+
+	ids := []ID{posID, childID, child2ID}
+	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
 		{component: child2ID, target: Entity{3, 0}},
 	}, out)
 
-	expectPanics(t, func() {
-		_ = inRelations.toRelations(&w, []ID{childID, child2ID, posID}, out, 0)
-	})
+	expectPanicsWithValue(t, "component with ID 2 is not a relation component",
+		func() {
+			ids := []ID{childID, child2ID, posID}
+			_ = inRelations.toRelations(&w, all(ids...), ids, out, 0)
+		})
+
+	expectPanicsWithValue(t, "requested relation component with ID 0 was not specified in the filter or map",
+		func() {
+			ids := []ID{posID, childID, child2ID}
+			_ = inRelations.toRelations(&w, all(posID, child2ID), ids, out, 0)
+		})
 
 	inRelations = relations{RelID(childID, Entity{2, 0}), RelID(child2ID, Entity{3, 0})}
-	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
+
+	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
@@ -43,7 +59,7 @@ func TestToRelations(t *testing.T) {
 	}, out)
 
 	inRelations = relations{Rel[ChildOf](Entity{2, 0}), Rel[ChildOf2](Entity{3, 0})}
-	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
+	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
@@ -51,13 +67,13 @@ func TestToRelations(t *testing.T) {
 	}, out)
 
 	inRelations = relations{Rel[ChildOf](Entity{2, 0})}
-	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, 0)
+	out = inRelations.toRelations(&w, all(ids...), ids, out, 0)
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
 	}, out)
 
 	inRelations = relations{Rel[ChildOf2](Entity{3, 0})}
-	out = inRelations.toRelations(&w, []ID{posID, childID, child2ID}, out, uint8(len(out)))
+	out = inRelations.toRelations(&w, all(ids...), ids, out, uint8(len(out)))
 
 	expectSlicesEqual(t, []RelationID{
 		{component: childID, target: Entity{2, 0}},
@@ -97,7 +113,7 @@ func TestRemoveRelationTarget(t *testing.T) {
 
 func TestStaleRelationTable(t *testing.T) {
 	world := NewWorld()
-	filter := NewFilter1[Position](&world)
+	filter := NewFilter2[Position, ChildOf2](&world)
 
 	e1 := world.NewEntity()
 	e2 := world.NewEntity()
@@ -122,5 +138,35 @@ func TestStaleRelationTable(t *testing.T) {
 
 	query := filter.Query(Rel[ChildOf2](e2))
 	expectEqual(t, 2, query.Count())
+	query.Close()
+}
+
+func TestRelationChecks(t *testing.T) {
+	world := NewWorld()
+	builder1 := NewMap1[Position](&world)
+	builder2 := NewMap2[Position, ChildOf](&world)
+
+	parent := world.NewEntity()
+	builder1.NewEntity(&Position{})
+	e1 := builder2.NewEntity(&Position{}, &ChildOf{}, Rel[ChildOf](parent))
+	e2 := builder2.NewEntity(&Position{}, &ChildOf{}, Rel[ChildOf](parent))
+
+	expectPanicsWithValue(t, "requested relation component with ID 2 was not specified in the filter or map", func() {
+		builder2.NewEntity(&Position{}, &ChildOf{}, Rel[ChildOf2](parent))
+	})
+
+	exchange1 := NewExchange1[ChildOf2](&world).Removes(C[ChildOf]())
+	exchange1.Exchange(e1, &ChildOf2{}, Rel[ChildOf2](parent))
+
+	expectPanicsWithValue(t, "requested relation component with ID 1 was not specified in the filter or map", func() {
+		exchange1.Exchange(e2, &ChildOf2{}, Rel[ChildOf](parent))
+	})
+
+	filter1 := NewFilter1[Position](&world)
+	expectPanicsWithValue(t, "requested relation component with ID 1 was not specified in the filter or map", func() {
+		filter1.Query(Rel[ChildOf](parent))
+	})
+	filter2 := NewFilter1[Position](&world).With(C[ChildOf]())
+	query := filter2.Query(Rel[ChildOf](parent))
 	query.Close()
 }

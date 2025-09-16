@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func all(ids ...ID) *bitMask256 {
+func all256(ids ...ID) *bitMask256 {
 	mask := newMask256(ids...)
 	return &mask
 }
@@ -104,11 +104,11 @@ func TestBitMask256(t *testing.T) {
 
 	mask = newMask256(id(1), id(2), id(13), id(27), id(big), id(big+1), id(big+2))
 
-	expectTrue(t, mask.Contains(all(id(1), id(2), id(big), id(big+1))))
-	expectFalse(t, mask.Contains(all(id(1), id(2), id(big), id(big+5))))
+	expectTrue(t, mask.Contains(all256(id(1), id(2), id(big), id(big+1))))
+	expectFalse(t, mask.Contains(all256(id(1), id(2), id(big), id(big+5))))
 
-	expectTrue(t, mask.ContainsAny(all(id(6), id(big+2), id(big+6))))
-	expectFalse(t, mask.ContainsAny(all(id(6), id(big+3), id(big+5))))
+	expectTrue(t, mask.ContainsAny(all256(id(6), id(big+2), id(big+6))))
+	expectFalse(t, mask.ContainsAny(all256(id(6), id(big+3), id(big+5))))
 }
 
 func TestMask256ToTypes(t *testing.T) {

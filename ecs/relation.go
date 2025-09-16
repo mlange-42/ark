@@ -1,6 +1,9 @@
 package ecs
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
 
 var relationTp = reflect.TypeFor[RelationMarker]()
 
@@ -115,7 +118,7 @@ func (r relationIndex) targetEntity() Entity {
 // Helper for converting relations
 type relations []Relation
 
-func (r relations) toRelations(world *World, ids []ID, out []RelationID, startIdx uint8) []RelationID {
+func (r relations) toRelations(world *World, mask *bitMask, ids []ID, out []RelationID, startIdx uint8) []RelationID {
 	// TODO: can this be made more efficient?
 	out = out[:startIdx]
 	if len(r) == 0 {
@@ -125,6 +128,9 @@ func (r relations) toRelations(world *World, ids []ID, out []RelationID, startId
 		id := rel.id(ids, world)
 		world.storage.checkRelationTarget(rel.targetEntity())
 		world.storage.checkRelationComponent(id)
+		if !mask.Get(id) {
+			panic(fmt.Sprintf("requested relation component with ID %d was not specified in the filter or map", id.id))
+		}
 		out = append(out, RelationID{
 			component: id,
 			target:    rel.targetEntity(),
