@@ -1,15 +1,15 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.5.1...main)
+## [[v0.5.2]](https://github.com/mlange-42/ark/compare/v0.5.1...v0.5.2)
 
 ### Performance
 
-- Simplifies calculation of item sizes by considering Go's alignment rules (#301)
+- Simplifies calculation of item sizes by considering Go's memory alignment rules (#301)
 
 ### Documentation
 
 - Excludes code generation from the API reference by moving it to an internal package (#300)
-- Clarifies the use of entity relations with filters and mappers in the API reference (#305)
+- Clarifies the use of entity relations with filters and maps in the API reference (#305)
 
 ### Bugfixes
 
