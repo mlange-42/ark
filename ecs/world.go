@@ -12,7 +12,6 @@ type World struct {
 	locks     lock
 	resources Resources
 	storage   storage
-	unsafe    Unsafe
 }
 
 // NewWorld creates a new [World].
@@ -123,12 +122,9 @@ func (w *World) Resources() *Resources {
 // Unsafe provides access to Ark's unsafe, ID-based API.
 // For details, see [Unsafe].
 func (w *World) Unsafe() Unsafe {
-	if w.unsafe.world == nil {
-		w.unsafe = Unsafe{
-			world: w,
-		}
+	return Unsafe{
+		world: w,
 	}
-	return w.unsafe
 }
 
 // Reset removes all entities and resources from the world, and clears the filter cache.
