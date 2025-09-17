@@ -7,6 +7,7 @@ package ecs
 type UnsafeFilter struct {
 	world *World
 	filter
+	cachedRelations []relationID
 }
 
 // NewUnsafeFilter creates a new [UnsafeFilter] matching the given components.
@@ -32,11 +33,12 @@ func (f UnsafeFilter) Exclusive() UnsafeFilter {
 }
 
 // Query returns a new query matching this filter and the given entity relation targets.
-func (f UnsafeFilter) Query(relations ...RelationID) UnsafeQuery {
+func (f UnsafeFilter) Query(relations ...Relation) UnsafeQuery {
+	f.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(f.world, f.cachedRelations[:0])
 	return UnsafeQuery{
 		world:     f.world,
 		filter:    f.filter,
-		relations: relations,
+		relations: f.cachedRelations,
 		lock:      f.world.lock(),
 		cursor: cursor{
 			archetype: -1,

@@ -27,7 +27,7 @@ type Exchange{{.}}{{$generics}} struct {
 	world     *World
 	ids       []ID
 	remove    []ID
-	relations []RelationID
+	relations []relationID
 	mask      bitMask
 }
 
@@ -84,7 +84,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}}), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations, 0)
+	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0])
 	ex.world.exchange(entity, ex.ids, nil, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -119,7 +119,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, re
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeFn(entity Entity, fn func({{$args}}), rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations, 0)
+	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0])
 	ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -181,7 +181,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatchFn(batch *Batch, fn func
 
 
 func (ex *Exchange{{.}}{{$genericsShort}}) exchangeBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), remove bool, rel ...Relation) {
-	ex.relations = relations(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations, 0)
+	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0])
 
 	var process func(tableID tableID, start, len int)
 	if fn != nil {

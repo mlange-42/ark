@@ -62,7 +62,7 @@ func (id ResID) Index() uint8 {
 // with different relationship targets may modify stored instances.
 type Batch struct {
 	filter    *filter
-	relations []RelationID
+	relations []relationID
 	cache     cacheID
 }
 

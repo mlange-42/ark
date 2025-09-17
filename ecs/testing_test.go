@@ -89,6 +89,7 @@ func expectSlicesEqual[T comparable](t *testing.T, want, got []T, msgAndArgs ...
 func expectPanicsWithValue(t *testing.T, expected interface{}, f func(), msgAndArgs ...interface{}) {
 	t.Helper()
 	defer func() {
+		t.Helper()
 		if r := recover(); r != expected {
 			base := fmt.Sprintf("expected panic with %v, got %v", expected, r)
 			t.Error(base + formatMsg(msgAndArgs...))
@@ -100,6 +101,7 @@ func expectPanicsWithValue(t *testing.T, expected interface{}, f func(), msgAndA
 func expectPanics(t *testing.T, f func(), msgAndArgs ...interface{}) {
 	t.Helper()
 	defer func() {
+		t.Helper()
 		if r := recover(); r == nil {
 			base := "expected panic, but none occurred"
 			t.Error(base + formatMsg(msgAndArgs...))

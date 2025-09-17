@@ -491,7 +491,7 @@ func TestWorldPanics(t *testing.T) {
 
 	expectPanicsWithValue(t, "exchange operation has no effect, but relations were specified. Use SetRelation(s) instead", func() {
 		e := w.NewEntity()
-		w.exchange(e, nil, nil, []RelationID{RelID(childID, e)})
+		w.exchange(e, nil, nil, []relationID{relID(childID, e)})
 		w.RemoveEntity(e)
 	})
 
@@ -501,7 +501,7 @@ func TestWorldPanics(t *testing.T) {
 
 	expectPanicsWithValue(t, "exchange operation has no effect, but relations were specified. Use SetRelationBatch instead", func() {
 		e := w.NewEntity()
-		w.exchangeBatch(nil, nil, nil, []RelationID{RelID(childID, e)}, nil)
+		w.exchangeBatch(nil, nil, nil, []relationID{relID(childID, e)}, nil)
 		w.RemoveEntity(e)
 	})
 }

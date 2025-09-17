@@ -19,7 +19,7 @@ type table struct {
 	components  []*column      // mapping from component IDs to columns
 	ids         []ID           // components IDs in the same order as in the archetype
 	columns     []column       // columns in dense order
-	relationIDs []RelationID   // all relation IDs and targets of the table
+	relationIDs []relationID   // all relation IDs and targets of the table
 	entities    entityColumn   // column for entities
 	id          tableID
 	archetype   archetypeID
@@ -27,7 +27,7 @@ type table struct {
 	cap         uint32
 }
 
-func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []RelationID) table {
+func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []relationID) table {
 	entities := newEntityColumn(capacity)
 	columns := make([]column, len(archetype.components))
 
@@ -56,7 +56,7 @@ func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentR
 	}
 }
 
-func (t *table) recycle(targets []Entity, relationIDs []RelationID) {
+func (t *table) recycle(targets []Entity, relationIDs []relationID) {
 	t.relationIDs = relationIDs
 	for i := range t.columns {
 		t.columns[i].target = targets[i]
@@ -196,7 +196,7 @@ func (t *table) AddAllEntities(other *table, count uint32) {
 	t.entities.SetLast(&other.entities, t.len, count)
 }
 
-func (t *table) MatchesExact(relations []RelationID) bool {
+func (t *table) MatchesExact(relations []relationID) bool {
 	if len(relations) < len(t.relationIDs) {
 		panic("relation targets must be fully specified")
 	}
@@ -220,7 +220,7 @@ func (t *table) MatchesExact(relations []RelationID) bool {
 	return true
 }
 
-func (t *table) Matches(relations []RelationID) bool {
+func (t *table) Matches(relations []relationID) bool {
 	if len(relations) == 0 || !t.HasRelations() {
 		return true
 	}

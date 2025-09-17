@@ -2,7 +2,7 @@ package ecs
 
 import "fmt"
 
-func entityAtCache(storage *storage, cache *cacheEntry, relations []RelationID, index uint32) Entity {
+func entityAtCache(storage *storage, cache *cacheEntry, relations []relationID, index uint32) Entity {
 	count := uint32(0)
 	for _, tableID := range cache.tables {
 		table := &storage.tables[tableID]
@@ -21,7 +21,7 @@ func entityAtCache(storage *storage, cache *cacheEntry, relations []RelationID, 
 	panic(fmt.Sprintf("entity index %d out of bounds for query with %d entities", index, count))
 }
 
-func entityAt(storage *storage, filter *filter, relations []RelationID, archetypes []archetypeID, index uint32) Entity {
+func entityAt(storage *storage, filter *filter, relations []relationID, archetypes []archetypeID, index uint32) Entity {
 	count := uint32(0)
 	for _, arch := range archetypes {
 		archetype := &storage.archetypes[arch]
@@ -55,7 +55,7 @@ func entityAt(storage *storage, filter *filter, relations []RelationID, archetyp
 	panic(fmt.Sprintf("entity index %d out of bounds for query with %d entities", index, count))
 }
 
-func countQueryCache(storage *storage, cache *cacheEntry, relations []RelationID) int {
+func countQueryCache(storage *storage, cache *cacheEntry, relations []relationID) int {
 	count := 0
 	for _, tableID := range cache.tables {
 		table := &storage.tables[tableID]
@@ -70,7 +70,7 @@ func countQueryCache(storage *storage, cache *cacheEntry, relations []RelationID
 	return count
 }
 
-func countQuery(storage *storage, filter *filter, relations []RelationID, archetypes []archetypeID) int {
+func countQuery(storage *storage, filter *filter, relations []relationID, archetypes []archetypeID) int {
 	count := 0
 	for _, arch := range archetypes {
 		archetype := &storage.archetypes[arch]

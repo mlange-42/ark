@@ -23,7 +23,7 @@ package ecs
 type Filter{{.}}{{$generics}} struct {
 	world         *World
 	ids           []ID
-	relations     []RelationID
+	relations     []relationID
 	components    []*componentStorage
 	filter        filter
 	cache         cacheID
@@ -102,7 +102,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Exclusive() *Filter{{.}}{{$genericsShort
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...Relation) *Filter{{.}}{{$genericsShort}} {
 	f.checkModify()
-	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
+	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -139,7 +139,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$genericsShort}} {
-	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
+	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, {{.}})
 		{{if .}}for i := range {{.}} {
@@ -189,7 +189,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) *Batch {
-	f.relations = relations(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations, f.numRelations)
+	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations

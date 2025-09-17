@@ -20,7 +20,7 @@ type Query0 struct {
 	filter      *filter
 	table       *table
 	cache       *cacheEntry
-	relations   []RelationID
+	relations   []relationID
 	tables      []tableID
 	components  []*componentStorage
 	cursor      cursor
@@ -168,7 +168,7 @@ type Query1[A any] struct {
 	table      *table
 	cache      *cacheEntry
 	columnA    *column
-	relations  []RelationID
+	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
@@ -308,7 +308,7 @@ type Query2[A any, B any] struct {
 	cache      *cacheEntry
 	columnA    *column
 	columnB    *column
-	relations  []RelationID
+	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
@@ -449,7 +449,7 @@ type Query3[A any, B any, C any] struct {
 	columnA    *column
 	columnB    *column
 	columnC    *column
-	relations  []RelationID
+	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
@@ -597,7 +597,7 @@ type Query4[A any, B any, C any, D any] struct {
 	columnB    *column
 	columnC    *column
 	columnD    *column
-	relations  []RelationID
+	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
@@ -748,7 +748,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	columnC    *column
 	columnD    *column
 	columnE    *column
-	relations  []RelationID
+	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
@@ -902,7 +902,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnD    *column
 	columnE    *column
 	columnF    *column
-	relations  []RelationID
+	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
@@ -1059,7 +1059,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnE    *column
 	columnF    *column
 	columnG    *column
-	relations  []RelationID
+	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
@@ -1219,7 +1219,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnF    *column
 	columnG    *column
 	columnH    *column
-	relations  []RelationID
+	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
