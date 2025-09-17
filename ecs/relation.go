@@ -56,7 +56,8 @@ func (r Relation) id(ids []ID, world *World) ID {
 		return ids[r.index]
 	}
 	if r.componentType != nil {
-		return TypeID(world, r.componentType)
+		r.component = TypeID(world, r.componentType)
+		r.componentType = nil
 	}
 	return r.component
 }
@@ -80,6 +81,8 @@ func RelID(id ID, target Entity) Relation {
 // Rel creates a new [Relation] for a component type.
 //
 // It can be used as a safer but slower alternative to [RelIdx].
+// Required a component ID lookup when used the first time.
+// Un reuse, it is as fast as [RelIdx].
 func Rel[C any](target Entity) Relation {
 	return Relation{
 		target:        target,
