@@ -33,7 +33,7 @@ type Relation struct {
 	index         uint8
 }
 
-func (r Relation) relationIDForUnsafe(world *World) relationID {
+func (r *Relation) relationIDForUnsafe(world *World) relationID {
 	if r.index < 255 {
 		panic("relations created with RelIdx can't be used in the unsafe API, use RelID or Rel instead")
 	}
@@ -55,7 +55,7 @@ func relID(id ID, target Entity) relationID {
 }
 
 // id returns the component ID of this RelationID.
-func (r Relation) id(ids []ID, world *World) ID {
+func (r *Relation) id(ids []ID, world *World) ID {
 	if r.index < 255 {
 		return ids[r.index]
 	}
@@ -67,7 +67,7 @@ func (r Relation) id(ids []ID, world *World) ID {
 }
 
 // targetEntity returns the target [Entity] of this RelationID.
-func (r Relation) targetEntity() Entity {
+func (r *Relation) targetEntity() Entity {
 	return r.target
 }
 
