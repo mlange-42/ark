@@ -33,9 +33,13 @@ type Relation struct {
 	index         uint8
 }
 
-func (r Relation) relationID() relationID {
-	if r.index < 255 || r.componentType != nil {
-		panic("only relations created with RelID can be used in the unsafe API")
+func (r Relation) relationIDForUnsafe(world *World) relationID {
+	if r.index < 255 {
+		panic("relations created with RelIdx can't be used in the unsafe API, use RelID or Rel instead")
+	}
+	if r.componentType != nil {
+		r.component = TypeID(world, r.componentType)
+		r.componentType = nil
 	}
 	return relationID{
 		target:    r.target,
@@ -137,9 +141,9 @@ func (r relationSlice) toRelations(world *World, mask *bitMask, ids []ID, out []
 	return out
 }
 
-func (r relationSlice) toRelationIDs(out []relationID) []relationID {
+func (r relationSlice) toRelationIDsForUnsafe(world *World, out []relationID) []relationID {
 	for _, rel := range r {
-		out = append(out, rel.relationID())
+		out = append(out, rel.relationIDForUnsafe(world))
 	}
 	return out
 }

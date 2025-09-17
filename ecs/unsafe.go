@@ -19,7 +19,7 @@ func (u Unsafe) NewEntity(ids ...ID) Entity {
 
 // NewEntityRel creates a new entity with the given components and relation targets.
 func (u Unsafe) NewEntityRel(ids []ID, relations ...Relation) Entity {
-	u.cachedRelations = relationSlice(relations).toRelationIDs(u.cachedRelations[:0])
+	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	return u.world.newEntity(ids, u.cachedRelations)
 }
 
@@ -72,7 +72,7 @@ func (u Unsafe) GetRelationUnchecked(entity Entity, comp ID) Entity {
 
 // SetRelations sets relation targets for an entity.
 func (u Unsafe) SetRelations(entity Entity, relations ...Relation) {
-	u.cachedRelations = relationSlice(relations).toRelationIDs(u.cachedRelations[:0])
+	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	u.world.setRelations(entity, u.cachedRelations)
 }
 
@@ -89,7 +89,7 @@ func (u Unsafe) AddRel(entity Entity, comps []ID, relations ...Relation) {
 	if !u.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	u.cachedRelations = relationSlice(relations).toRelationIDs(u.cachedRelations[:0])
+	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	u.world.exchange(entity, comps, nil, u.cachedRelations)
 }
 
@@ -106,7 +106,7 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 	if !u.world.Alive(entity) {
 		panic("can't exchange components on a dead entity")
 	}
-	u.cachedRelations = relationSlice(relations).toRelationIDs(u.cachedRelations[:0])
+	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	u.world.exchange(entity, add, remove, u.cachedRelations)
 }
 

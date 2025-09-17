@@ -34,7 +34,7 @@ func (f UnsafeFilter) Exclusive() UnsafeFilter {
 
 // Query returns a new query matching this filter and the given entity relation targets.
 func (f UnsafeFilter) Query(relations ...Relation) UnsafeQuery {
-	f.cachedRelations = relationSlice(relations).toRelationIDs(f.cachedRelations[:0])
+	f.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(f.world, f.cachedRelations[:0])
 	return UnsafeQuery{
 		world:     f.world,
 		filter:    f.filter,
