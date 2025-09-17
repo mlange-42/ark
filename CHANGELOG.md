@@ -2,6 +2,11 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.5.2...main)
 
+### Breaking changed
+
+- Converts interface `Relation` to a concrete struct type (#306)
+- Removes `RelationID`, use `Relation` instead (#306)
+
 ### Performance
 
 - Speeds up relation handling by making `Relation` interface a concrete type (#306)
