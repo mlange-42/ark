@@ -13,8 +13,9 @@ next = "/quickstart"
 <a href="https://github.com/mlange-42/ark/actions/workflows/tests.yml" style="display:inline-block">
 <img alt="Test status" src="https://img.shields.io/github/actions/workflow/status/mlange-42/ark/tests.yml?branch=main&label=Tests&logo=github" style="margin:0;"></img></a>
 
-<a href="https://badge.coveralls.io/github/mlange-42/ark?branch=main" style="display:inline-block">
-<img alt="Coverage Status" src="https://img.shields.io/coverallsCoverage/github/mlange-42/ark?logo=coveralls" style="margin:0;"></img></a>
+<a href="https://codecov.io/github/mlange-42/ark"  style="display:inline-block"> 
+ <img alt="Coverage Status" src="https://codecov.io/github/mlange-42/ark/graph/badge.svg?token=YMYMFN2ESZ" style="margin:0;"/> 
+</a>
 
 <a href="https://goreportcard.com/report/github.com/mlange-42/ark" style="display:inline-block">
 <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/mlange-42/ark" style="margin:0;"></img></a>
@@ -52,7 +53,7 @@ Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wik
 - Fast [batch operations](https://mlange-42.github.io/ark/batch/) for mass manipulation.
 - No systems. Just queries. Use your own structure (or the [Tools](https://github.com/mlange-42/ark#tools)).
 - World serialization and deserialization with [ark-serde](https://github.com/mlange-42/ark-serde).
-- Zero [dependencies](https://github.com/mlange-42/ark/blob/main/go.mod), &approx;100% [test coverage](https://badge.coveralls.io/github/mlange-42/ark?branch=main).
+- Zero [dependencies](https://github.com/mlange-42/ark/blob/main/go.mod), &approx;100% [test coverage](https://app.codecov.io/github/mlange-42/ark).
 
 ## Cite as
 
