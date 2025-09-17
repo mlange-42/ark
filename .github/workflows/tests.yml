@@ -25,11 +25,16 @@ jobs:
       run: |
         go test -v -covermode atomic -coverprofile="coverage.out" -coverpkg=./ecs ./...
         go tool cover -func="coverage.out"
-    - name: Coveralls
-      # continue-on-error: true # allows tests to pass during coveralls.io outage
-      uses: coverallsapp/github-action@v2
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
       with:
-        path-to-lcov: coverage.out
+        files: ./coverage.out
+        token: ${{ secrets.CODECOV_TOKEN }}
+    #- name: Coveralls
+    #  # continue-on-error: true # allows tests to pass during coveralls.io outage
+    #  uses: coverallsapp/github-action@v2
+    #  with:
+    #    path-to-lcov: coverage.out
 
   test_tiny:
     name: Run tests (tiny)
