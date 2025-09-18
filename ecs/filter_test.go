@@ -14,7 +14,7 @@ func TestFilter(t *testing.T) {
 		mask    bitMask
 		matches bool
 	}{
-		{NewUnsafeFilter(nil, id1, id2), newMask(id1, id2, id3), true},
+		{NewUnsafeFilter(nil, id1, id2).Without(), newMask(id1, id2, id3), true},
 		{NewUnsafeFilter(nil, id1, id2), newMask(id1), false},
 
 		{NewUnsafeFilter(nil, id1, id2).Without(id3), newMask(id1, id2), true},

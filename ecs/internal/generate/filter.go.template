@@ -76,6 +76,9 @@ func (f *Filter{{.}}{{$genericsShort}}) With(comps ...Comp) *Filter{{.}}{{$gener
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter{{.}}{{$genericsShort}}) Without(comps ...Comp) *Filter{{.}}{{$genericsShort}} {
 	f.checkModify()
+	if len(comps) == 0 {
+		return f
+	}
 	for _,c := range comps {
 		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id, true)
