@@ -21,6 +21,9 @@ func NewUnsafeFilter(world *World, ids ...ID) UnsafeFilter {
 // Without specifies components to exclude.
 // Resets previous excludes.
 func (f UnsafeFilter) Without(ids ...ID) UnsafeFilter {
+	if len(ids) == 0 {
+		return f
+	}
 	f.filter = f.filter.Without(ids...)
 	return f
 }
