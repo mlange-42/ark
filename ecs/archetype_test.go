@@ -32,7 +32,7 @@ func TestTableIDs(t *testing.T) {
 	expectEqual(t, 1, idx)
 	expectTrue(t, ok)
 
-	idx, ok = ids.indices[3]
+	_, ok = ids.indices[3]
 	expectFalse(t, ok)
 
 	ids.Clear()
