@@ -154,9 +154,17 @@ func (w *World) Stats() *stats.World {
 		Recycled: w.storage.entityPool.Available(),
 		Capacity: w.storage.entityPool.TotalCap(),
 	}
-
+	prevCount := len(w.stats.ComponentTypes)
 	compCount := len(w.storage.registry.Components)
-	types := append([]reflect.Type{}, w.storage.registry.Types[:compCount]...)
+	if compCount != prevCount {
+		types := append([]reflect.Type{}, w.storage.registry.Types[:compCount]...)
+		typeNames := make([]string, len(types))
+		for i, t := range types {
+			typeNames[i] = t.Name()
+		}
+		w.stats.ComponentTypes = types
+		w.stats.ComponentTypeNames = typeNames
+	}
 
 	memory := cap(w.storage.entities)*int(entityIndexSize) + w.storage.entityPool.TotalCap()*int(entitySize)
 	memoryUsed := w.storage.entityPool.Len() * int(entityIndexSize+entitySize)
@@ -179,7 +187,6 @@ func (w *World) Stats() *stats.World {
 		memoryUsed += archStats.MemoryUsed
 	}
 
-	w.stats.ComponentTypes = types
 	w.stats.Locked = w.IsLocked()
 	w.stats.Memory = memory
 	w.stats.MemoryUsed = memoryUsed
