@@ -3,7 +3,6 @@ package ecs
 import (
 	"math"
 	"reflect"
-	"slices"
 
 	"github.com/mlange-42/ark/ecs/stats"
 )
@@ -29,27 +28,41 @@ type archetype struct {
 }
 
 type tableIDs struct {
-	tables []tableID
+	tables  []tableID
+	indices map[tableID]uint32
+}
+
+func newTableIDs() tableIDs {
+	return tableIDs{
+		indices: map[tableID]uint32{},
+	}
 }
 
 func (t *tableIDs) Append(id tableID) {
 	t.tables = append(t.tables, id)
+	t.indices[id] = uint32(len(t.tables) - 1)
 }
 
 func (t *tableIDs) Remove(id tableID) bool {
-	// TODO: can we speed this up for large numbers of relation targets?
-	index := slices.Index(t.tables, id)
-	if index < 0 {
+	index, ok := t.indices[id]
+	if !ok {
 		return false
 	}
 
-	last := len(t.tables) - 1
+	last := uint32(len(t.tables) - 1)
 	if index != last {
 		t.tables[index], t.tables[last] = t.tables[last], t.tables[index]
+		t.indices[t.tables[index]] = index
 	}
 	t.tables = t.tables[:last]
+	delete(t.indices, id)
 
 	return true
+}
+
+func (t *tableIDs) Clear() {
+	t.tables = t.tables[:0]
+	t.indices = map[tableID]uint32{}
 }
 
 func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
@@ -85,6 +98,10 @@ func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, t
 			numRelations++
 		}
 	}
+	archTables := newTableIDs()
+	for _, id := range tables {
+		archTables.Append(id)
+	}
 	return archetype{
 		id:             id,
 		node:           node,
@@ -93,7 +110,7 @@ func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, t
 		itemSizes:      sizes,
 		componentsMap:  componentsMap,
 		isRelation:     isRelation,
-		tables:         tableIDs{tables},
+		tables:         archTables,
 		numRelations:   numRelations,
 		relationTables: relationTables,
 		zeroValue:      zeroValue,
@@ -170,7 +187,7 @@ func (a *archetype) FreeTable(table tableID) {
 
 func (a *archetype) FreeAllTables(storage *storage) {
 	a.freeTables = append(a.freeTables, a.tables.tables...)
-	a.tables.tables = a.tables.tables[:0]
+	a.tables.Clear()
 
 	for i := range a.relationTables {
 		a.relationTables[i] = map[entityID]*tableIDs{}
@@ -192,9 +209,11 @@ func (a *archetype) AddTable(table *table) {
 		relations := a.relationTables[i]
 
 		if tables, ok := relations[target.id]; ok {
-			tables.tables = append(tables.tables, table.id)
+			tables.Append(table.id)
 		} else {
-			relations[target.id] = &tableIDs{tables: []tableID{table.id}}
+			tables := newTableIDs()
+			tables.Append(table.id)
+			relations[target.id] = &tables
 		}
 	}
 }
