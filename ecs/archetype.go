@@ -261,16 +261,17 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 	}
 
 	return stats.Archetype{
-		FreeTables:      len(a.freeTables),
-		NumRelations:    int(a.numRelations),
-		ComponentIDs:    intIDs,
-		ComponentTypes:  aTypes,
-		Memory:          memory,
-		MemoryUsed:      memoryUsed,
-		MemoryPerEntity: memPerEntity,
-		Size:            count,
-		Capacity:        cap,
-		Tables:          tableStats,
+		FreeTables:         len(a.freeTables),
+		NumRelations:       int(a.numRelations),
+		ComponentIDs:       intIDs,
+		ComponentTypes:     aTypes,
+		ComponentTypeNames: aTypeNames,
+		Memory:             memory,
+		MemoryUsed:         memoryUsed,
+		MemoryPerEntity:    memPerEntity,
+		Size:               count,
+		Capacity:           cap,
+		Tables:             tableStats,
 	}
 }
 

@@ -540,6 +540,13 @@ func TestWorldStats(t *testing.T) {
 	stats := w.Stats()
 	fmt.Println(stats.String())
 
+	expectEqual(t, 5, len(stats.ComponentTypes))
+	expectEqual(t, 5, len(stats.ComponentTypeNames))
+	expectEqual(t, 4, len(stats.Archetypes))
+	expectEqual(t, 2, len(stats.Archetypes[1].ComponentIDs))
+	expectEqual(t, 2, len(stats.Archetypes[1].ComponentTypes))
+	expectEqual(t, 2, len(stats.Archetypes[1].ComponentTypeNames))
+
 	w.RemoveEntities(filter.Batch(), nil)
 	stats = w.Stats()
 	fmt.Println(stats.String())
