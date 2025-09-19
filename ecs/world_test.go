@@ -393,7 +393,9 @@ func TestWorldLock(t *testing.T) {
 
 	l1 := w.lock()
 	expectTrue(t, w.IsLocked())
-	expectPanicsWithValue(t, "attempt to modify a locked world", func() { w.checkLocked() })
+	expectPanicsWithValue(t,
+		"cannot modify a locked world: collect entities into a slice and apply changes after query iteration has completed",
+		func() { w.checkLocked() })
 
 	l2 := w.lock()
 	expectTrue(t, w.IsLocked())

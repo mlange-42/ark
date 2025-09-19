@@ -261,6 +261,6 @@ func (w *World) unlock(l uint8) {
 // checkLocked checks if the world is locked, and panics if so.
 func (w *World) checkLocked() {
 	if w.IsLocked() {
-		panic("attempt to modify a locked world")
+		panic("cannot modify a locked world: collect entities into a slice and apply changes after query iteration has completed")
 	}
 }
