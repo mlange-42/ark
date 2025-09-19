@@ -15,6 +15,7 @@
 ### Other
 
 - Adds benchmarks for `World.Stats` (#310)
+- World stats are now JSON (de)serializable (#311)
 
 ## [[v0.5.2]](https://github.com/mlange-42/ark/compare/v0.5.1...v0.5.2)
 

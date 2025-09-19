@@ -226,8 +226,11 @@ func (a *archetype) Reset(storage *storage) {
 func (a *archetype) Stats(storage *storage) stats.Archetype {
 	ids := a.components
 	aTypes := make([]reflect.Type, len(ids))
+	aTypeNames := make([]string, len(ids))
 	for j, id := range ids {
-		aTypes[j], _ = storage.registry.ComponentType(id.id)
+		tp, _ := storage.registry.ComponentType(id.id)
+		aTypes[j] = tp
+		aTypeNames[j] = tp.Name()
 	}
 
 	memPerEntity := int(entitySize)
@@ -258,16 +261,17 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 	}
 
 	return stats.Archetype{
-		FreeTables:      len(a.freeTables),
-		NumRelations:    int(a.numRelations),
-		ComponentIDs:    intIDs,
-		ComponentTypes:  aTypes,
-		Memory:          memory,
-		MemoryUsed:      memoryUsed,
-		MemoryPerEntity: memPerEntity,
-		Size:            count,
-		Capacity:        cap,
-		Tables:          tableStats,
+		FreeTables:         len(a.freeTables),
+		NumRelations:       int(a.numRelations),
+		ComponentIDs:       intIDs,
+		ComponentTypes:     aTypes,
+		ComponentTypeNames: aTypeNames,
+		Memory:             memory,
+		MemoryUsed:         memoryUsed,
+		MemoryPerEntity:    memPerEntity,
+		Size:               count,
+		Capacity:           cap,
+		Tables:             tableStats,
 	}
 }
 
