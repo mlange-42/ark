@@ -12,6 +12,10 @@
 - Speeds up relation handling by making `Relation` interface a concrete type (#306)
 - Skips `Filter.Without` and `FilterX.Without` when called with zero arguments (#309)
 
+### Other
+
+- Adds benchmarks for `World.Stats` (#310)
+
 ## [[v0.5.2]](https://github.com/mlange-42/ark/compare/v0.5.1...v0.5.2)
 
 ### Performance

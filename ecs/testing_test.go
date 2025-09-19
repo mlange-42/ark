@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func expectEqual[T comparable](t *testing.T, want, got T, msgAndArgs ...interface{}) {
+func expectEqual[T comparable](t testing.TB, want, got T, msgAndArgs ...interface{}) {
 	t.Helper()
 	if got != want {
 		base := fmt.Sprintf("expected %v, got %v", want, got)
@@ -14,7 +14,7 @@ func expectEqual[T comparable](t *testing.T, want, got T, msgAndArgs ...interfac
 	}
 }
 
-func expectNotEqual[T comparable](t *testing.T, notWant, got T, msgAndArgs ...interface{}) {
+func expectNotEqual[T comparable](t testing.TB, notWant, got T, msgAndArgs ...interface{}) {
 	t.Helper()
 	if got == notWant {
 		base := fmt.Sprintf("expected value not equal to %v, but got %v", notWant, got)
@@ -22,7 +22,7 @@ func expectNotEqual[T comparable](t *testing.T, notWant, got T, msgAndArgs ...in
 	}
 }
 
-func expectGreater[T ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~float32 | ~float64](t *testing.T, got, min T, msgAndArgs ...interface{}) {
+func expectGreater[T ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~float32 | ~float64](t testing.TB, got, min T, msgAndArgs ...interface{}) {
 	t.Helper()
 	if got <= min {
 		base := fmt.Sprintf("expected value > %v, got %v", min, got)
@@ -30,7 +30,7 @@ func expectGreater[T ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | 
 	}
 }
 
-func expectLess[T ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~float32 | ~float64](t *testing.T, got, max T, msgAndArgs ...interface{}) {
+func expectLess[T ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~float32 | ~float64](t testing.TB, got, max T, msgAndArgs ...interface{}) {
 	t.Helper()
 	if got >= max {
 		base := fmt.Sprintf("expected value < %v, got %v", max, got)
@@ -38,7 +38,7 @@ func expectLess[T ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~ui
 	}
 }
 
-func expectTrue(t *testing.T, cond bool, msgAndArgs ...interface{}) {
+func expectTrue(t testing.TB, cond bool, msgAndArgs ...interface{}) {
 	t.Helper()
 	if !cond {
 		base := "expected condition to be true, but was false"
@@ -46,7 +46,7 @@ func expectTrue(t *testing.T, cond bool, msgAndArgs ...interface{}) {
 	}
 }
 
-func expectFalse(t *testing.T, cond bool, msgAndArgs ...interface{}) {
+func expectFalse(t testing.TB, cond bool, msgAndArgs ...interface{}) {
 	t.Helper()
 	if cond {
 		base := "expected condition to be false, but was true"
@@ -54,7 +54,7 @@ func expectFalse(t *testing.T, cond bool, msgAndArgs ...interface{}) {
 	}
 }
 
-func expectNil(t *testing.T, val interface{}, msgAndArgs ...interface{}) {
+func expectNil(t testing.TB, val interface{}, msgAndArgs ...interface{}) {
 	t.Helper()
 	if val != nil && !isReallyNil(val) {
 		base := fmt.Sprintf("expected nil, got %v", val)
@@ -62,7 +62,7 @@ func expectNil(t *testing.T, val interface{}, msgAndArgs ...interface{}) {
 	}
 }
 
-func expectNotNil(t *testing.T, val interface{}, msgAndArgs ...interface{}) {
+func expectNotNil(t testing.TB, val interface{}, msgAndArgs ...interface{}) {
 	t.Helper()
 	if val == nil || isReallyNil(val) {
 		base := "expected non-nil value, but got nil"
@@ -70,7 +70,7 @@ func expectNotNil(t *testing.T, val interface{}, msgAndArgs ...interface{}) {
 	}
 }
 
-func expectSlicesEqual[T comparable](t *testing.T, want, got []T, msgAndArgs ...interface{}) {
+func expectSlicesEqual[T comparable](t testing.TB, want, got []T, msgAndArgs ...interface{}) {
 	t.Helper()
 	if len(got) != len(want) {
 		base := fmt.Sprintf("slice length mismatch: expected %d, got %d", len(want), len(got))
@@ -86,7 +86,7 @@ func expectSlicesEqual[T comparable](t *testing.T, want, got []T, msgAndArgs ...
 	}
 }
 
-func expectPanicsWithValue(t *testing.T, expected interface{}, f func(), msgAndArgs ...interface{}) {
+func expectPanicsWithValue(t testing.TB, expected interface{}, f func(), msgAndArgs ...interface{}) {
 	t.Helper()
 	defer func() {
 		t.Helper()
@@ -98,7 +98,7 @@ func expectPanicsWithValue(t *testing.T, expected interface{}, f func(), msgAndA
 	f()
 }
 
-func expectPanics(t *testing.T, f func(), msgAndArgs ...interface{}) {
+func expectPanics(t testing.TB, f func(), msgAndArgs ...interface{}) {
 	t.Helper()
 	defer func() {
 		t.Helper()
