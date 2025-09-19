@@ -151,11 +151,11 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 	return table, true
 }
 
-func (a *archetype) FreeTable(table tableID, isReset bool) {
+func (a *archetype) FreeTable(table tableID) {
 	_ = a.tables.Remove(table)
 	a.freeTables = append(a.freeTables, table)
 
-	if isReset || a.numRelations <= 1 {
+	if a.numRelations <= 1 {
 		return
 	}
 
@@ -165,6 +165,15 @@ func (a *archetype) FreeTable(table tableID, isReset bool) {
 		for _, v := range m {
 			_ = v.Remove(table)
 		}
+	}
+}
+
+func (a *archetype) FreeAllTables(storage *storage) {
+	a.freeTables = append(a.freeTables, a.tables.tables...)
+	a.tables.tables = a.tables.tables[:0]
+
+	for i := range a.relationTables {
+		a.relationTables[i] = map[entityID]*tableIDs{}
 	}
 }
 
@@ -205,21 +214,13 @@ func (a *archetype) Reset(storage *storage) {
 		return
 	}
 
-	for _, tab := range a.tables.tables {
-		table := &storage.tables[tab]
-		table.Reset()
-	}
-
 	for i := len(a.tables.tables) - 1; i >= 0; i-- {
-		storage.cache.removeTable(storage, &storage.tables[a.tables.tables[i]])
-		a.FreeTable(a.tables.tables[i], true)
+		table := &storage.tables[a.tables.tables[i]]
+		table.Reset()
+		storage.cache.removeTable(storage, table)
 	}
 
-	for _, m := range a.relationTables {
-		for key := range m {
-			delete(m, key)
-		}
-	}
+	a.FreeAllTables(storage)
 }
 
 // Stats generates statistics for an archetype.

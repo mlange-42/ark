@@ -11,6 +11,7 @@
 
 - Speeds up relation handling by making `Relation` interface a concrete type (#306)
 - Skips `Filter.Without` and `FilterX.Without` when called with zero arguments (#309)
+- Resets archetype tables in bulk, avoiding table ID lookup (#313)
 
 ### Other
 
