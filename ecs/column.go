@@ -36,15 +36,17 @@ func (c *column) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*c.itemSize)
 }
 
-func (c *column) CopyToEnd(other *column, ownLen uint32, count uint32, isTrivial bool) {
+// CopyToEnd copies from the given column to the end of this column.
+// Column length must be increased before.
+func (c *column) CopyToEnd(from *column, ownLen uint32, count uint32, isTrivial bool) {
 	start := ownLen - count
 	if isTrivial {
-		src := other.Get(0)
+		src := from.Get(0)
 		dst := c.Get(uintptr(start))
 		copyPtr(src, dst, c.itemSize*uintptr(count))
 		return
 	}
-	copyRange(other.data, c.data, int(start), int(count))
+	copyRange(from.data, c.data, int(start), int(count))
 }
 
 // Set overwrites the component at the given index.
@@ -117,9 +119,11 @@ func (c *entityColumn) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*entitySize)
 }
 
-func (c *entityColumn) CopyToEnd(other *entityColumn, ownLen uint32, count uint32) {
+// CopyToEnd copies from the given column to the end of this column.
+// Column length must be increased before.
+func (c *entityColumn) CopyToEnd(from *entityColumn, ownLen uint32, count uint32) {
 	start := ownLen - count
-	copyRange(other.data, c.data, int(start), int(count))
+	copyRange(from.data, c.data, int(start), int(count))
 }
 
 // Set overwrites the component at the given index.
