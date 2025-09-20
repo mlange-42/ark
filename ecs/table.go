@@ -120,9 +120,7 @@ func (t *table) Extend(by uint32) {
 	if t.cap >= required {
 		return
 	}
-	for t.cap < required {
-		t.cap *= 2
-	}
+	t.cap = capPow2(required)
 
 	old := t.entities.data
 	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), old.Type().Elem())).Elem()

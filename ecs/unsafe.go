@@ -124,10 +124,9 @@ func (u Unsafe) IDs(entity Entity) IDs {
 //
 // For world serialization with components and resources, see module [github.com/mlange-42/ark-serde].
 func (u Unsafe) DumpEntities() EntityDump {
-	alive := []uint32{}
-
-	filter := NewUnsafeFilter(u.world)
+	filter := NewFilter0(u.world)
 	query := filter.Query()
+	alive := make([]uint32, 0, query.Count())
 	for query.Next() {
 		alive = append(alive, uint32(query.Entity().id))
 	}
@@ -162,10 +161,10 @@ func (u Unsafe) LoadEntities(data *EntityDump) {
 
 	capacity := len(data.Entities)
 
-	entities := make([]Entity, 0, capacity)
-	entities = append(entities, data.Entities...)
+	entities := make([]Entity, capacity)
+	copy(entities, data.Entities)
 
-	if len(data.Entities) > 0 {
+	if capacity > 0 {
 		u.world.storage.entityPool = entityPool{
 			entities:  entities,
 			next:      entityID(data.Next),
@@ -175,10 +174,11 @@ func (u Unsafe) LoadEntities(data *EntityDump) {
 		u.world.storage.entityPool.pointer = unsafe.Pointer(&u.world.storage.entityPool.entities[0])
 	}
 
-	u.world.storage.entities = make([]entityIndex, len(data.Entities), capacity)
-	u.world.storage.isTarget = make([]bool, len(data.Entities), capacity)
+	u.world.storage.entities = make([]entityIndex, capacity)
+	u.world.storage.isTarget = make([]bool, capacity)
 
 	table := &u.world.storage.tables[0]
+	table.Extend(uint32(len(data.Alive)))
 	for _, idx := range data.Alive {
 		entity := u.world.storage.entityPool.entities[idx]
 		tableIdx := table.Add(entity)

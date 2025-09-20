@@ -9,6 +9,19 @@ import (
 // Page size of pagedSlice type
 const pageSize = 32
 
+func capPow2(required uint32) uint32 {
+	if required == 0 {
+		return 1
+	}
+	required--
+	required |= required >> 1
+	required |= required >> 2
+	required |= required >> 4
+	required |= required >> 8
+	required |= required >> 16
+	return required + 1
+}
+
 // copyPtr copies from one pointer to another.
 func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
 	dstSlice := (*[math.MaxInt32]byte)(dst)[:itemSize:itemSize]

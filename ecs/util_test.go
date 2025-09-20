@@ -6,6 +6,14 @@ import (
 	"unsafe"
 )
 
+func TestCapPow2(t *testing.T) {
+	expectEqual(t, 1, capPow2(0))
+	expectEqual(t, 64, capPow2(64))
+	expectEqual(t, 128, capPow2(65))
+	expectEqual(t, 1024, capPow2(1000))
+	expectEqual(t, 1048576, capPow2(1_000_000))
+}
+
 func TestCopyPtr(t *testing.T) {
 	type itemType uint8 // can be any type, result stays the same
 
@@ -92,5 +100,11 @@ func BenchmarkSizeOf(b *testing.B) {
 	tp := reflect.TypeFor[Position]()
 	for b.Loop() {
 		_ = tp.Size()
+	}
+}
+
+func BenchmarkCapPow2(b *testing.B) {
+	for b.Loop() {
+		_ = capPow2(513)
 	}
 }

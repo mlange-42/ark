@@ -13,6 +13,7 @@
 - Skips `Filter.Without` and `FilterX.Without` when called with zero arguments (#309)
 - Resets archetype tables in bulk, avoiding table ID lookup (#313)
 - Speeds up freeing tables when removing relation targets, by adding an index lookup (#314)
+- Optimizes dumping and loading entities for serialization by pre-allocating memory (#315)
 
 ### Other
 
