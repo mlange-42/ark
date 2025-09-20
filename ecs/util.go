@@ -29,7 +29,7 @@ func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
 	copy(dstSlice, srcSlice)
 }
 
-func copyItem(src, dst reflect.Value, from, to int) {
+func copyValue(src, dst reflect.Value, from, to int) {
 	dst.Index(to).Set(src.Index(from))
 }
 
@@ -40,7 +40,7 @@ func copyRange(src, dst reflect.Value, start, count int) {
 }
 
 // appends to a slice, but guaranties to return a new one and not alter the original.
-func appendNew[T any](sl []T, elems ...T) []T {
+func copyAppend[T any](sl []T, elems ...T) []T {
 	sl2 := make([]T, len(sl), len(sl)+len(elems))
 	copy(sl2, sl)
 	sl2 = append(sl2, elems...)

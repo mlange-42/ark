@@ -84,7 +84,7 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		allRelations = append(allRelations, relations...)
 	} else {
 		if len(relations) > 0 {
-			allRelations = appendNew(oldTable.relationIDs, relations...)
+			allRelations = copyAppend(oldTable.relationIDs, relations...)
 		} else {
 			allRelations = oldTable.relationIDs
 		}

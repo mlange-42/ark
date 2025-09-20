@@ -36,7 +36,7 @@ func (c *column) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*c.itemSize)
 }
 
-func (c *column) SetLast(other *column, ownLen uint32, count uint32, isTrivial bool) {
+func (c *column) CopyToEnd(other *column, ownLen uint32, count uint32, isTrivial bool) {
 	start := ownLen - count
 	if isTrivial {
 		src := other.Get(0)
@@ -58,7 +58,7 @@ func (c *column) Set(index uint32, src *column, srcIndex int, isTrivial bool) {
 		copyPtr(comp, dst, c.itemSize)
 		return
 	}
-	copyItem(src.data, c.data, srcIndex, int(index))
+	copyValue(src.data, c.data, srcIndex, int(index))
 }
 
 // Zero resets the memory at the given index.
@@ -117,7 +117,7 @@ func (c *entityColumn) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*entitySize)
 }
 
-func (c *entityColumn) SetLast(other *entityColumn, ownLen uint32, count uint32) {
+func (c *entityColumn) CopyToEnd(other *entityColumn, ownLen uint32, count uint32) {
 	start := ownLen - count
 	copyRange(other.data, c.data, int(start), int(count))
 }

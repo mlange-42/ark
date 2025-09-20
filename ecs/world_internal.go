@@ -126,7 +126,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, r
 		if mask.Get(id) {
 			oldCol := oldTable.GetColumn(id)
 			newCol := newTable.GetColumn(id)
-			newCol.SetLast(oldCol, newTable.len, uint32(oldLen), w.storage.registry.IsTrivial[id.id])
+			newCol.CopyToEnd(oldCol, newTable.len, uint32(oldLen), w.storage.registry.IsTrivial[id.id])
 		}
 	}
 
