@@ -117,13 +117,10 @@ func (t *table) Alloc(n uint32) {
 // If the capacity needs to be increased, it will be doubled until it is sufficient.
 func (t *table) Extend(by uint32) {
 	required := t.len + by
-	//t.cap = capPow2(t.cap, required)
 	if t.cap >= required {
 		return
 	}
-	for t.cap < required {
-		t.cap *= 2
-	}
+	t.cap = capPow2(required)
 
 	old := t.entities.data
 	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), old.Type().Elem())).Elem()

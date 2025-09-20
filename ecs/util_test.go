@@ -7,10 +7,10 @@ import (
 )
 
 func TestCapPow2(t *testing.T) {
-	expectEqual(t, 64, capPow2(64, 64))
-	expectEqual(t, 128, capPow2(64, 65))
-	expectEqual(t, 1024, capPow2(8, 1000))
-	expectEqual(t, 1048576, capPow2(1, 1_000_000))
+	expectEqual(t, 64, capPow2(64))
+	expectEqual(t, 128, capPow2(65))
+	expectEqual(t, 1024, capPow2(1000))
+	expectEqual(t, 1048576, capPow2(1_000_000))
 }
 
 func TestCopyPtr(t *testing.T) {
@@ -104,6 +104,6 @@ func BenchmarkSizeOf(b *testing.B) {
 
 func BenchmarkCapPow2(b *testing.B) {
 	for b.Loop() {
-		_ = capPow2(64, 513)
+		_ = capPow2(513)
 	}
 }

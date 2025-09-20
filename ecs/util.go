@@ -9,10 +9,7 @@ import (
 // Page size of pagedSlice type
 const pageSize = 32
 
-func capPow2(current, required uint32) uint32 {
-	if current >= required {
-		return current
-	}
+func capPow2(required uint32) uint32 {
 	if required == 0 {
 		return 1
 	}
