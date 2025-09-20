@@ -7,6 +7,7 @@ import (
 )
 
 func TestCapPow2(t *testing.T) {
+	expectEqual(t, 1, capPow2(0))
 	expectEqual(t, 64, capPow2(64))
 	expectEqual(t, 128, capPow2(65))
 	expectEqual(t, 1024, capPow2(1000))
