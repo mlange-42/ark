@@ -23,6 +23,25 @@ func BenchmarkCreateEntity1Comp_1000(b *testing.B) {
 	}
 }
 
+func BenchmarkCreateEntitiesAlloc(b *testing.B) {
+	w := NewWorld()
+	builder := NewMap1[Position](&w)
+	filter := NewFilter0(&w)
+
+	builder.NewBatchFn(1000, nil)
+	w.RemoveEntities(filter.Batch(), nil)
+
+	for b.Loop() {
+		b.StopTimer()
+		w := NewWorld(8)
+		builder := NewMap2[Position, Velocity](&w)
+		b.StartTimer()
+		for range 1000 {
+			builder.NewEntityFn(nil)
+		}
+	}
+}
+
 func BenchmarkWorldLockUnlock(b *testing.B) {
 	w := NewWorld()
 

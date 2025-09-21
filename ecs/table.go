@@ -34,7 +34,7 @@ func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentR
 	components := make([]*column, maskTotalBits)
 	for i, id := range archetype.components {
 		itemSize := uintptr(archetype.itemSizes[i])
-		columns[i] = newColumn(uint32(i), reg.Types[id.id], itemSize, archetype.isRelation[i], targets[i], capacity)
+		columns[i] = newColumn(uint32(i), reg.Types[id.id], itemSize, archetype.isRelation[i], reg.IsTrivial[id.id], targets[i], capacity)
 		components[id.id] = &columns[i]
 	}
 
@@ -98,8 +98,8 @@ func (t *table) GetColumn(component ID) *column {
 	return t.components[component.id]
 }
 
-func (t *table) Set(component ID, index uint32, src *column, srcIndex int, isTrivial bool) {
-	t.components[component.id].Set(index, src, srcIndex, isTrivial)
+func (t *table) Set(component ID, index uint32, src *column, srcIndex int) {
+	t.components[component.id].Set(index, src, srcIndex)
 }
 
 func (t *table) SetEntity(index uint32, entity Entity) {
@@ -122,17 +122,23 @@ func (t *table) Extend(by uint32) {
 	}
 	t.cap = capPow2(required)
 
-	old := t.entities.data
-	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), old.Type().Elem())).Elem()
-	t.entities.pointer = t.entities.data.Addr().UnsafePointer()
-	reflect.Copy(t.entities.data, old)
+	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), entityType)).Elem()
+	newPtr := t.entities.data.Addr().UnsafePointer()
+	copyPtr(t.entities.pointer, newPtr, uintptr(t.len)*entitySize)
+	t.entities.pointer = newPtr
 
 	for i := range t.columns {
 		column := &t.columns[i]
 		old := column.data
-		column.data = reflect.New(reflect.ArrayOf(int(t.cap), old.Type().Elem())).Elem()
-		column.pointer = column.data.Addr().UnsafePointer()
-		reflect.Copy(column.data, old)
+		column.data = reflect.New(reflect.ArrayOf(int(t.cap), column.elemType)).Elem()
+		if column.isTrivial {
+			newPtr := column.data.Addr().UnsafePointer()
+			copyPtr(column.pointer, newPtr, uintptr(t.len)*column.itemSize)
+			column.pointer = newPtr
+		} else {
+			column.pointer = column.data.Addr().UnsafePointer()
+			reflect.Copy(column.data, old)
+		}
 	}
 }
 
@@ -181,11 +187,11 @@ func (t *table) Reset() {
 	t.len = 0
 }
 
-func (t *table) AddAll(from *table, count uint32, reg *componentRegistry) {
+func (t *table) AddAll(from *table, count uint32) {
 	t.Alloc(count)
 	t.entities.CopyToEnd(&from.entities, t.len, count)
 	for c := range t.columns {
-		t.columns[c].CopyToEnd(&from.columns[c], t.len, count, reg.IsTrivial[t.ids[c].id])
+		t.columns[c].CopyToEnd(&from.columns[c], t.len, count)
 	}
 }
 

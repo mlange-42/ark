@@ -13,10 +13,12 @@ type column struct {
 	target     Entity         // target entity if for a relation component
 	index      uint32         // index of the column in the containing table
 	isRelation bool           // whether this column is for a relation component
+	elemType   reflect.Type   // element type of the column
+	isTrivial  bool           // Whether the column's type is trivial , i.e. without pointers.
 }
 
 // newColumn creates a new column for a given type and capacity.
-func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool, target Entity, capacity uint32) column {
+func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool, isTrivial bool, target Entity, capacity uint32) column {
 	// TODO: should we use a slice instead of an array here?
 	data := reflect.New(reflect.ArrayOf(int(capacity), tp)).Elem()
 	pointer := data.Addr().UnsafePointer()
@@ -28,6 +30,8 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 		itemSize:   itemSize,
 		isRelation: isRelation,
 		target:     target,
+		elemType:   tp,
+		isTrivial:  isTrivial,
 	}
 }
 
@@ -38,9 +42,9 @@ func (c *column) Get(index uintptr) unsafe.Pointer {
 
 // CopyToEnd copies from the given column to the end of this column.
 // Column length must be increased before.
-func (c *column) CopyToEnd(from *column, ownLen uint32, count uint32, isTrivial bool) {
+func (c *column) CopyToEnd(from *column, ownLen uint32, count uint32) {
 	start := ownLen - count
-	if isTrivial {
+	if c.isTrivial {
 		src := from.Get(0)
 		dst := c.Get(uintptr(start))
 		copyPtr(src, dst, c.itemSize*uintptr(count))
@@ -50,11 +54,11 @@ func (c *column) CopyToEnd(from *column, ownLen uint32, count uint32, isTrivial 
 }
 
 // Set overwrites the component at the given index.
-func (c *column) Set(index uint32, src *column, srcIndex int, isTrivial bool) {
+func (c *column) Set(index uint32, src *column, srcIndex int) {
 	if c.itemSize == 0 {
 		return
 	}
-	if isTrivial {
+	if c.isTrivial {
 		comp := src.Get(uintptr(srcIndex))
 		dst := c.Get(uintptr(index))
 		copyPtr(comp, dst, c.itemSize)
@@ -123,7 +127,9 @@ func (c *entityColumn) Get(index uintptr) unsafe.Pointer {
 // Column length must be increased before.
 func (c *entityColumn) CopyToEnd(from *entityColumn, ownLen uint32, count uint32) {
 	start := ownLen - count
-	copyRange(from.data, c.data, int(start), int(count))
+	src := from.Get(0)
+	dst := c.Get(uintptr(start))
+	copyPtr(src, dst, entitySize*uintptr(count))
 }
 
 // Set overwrites the component at the given index.
