@@ -341,7 +341,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 // moveEntities moves all entities from src to dst.
 func (s *storage) moveEntities(src, dst *table, count uint32) {
 	oldLen := dst.Len()
-	dst.AddAll(src, count, &s.registry)
+	dst.AddAll(src, count)
 
 	newLen := dst.Len()
 	newTable := dst.id
