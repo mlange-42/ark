@@ -26,20 +26,19 @@ func newMask256(ids ...ID) bitMask256 {
 
 // Get reports whether the bit at the given index [ID] is set.
 func (b *bitMask256) Get(bit ID) bool {
-	idx := bit.id / 64
-	offset := bit.id - (64 * idx)
-	mask := uint64(1 << offset)
+	idx := bit.id >> 6
+	mask := uint64(1) << (bit.id & 63)
 	return b.bits[idx]&mask == mask
 }
 
 // Set sets the state of the bit at the given index.
 func (b *bitMask256) Set(bit ID, value bool) {
-	idx := bit.id / 64
-	offset := bit.id - (64 * idx)
+	idx := bit.id >> 6
+	mask := uint64(1) << (bit.id & 63)
 	if value {
-		b.bits[idx] |= (1 << offset)
+		b.bits[idx] |= mask
 	} else {
-		b.bits[idx] &= ^(1 << offset)
+		b.bits[idx] &^= mask // faster than b.bits[idx] &= ^mask
 	}
 }
 
