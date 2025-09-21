@@ -15,6 +15,7 @@
 - Speeds up freeing tables when removing relation targets, by adding an index lookup (#314)
 - Optimizes dumping and loading entities for serialization by pre-allocating memory (#315)
 - Speeds up archetype switching by 20% by inlining the mask (#317)
+- Speeds up query creation by optimized world locking (#318)
 
 ### Other
 

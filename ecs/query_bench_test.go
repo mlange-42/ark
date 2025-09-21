@@ -1,6 +1,8 @@
 package ecs
 
-import "testing"
+import (
+	"testing"
+)
 
 func BenchmarkPosVelQuery_1000(b *testing.B) {
 	n := 1000
@@ -126,5 +128,31 @@ func BenchmarkPosVelMapUnsafe_1000(b *testing.B) {
 			pos.X += vel.X
 			pos.Y += vel.Y
 		}
+	}
+}
+
+func BenchmarkCreateQuery2(b *testing.B) {
+	w := NewWorld()
+
+	builder := NewMap2[CompA, CompB](&w)
+	builder.NewBatchFn(100, nil)
+	filter := NewFilter2[CompA, CompB](&w)
+
+	for b.Loop() {
+		query := filter.Query()
+		query.Close()
+	}
+}
+
+func BenchmarkCreateQuery2Cached(b *testing.B) {
+	w := NewWorld()
+
+	builder := NewMap2[CompA, CompB](&w)
+	builder.NewBatchFn(100, nil)
+	filter := NewFilter2[CompA, CompB](&w).Register()
+
+	for b.Loop() {
+		query := filter.Query()
+		query.Close()
 	}
 }

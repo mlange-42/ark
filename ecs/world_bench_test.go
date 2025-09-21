@@ -23,6 +23,15 @@ func BenchmarkCreateEntity1Comp_1000(b *testing.B) {
 	}
 }
 
+func BenchmarkWorldLockUnlock(b *testing.B) {
+	w := NewWorld()
+
+	for b.Loop() {
+		l := w.lock()
+		w.unlock(l)
+	}
+}
+
 func BenchmarkWorldStats4Arch(b *testing.B) {
 	w := NewWorld()
 
