@@ -160,7 +160,7 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 
 		if !archetype.HasRelations() {
 			table := &q.world.storage.tables[archetype.tables.tables[0]]
-			if table.Len() > 0 {
+			if table.len > 0 {
 				q.setTable(0, table)
 				return true
 			}
@@ -182,10 +182,7 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable(tables []tableID) bool {
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
 		table := &q.world.storage.tables[tables[q.cursor.table]]
-		if table.Len() == 0 {
-			continue
-		}
-		if !table.Matches(q.relations) {
+		if table.len == 0 || !table.Matches(q.relations) {
 			continue
 		}
 		q.setTable(q.cursor.table, table)
@@ -204,7 +201,7 @@ func (q *Query{{.}}{{$genericsShort}}) setTable(index int32, table *table) {
 	q.column{{$v}} = q.components[{{$i}}].columns[q.table.id]
 	{{- end}}
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.Len() - 1)
+	q.cursor.maxIndex = int64(q.table.len - 1)
 }
 
 {{end -}}
