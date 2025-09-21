@@ -106,7 +106,7 @@ func (q *Query0) nextArchetype() bool {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
 
-		if !q.filter.matches(archetype.mask) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -246,7 +246,7 @@ func (q *Query1[A]) nextArchetype() bool {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
 
-		if !q.filter.matches(archetype.mask) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -383,7 +383,7 @@ func (q *Query2[A, B]) nextArchetype() bool {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
 
-		if !q.filter.matches(archetype.mask) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -529,7 +529,7 @@ func (q *Query3[A, B, C]) nextArchetype() bool {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
 
-		if !q.filter.matches(archetype.mask) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -678,7 +678,7 @@ func (q *Query4[A, B, C, D]) nextArchetype() bool {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
 
-		if !q.filter.matches(archetype.mask) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -830,7 +830,7 @@ func (q *Query5[A, B, C, D, E]) nextArchetype() bool {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
 
-		if !q.filter.matches(archetype.mask) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -985,7 +985,7 @@ func (q *Query6[A, B, C, D, E, F]) nextArchetype() bool {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
 
-		if !q.filter.matches(archetype.mask) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -1143,7 +1143,7 @@ func (q *Query7[A, B, C, D, E, F, G]) nextArchetype() bool {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
 
-		if !q.filter.matches(archetype.mask) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -1304,7 +1304,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextArchetype() bool {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
 
-		if !q.filter.matches(archetype.mask) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 

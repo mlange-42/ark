@@ -21,7 +21,7 @@ type archetype struct {
 	tables         tableIDs                 // all active tables
 	freeTables     []tableID                // all inactive/free tables
 	zeroValue      []byte                   // zero value with the size of the largest item type, for fast zeroing
-	mask           *bitMask
+	mask           bitMask
 	id             archetypeID
 	node           nodeID
 	numRelations   uint8 // number of relation components
@@ -65,7 +65,7 @@ func (t *tableIDs) Clear() {
 	t.indices = map[tableID]uint32{}
 }
 
-func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
+func newArchetype(id archetypeID, node nodeID, mask bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
 	componentsMap := make([]int16, maskTotalBits)
 	for i := range maskTotalBits {
 		componentsMap[i] = -1

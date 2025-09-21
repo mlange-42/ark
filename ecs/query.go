@@ -71,7 +71,7 @@ func (q *UnsafeQuery) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[q.cursor.archetype]
-		if !q.filter.matches(archetype.mask) {
+		if !q.filter.matches(&archetype.mask) {
 			continue
 		}
 
