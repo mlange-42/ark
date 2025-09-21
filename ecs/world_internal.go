@@ -40,7 +40,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 	oldTable := &w.storage.tables[index.table]
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
-	mask := *oldArchetype.mask
+	mask := oldArchetype.mask
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	newIndex := newTable.Add(entity)
 
@@ -104,7 +104,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, r
 
 	oldIDs := oldArchetype.components
 
-	mask := *oldArchetype.mask
+	mask := oldArchetype.mask
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	// Get the old table again, as pointers may have changed.
 	oldTable = &w.storage.tables[oldTable.id]

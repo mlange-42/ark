@@ -41,7 +41,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 
 	archetypes := make([]archetype, 0, numArchetypes)
-	archetypes = append(archetypes, newArchetype(0, 0, &bitMask{}, []ID{}, []tableID{0}, &reg))
+	archetypes = append(archetypes, newArchetype(0, 0, bitMask{}, []ID{}, []tableID{0}, &reg))
 	tables := make([]table, 0, numArchetypes)
 	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, []Entity{}, []relationID{}))
 	return storage{
@@ -231,7 +231,7 @@ func (s *storage) createEntities(table *table, count int) {
 func (s *storage) createArchetype(node *node) *archetype {
 	comps := node.mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
-	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, &s.registry))
+	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, node.mask, comps, nil, &s.registry))
 	archetype := &s.archetypes[index]
 
 	s.allArchetypes = append(s.allArchetypes, archetype.id)
@@ -435,7 +435,7 @@ func (s *storage) getTables(batch *Batch) []tableID {
 
 	for i := range s.archetypes {
 		archetype := &s.archetypes[i]
-		if !batch.filter.matches(archetype.mask) {
+		if !batch.filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -462,7 +462,7 @@ func (s *storage) getTableIDs(filter *filter, relations []relationID) []tableID 
 
 	for i := range s.archetypes {
 		archetype := &s.archetypes[i]
-		if !filter.matches(archetype.mask) {
+		if !filter.matches(&archetype.mask) {
 			continue
 		}
 

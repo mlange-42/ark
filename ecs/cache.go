@@ -85,7 +85,7 @@ func (c *cache) addTable(storage *storage, table *table) {
 	if !table.HasRelations() {
 		for i := range c.filters {
 			e := &c.filters[i]
-			if !e.filter.matches(arch.mask) {
+			if !e.filter.matches(&arch.mask) {
 				continue
 			}
 			e.tables = append(e.tables, table.id)
@@ -95,7 +95,7 @@ func (c *cache) addTable(storage *storage, table *table) {
 
 	for i := range c.filters {
 		e := &c.filters[i]
-		if !e.filter.matches(arch.mask) {
+		if !e.filter.matches(&arch.mask) {
 			continue
 		}
 		if !table.Matches(e.relations) {
@@ -121,7 +121,7 @@ func (c *cache) removeTable(storage *storage, table *table) {
 	for i := range c.filters {
 		e := &c.filters[i]
 
-		if e.indices == nil && e.filter.matches(arch.mask) {
+		if e.indices == nil && e.filter.matches(&arch.mask) {
 			c.mapTables(storage, e)
 		}
 

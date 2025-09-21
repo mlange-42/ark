@@ -25,7 +25,7 @@ func entityAt(storage *storage, filter *filter, relations []relationID, archetyp
 	count := uint32(0)
 	for _, arch := range archetypes {
 		archetype := &storage.archetypes[arch]
-		if !filter.matches(archetype.mask) {
+		if !filter.matches(&archetype.mask) {
 			continue
 		}
 
@@ -74,7 +74,7 @@ func countQuery(storage *storage, filter *filter, relations []relationID, archet
 	count := 0
 	for _, arch := range archetypes {
 		archetype := &storage.archetypes[arch]
-		if !filter.matches(archetype.mask) {
+		if !filter.matches(&archetype.mask) {
 			continue
 		}
 
