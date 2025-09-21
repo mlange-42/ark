@@ -42,11 +42,11 @@ func BenchmarkFilterCopy(b *testing.B) {
 }
 
 func BenchmarkFilterMatches(b *testing.B) {
-	filterMask := newMask256(id(1), id(2))
+	filterMask := newMask(id(1), id(2))
 	filter := filter{
 		mask: filterMask,
 	}
-	mask := newMask256(id(1), id(2), id(3))
+	mask := newMask(id(1), id(2), id(3))
 
 	for b.Loop() {
 		_ = filter.matches(&mask)
@@ -54,14 +54,14 @@ func BenchmarkFilterMatches(b *testing.B) {
 }
 
 func BenchmarkFilterWithoutMatches(b *testing.B) {
-	filterMask := newMask256(id(1), id(2))
-	withoutMask := newMask256(id(1), id(2))
+	filterMask := newMask(id(1), id(2))
+	withoutMask := newMask(id(1), id(2))
 	filter := filter{
 		mask:       filterMask,
 		without:    withoutMask,
 		hasWithout: true,
 	}
-	mask := newMask256(id(1), id(2), id(3))
+	mask := newMask(id(1), id(2), id(3))
 
 	for b.Loop() {
 		_ = filter.matches(&mask)
