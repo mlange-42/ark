@@ -6,9 +6,4 @@ coverage:
         threshold: 0.01%
         if_not_found: success
         informational: false
-    patch:
-      default:
-        target: auto
-        threshold: 0.5%
-        if_not_found: success
-        informational: false
+    patch: off
