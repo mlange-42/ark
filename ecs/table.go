@@ -56,7 +56,7 @@ func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentR
 	}
 }
 
-func (t *table) recycle(targets []Entity, relationIDs []relationID) {
+func (t *table) Recycle(targets []Entity, relationIDs []relationID) {
 	t.relationIDs = relationIDs
 	for i := range t.columns {
 		t.columns[i].target = targets[i]

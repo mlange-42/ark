@@ -268,7 +268,7 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 	recycled := false
 	if id, ok := archetype.GetFreeTable(); ok {
 		newTableID = id
-		s.tables[newTableID].recycle(targets, relations)
+		s.tables[newTableID].Recycle(targets, relations)
 		recycled = true
 	} else {
 		newTableID = tableID(len(s.tables))
