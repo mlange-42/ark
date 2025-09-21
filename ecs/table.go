@@ -123,14 +123,14 @@ func (t *table) Extend(by uint32) {
 	t.cap = capPow2(required)
 
 	old := t.entities.data
-	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), old.Type().Elem())).Elem()
+	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), entityType)).Elem()
 	t.entities.pointer = t.entities.data.Addr().UnsafePointer()
 	reflect.Copy(t.entities.data, old)
 
 	for i := range t.columns {
 		column := &t.columns[i]
 		old := column.data
-		column.data = reflect.New(reflect.ArrayOf(int(t.cap), old.Type().Elem())).Elem()
+		column.data = reflect.New(reflect.ArrayOf(int(t.cap), column.elemType)).Elem()
 		column.pointer = column.data.Addr().UnsafePointer()
 		reflect.Copy(column.data, old)
 	}

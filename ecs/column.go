@@ -13,6 +13,7 @@ type column struct {
 	target     Entity         // target entity if for a relation component
 	index      uint32         // index of the column in the containing table
 	isRelation bool           // whether this column is for a relation component
+	elemType   reflect.Type   // element type of the column
 }
 
 // newColumn creates a new column for a given type and capacity.
@@ -28,6 +29,7 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 		itemSize:   itemSize,
 		isRelation: isRelation,
 		target:     target,
+		elemType:   tp,
 	}
 }
 
