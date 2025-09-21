@@ -140,3 +140,65 @@ func BenchmarkWorldStats1024Arch(b *testing.B) {
 	}
 	expectEqual(b, 1024, len(stats.Archetypes))
 }
+
+func benchmarkQueryNumArches(b *testing.B, arches int, n int) {
+	world := NewWorld(1024)
+
+	posID := ComponentID[Position](&world)
+	velID := ComponentID[Velocity](&world)
+	allIDs := []ID{
+		ComponentID[CompA](&world),
+		ComponentID[CompB](&world),
+		ComponentID[CompC](&world),
+		ComponentID[CompD](&world),
+		ComponentID[CompE](&world),
+		ComponentID[CompF](&world),
+		ComponentID[CompG](&world),
+		ComponentID[CompH](&world),
+		ComponentID[CompI](&world),
+		ComponentID[CompJ](&world),
+	}
+
+	extraIDs := allIDs[:int(math.Log2(float64(arches)))]
+
+	ids := []ID{}
+	for i := range n {
+		ids = append(ids, posID, velID)
+		for j, id := range extraIDs {
+			m := 1 << j
+			if i&m == m {
+				ids = append(ids, id)
+			}
+		}
+		world.Unsafe().NewEntity(ids...)
+
+		ids = ids[:0]
+	}
+
+	filter := NewFilter2[Position, Velocity](&world)
+
+	for b.Loop() {
+		query := filter.Query()
+		for query.Next() {
+			pos, vel := query.Get()
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
+	}
+}
+
+func BenchmarkQuery1Arch_1024(b *testing.B) {
+	benchmarkQueryNumArches(b, 1, 1024)
+}
+
+func BenchmarkQuery32Arch_1024(b *testing.B) {
+	benchmarkQueryNumArches(b, 32, 1024)
+}
+
+func BenchmarkQuery128Arch_1024(b *testing.B) {
+	benchmarkQueryNumArches(b, 128, 1024)
+}
+
+func BenchmarkQuery1024Arch_1024(b *testing.B) {
+	benchmarkQueryNumArches(b, 1024, 1024)
+}
