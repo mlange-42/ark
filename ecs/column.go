@@ -31,6 +31,7 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 		isRelation: isRelation,
 		target:     target,
 		elemType:   tp,
+		isTrivial:  isTrivial,
 	}
 }
 
