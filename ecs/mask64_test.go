@@ -111,11 +111,12 @@ func TestBitMask64(t *testing.T) {
 
 	mask = newMask64()
 	for i := range 64 {
-		expectFalse(t, mask.Get(ID{uint8(i)}))
-		mask.Set(ID{uint8(i)}, true)
-		expectTrue(t, mask.Get(ID{uint8(i)}))
-		mask.Set(ID{uint8(i)}, false)
-		expectFalse(t, mask.Get(ID{uint8(i)}))
+		id := ID{uint8(i)}
+		expectFalse(t, mask.Get(id))
+		mask.Set(id, true)
+		expectTrue(t, mask.Get(id))
+		mask.Set(id, false)
+		expectFalse(t, mask.Get(id))
 	}
 }
 

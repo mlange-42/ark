@@ -16,6 +16,7 @@
 - Optimizes dumping and loading entities for serialization by pre-allocating memory (#315)
 - Speeds up archetype switching by 20% by inlining the mask (#317)
 - Speeds up query creation by optimized world locking (#318)
+- Optimizes bit mask methods by using less math and more bit-wise operations (#319)
 
 ### Other
 
