@@ -17,17 +17,16 @@ func newLock() lock {
 // Lock the world and get the Lock bit for later unlocking.
 func (m *lock) Lock() uint8 {
 	lock := m.bitPool.Get()
-	m.locks.SetTrue(ID{lock})
+	m.locks.SetTrue(lock)
 	return lock
 }
 
 // Unlock unlocks the given lock bit.
 func (m *lock) Unlock(l uint8) {
-	id := ID{l}
-	if !m.locks.Get(id) {
+	if !m.locks.GetUInt(l) {
 		panic("unbalanced unlock. Did you close a query that was already iterated?")
 	}
-	m.locks.SetFalse(id)
+	m.locks.SetFalse(l)
 	m.bitPool.Recycle(l)
 }
 

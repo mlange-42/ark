@@ -29,6 +29,12 @@ func (b *bitMask64) Get(bit ID) bool {
 	return b.bits&mask == mask
 }
 
+// Get reports whether the bit at the given index [ID] is set.
+func (b *bitMask64) GetUInt(bit uint8) bool {
+	mask := uint64(1 << bit)
+	return b.bits&mask == mask
+}
+
 // Set sets the state of the bit at the given index.
 func (b *bitMask64) Set(bit ID, value bool) {
 	if value {
@@ -38,12 +44,12 @@ func (b *bitMask64) Set(bit ID, value bool) {
 	}
 }
 
-func (b *bitMask64) SetTrue(bit ID) {
-	b.bits |= (1 << bit.id)
+func (b *bitMask64) SetTrue(bit uint8) {
+	b.bits |= (1 << bit)
 }
 
-func (b *bitMask64) SetFalse(bit ID) {
-	b.bits &= ^(1 << bit.id)
+func (b *bitMask64) SetFalse(bit uint8) {
+	b.bits &= ^(1 << bit)
 }
 
 // Not returns the inversion of this mask.
