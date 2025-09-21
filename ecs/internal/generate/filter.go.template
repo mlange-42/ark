@@ -145,9 +145,9 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, {{.}})
-		{{if .}}for i := range {{.}} {
-			f.components[i] = &f.world.storage.components[f.ids[i].id]
-		}{{end}}
+		{{range $i, $v := $upper -}}
+		f.components[{{$i}}] = &f.world.storage.components[f.ids[{{$i}}].id]
+		{{end -}}
 	}
 	var start uint8
 	var cache *cacheEntry
@@ -156,9 +156,10 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	} else {
 		reg := &f.world.storage.registry
-		if f.generation != reg.getGeneration() {
+		gen := reg.getGeneration()
+		if f.generation != gen {
 			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = reg.getGeneration()
+			f.generation = gen
 		}
 	}
 

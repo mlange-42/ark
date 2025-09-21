@@ -127,7 +127,6 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, 0)
-
 	}
 	var start uint8
 	var cache *cacheEntry
@@ -136,9 +135,10 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	} else {
 		reg := &f.world.storage.registry
-		if f.generation != reg.getGeneration() {
+		gen := reg.getGeneration()
+		if f.generation != gen {
 			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = reg.getGeneration()
+			f.generation = gen
 		}
 	}
 
@@ -318,9 +318,7 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, 1)
-		for i := range 1 {
-			f.components[i] = &f.world.storage.components[f.ids[i].id]
-		}
+		f.components[0] = &f.world.storage.components[f.ids[0].id]
 	}
 	var start uint8
 	var cache *cacheEntry
@@ -329,9 +327,10 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	} else {
 		reg := &f.world.storage.registry
-		if f.generation != reg.getGeneration() {
+		gen := reg.getGeneration()
+		if f.generation != gen {
 			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = reg.getGeneration()
+			f.generation = gen
 		}
 	}
 
@@ -507,9 +506,8 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, 2)
-		for i := range 2 {
-			f.components[i] = &f.world.storage.components[f.ids[i].id]
-		}
+		f.components[0] = &f.world.storage.components[f.ids[0].id]
+		f.components[1] = &f.world.storage.components[f.ids[1].id]
 	}
 	var start uint8
 	var cache *cacheEntry
@@ -518,9 +516,10 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	} else {
 		reg := &f.world.storage.registry
-		if f.generation != reg.getGeneration() {
+		gen := reg.getGeneration()
+		if f.generation != gen {
 			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = reg.getGeneration()
+			f.generation = gen
 		}
 	}
 
@@ -701,9 +700,9 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, 3)
-		for i := range 3 {
-			f.components[i] = &f.world.storage.components[f.ids[i].id]
-		}
+		f.components[0] = &f.world.storage.components[f.ids[0].id]
+		f.components[1] = &f.world.storage.components[f.ids[1].id]
+		f.components[2] = &f.world.storage.components[f.ids[2].id]
 	}
 	var start uint8
 	var cache *cacheEntry
@@ -712,9 +711,10 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	} else {
 		reg := &f.world.storage.registry
-		if f.generation != reg.getGeneration() {
+		gen := reg.getGeneration()
+		if f.generation != gen {
 			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = reg.getGeneration()
+			f.generation = gen
 		}
 	}
 
@@ -896,9 +896,10 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, 4)
-		for i := range 4 {
-			f.components[i] = &f.world.storage.components[f.ids[i].id]
-		}
+		f.components[0] = &f.world.storage.components[f.ids[0].id]
+		f.components[1] = &f.world.storage.components[f.ids[1].id]
+		f.components[2] = &f.world.storage.components[f.ids[2].id]
+		f.components[3] = &f.world.storage.components[f.ids[3].id]
 	}
 	var start uint8
 	var cache *cacheEntry
@@ -907,9 +908,10 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	} else {
 		reg := &f.world.storage.registry
-		if f.generation != reg.getGeneration() {
+		gen := reg.getGeneration()
+		if f.generation != gen {
 			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = reg.getGeneration()
+			f.generation = gen
 		}
 	}
 
@@ -1092,9 +1094,11 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, 5)
-		for i := range 5 {
-			f.components[i] = &f.world.storage.components[f.ids[i].id]
-		}
+		f.components[0] = &f.world.storage.components[f.ids[0].id]
+		f.components[1] = &f.world.storage.components[f.ids[1].id]
+		f.components[2] = &f.world.storage.components[f.ids[2].id]
+		f.components[3] = &f.world.storage.components[f.ids[3].id]
+		f.components[4] = &f.world.storage.components[f.ids[4].id]
 	}
 	var start uint8
 	var cache *cacheEntry
@@ -1103,9 +1107,10 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	} else {
 		reg := &f.world.storage.registry
-		if f.generation != reg.getGeneration() {
+		gen := reg.getGeneration()
+		if f.generation != gen {
 			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = reg.getGeneration()
+			f.generation = gen
 		}
 	}
 
@@ -1289,9 +1294,12 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, 6)
-		for i := range 6 {
-			f.components[i] = &f.world.storage.components[f.ids[i].id]
-		}
+		f.components[0] = &f.world.storage.components[f.ids[0].id]
+		f.components[1] = &f.world.storage.components[f.ids[1].id]
+		f.components[2] = &f.world.storage.components[f.ids[2].id]
+		f.components[3] = &f.world.storage.components[f.ids[3].id]
+		f.components[4] = &f.world.storage.components[f.ids[4].id]
+		f.components[5] = &f.world.storage.components[f.ids[5].id]
 	}
 	var start uint8
 	var cache *cacheEntry
@@ -1300,9 +1308,10 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	} else {
 		reg := &f.world.storage.registry
-		if f.generation != reg.getGeneration() {
+		gen := reg.getGeneration()
+		if f.generation != gen {
 			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = reg.getGeneration()
+			f.generation = gen
 		}
 	}
 
@@ -1487,9 +1496,13 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, 7)
-		for i := range 7 {
-			f.components[i] = &f.world.storage.components[f.ids[i].id]
-		}
+		f.components[0] = &f.world.storage.components[f.ids[0].id]
+		f.components[1] = &f.world.storage.components[f.ids[1].id]
+		f.components[2] = &f.world.storage.components[f.ids[2].id]
+		f.components[3] = &f.world.storage.components[f.ids[3].id]
+		f.components[4] = &f.world.storage.components[f.ids[4].id]
+		f.components[5] = &f.world.storage.components[f.ids[5].id]
+		f.components[6] = &f.world.storage.components[f.ids[6].id]
 	}
 	var start uint8
 	var cache *cacheEntry
@@ -1498,9 +1511,10 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	} else {
 		reg := &f.world.storage.registry
-		if f.generation != reg.getGeneration() {
+		gen := reg.getGeneration()
+		if f.generation != gen {
 			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = reg.getGeneration()
+			f.generation = gen
 		}
 	}
 
@@ -1686,9 +1700,14 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
 	if f.components == nil {
 		f.components = make([]*componentStorage, 8)
-		for i := range 8 {
-			f.components[i] = &f.world.storage.components[f.ids[i].id]
-		}
+		f.components[0] = &f.world.storage.components[f.ids[0].id]
+		f.components[1] = &f.world.storage.components[f.ids[1].id]
+		f.components[2] = &f.world.storage.components[f.ids[2].id]
+		f.components[3] = &f.world.storage.components[f.ids[3].id]
+		f.components[4] = &f.world.storage.components[f.ids[4].id]
+		f.components[5] = &f.world.storage.components[f.ids[5].id]
+		f.components[6] = &f.world.storage.components[f.ids[6].id]
+		f.components[7] = &f.world.storage.components[f.ids[7].id]
 	}
 	var start uint8
 	var cache *cacheEntry
@@ -1697,9 +1716,10 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 		cache = f.world.storage.getRegisteredFilter(f.cache)
 	} else {
 		reg := &f.world.storage.registry
-		if f.generation != reg.getGeneration() {
+		gen := reg.getGeneration()
+		if f.generation != gen {
 			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = reg.getGeneration()
+			f.generation = gen
 		}
 	}
 
