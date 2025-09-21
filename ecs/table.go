@@ -56,7 +56,7 @@ func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentR
 	}
 }
 
-func (t *table) recycle(targets []Entity, relationIDs []relationID) {
+func (t *table) Recycle(targets []Entity, relationIDs []relationID) {
 	t.relationIDs = relationIDs
 	for i := range t.columns {
 		t.columns[i].target = targets[i]
@@ -143,24 +143,24 @@ func (t *table) Remove(index uint32, reg *componentRegistry) bool {
 	swapped := index != uint32(lastIndex)
 
 	if swapped {
-		sz := entitySize
-		src := unsafe.Add(t.entities.pointer, lastIndex*sz)
-		dst := unsafe.Add(t.entities.pointer, uintptr(index)*sz)
-		copyPtr(src, dst, uintptr(sz))
+		size := entitySize
+		src := unsafe.Add(t.entities.pointer, lastIndex*size)
+		dst := unsafe.Add(t.entities.pointer, uintptr(index)*size)
+		copyPtr(src, dst, uintptr(size))
 
 		for i := range t.columns {
 			column := &t.columns[i]
 
 			if reg.IsTrivial[t.ids[i].id] {
-				sz := column.itemSize
-				src := unsafe.Add(column.pointer, lastIndex*sz)
-				dst := unsafe.Add(column.pointer, uintptr(index)*sz)
-				copyPtr(src, dst, uintptr(sz))
+				size := column.itemSize
+				src := unsafe.Add(column.pointer, lastIndex*size)
+				dst := unsafe.Add(column.pointer, uintptr(index)*size)
+				copyPtr(src, dst, uintptr(size))
 				column.Zero(lastIndex, t.zeroPointer)
 				continue
 			}
 
-			copyItem(column.data, column.data, int(lastIndex), int(index))
+			copyValue(column.data, column.data, int(lastIndex), int(index))
 			column.Zero(lastIndex, t.zeroPointer)
 		}
 	} else {
@@ -181,17 +181,17 @@ func (t *table) Reset() {
 	t.len = 0
 }
 
-func (t *table) AddAll(other *table, count uint32, reg *componentRegistry) {
+func (t *table) AddAll(from *table, count uint32, reg *componentRegistry) {
 	t.Alloc(count)
-	t.entities.SetLast(&other.entities, t.len, count)
+	t.entities.CopyToEnd(&from.entities, t.len, count)
 	for c := range t.columns {
-		t.columns[c].SetLast(&other.columns[c], t.len, count, reg.IsTrivial[t.ids[c].id])
+		t.columns[c].CopyToEnd(&from.columns[c], t.len, count, reg.IsTrivial[t.ids[c].id])
 	}
 }
 
-func (t *table) AddAllEntities(other *table, count uint32) {
+func (t *table) AddAllEntities(from *table, count uint32) {
 	t.Alloc(count)
-	t.entities.SetLast(&other.entities, t.len, count)
+	t.entities.CopyToEnd(&from.entities, t.len, count)
 }
 
 func (t *table) MatchesExact(relations []relationID) bool {
