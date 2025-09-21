@@ -38,6 +38,14 @@ func (b *bitMask64) Set(bit ID, value bool) {
 	}
 }
 
+func (b *bitMask64) SetTrue(bit ID) {
+	b.bits |= (1 << bit.id)
+}
+
+func (b *bitMask64) SetFalse(bit ID) {
+	b.bits &= ^(1 << bit.id)
+}
+
 // Not returns the inversion of this mask.
 func (b *bitMask64) Not() bitMask64 {
 	return bitMask64{
