@@ -40,7 +40,7 @@ func (b *bitMask64) Set(bit ID, value bool) {
 	if value {
 		b.bits |= (1 << bit.id)
 	} else {
-		b.bits &= ^(1 << bit.id)
+		b.bits &^= (1 << bit.id)
 	}
 }
 

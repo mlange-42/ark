@@ -26,20 +26,19 @@ func newMask256(ids ...ID) bitMask256 {
 
 // Get reports whether the bit at the given index [ID] is set.
 func (b *bitMask256) Get(bit ID) bool {
-	idx := bit.id / 64
-	offset := bit.id - (64 * idx)
-	mask := uint64(1 << offset)
+	idx := bit.id >> 6
+	mask := uint64(1) << (bit.id & 63)
 	return b.bits[idx]&mask == mask
 }
 
 // Set sets the state of the bit at the given index.
 func (b *bitMask256) Set(bit ID, value bool) {
-	idx := bit.id / 64
-	offset := bit.id - (64 * idx)
+	idx := bit.id >> 6
+	mask := uint64(1) << (bit.id & 63)
 	if value {
-		b.bits[idx] |= (1 << offset)
+		b.bits[idx] |= mask
 	} else {
-		b.bits[idx] &= ^(1 << offset)
+		b.bits[idx] &^= mask // faster than b.bits[idx] &= ^mask
 	}
 }
 
@@ -62,18 +61,22 @@ func (b *bitMask256) Reset() {
 
 // Contains reports if the other mask is a subset of this mask.
 func (b *bitMask256) Contains(other *bitMask256) bool {
-	return b.bits[0]&other.bits[0] == other.bits[0] &&
-		b.bits[1]&other.bits[1] == other.bits[1] &&
-		b.bits[2]&other.bits[2] == other.bits[2] &&
-		b.bits[3]&other.bits[3] == other.bits[3]
+	b0, b1, b2, b3 := b.bits[0], b.bits[1], b.bits[2], b.bits[3]
+	o0, o1, o2, o3 := other.bits[0], other.bits[1], other.bits[2], other.bits[3]
+	return b0&o0 == o0 &&
+		b1&o1 == o1 &&
+		b2&o2 == o2 &&
+		b3&o3 == o3
 }
 
 // ContainsAny reports if any bit of the other mask is in this mask.
 func (b *bitMask256) ContainsAny(other *bitMask256) bool {
-	return b.bits[0]&other.bits[0] != 0 ||
-		b.bits[1]&other.bits[1] != 0 ||
-		b.bits[2]&other.bits[2] != 0 ||
-		b.bits[3]&other.bits[3] != 0
+	b0, b1, b2, b3 := b.bits[0], b.bits[1], b.bits[2], b.bits[3]
+	o0, o1, o2, o3 := other.bits[0], other.bits[1], other.bits[2], other.bits[3]
+	return b0&o0 != 0 ||
+		b1&o1 != 0 ||
+		b2&o2 != 0 ||
+		b3&o3 != 0
 }
 
 // TotalBitsSet returns how many bits are set in this mask.

@@ -108,6 +108,16 @@ func TestBitMask64(t *testing.T) {
 
 	expectTrue(t, mask.ContainsAny(all64(id(6), id(big+2), id(big+6))))
 	expectFalse(t, mask.ContainsAny(all64(id(6), id(big+3), id(big+5))))
+
+	mask = newMask64()
+	for i := range 64 {
+		id := ID{uint8(i)}
+		expectFalse(t, mask.Get(id))
+		mask.Set(id, true)
+		expectTrue(t, mask.Get(id))
+		mask.Set(id, false)
+		expectFalse(t, mask.Get(id))
+	}
 }
 
 func TestMask64ToTypes(t *testing.T) {
