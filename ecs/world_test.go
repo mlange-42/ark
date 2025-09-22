@@ -733,4 +733,6 @@ func TestWorldShrinkTime(t *testing.T) {
 
 	expectEqual(t, memUsed, stats.MemoryUsed)
 	expectGreater(t, mem, stats.Memory)
+
+	w.RemoveEntity(parent)
 }
