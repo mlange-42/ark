@@ -169,6 +169,56 @@ func BenchmarkWorldStats1024Arch(b *testing.B) {
 	expectEqual(b, 1024, len(stats.Archetypes))
 }
 
+func BenchmarkRemoveTrivial_1000(b *testing.B) {
+	w := NewWorld()
+	builder := NewMap1[Heading](&w)
+
+	toRemove := []Entity{}
+	builder.NewBatchFn(1000, func(entity Entity, a *Heading) {
+		toRemove = append(toRemove, entity)
+	})
+	for _, e := range toRemove {
+		w.RemoveEntity(e)
+	}
+
+	for b.Loop() {
+		b.StopTimer()
+		toRemove = toRemove[:0]
+		builder.NewBatchFn(1000, func(entity Entity, a *Heading) {
+			toRemove = append(toRemove, entity)
+		})
+		b.StartTimer()
+		for _, e := range toRemove {
+			w.RemoveEntity(e)
+		}
+	}
+}
+
+func BenchmarkRemoveNonTrivial_1000(b *testing.B) {
+	w := NewWorld()
+	builder := NewMap1[PointerType](&w)
+
+	toRemove := []Entity{}
+	builder.NewBatchFn(1000, func(entity Entity, a *PointerType) {
+		toRemove = append(toRemove, entity)
+	})
+	for _, e := range toRemove {
+		w.RemoveEntity(e)
+	}
+
+	for b.Loop() {
+		b.StopTimer()
+		toRemove = toRemove[:0]
+		builder.NewBatchFn(1000, func(entity Entity, a *PointerType) {
+			toRemove = append(toRemove, entity)
+		})
+		b.StartTimer()
+		for _, e := range toRemove {
+			w.RemoveEntity(e)
+		}
+	}
+}
+
 func benchmarkQueryNumArches(b *testing.B, arches int, n int) {
 	world := NewWorld(1024)
 

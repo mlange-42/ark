@@ -39,6 +39,11 @@ func copyRange(src, dst reflect.Value, start, count int) {
 	reflect.Copy(dstSlice, srcSlice)
 }
 
+func zeroValueAt(v reflect.Value, index int) {
+	elem := v.Index(index)
+	elem.SetZero()
+}
+
 // appends to a slice, but guaranties to return a new one and not alter the original.
 func copyAppend[T any](sl []T, elems ...T) []T {
 	sl2 := make([]T, len(sl), len(sl)+len(elems))

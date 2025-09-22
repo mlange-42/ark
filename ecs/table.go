@@ -172,7 +172,7 @@ func (t *table) adjustCapacity(cap uint32) {
 
 // Remove swap-removes the entity at the given index.
 // Returns whether a swap was necessary.
-func (t *table) Remove(index uint32, reg *componentRegistry) bool {
+func (t *table) Remove(index uint32) bool {
 	lastIndex := uintptr(t.len - 1)
 	swapped := index != uint32(lastIndex)
 
@@ -185,7 +185,7 @@ func (t *table) Remove(index uint32, reg *componentRegistry) bool {
 		for i := range t.columns {
 			column := &t.columns[i]
 
-			if reg.IsTrivial[t.ids[i].id] {
+			if column.isTrivial {
 				size := column.itemSize
 				src := unsafe.Add(column.pointer, lastIndex*size)
 				dst := unsafe.Add(column.pointer, uintptr(index)*size)

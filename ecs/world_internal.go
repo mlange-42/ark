@@ -54,7 +54,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 		}
 	}
 
-	swapped := oldTable.Remove(index.row, &w.storage.registry)
+	swapped := oldTable.Remove(index.row)
 
 	if swapped {
 		swapEntity := oldTable.GetEntity(uintptr(index.row))
@@ -168,7 +168,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 		newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
 	}
 
-	swapped := oldTable.Remove(index.row, &w.storage.registry)
+	swapped := oldTable.Remove(index.row)
 
 	if swapped {
 		swapEntity := oldTable.GetEntity(uintptr(index.row))
