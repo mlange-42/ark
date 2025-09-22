@@ -72,8 +72,12 @@ func (c *column) Zero(index uintptr, zero unsafe.Pointer) {
 	if c.itemSize == 0 {
 		return
 	}
-	dst := unsafe.Add(c.pointer, index*c.itemSize)
-	copyPtr(zero, dst, uintptr(c.itemSize))
+	if c.isTrivial {
+		dst := unsafe.Add(c.pointer, index*c.itemSize)
+		copyPtr(zero, dst, uintptr(c.itemSize))
+	} else {
+		zeroValueAt(c.data, int(index))
+	}
 }
 
 // Zero resets a block of storage in one buffer.
@@ -93,7 +97,7 @@ func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
 	if ownLen == 0 {
 		return
 	}
-	if ownLen <= 64 { // A coarse estimate where manually zeroing is faster
+	if ownLen <= 64 && c.isTrivial { // A coarse estimate where manually zeroing is faster
 		c.ZeroRange(0, ownLen, zero)
 	} else {
 		c.data.SetZero()
