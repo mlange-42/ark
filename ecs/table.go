@@ -132,12 +132,13 @@ func (t *table) CanShrink(minCapacity uint32) bool {
 }
 
 // Shrink the table's capacity to the next power-of-2 of what is required.
-func (t *table) Shrink(minCapacity uint32) {
+func (t *table) Shrink(minCapacity uint32) bool {
 	target := max(capPow2(t.len), minCapacity)
 	if t.cap <= target {
-		return
+		return false
 	}
 	t.adjustCapacity(target)
+	return true
 }
 
 func (t *table) adjustCapacity(cap uint32) {

@@ -489,23 +489,26 @@ func (s *storage) getTableIDs(filter *filter, relations []relationID) []tableID 
 func (s *storage) Shrink(stopAfter time.Duration) bool {
 	start := time.Now()
 	var tableIdx int
+	anyFound := false
 stop:
 	for tableIdx = range s.tables {
 		table := &s.tables[tableIdx]
-		if table.isFree {
-			continue
-		}
 
 		if !table.HasRelations() {
-			table.Shrink(uint32(s.config.initialCapacity))
+			if table.Shrink(uint32(s.config.initialCapacity)) {
+				anyFound = true
+			}
 		} else {
-			table.Shrink(uint32(s.config.initialCapacityRelations))
-			if table.Len() == 0 {
+			if table.Shrink(uint32(s.config.initialCapacityRelations)) {
+				anyFound = true
+			}
+			if !table.isFree && table.Len() == 0 {
 				s.archetypes[table.archetype].FreeTable(table)
+				anyFound = true
 			}
 		}
 
-		if time.Since(start) >= stopAfter {
+		if anyFound && time.Since(start) >= stopAfter {
 			break stop
 		}
 	}
@@ -513,9 +516,6 @@ stop:
 	tableIdx++
 	for tableIdx < len(s.tables) {
 		table := &s.tables[tableIdx]
-		if table.isFree {
-			continue
-		}
 
 		if !table.HasRelations() {
 			if table.CanShrink(uint32(s.config.initialCapacity)) {
@@ -525,7 +525,7 @@ stop:
 			if table.CanShrink(uint32(s.config.initialCapacityRelations)) {
 				return true
 			}
-			if table.Len() == 0 {
+			if !table.isFree && table.Len() == 0 {
 				return true
 			}
 		}

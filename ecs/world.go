@@ -204,6 +204,9 @@ func (w *World) Stats() *stats.World {
 // Stops as soon as the time limit given by stopAfter is exceeded.
 // Returns whether there are any further shrink operations possible that were not performed within the time limit.
 //
+// Note that timer resolution is limited, particularly on Windows.
+// So is will most likely not be possible to stop after microseconds or shorter.
+//
 // This method should not be used regularly!
 // Usually, memory should stay allocated for reuse when new entities are created or moved between archetypes
 // when adding or removing components.
