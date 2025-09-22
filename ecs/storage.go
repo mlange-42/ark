@@ -113,7 +113,7 @@ func (s *storage) RemoveEntity(entity Entity) {
 	index := &s.entities[entity.id]
 	table := &s.tables[index.table]
 
-	swapped := table.Remove(index.row, &s.registry)
+	swapped := table.Remove(index.row)
 
 	s.entityPool.Recycle(entity)
 

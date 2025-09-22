@@ -12,7 +12,6 @@ type registry struct {
 	Types      []reflect.Type         // Mapping from IDs to types.
 	IDs        []uint8                // List of IDs.
 	Used       bitMask                // Mapping from IDs to used status.
-	Trivial    bitMask                // Mapping from IDs to whether types are trivial.
 	Archetypes []int                  // Number of archetypes for each component.
 	generation uint32                 // Generation to indicate changes to archetype count per component.
 }
