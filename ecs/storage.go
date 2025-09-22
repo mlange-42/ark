@@ -490,7 +490,6 @@ func (s *storage) Shrink(stopAfter time.Duration) bool {
 	start := time.Now()
 	var tableIdx int
 	anyFound := false
-stop:
 	for tableIdx = range s.tables {
 		table := &s.tables[tableIdx]
 
@@ -509,7 +508,7 @@ stop:
 		}
 
 		if anyFound && time.Since(start) >= stopAfter {
-			break stop
+			break
 		}
 	}
 

@@ -146,7 +146,9 @@ func (t *table) adjustCapacity(cap uint32) {
 
 	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), entityType)).Elem()
 	newPtr := t.entities.data.Addr().UnsafePointer()
-	copyPtr(t.entities.pointer, newPtr, uintptr(t.len)*entitySize)
+	if t.len > 0 {
+		copyPtr(t.entities.pointer, newPtr, uintptr(t.len)*entitySize)
+	}
 	t.entities.pointer = newPtr
 
 	for i := range t.columns {
@@ -155,11 +157,15 @@ func (t *table) adjustCapacity(cap uint32) {
 		column.data = reflect.New(reflect.ArrayOf(int(t.cap), column.elemType)).Elem()
 		if column.isTrivial {
 			newPtr := column.data.Addr().UnsafePointer()
-			copyPtr(column.pointer, newPtr, uintptr(t.len)*column.itemSize)
+			if t.len > 0 {
+				copyPtr(column.pointer, newPtr, uintptr(t.len)*column.itemSize)
+			}
 			column.pointer = newPtr
 		} else {
 			column.pointer = column.data.Addr().UnsafePointer()
-			reflect.Copy(column.data, old)
+			if t.len > 0 {
+				reflect.Copy(column.data, old)
+			}
 		}
 	}
 }
