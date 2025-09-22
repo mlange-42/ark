@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"reflect"
+	"time"
 
 	"github.com/mlange-42/ark/ecs/stats"
 )
@@ -193,4 +194,19 @@ func (w *World) Stats() *stats.World {
 	w.stats.CachedFilters = len(w.storage.cache.filters)
 
 	return w.stats
+}
+
+// Shrink reduces memory usage by shrinking the capacity of archetype tables to the next power-of-2 of what is occupied.
+// Further, it frees empty tables of archetypes with relations.
+// Stops as soon as the optional time limit given by stopAfter is exceeded.
+// Returns whether there are any further shrink operations possible that were not performed in the time limit.
+func (w *World) Shrink(stopAfter ...time.Duration) bool {
+	if len(stopAfter) > 1 {
+		panic("no more than one time limit stopAfter can be given")
+	}
+	limit := time.Hour
+	if len(stopAfter) > 0 {
+		limit = stopAfter[0]
+	}
+	return w.storage.Shrink(limit)
 }

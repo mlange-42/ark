@@ -623,3 +623,16 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 		expectSlicesEqual(t, []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}, sl.Slice)
 	}
 }
+
+func TestWorldShrink(t *testing.T) {
+	w := NewWorld(128)
+
+	w.NewEntities(1024, nil)
+	expectEqual(t, 1024, w.storage.tables[0].cap)
+
+	filter := NewFilter0(&w)
+	w.RemoveEntities(filter.Batch(), nil)
+
+	w.Shrink()
+	expectEqual(t, 128, w.storage.tables[0].cap)
+}

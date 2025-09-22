@@ -25,6 +25,7 @@ type table struct {
 	archetype   archetypeID
 	len         uint32
 	cap         uint32
+	isFree      bool
 }
 
 func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []relationID) table {
@@ -61,6 +62,7 @@ func (t *table) Recycle(targets []Entity, relationIDs []relationID) {
 	for i := range t.columns {
 		t.columns[i].target = targets[i]
 	}
+	t.isFree = false
 }
 
 func (t *table) HasRelations() bool {
@@ -120,7 +122,26 @@ func (t *table) Extend(by uint32) {
 	if t.cap >= required {
 		return
 	}
-	t.cap = capPow2(required)
+	t.adjustCapacity(capPow2(required))
+}
+
+// CanShrink returns whether the table's capacity exceeds the next power-of-2 of what is required.
+func (t *table) CanShrink(minCapacity uint32) bool {
+	target := max(capPow2(t.len), minCapacity)
+	return t.cap > target
+}
+
+// Shrink the table's capacity to the next power-of-2 of what is required.
+func (t *table) Shrink(minCapacity uint32) {
+	target := max(capPow2(t.len), minCapacity)
+	if t.cap <= target {
+		return
+	}
+	t.adjustCapacity(target)
+}
+
+func (t *table) adjustCapacity(cap uint32) {
+	t.cap = cap
 
 	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), entityType)).Elem()
 	newPtr := t.entities.data.Addr().UnsafePointer()
