@@ -27,6 +27,10 @@
 
 - More explicit API reference docs for `Filter.Exclusive` and `FilterX.Exclusive` (#322)
 
+### Bugfixes
+
+- Zeroes memory of non-trivial component types using reflection to inform GC about invalidated pointers (#324)
+
 ### Other
 
 - Adds benchmarks for `World.Stats` (#310)
