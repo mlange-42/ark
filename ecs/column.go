@@ -76,6 +76,8 @@ func (c *column) Zero(index uintptr, zero unsafe.Pointer) {
 		dst := unsafe.Add(c.pointer, index*c.itemSize)
 		copyPtr(zero, dst, uintptr(c.itemSize))
 	} else {
+		// TODO: Do we really need this?
+		// Tests indicate stuff get GC'd also with copyPtr.
 		zeroValueAt(c.data, int(index))
 	}
 }
