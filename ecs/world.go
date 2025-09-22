@@ -196,10 +196,18 @@ func (w *World) Stats() *stats.World {
 	return w.stats
 }
 
-// Shrink reduces memory usage by shrinking the capacity of archetype tables to the next power-of-2 of what is occupied.
+// Shrink reduces memory usage by shrinking the capacity of archetype tables.
+// Capacity is reduced to the next power-of-2 of what is occupied,
+// but never below the initial capacities specified during world initialization.
 // Further, it frees empty tables of archetypes with relations.
-// Stops as soon as the optional time limit given by stopAfter is exceeded.
-// Returns whether there are any further shrink operations possible that were not performed in the time limit.
+//
+// Stops as soon as the time limit given by stopAfter is exceeded.
+// Returns whether there are any further shrink operations possible that were not performed within the time limit.
+//
+// This method should not be used regularly!
+// Usually, memory should stay allocated for reuse when new entities are created or moved between archetypes
+// when adding or removing components.
+// However, it might be useful in memory-constrained environments e.g. after initialization.
 func (w *World) Shrink(stopAfter ...time.Duration) bool {
 	if len(stopAfter) > 1 {
 		panic("no more than one time limit stopAfter can be given")

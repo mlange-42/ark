@@ -484,10 +484,8 @@ func (s *storage) getTableIDs(filter *filter, relations []relationID) []tableID 
 	return tables
 }
 
-// Shrink reduces memory usage by shrinking the capacity of archetype tables to the next power-of-2 of what is occupied.
-// Further, it frees empty tables of archetypes with relations.
-// Stops as soon as the time limit given by stopAfter is exceeded.
-// Returns whether there are any further shrink operations possible that were not performed in the time limit.
+// Shrink reduces memory usage by shrinking the capacity of archetype tables.
+// See [World.Shrink] for details.
 func (s *storage) Shrink(stopAfter time.Duration) bool {
 	start := time.Now()
 	var tableIdx int
@@ -501,11 +499,9 @@ stop:
 		if !table.HasRelations() {
 			table.Shrink(uint32(s.config.initialCapacity))
 		} else {
+			table.Shrink(uint32(s.config.initialCapacityRelations))
 			if table.Len() == 0 {
-				arch := s.archetypes[table.archetype]
-				arch.FreeTable(table)
-			} else {
-				table.Shrink(uint32(s.config.initialCapacityRelations))
+				s.archetypes[table.archetype].FreeTable(table)
 			}
 		}
 
@@ -526,10 +522,10 @@ stop:
 				return true
 			}
 		} else {
-			if table.Len() == 0 {
+			if table.CanShrink(uint32(s.config.initialCapacityRelations)) {
 				return true
 			}
-			if table.CanShrink(uint32(s.config.initialCapacityRelations)) {
+			if table.Len() == 0 {
 				return true
 			}
 		}

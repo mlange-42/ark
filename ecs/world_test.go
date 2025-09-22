@@ -5,6 +5,7 @@ import (
 	"math/rand/v2"
 	"runtime"
 	"testing"
+	"time"
 )
 
 func TestNewWorld(t *testing.T) {
@@ -627,12 +628,17 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 func TestWorldShrink(t *testing.T) {
 	w := NewWorld(128)
 
+	expectPanicsWithValue(t, "no more than one time limit stopAfter can be given",
+		func() {
+			w.Shrink(time.Microsecond, time.Millisecond)
+		})
+
 	w.NewEntities(1024, nil)
 	expectEqual(t, 1024, w.storage.tables[0].cap)
 
 	filter := NewFilter0(&w)
 	w.RemoveEntities(filter.Batch(), nil)
 
-	w.Shrink()
+	w.Shrink(time.Second)
 	expectEqual(t, 128, w.storage.tables[0].cap)
 }
