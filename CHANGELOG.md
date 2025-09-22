@@ -7,6 +7,10 @@
 - Converts interface `Relation` to a concrete struct type (#306)
 - Removes `RelationID`, use `Relation` instead (#306)
 
+### Features
+
+- Adds method `World.Shrink` for freeing memory that exceeds current requirements (#323)
+
 ### Performance
 
 - Speeds up relation handling by making `Relation` interface a concrete type (#306)

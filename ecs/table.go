@@ -25,6 +25,7 @@ type table struct {
 	archetype   archetypeID
 	len         uint32
 	cap         uint32
+	isFree      bool
 }
 
 func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []relationID) table {
@@ -61,6 +62,7 @@ func (t *table) Recycle(targets []Entity, relationIDs []relationID) {
 	for i := range t.columns {
 		t.columns[i].target = targets[i]
 	}
+	t.isFree = false
 }
 
 func (t *table) HasRelations() bool {
@@ -120,11 +122,33 @@ func (t *table) Extend(by uint32) {
 	if t.cap >= required {
 		return
 	}
-	t.cap = capPow2(required)
+	t.adjustCapacity(capPow2(required))
+}
+
+// CanShrink returns whether the table's capacity exceeds the next power-of-2 of what is required.
+func (t *table) CanShrink(minCapacity uint32) bool {
+	target := max(capPow2(t.len), minCapacity)
+	return t.cap > target
+}
+
+// Shrink the table's capacity to the next power-of-2 of what is required.
+func (t *table) Shrink(minCapacity uint32) bool {
+	target := max(capPow2(t.len), minCapacity)
+	if t.cap <= target {
+		return false
+	}
+	t.adjustCapacity(target)
+	return true
+}
+
+func (t *table) adjustCapacity(cap uint32) {
+	t.cap = cap
 
 	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), entityType)).Elem()
 	newPtr := t.entities.data.Addr().UnsafePointer()
-	copyPtr(t.entities.pointer, newPtr, uintptr(t.len)*entitySize)
+	if t.len > 0 {
+		copyPtr(t.entities.pointer, newPtr, uintptr(t.len)*entitySize)
+	}
 	t.entities.pointer = newPtr
 
 	for i := range t.columns {
@@ -133,11 +157,15 @@ func (t *table) Extend(by uint32) {
 		column.data = reflect.New(reflect.ArrayOf(int(t.cap), column.elemType)).Elem()
 		if column.isTrivial {
 			newPtr := column.data.Addr().UnsafePointer()
-			copyPtr(column.pointer, newPtr, uintptr(t.len)*column.itemSize)
+			if t.len > 0 {
+				copyPtr(column.pointer, newPtr, uintptr(t.len)*column.itemSize)
+			}
 			column.pointer = newPtr
 		} else {
 			column.pointer = column.data.Addr().UnsafePointer()
-			reflect.Copy(column.data, old)
+			if t.len > 0 {
+				reflect.Copy(column.data, old)
+			}
 		}
 	}
 }

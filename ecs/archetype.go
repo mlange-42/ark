@@ -168,9 +168,10 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 	return table, true
 }
 
-func (a *archetype) FreeTable(table tableID) {
-	_ = a.tables.Remove(table)
-	a.freeTables = append(a.freeTables, table)
+func (a *archetype) FreeTable(table *table) {
+	_ = a.tables.Remove(table.id)
+	a.freeTables = append(a.freeTables, table.id)
+	table.isFree = true
 
 	if a.numRelations <= 1 {
 		return
@@ -180,12 +181,15 @@ func (a *archetype) FreeTable(table tableID) {
 	// For a potential solution, see https://github.com/mlange-42/ark/pull/264
 	for _, m := range a.relationTables {
 		for _, v := range m {
-			_ = v.Remove(table)
+			_ = v.Remove(table.id)
 		}
 	}
 }
 
 func (a *archetype) FreeAllTables(storage *storage) {
+	for _, table := range a.tables.tables {
+		storage.tables[table].isFree = true
+	}
 	a.freeTables = append(a.freeTables, a.tables.tables...)
 	a.tables.Clear()
 

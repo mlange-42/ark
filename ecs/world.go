@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"reflect"
+	"time"
 
 	"github.com/mlange-42/ark/ecs/stats"
 )
@@ -193,4 +194,31 @@ func (w *World) Stats() *stats.World {
 	w.stats.CachedFilters = len(w.storage.cache.filters)
 
 	return w.stats
+}
+
+// Shrink reduces memory usage by shrinking the capacity of archetype tables.
+// Capacity is reduced to the next power-of-2 of what is occupied,
+// but never below the initial capacities specified during world initialization.
+// Further, it frees empty tables of archetypes with relations.
+//
+// Stops as soon as the time limit given by stopAfter is exceeded.
+// Returns whether there are any further shrink operations possible that were
+// not performed within the time limit.
+//
+// Note that timer resolution is limited, particularly on Windows.
+// So is will most likely not be possible to stop after microseconds or shorter.
+//
+// This method should not be used regularly!
+// Usually, memory should stay allocated for reuse when new entities are created or
+// moved between archetypes when adding or removing components.
+// However, it might be useful in memory-constrained environments e.g. after initialization.
+func (w *World) Shrink(stopAfter ...time.Duration) bool {
+	if len(stopAfter) > 1 {
+		panic("no more than one time limit stopAfter can be given")
+	}
+	limit := time.Hour
+	if len(stopAfter) > 0 {
+		limit = stopAfter[0]
+	}
+	return w.storage.Shrink(limit)
 }

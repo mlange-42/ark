@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"fmt"
+	"time"
 	"unsafe"
 )
 
@@ -329,7 +330,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				}
 				s.moveEntities(table, newTable, uint32(table.Len()))
 			}
-			archetype.FreeTable(table.id)
+			archetype.FreeTable(table)
 			s.cache.removeTable(s, table)
 
 			newRelations = newRelations[:0]
@@ -481,4 +482,55 @@ func (s *storage) getTableIDs(filter *filter, relations []relationID) []tableID 
 		}
 	}
 	return tables
+}
+
+// Shrink reduces memory usage by shrinking the capacity of archetype tables.
+// See [World.Shrink] for details.
+func (s *storage) Shrink(stopAfter time.Duration) bool {
+	start := time.Now()
+	var tableIdx int
+	anyFound := false
+	for tableIdx = range s.tables {
+		table := &s.tables[tableIdx]
+
+		if !table.HasRelations() {
+			if table.Shrink(uint32(s.config.initialCapacity)) {
+				anyFound = true
+			}
+		} else {
+			if table.Shrink(uint32(s.config.initialCapacityRelations)) {
+				anyFound = true
+			}
+			if !table.isFree && table.Len() == 0 {
+				s.archetypes[table.archetype].FreeTable(table)
+				anyFound = true
+			}
+		}
+
+		if anyFound && time.Since(start) >= stopAfter {
+			break
+		}
+	}
+
+	tableIdx++
+	for tableIdx < len(s.tables) {
+		table := &s.tables[tableIdx]
+
+		if !table.HasRelations() {
+			if table.CanShrink(uint32(s.config.initialCapacity)) {
+				return true
+			}
+		} else {
+			if table.CanShrink(uint32(s.config.initialCapacityRelations)) {
+				return true
+			}
+			if !table.isFree && table.Len() == 0 {
+				return true
+			}
+		}
+
+		tableIdx++
+	}
+
+	return false
 }

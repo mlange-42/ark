@@ -5,6 +5,7 @@ import (
 	"math/rand/v2"
 	"runtime"
 	"testing"
+	"time"
 )
 
 func TestNewWorld(t *testing.T) {
@@ -622,4 +623,116 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 		e := q.Entity()
 		expectSlicesEqual(t, []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}, sl.Slice)
 	}
+}
+
+func TestWorldShrinkSimple(t *testing.T) {
+	w := NewWorld(128)
+
+	expectPanicsWithValue(t, "no more than one time limit stopAfter can be given",
+		func() {
+			w.Shrink(time.Microsecond, time.Millisecond)
+		})
+
+	w.NewEntities(1024, nil)
+	expectEqual(t, 1024, w.storage.tables[0].cap)
+
+	filter := NewFilter0(&w)
+	w.RemoveEntities(filter.Batch(), nil)
+
+	w.Shrink(time.Second)
+	expectEqual(t, 128, w.storage.tables[0].cap)
+}
+
+func TestWorldShrinkRelations(t *testing.T) {
+	w := NewWorld(64, 32)
+	childMapper := NewMap1[ChildOf](&w)
+	childFilter := NewFilter1[ChildOf](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	childMapper.NewBatch(128, &ChildOf{}, Rel[ChildOf](parent1))
+	childMapper.NewBatch(128, &ChildOf{}, Rel[ChildOf](parent2))
+
+	toRemove := []Entity{}
+	childMapper.NewBatchFn(128, func(entity Entity, ch *ChildOf) {
+		toRemove = append(toRemove, entity)
+	}, Rel[ChildOf](parent3))
+
+	expectEqual(t, 64, w.storage.tables[0].cap)
+	expectEqual(t, 128, w.storage.tables[1].cap)
+	expectEqual(t, 128, w.storage.tables[2].cap)
+	expectEqual(t, 128, w.storage.tables[3].cap)
+
+	w.RemoveEntities(childFilter.Batch(Rel[ChildOf](parent1)), nil)
+	w.RemoveEntity(parent1)
+	expectTrue(t, w.storage.tables[1].isFree)
+	expectEqual(t, 128, w.storage.tables[1].cap)
+
+	w.RemoveEntities(childFilter.Batch(Rel[ChildOf](parent2)), nil)
+	expectFalse(t, w.storage.tables[2].isFree)
+	expectEqual(t, 128, w.storage.tables[2].cap)
+
+	for i := 64; i < len(toRemove); i++ {
+		w.RemoveEntity(toRemove[i])
+	}
+	expectFalse(t, w.storage.tables[3].isFree)
+	expectEqual(t, 128, w.storage.tables[3].cap)
+
+	w.Shrink()
+	expectTrue(t, w.storage.tables[1].isFree)
+	expectEqual(t, 32, w.storage.tables[1].cap)
+	expectTrue(t, w.storage.tables[2].isFree)
+	expectEqual(t, 32, w.storage.tables[2].cap)
+	expectFalse(t, w.storage.tables[3].isFree)
+	expectEqual(t, 64, w.storage.tables[3].cap)
+}
+
+func TestWorldShrinkTime(t *testing.T) {
+	w := NewWorld(128)
+
+	map1 := NewMap1[CompA](&w)
+	map2 := NewMap1[CompB](&w)
+	map3 := NewMap1[CompC](&w)
+	childMap := NewMap1[ChildOf](&w)
+	filterB := NewFilter1[CompB](&w)
+	filterC := NewFilter1[CompC](&w)
+	childFilter := NewFilter1[ChildOf](&w)
+
+	parents := []Entity{}
+	w.NewEntities(10000, func(entity Entity) {
+		parents = append(parents, entity)
+	})
+	for _, parent := range parents {
+		childMap.NewBatch(1024, &ChildOf{}, Rel[ChildOf](parent))
+	}
+
+	map1.NewBatch(1024, &CompA{})
+	map2.NewBatch(1024, &CompB{})
+	map3.NewBatch(1024, &CompC{})
+
+	w.RemoveEntities(filterB.Batch(), nil)
+	w.RemoveEntities(filterC.Batch(), nil)
+	w.RemoveEntities(childFilter.Batch(), nil)
+
+	parent := w.NewEntity()
+	child := childMap.NewEntity(&ChildOf{}, Rel[ChildOf](parent))
+	w.RemoveEntity(child)
+
+	stats := w.Stats()
+	mem, memUsed := stats.Memory, stats.MemoryUsed
+
+	cnt := 0
+	for w.Shrink(time.Nanosecond) {
+		cnt++
+	}
+	expectGreater(t, cnt, 0)
+
+	stats = w.Stats()
+
+	expectEqual(t, memUsed, stats.MemoryUsed)
+	expectGreater(t, mem, stats.Memory)
+
+	w.RemoveEntity(parent)
 }
