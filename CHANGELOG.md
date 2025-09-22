@@ -19,6 +19,10 @@
 - Optimizes bit mask methods by using less math and more bit-wise operations (#319)
 - Speeds up memory allocation for archetype tables and bulk copying by avoiding reflection (#321)
 
+### Documentation
+
+- More explicit API reference docs for `Filter.Exclusive` and `FilterX.Exclusive` (#322)
+
 ### Other
 
 - Adds benchmarks for `World.Stats` (#310)
