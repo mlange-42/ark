@@ -70,7 +70,9 @@ func (f *Filter0) Without(comps ...Comp) *Filter0 {
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
-// and no other components are allowed.
+// and no other components are allowed. This includes components set via [Filter0.With].
+//
+// Overwrites components set via [Filter0.Without].
 func (f *Filter0) Exclusive() *Filter0 {
 	f.checkModify()
 	f.filter = f.filter.Exclusive()
@@ -261,7 +263,9 @@ func (f *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
-// and no other components are allowed.
+// and no other components are allowed. This includes components set via [Filter1.With].
+//
+// Overwrites components set via [Filter1.Without].
 func (f *Filter1[A]) Exclusive() *Filter1[A] {
 	f.checkModify()
 	f.filter = f.filter.Exclusive()
@@ -449,7 +453,9 @@ func (f *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
-// and no other components are allowed.
+// and no other components are allowed. This includes components set via [Filter2.With].
+//
+// Overwrites components set via [Filter2.Without].
 func (f *Filter2[A, B]) Exclusive() *Filter2[A, B] {
 	f.checkModify()
 	f.filter = f.filter.Exclusive()
@@ -643,7 +649,9 @@ func (f *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
-// and no other components are allowed.
+// and no other components are allowed. This includes components set via [Filter3.With].
+//
+// Overwrites components set via [Filter3.Without].
 func (f *Filter3[A, B, C]) Exclusive() *Filter3[A, B, C] {
 	f.checkModify()
 	f.filter = f.filter.Exclusive()
@@ -839,7 +847,9 @@ func (f *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
-// and no other components are allowed.
+// and no other components are allowed. This includes components set via [Filter4.With].
+//
+// Overwrites components set via [Filter4.Without].
 func (f *Filter4[A, B, C, D]) Exclusive() *Filter4[A, B, C, D] {
 	f.checkModify()
 	f.filter = f.filter.Exclusive()
@@ -1037,7 +1047,9 @@ func (f *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] 
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
-// and no other components are allowed.
+// and no other components are allowed. This includes components set via [Filter5.With].
+//
+// Overwrites components set via [Filter5.Without].
 func (f *Filter5[A, B, C, D, E]) Exclusive() *Filter5[A, B, C, D, E] {
 	f.checkModify()
 	f.filter = f.filter.Exclusive()
@@ -1237,7 +1249,9 @@ func (f *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, 
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
-// and no other components are allowed.
+// and no other components are allowed. This includes components set via [Filter6.With].
+//
+// Overwrites components set via [Filter6.Without].
 func (f *Filter6[A, B, C, D, E, F]) Exclusive() *Filter6[A, B, C, D, E, F] {
 	f.checkModify()
 	f.filter = f.filter.Exclusive()
@@ -1439,7 +1453,9 @@ func (f *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, 
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
-// and no other components are allowed.
+// and no other components are allowed. This includes components set via [Filter7.With].
+//
+// Overwrites components set via [Filter7.Without].
 func (f *Filter7[A, B, C, D, E, F, G]) Exclusive() *Filter7[A, B, C, D, E, F, G] {
 	f.checkModify()
 	f.filter = f.filter.Exclusive()
@@ -1643,7 +1659,9 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, 
 }
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
-// and no other components are allowed.
+// and no other components are allowed. This includes components set via [Filter8.With].
+//
+// Overwrites components set via [Filter8.Without].
 func (f *Filter8[A, B, C, D, E, F, G, H]) Exclusive() *Filter8[A, B, C, D, E, F, G, H] {
 	f.checkModify()
 	f.filter = f.filter.Exclusive()

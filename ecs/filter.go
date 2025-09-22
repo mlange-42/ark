@@ -30,6 +30,8 @@ func (f UnsafeFilter) Without(ids ...ID) UnsafeFilter {
 
 // Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
 // and no other components are allowed.
+//
+// Overwrites components set via [Filter.Without].
 func (f UnsafeFilter) Exclusive() UnsafeFilter {
 	f.filter = f.filter.Exclusive()
 	return f
