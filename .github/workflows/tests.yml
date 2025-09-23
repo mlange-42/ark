@@ -150,5 +150,5 @@ jobs:
         run: sudo apt install -y gcc xvfb
       - name: Run ebitengine example
         run: |
-          xvfb-run cd examples/ebitengine
-          go run .
+          cd examples/ebitengine
+          xvfb-run go run .
