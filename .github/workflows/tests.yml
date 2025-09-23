@@ -146,12 +146,6 @@ jobs:
           go run ./relations
           go run ./systems
           go run ./world_lock
-      - name: Install Ebiten dependencies
-        run: sudo apt install -y gcc libc6-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev libasound2-dev pkg-config
-      - name: Build ebitengine example
-        run: |
-          cd examples/ebitengine
-          go build .
 
   ebiten_example:
     name: Build Ebiten Example
@@ -163,7 +157,7 @@ jobs:
         with:
           go-version: '1.25.x'
       - name: Install Ebiten dependencies
-        uses: nao1215/actions-ebitengine@v0
+        run: sudo apt install -y gcc libc6-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev libasound2-dev pkg-config
       - name: Install dependencies
         run: |
           cd examples/ebitengine
