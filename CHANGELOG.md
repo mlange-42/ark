@@ -26,6 +26,7 @@
 ### Documentation
 
 - More explicit API reference docs for `Filter.Exclusive` and `FilterX.Exclusive` (#322)
+- Adds a stand-alone example for using Ark with the [Ebiten](https://ebitengine.org/) game engine (#329)
 
 ### Bugfixes
 

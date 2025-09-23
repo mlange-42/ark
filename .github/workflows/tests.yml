@@ -146,3 +146,23 @@ jobs:
           go run ./relations
           go run ./systems
           go run ./world_lock
+
+  ebiten_example:
+    name: Build Ebiten Example
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.25.x'
+      - name: Install Ebiten dependencies
+        run: sudo apt install -y gcc libc6-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev libasound2-dev pkg-config
+      - name: Install dependencies
+        run: |
+          cd examples/ebitengine
+          go get .
+      - name: Build ebitengine example
+        run: |
+          cd examples/ebitengine
+          go build .
