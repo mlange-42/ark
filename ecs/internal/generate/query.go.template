@@ -129,7 +129,7 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 
 func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {
 	if q.cache != nil {
-		return q.nextTable(q.cache.tables)
+		return q.nextTable(q.cache.tables.tables)
 	}
 	if q.cursor.archetype >= 0 && q.nextTable(q.tables) {
 		return true
