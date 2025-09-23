@@ -421,7 +421,7 @@ func (s *storage) getTables(batch *Batch) []tableID {
 
 	if batch.cache != maxCacheID {
 		cache := s.getRegisteredFilter(batch.cache)
-		for _, tableID := range cache.tables {
+		for _, tableID := range cache.tables.tables {
 			table := &s.tables[tableID]
 			if table.Len() == 0 {
 				continue

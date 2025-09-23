@@ -55,34 +55,34 @@ func TestFilterCacheRelation(t *testing.T) {
 
 	posMap.NewBatch(10, &Position{})
 
-	expectEqual(t, 0, len(c1.tables))
-	expectEqual(t, 0, len(c2.tables))
-	expectEqual(t, 0, len(c3.tables))
+	expectEqual(t, 0, len(c1.tables.tables))
+	expectEqual(t, 0, len(c2.tables.tables))
+	expectEqual(t, 0, len(c3.tables.tables))
 
 	e1 := childMap.NewEntity(&ChildOf{}, RelIdx(0, target1))
-	expectEqual(t, 1, len(c1.tables))
-	expectEqual(t, 1, len(c2.tables))
+	expectEqual(t, 1, len(c1.tables.tables))
+	expectEqual(t, 1, len(c2.tables.tables))
 
 	childMap.NewEntity(&ChildOf{}, RelIdx(0, target3))
-	expectEqual(t, 2, len(c1.tables))
-	expectEqual(t, 1, len(c2.tables))
+	expectEqual(t, 2, len(c1.tables.tables))
+	expectEqual(t, 1, len(c2.tables.tables))
 
 	child2Map.NewEntity(&ChildOf2{}, RelIdx(0, target2))
 
 	world.RemoveEntity(e1)
 	world.RemoveEntity(target1)
-	expectEqual(t, 1, len(c1.tables))
-	expectEqual(t, 0, len(c2.tables))
+	expectEqual(t, 1, len(c1.tables.tables))
+	expectEqual(t, 0, len(c2.tables.tables))
 
 	childMap.NewEntity(&ChildOf{}, RelIdx(0, target2))
 	posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, target2))
 	posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, target3))
 	posChildMap.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, target4))
 
-	expectEqual(t, 5, len(c1.tables))
-	expectEqual(t, 2, len(c3.tables))
+	expectEqual(t, 5, len(c1.tables.tables))
+	expectEqual(t, 2, len(c3.tables.tables))
 
 	world.RemoveEntities(NewFilter0(&world).Batch(), nil)
-	expectEqual(t, 0, len(c1.tables))
-	expectEqual(t, 0, len(c2.tables))
+	expectEqual(t, 0, len(c1.tables.tables))
+	expectEqual(t, 0, len(c2.tables.tables))
 }

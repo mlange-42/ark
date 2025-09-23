@@ -8,11 +8,10 @@ const maxCacheID = math.MaxUint32
 
 // Cache entry for a filter.
 type cacheEntry struct {
-	filter    *filter         // The underlying filter.
-	indices   map[tableID]int // Map of table indices for removal.
-	relations []relationID    // Entity relationships.
-	tables    []tableID       // Tables matching the filter.
-	id        cacheID         // Entry ID.
+	filter    *filter      // The underlying filter.
+	tables    tableIDs     // Tables matching the filter.
+	relations []relationID // Entity relationships.
+	id        cacheID      // Entry ID.
 }
 
 // cache provides filter caching to speed up queries.
@@ -49,13 +48,13 @@ func (c *cache) register(storage *storage, filter *filter, relations []relationI
 	// TODO: prevent duplicate registration
 	id := c.intPool.Get()
 	index := len(c.filters)
+	tables := newTableIDs(storage.getTableIDs(filter, relations)...)
 	c.filters = append(c.filters,
 		cacheEntry{
 			id:        id,
 			filter:    filter,
 			relations: relations,
-			tables:    storage.getTableIDs(filter, relations),
-			indices:   nil,
+			tables:    tables,
 		})
 	c.indices[id] = index
 	return id
@@ -88,7 +87,7 @@ func (c *cache) addTable(storage *storage, table *table) {
 			if !e.filter.matches(&arch.mask) {
 				continue
 			}
-			e.tables = append(e.tables, table.id)
+			e.tables.Append(table.id)
 		}
 		return
 	}
@@ -101,10 +100,7 @@ func (c *cache) addTable(storage *storage, table *table) {
 		if !table.Matches(e.relations) {
 			continue
 		}
-		e.tables = append(e.tables, table.id)
-		if e.indices != nil {
-			e.indices[table.id] = len(e.tables) - 1
-		}
+		e.tables.Append(table.id)
 	}
 }
 
@@ -117,42 +113,15 @@ func (c *cache) removeTable(storage *storage, table *table) {
 	//	// unreachable
 	//	return
 	//}
-	arch := &storage.archetypes[table.archetype]
 	for i := range c.filters {
 		e := &c.filters[i]
-
-		if e.indices == nil && e.filter.matches(&arch.mask) {
-			c.mapTables(storage, e)
-		}
-
-		if idx, ok := e.indices[table.id]; ok {
-			lastIndex := len(e.tables) - 1
-			swapped := idx != lastIndex
-			if swapped {
-				e.tables[idx], e.tables[lastIndex] = e.tables[lastIndex], e.tables[idx]
-			}
-			e.tables = e.tables[:lastIndex]
-			if swapped {
-				e.indices[e.tables[idx]] = idx
-			}
-			delete(e.indices, table.id)
-		}
-	}
-}
-
-func (c *cache) mapTables(storage *storage, e *cacheEntry) {
-	e.indices = map[tableID]int{}
-	for i, tableID := range e.tables {
-		table := &storage.tables[tableID]
-		if table.HasRelations() {
-			e.indices[tableID] = i
-		}
+		e.tables.Remove(table.id)
 	}
 }
 
 func (c *cache) Reset() {
 	for i := range c.filters {
-		c.filters[i].tables = nil
+		c.filters[i].tables.Clear()
 	}
 	c.indices = map[cacheID]int{}
 	c.filters = c.filters[:0]

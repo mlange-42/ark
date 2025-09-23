@@ -4,7 +4,7 @@ import "fmt"
 
 func entityAtCache(storage *storage, cache *cacheEntry, relations []relationID, index uint32) Entity {
 	count := uint32(0)
-	for _, tableID := range cache.tables {
+	for _, tableID := range cache.tables.tables {
 		table := &storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
@@ -57,7 +57,7 @@ func entityAt(storage *storage, filter *filter, relations []relationID, archetyp
 
 func countQueryCache(storage *storage, cache *cacheEntry, relations []relationID) int {
 	count := 0
-	for _, tableID := range cache.tables {
+	for _, tableID := range cache.tables.tables {
 		table := &storage.tables[tableID]
 		if table.Len() == 0 {
 			continue
