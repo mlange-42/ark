@@ -32,9 +32,16 @@ type tableIDs struct {
 	indices map[tableID]uint32
 }
 
-func newTableIDs() tableIDs {
+// Creates a new tableIDs.
+// The passed tables slice is used directly, so it should not be modified or stored afterwards.
+func newTableIDs(tables ...tableID) tableIDs {
+	indices := make(map[tableID]uint32, len(tables))
+	for i, t := range tables {
+		indices[t] = uint32(i)
+	}
 	return tableIDs{
-		indices: map[tableID]uint32{},
+		tables:  tables,
+		indices: indices,
 	}
 }
 
@@ -98,10 +105,7 @@ func newArchetype(id archetypeID, node nodeID, mask bitMask, components []ID, ta
 			numRelations++
 		}
 	}
-	archTables := newTableIDs()
-	for _, id := range tables {
-		archTables.Append(id)
-	}
+	archTables := newTableIDs(tables...)
 	return archetype{
 		id:             id,
 		node:           node,
@@ -215,8 +219,7 @@ func (a *archetype) AddTable(table *table) {
 		if tables, ok := relations[target.id]; ok {
 			tables.Append(table.id)
 		} else {
-			tables := newTableIDs()
-			tables.Append(table.id)
+			tables := newTableIDs(table.id)
 			relations[target.id] = &tables
 		}
 	}

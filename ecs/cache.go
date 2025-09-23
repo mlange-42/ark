@@ -48,10 +48,7 @@ func (c *cache) register(storage *storage, filter *filter, relations []relationI
 	// TODO: prevent duplicate registration
 	id := c.intPool.Get()
 	index := len(c.filters)
-	tables := newTableIDs()
-	for _, t := range storage.getTableIDs(filter, relations) {
-		tables.Append(t)
-	}
+	tables := newTableIDs(storage.getTableIDs(filter, relations)...)
 	c.filters = append(c.filters,
 		cacheEntry{
 			id:        id,
