@@ -121,10 +121,13 @@ func TestTypeSizes(t *testing.T) {
 	printTypeSize[node]()
 	printTypeSize[archetype]()
 	printTypeSize[table]()
+	printTypeSize[tableIDs]()
 	printTypeSize[column]()
 	printTypeSize[entityColumn]()
 	printTypeSize[cacheEntry]()
 	printTypeSize[cursor]()
+	printTypeSize[Relation]()
+	printTypeSizeName[Map2[Position, Velocity]]("Map2")
 	printTypeSizeName[Filter2[Position, Velocity]]("Filter2")
 	printTypeSizeName[Query2[Position, Velocity]]("Query2")
 	printTypeSizeName[Query4[CompA, CompB, CompC, CompD]]("Query4")
@@ -137,11 +140,11 @@ func TestTypeSizes(t *testing.T) {
 }
 
 func printTypeSize[T any]() {
-	tp := reflect.TypeOf((*T)(nil)).Elem()
+	tp := reflect.TypeFor[T]()
 	fmt.Printf("%18s: %5d B\n", tp.Name(), tp.Size())
 }
 
 func printTypeSizeName[T any](name string) {
-	tp := reflect.TypeOf((*T)(nil)).Elem()
+	tp := reflect.TypeFor[T]()
 	fmt.Printf("%18s: %5d B\n", name, tp.Size())
 }

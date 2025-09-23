@@ -15,12 +15,12 @@ type tableID uint32
 const maxTableID = math.MaxUint32
 
 type table struct {
+	entities    entityColumn   // column for entities
 	zeroPointer unsafe.Pointer // pointer to the zero value, for fast zeroing
 	components  []*column      // mapping from component IDs to columns
 	ids         []ID           // components IDs in the same order as in the archetype
 	columns     []column       // columns in dense order
 	relationIDs []relationID   // all relation IDs and targets of the table
-	entities    entityColumn   // column for entities
 	id          tableID
 	archetype   archetypeID
 	len         uint32

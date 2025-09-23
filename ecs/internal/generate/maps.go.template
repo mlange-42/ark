@@ -23,13 +23,13 @@ package ecs
 // See [Map2] for a usage example.
 {{- end}}
 type Map{{.}}{{$generics}} struct {
-	world    *World
-	ids      []ID
-	mask     bitMask
-	{{- range $upper}}
-	storage{{.}} *componentStorage
-	{{- end}}
+	mask      bitMask
+	ids       []ID
 	relations []relationID
+	world     *World
+	{{- range $upper}}
+	storage{{.}}  *componentStorage
+	{{- end}}
 }
 
 // New creates a new [Map{{.}}]. It is safe to call on `nil` instance.

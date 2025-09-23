@@ -8,10 +8,10 @@ import (
 
 // componentRegistry keeps track of type IDs.
 type registry struct {
-	Components map[reflect.Type]uint8 // Mapping from types to IDs.
+	Used       bitMask                // Mapping from IDs to used status.
 	Types      []reflect.Type         // Mapping from IDs to types.
 	IDs        []uint8                // List of IDs.
-	Used       bitMask                // Mapping from IDs to used status.
+	Components map[reflect.Type]uint8 // Mapping from types to IDs.
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
