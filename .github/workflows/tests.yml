@@ -146,3 +146,9 @@ jobs:
           go run ./relations
           go run ./systems
           go run ./world_lock
+      - name: Install Ebiten dependencies
+        run: sudo apt install -y gcc
+      - name: Build ebitengine example
+        run: |
+          cd examples/ebitengine
+          go build .
