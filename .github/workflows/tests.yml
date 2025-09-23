@@ -146,6 +146,8 @@ jobs:
           go run ./relations
           go run ./systems
           go run ./world_lock
+      - name: Install GCC
+        run: sudo apt install -y gcc
       - name: Run ebitengine example
         run: |
           cd examples/ebitengine
