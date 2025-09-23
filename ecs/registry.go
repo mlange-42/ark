@@ -12,8 +12,6 @@ type registry struct {
 	Types      []reflect.Type         // Mapping from IDs to types.
 	IDs        []uint8                // List of IDs.
 	Used       bitMask                // Mapping from IDs to used status.
-	Archetypes []int                  // Number of archetypes for each component.
-	generation uint32                 // Generation to indicate changes to archetype count per component.
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
@@ -23,8 +21,6 @@ func newRegistry() registry {
 		Types:      make([]reflect.Type, maskTotalBits),
 		Used:       bitMask{},
 		IDs:        []uint8{},
-		Archetypes: make([]int, maskTotalBits),
-		generation: 1,
 	}
 }
 
@@ -71,36 +67,15 @@ func (r *registry) unregisterLastComponent() {
 	r.IDs = r.IDs[:len(r.IDs)-1]
 }
 
-func (r *registry) addArchetype(id uint8) {
-	r.Archetypes[id]++
-	r.generation++
-}
-
-func (r *registry) getGeneration() uint32 {
-	return r.generation
-}
-
-// Returns the ID of the component present in the smallest number of archetypes.
-func (r *registry) rareComponent(ids []ID) ID {
-	minCount := math.MaxInt
-	var rareID ID
-	for _, id := range ids {
-		count := r.Archetypes[id.id]
-		if count < minCount {
-			minCount = count
-			rareID = id
-		}
-	}
-	return rareID
-}
-
 // componentRegistry keeps track of component IDs.
 // In addition to [registry], it determines whether types
 // are relation components and/or contain (or are) pointers.
 type componentRegistry struct {
+	registry
 	IsRelation []bool
 	IsTrivial  []bool
-	registry
+	Archetypes []int  // Number of archetypes for each component.
+	generation uint32 // Generation to indicate changes to archetype count per component.
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
@@ -109,6 +84,8 @@ func newComponentRegistry() componentRegistry {
 		registry:   newRegistry(),
 		IsRelation: make([]bool, maskTotalBits),
 		IsTrivial:  make([]bool, maskTotalBits),
+		Archetypes: make([]int, maskTotalBits),
+		generation: 1,
 	}
 }
 
@@ -133,4 +110,27 @@ func (r *componentRegistry) unregisterLastComponent() {
 	newID := uint8(len(r.Components) - 1)
 	r.registry.unregisterLastComponent()
 	r.IsRelation[newID] = false
+}
+
+func (r *componentRegistry) addArchetype(id uint8) {
+	r.Archetypes[id]++
+	r.generation++
+}
+
+func (r *componentRegistry) getGeneration() uint32 {
+	return r.generation
+}
+
+// Returns the ID of the component present in the smallest number of archetypes.
+func (r *componentRegistry) rareComponent(ids []ID) ID {
+	minCount := math.MaxInt
+	var rareID ID
+	for _, id := range ids {
+		count := r.Archetypes[id.id]
+		if count < minCount {
+			minCount = count
+			rareID = id
+		}
+	}
+	return rareID
 }
