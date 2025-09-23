@@ -9,8 +9,8 @@ import (
 //
 // Although this type provides an ID-based API, the recommended usage is via [Resource].
 type Resources struct {
-	resources []any
 	registry  registry
+	resources []any
 }
 
 // newResources creates a new Resources manager.

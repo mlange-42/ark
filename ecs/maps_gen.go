@@ -8,11 +8,11 @@ package ecs
 //
 // See [Map2] for a usage example.
 type Map1[A any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
-	storageA  *componentStorage
+	ids       []ID
 	relations []relationID
+	world     *World
+	storageA  *componentStorage
 }
 
 // New creates a new [Map1]. It is safe to call on `nil` instance.
@@ -284,12 +284,12 @@ func (m *Map1[A]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ..
 //
 // Instances should be created during initialization and stored, e.g. in systems.
 type Map2[A any, B any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map2]. It is safe to call on `nil` instance.
@@ -586,13 +586,13 @@ func (m *Map2[A, B]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel
 //
 // See [Map2] for a usage example.
 type Map3[A any, B any, C any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map3]. It is safe to call on `nil` instance.
@@ -916,14 +916,14 @@ func (m *Map3[A, B, C]) SetRelationsBatch(batch *Batch, fn func(entity Entity), 
 //
 // See [Map2] for a usage example.
 type Map4[A any, B any, C any, D any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
 	storageD  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map4]. It is safe to call on `nil` instance.
@@ -1272,15 +1272,15 @@ func (m *Map4[A, B, C, D]) SetRelationsBatch(batch *Batch, fn func(entity Entity
 //
 // See [Map2] for a usage example.
 type Map5[A any, B any, C any, D any, E any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
 	storageD  *componentStorage
 	storageE  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map5]. It is safe to call on `nil` instance.
@@ -1654,16 +1654,16 @@ func (m *Map5[A, B, C, D, E]) SetRelationsBatch(batch *Batch, fn func(entity Ent
 //
 // See [Map2] for a usage example.
 type Map6[A any, B any, C any, D any, E any, F any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
 	storageD  *componentStorage
 	storageE  *componentStorage
 	storageF  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map6]. It is safe to call on `nil` instance.
@@ -2062,9 +2062,10 @@ func (m *Map6[A, B, C, D, E, F]) SetRelationsBatch(batch *Batch, fn func(entity 
 //
 // See [Map2] for a usage example.
 type Map7[A any, B any, C any, D any, E any, F any, G any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
@@ -2072,7 +2073,6 @@ type Map7[A any, B any, C any, D any, E any, F any, G any] struct {
 	storageE  *componentStorage
 	storageF  *componentStorage
 	storageG  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map7]. It is safe to call on `nil` instance.
@@ -2496,9 +2496,10 @@ func (m *Map7[A, B, C, D, E, F, G]) SetRelationsBatch(batch *Batch, fn func(enti
 //
 // See [Map2] for a usage example.
 type Map8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
@@ -2507,7 +2508,6 @@ type Map8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	storageF  *componentStorage
 	storageG  *componentStorage
 	storageH  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map8]. It is safe to call on `nil` instance.
@@ -2956,9 +2956,10 @@ func (m *Map8[A, B, C, D, E, F, G, H]) SetRelationsBatch(batch *Batch, fn func(e
 //
 // See [Map2] for a usage example.
 type Map9[A any, B any, C any, D any, E any, F any, G any, H any, I any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
@@ -2968,7 +2969,6 @@ type Map9[A any, B any, C any, D any, E any, F any, G any, H any, I any] struct 
 	storageG  *componentStorage
 	storageH  *componentStorage
 	storageI  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map9]. It is safe to call on `nil` instance.
@@ -3442,9 +3442,10 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) SetRelationsBatch(batch *Batch, fn fun
 //
 // See [Map2] for a usage example.
 type Map10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
@@ -3455,7 +3456,6 @@ type Map10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any]
 	storageH  *componentStorage
 	storageI  *componentStorage
 	storageJ  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map10]. It is safe to call on `nil` instance.
@@ -3954,9 +3954,10 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) SetRelationsBatch(batch *Batch, fn
 //
 // See [Map2] for a usage example.
 type Map11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
@@ -3968,7 +3969,6 @@ type Map11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any,
 	storageI  *componentStorage
 	storageJ  *componentStorage
 	storageK  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map11]. It is safe to call on `nil` instance.
@@ -4492,9 +4492,10 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) SetRelationsBatch(batch *Batch,
 //
 // See [Map2] for a usage example.
 type Map12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any, L any] struct {
-	world     *World
-	ids       []ID
 	mask      bitMask
+	ids       []ID
+	relations []relationID
+	world     *World
 	storageA  *componentStorage
 	storageB  *componentStorage
 	storageC  *componentStorage
@@ -4507,7 +4508,6 @@ type Map12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any,
 	storageJ  *componentStorage
 	storageK  *componentStorage
 	storageL  *componentStorage
-	relations []relationID
 }
 
 // New creates a new [Map12]. It is safe to call on `nil` instance.

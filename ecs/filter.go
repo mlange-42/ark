@@ -5,8 +5,8 @@ package ecs
 // It is significantly slower than type-safe generic filters like [Filter2],
 // and should only be used when component types are not known at compile time.
 type UnsafeFilter struct {
-	world *World
 	filter
+	world           *World
 	cachedRelations []relationID
 }
 

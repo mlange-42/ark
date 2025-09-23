@@ -28,8 +28,8 @@ type archetype struct {
 }
 
 type tableIDs struct {
-	tables  []tableID
 	indices map[tableID]uint32
+	tables  []tableID
 }
 
 // Creates a new tableIDs.

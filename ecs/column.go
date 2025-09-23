@@ -7,13 +7,13 @@ import (
 
 // column storage for components in an table.
 type column struct {
-	pointer    unsafe.Pointer // pointer to the first element
 	data       reflect.Value  // data buffer
+	pointer    unsafe.Pointer // pointer to the first element
 	itemSize   uintptr        // memory size of items
+	elemType   reflect.Type   // element type of the column
 	target     Entity         // target entity if for a relation component
 	index      uint32         // index of the column in the containing table
 	isRelation bool           // whether this column is for a relation component
-	elemType   reflect.Type   // element type of the column
 	isTrivial  bool           // Whether the column's type is trivial , i.e. without pointers.
 }
 
@@ -108,8 +108,8 @@ func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
 
 // entityColumn storage for entities in an table.
 type entityColumn struct {
-	pointer unsafe.Pointer // pointer to the first element
 	data    reflect.Value  // data buffer
+	pointer unsafe.Pointer // pointer to the first element
 }
 
 // newColumn creates a new column for a given type and capacity.

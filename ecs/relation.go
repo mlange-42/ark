@@ -27,9 +27,9 @@ type relationID struct {
 //   - [RelIdx] is fast but more error-prone.
 //   - [RelID] is used in the [Unsafe] API.
 type Relation struct {
+	componentType reflect.Type
 	target        Entity
 	component     ID
-	componentType reflect.Type
 	index         uint8
 }
 
