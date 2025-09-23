@@ -16,22 +16,22 @@ func TestMask64(t *testing.T) {
 
 	expectEqual(t, 5, mask.TotalBitsSet())
 
-	expectTrue(t, mask.Get(id(1)))
-	expectTrue(t, mask.Get(id(2)))
-	expectTrue(t, mask.Get(id(13)))
-	expectTrue(t, mask.Get(id(27)))
-	expectTrue(t, mask.Get(id8(big)))
+	expectTrue(t, mask.Get(1))
+	expectTrue(t, mask.Get(2))
+	expectTrue(t, mask.Get(13))
+	expectTrue(t, mask.Get(27))
+	expectTrue(t, mask.Get(big))
 
-	expectFalse(t, mask.Get(id(0)))
-	expectFalse(t, mask.Get(id(3)))
-	expectFalse(t, mask.Get(id8(big-1)))
-	expectFalse(t, mask.Get(id8(big+1)))
+	expectFalse(t, mask.Get(0))
+	expectFalse(t, mask.Get(3))
+	expectFalse(t, mask.Get(big-1))
+	expectFalse(t, mask.Get(big+1))
 
-	mask.Set(id(0), true)
-	mask.Set(id(1), false)
+	mask.Set(0, true)
+	mask.Set(1, false)
 
-	expectTrue(t, mask.Get(id(0)))
-	expectFalse(t, mask.Get(id(1)))
+	expectTrue(t, mask.Get(0))
+	expectFalse(t, mask.Get(1))
 
 	other1 := newMask64(id(1), id(2), id(32))
 	other2 := newMask64(id(0), id(2))
@@ -55,9 +55,9 @@ func TestMask64(t *testing.T) {
 	mask = newMask64(id(1), id(32))
 	not := mask.Not()
 
-	expectTrue(t, not.Get(id(0)))
-	expectFalse(t, not.Get(id(1)))
-	expectFalse(t, not.Get(id(32)))
+	expectTrue(t, not.Get(0))
+	expectFalse(t, not.Get(1))
+	expectFalse(t, not.Get(32))
 
 	expectTrue(t, mask.Equals(&mask))
 	expectFalse(t, mask.Equals(&bitMask64{}))
@@ -73,30 +73,30 @@ func TestBitMask64Copy(t *testing.T) {
 	mask2 := mask
 	mask3 := &mask
 
-	mask2.Set(id(1), false)
-	mask3.Set(id(2), false)
+	mask2.Set(1, false)
+	mask3.Set(2, false)
 
-	expectTrue(t, mask.Get(id(1)))
-	expectFalse(t, mask2.Get(id(1)))
+	expectTrue(t, mask.Get(1))
+	expectFalse(t, mask2.Get(1))
 
-	expectTrue(t, mask2.Get(id(2)))
-	expectFalse(t, mask.Get(id(2)))
-	expectFalse(t, mask3.Get(id(2)))
+	expectTrue(t, mask2.Get(2))
+	expectFalse(t, mask.Get(2))
+	expectFalse(t, mask3.Get(2))
 }
 
 func TestBitMask64(t *testing.T) {
 	for i := range mask64TotalBits {
 		mask := newMask64(id(i))
 		expectEqual(t, 1, mask.TotalBitsSet())
-		expectTrue(t, mask.Get(id(i)))
+		expectTrue(t, mask.Get(uint8(i)))
 	}
 	mask := bitMask64{}
 	expectEqual(t, 0, mask.TotalBitsSet())
 
 	for i := range mask64TotalBits {
-		mask.Set(id(i), true)
+		mask.Set(uint8(i), true)
 		expectEqual(t, i+1, mask.TotalBitsSet())
-		expectTrue(t, mask.Get(id(i)))
+		expectTrue(t, mask.Get(uint8(i)))
 	}
 
 	big := int(mask64TotalBits - 10)
@@ -112,11 +112,11 @@ func TestBitMask64(t *testing.T) {
 	mask = newMask64()
 	for i := range 64 {
 		id := ID{uint8(i)}
-		expectFalse(t, mask.Get(id))
-		mask.Set(id, true)
-		expectTrue(t, mask.Get(id))
-		mask.Set(id, false)
-		expectFalse(t, mask.Get(id))
+		expectFalse(t, mask.Get(id.id))
+		mask.Set(id.id, true)
+		expectTrue(t, mask.Get(id.id))
+		mask.Set(id.id, false)
+		expectFalse(t, mask.Get(id.id))
 	}
 }
 
@@ -139,14 +139,14 @@ func BenchmarkMask64Get(b *testing.B) {
 	mask := newMask64()
 	for i := range mask64TotalBits {
 		if rand.Float64() < 0.5 {
-			mask.Set(id(i), true)
+			mask.Set(uint8(i), true)
 		}
 	}
 	idx := id(rand.Intn(mask64TotalBits))
 
 	var v bool
 	for b.Loop() {
-		v = mask.Get(idx)
+		v = mask.Get(idx.id)
 	}
 	_ = v
 }
@@ -155,7 +155,7 @@ func BenchmarkMask64Contains(b *testing.B) {
 	mask := newMask64()
 	for i := range mask64TotalBits {
 		if rand.Float64() < 0.5 {
-			mask.Set(id(i), true)
+			mask.Set(uint8(i), true)
 		}
 	}
 	filter := newMask64(id(rand.Intn(mask64TotalBits)))
@@ -171,7 +171,7 @@ func BenchmarkMask64ContainsAny(b *testing.B) {
 	mask := newMask64()
 	for i := range mask64TotalBits {
 		if rand.Float64() < 0.5 {
-			mask.Set(id(i), true)
+			mask.Set(uint8(i), true)
 		}
 	}
 	filter := newMask64(id(rand.Intn(mask64TotalBits)))

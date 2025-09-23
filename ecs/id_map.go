@@ -31,7 +31,7 @@ func newIDMap[T any]() idMap[T] {
 
 // Get returns the value at the given key and whether the key is present.
 func (m *idMap[T]) Get(index uint8) (T, bool) {
-	if !m.used.Get(id8(index)) {
+	if !m.used.Get(index) {
 		return m.zeroValue, false
 	}
 	return m.chunks[index/idMapChunkSize][index%idMapChunkSize], true
@@ -39,7 +39,7 @@ func (m *idMap[T]) Get(index uint8) (T, bool) {
 
 // Get returns a pointer to the value at the given key and whether the key is present.
 func (m *idMap[T]) GetPointer(index uint8) (*T, bool) {
-	if !m.used.Get(id8(index)) {
+	if !m.used.Get(index) {
 		return nil, false
 	}
 	return &m.chunks[index/idMapChunkSize][index%idMapChunkSize], true
@@ -52,7 +52,7 @@ func (m *idMap[T]) Set(index uint8, value T) {
 		m.chunks[chunk] = make([]T, idMapChunkSize)
 	}
 	m.chunks[chunk][index%idMapChunkSize] = value
-	m.used.Set(id8(index), true)
+	m.used.Set(index, true)
 	m.chunkUsed[chunk]++
 }
 
@@ -60,7 +60,7 @@ func (m *idMap[T]) Set(index uint8, value T) {
 // It de-allocates empty chunks.
 func (m *idMap[T]) Remove(index uint8) {
 	chunk := index / idMapChunkSize
-	m.used.Set(id8(index), false)
+	m.used.Set(index, false)
 	m.chunkUsed[chunk]--
 	if m.chunkUsed[chunk] == 0 {
 		m.chunks[chunk] = nil

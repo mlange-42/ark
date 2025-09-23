@@ -78,7 +78,7 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		// filter out removed relations
 		allRelations = make([]relationID, 0, len(oldTable.relationIDs)+len(relations))
 		for _, rel := range oldTable.relationIDs {
-			if arch.mask.Get(rel.component) {
+			if arch.mask.Get(rel.component.id) {
 				allRelations = append(allRelations, rel)
 			}
 		}
@@ -288,7 +288,7 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 		for i := range s.components {
 			id := ID{id: uint8(i)}
 			comps := &s.components[i]
-			if archetype.mask.Get(id) {
+			if archetype.mask.Get(id.id) {
 				comps.columns = append(comps.columns, table.GetColumn(id))
 			} else {
 				comps.columns = append(comps.columns, nil)
