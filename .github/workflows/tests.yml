@@ -146,3 +146,7 @@ jobs:
           go run ./relations
           go run ./systems
           go run ./world_lock
+      - name: Run ebitengine example
+        run: |
+          cd examples/ebitengine
+          go run .
