@@ -147,7 +147,7 @@ jobs:
           go run ./systems
           go run ./world_lock
       - name: Install Ebiten dependencies
-        run: sudo apt install -y gcc
+        run: sudo apt install -y gcc libc6-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev libasound2-dev pkg-config
       - name: Build ebitengine example
         run: |
           cd examples/ebitengine
