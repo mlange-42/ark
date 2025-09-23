@@ -49,7 +49,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 	oldArchetype = &w.storage.archetypes[oldTable.archetype]
 
 	for _, id := range oldArchetype.components {
-		if mask.Get(id) {
+		if mask.Get(id.id) {
 			newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
 		}
 	}
@@ -123,7 +123,7 @@ func (w *World) exchangeTable(oldTable *table, oldLen int, add []ID, rem []ID, r
 
 	newTable.AddAllEntities(oldTable, uint32(oldLen))
 	for _, id := range oldIDs {
-		if mask.Get(id) {
+		if mask.Get(id.id) {
 			oldCol := oldTable.GetColumn(id)
 			newCol := newTable.GetColumn(id)
 			newCol.CopyToEnd(oldCol, newTable.len, uint32(oldLen))

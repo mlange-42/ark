@@ -23,7 +23,7 @@ func (m *lock) Lock() uint8 {
 
 // Unlock unlocks the given lock bit.
 func (m *lock) Unlock(l uint8) {
-	if !m.locks.GetUInt(l) {
+	if !m.locks.Get(l) {
 		panic("unbalanced unlock. Did you close a query that was already iterated?")
 	}
 	m.locks.SetFalse(l)

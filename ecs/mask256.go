@@ -19,22 +19,22 @@ type bitMask256 struct {
 func newMask256(ids ...ID) bitMask256 {
 	var mask bitMask256
 	for _, id := range ids {
-		mask.Set(id, true)
+		mask.Set(id.id, true)
 	}
 	return mask
 }
 
 // Get reports whether the bit at the given index [ID] is set.
-func (b *bitMask256) Get(bit ID) bool {
-	idx := bit.id >> 6
-	mask := uint64(1) << (bit.id & 63)
+func (b *bitMask256) Get(bit uint8) bool {
+	idx := bit >> 6
+	mask := uint64(1) << (bit & 63)
 	return b.bits[idx]&mask == mask
 }
 
 // Set sets the state of the bit at the given index.
-func (b *bitMask256) Set(bit ID, value bool) {
-	idx := bit.id >> 6
-	mask := uint64(1) << (bit.id & 63)
+func (b *bitMask256) Set(bit uint8, value bool) {
+	idx := bit >> 6
+	mask := uint64(1) << (bit & 63)
 	if value {
 		b.bits[idx] |= mask
 	} else {
@@ -108,7 +108,7 @@ func (b *bitMask256) toTypes(reg *registry) []ID {
 		}
 		for j := range cnt {
 			id := ID{id: uint8(i*wordSize + j)}
-			if b.Get(id) {
+			if b.Get(id.id) {
 				types[idx] = id
 				idx++
 			}

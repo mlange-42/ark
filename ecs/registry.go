@@ -35,7 +35,7 @@ func (r *registry) ComponentID(tp reflect.Type) (uint8, bool) {
 
 // ComponentType returns the type of a component by ID.
 func (r *registry) ComponentType(id uint8) (reflect.Type, bool) {
-	return r.Types[id], r.Used.Get(ID{id: id})
+	return r.Types[id], r.Used.Get(id)
 }
 
 // Count returns the total number of reserved IDs. It is the maximum ID plus 1.
@@ -52,7 +52,7 @@ func (r *registry) registerComponent(tp reflect.Type, totalBits int) uint8 {
 	newID := uint8(val)
 	id := id(val)
 	r.Components[tp], r.Types[newID] = newID, tp
-	r.Used.Set(id, true)
+	r.Used.Set(id.id, true)
 	r.IDs = append(r.IDs, newID)
 	return newID
 }
@@ -63,7 +63,7 @@ func (r *registry) unregisterLastComponent() {
 	tp, _ := r.ComponentType(newID)
 	delete(r.Components, tp)
 	r.Types[newID] = nil
-	r.Used.Set(id, false)
+	r.Used.Set(id.id, false)
 	r.IDs = r.IDs[:len(r.IDs)-1]
 }
 

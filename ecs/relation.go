@@ -123,7 +123,7 @@ func (r relationSlice) toRelations(world *World, mask *bitMask, ids []ID, out []
 		id := rel.id(ids, world)
 		world.storage.checkRelationTarget(rel.targetEntity())
 		world.storage.checkRelationComponent(id)
-		if !mask.Get(id) {
+		if !mask.Get(id.id) {
 			panic(fmt.Sprintf("requested relation component with ID %d was not specified in the filter or map", id.id))
 		}
 		return append(out, relationID{target: rel.target, component: id})
@@ -133,7 +133,7 @@ func (r relationSlice) toRelations(world *World, mask *bitMask, ids []ID, out []
 		id := rel.id(ids, world)
 		world.storage.checkRelationTarget(rel.targetEntity())
 		world.storage.checkRelationComponent(id)
-		if !mask.Get(id) {
+		if !mask.Get(id.id) {
 			panic(fmt.Sprintf("requested relation component with ID %d was not specified in the filter or map", id.id))
 		}
 		out = append(out, relationID{target: rel.target, component: id})
