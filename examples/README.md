@@ -20,9 +20,17 @@ git clone https://github.com/mlange-42/ark
 cd ark
 ```
 
-2. Run examples from directory `examples` like this:
+2. Most examples can be run from directory `examples` like this:
 
 ```
 cd examples
 go run ./<example>
+```
+
+An exception if the [ebitengine](./ebitengine/) example.
+Due to its relatively heavy dependencies, it is a separate module and must be run from within `examples/ebitengine`:
+
+```
+cd examples/ebitengine
+go run .
 ```

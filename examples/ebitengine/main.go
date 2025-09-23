@@ -1,6 +1,9 @@
 // Demonstrates how to use Ark with the [Ebiten] game engine.
 // Uses the [Stars] example from the Ebiten docs.
 //
+// On Linux and MacOS, you nee a C compiler to run this example.
+// See the [Ebiten] docs for details.
+//
 // [Ebiten]: https://ebitengine.org/
 // [Stars]: https://ebitengine.org/en/examples/stars.html
 package main
