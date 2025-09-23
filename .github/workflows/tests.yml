@@ -146,9 +146,3 @@ jobs:
           go run ./relations
           go run ./systems
           go run ./world_lock
-      - name: Install Ebiten dependencies
-        run: sudo apt install -y gcc xvfb
-      - name: Run ebitengine example
-        run: |
-          cd examples/ebitengine
-          xvfb-run go run .
