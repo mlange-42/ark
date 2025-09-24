@@ -47,6 +47,7 @@ func (m *Map[T]) NewEntityFn(fn func(a *T), target ...Entity) Entity {
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -86,6 +87,13 @@ func (m *Map[T]) NewBatchFn(count int, fn func(entity Entity, comp *T), target .
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped component for the given entity.
@@ -162,10 +170,12 @@ func (m *Map[T]) AddFn(entity Entity, fn func(a *T), target ...Entity) {
 		panic("can't add a component to a dead entity")
 	}
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	m.world.exchange(entity, m.ids[:], nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids[:], nil, m.relations)
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}
+
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped component of the given entity to the given values.
@@ -229,7 +239,9 @@ func (m *Map[T]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove a component from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids[:], nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids[:], nil)
+
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped component from all entities matching the given batch filter,

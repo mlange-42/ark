@@ -63,6 +63,7 @@ func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
 			(*A)(m.storageA.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -102,6 +103,13 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Rel
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -176,7 +184,7 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -184,6 +192,7 @@ func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 			(*A)(m.storageA.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -245,7 +254,8 @@ func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...
 
 // Remove the mapped components from the given entity.
 func (m *Map1[A]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -344,6 +354,7 @@ func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
 			(*B)(m.storageB.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -386,6 +397,13 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), r
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -472,7 +490,7 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -481,6 +499,7 @@ func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) 
 			(*B)(m.storageB.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -547,7 +566,8 @@ func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B)
 
 // Remove the mapped components from the given entity.
 func (m *Map2[A, B]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -655,6 +675,7 @@ func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) 
 			(*C)(m.storageC.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -700,6 +721,13 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B,
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -798,7 +826,7 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -808,6 +836,7 @@ func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...R
 			(*C)(m.storageC.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -879,7 +908,8 @@ func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b 
 
 // Remove the mapped components from the given entity.
 func (m *Map3[A, B, C]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -992,6 +1022,7 @@ func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...R
 			(*D)(m.storageD.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -1040,6 +1071,13 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b 
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -1150,7 +1188,7 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1161,6 +1199,7 @@ func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D),
 			(*D)(m.storageD.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -1237,7 +1276,8 @@ func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A,
 
 // Remove the mapped components from the given entity.
 func (m *Map4[A, B, C, D]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -1355,6 +1395,7 @@ func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E),
 			(*E)(m.storageE.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -1406,6 +1447,13 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A,
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -1528,7 +1576,7 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1540,6 +1588,7 @@ func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *
 			(*E)(m.storageE.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -1621,7 +1670,8 @@ func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a 
 
 // Remove the mapped components from the given entity.
 func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -1744,6 +1794,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *
 			(*F)(m.storageF.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -1798,6 +1849,13 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a 
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -1932,7 +1990,7 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1945,6 +2003,7 @@ func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, 
 			(*F)(m.storageF.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -2031,7 +2090,8 @@ func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity,
 
 // Remove the mapped components from the given entity.
 func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -2159,6 +2219,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, 
 			(*G)(m.storageG.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -2216,6 +2277,13 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity,
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -2362,7 +2430,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2376,6 +2444,7 @@ func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *
 			(*G)(m.storageG.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -2467,7 +2536,8 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Enti
 
 // Remove the mapped components from the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -2600,6 +2670,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *
 			(*H)(m.storageH.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -2660,6 +2731,13 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Enti
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -2818,7 +2896,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2833,6 +2911,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, 
 			(*H)(m.storageH.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -2929,7 +3008,8 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity E
 
 // Remove the mapped components from the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -3067,6 +3147,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, 
 			(*I)(m.storageI.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -3130,6 +3211,13 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(entity E
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -3300,7 +3388,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Add(entity Entity, a *A, b *B, c *C, d
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -3316,6 +3404,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(a *A, b *
 			(*I)(m.storageI.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -3417,7 +3506,8 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(entit
 
 // Remove the mapped components from the given entity.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -3560,6 +3650,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c 
 			(*J)(m.storageJ.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -3626,6 +3717,13 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(enti
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -3808,7 +3906,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Add(entity Entity, a *A, b *B, c *
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -3825,6 +3923,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(a *A,
 			(*J)(m.storageJ.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -3931,7 +4030,8 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(e
 
 // Remove the mapped components from the given entity.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -4079,6 +4179,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B,
 			(*K)(m.storageK.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -4148,6 +4249,13 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(e
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -4342,7 +4450,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Add(entity Entity, a *A, b *B, 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -4360,6 +4468,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(a 
 			(*K)(m.storageK.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -4471,7 +4580,8 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn fun
 
 // Remove the mapped components from the given entity.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -4624,6 +4734,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b 
 			(*L)(m.storageL.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
 	return entity
 }
 
@@ -4696,6 +4807,13 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn fun
 		)
 	}
 	m.world.unlock(lock)
+
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		for i := range count {
+			index := uintptr(start + i)
+			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -4902,7 +5020,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Add(entity Entity, a *A, b *
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -4921,6 +5039,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func
 			(*L)(m.storageL.columns[index.table].Get(row)),
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -5037,7 +5156,8 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn 
 
 // Remove the mapped components from the given entity.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
+	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,

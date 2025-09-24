@@ -11,7 +11,6 @@ func (w *World) newEntity(ids []ID, relations []relationID) Entity {
 	entity, _ := w.storage.createEntity(newTable.id)
 	w.storage.registerTargets(relations)
 
-	w.storage.observers.FireCreateEntity(entity, &mask)
 	return entity
 }
 
@@ -25,7 +24,7 @@ func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableI
 	return newTable.id, startIdx
 }
 
-func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relationID) {
+func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relationID) (*bitMask, *bitMask) {
 	w.checkLocked()
 
 	if !w.Alive(entity) {
@@ -35,7 +34,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 		if len(relations) > 0 {
 			panic("exchange operation has no effect, but relations were specified. Use SetRelation(s) instead")
 		}
-		return
+		return nil, nil
 	}
 
 	index := w.storage.entities[entity.id]
@@ -66,12 +65,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 
 	w.storage.registerTargets(relations)
 
-	if len(add) > 0 {
-		w.storage.observers.FireAdd(entity, &oldArchetype.mask, &mask)
-	}
-	if len(rem) > 0 {
-		w.storage.observers.FireRemove(entity, &oldArchetype.mask, &mask)
-	}
+	return &oldArchetype.mask, &mask
 }
 
 type batchTable struct {
