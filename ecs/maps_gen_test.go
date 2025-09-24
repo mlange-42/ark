@@ -8,7 +8,7 @@ func TestMap1(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map1[CompA]
 	mapper = mapper.New(&w)
@@ -86,7 +86,7 @@ func TestMap1NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap1[CompA](&w)
 
@@ -302,7 +302,7 @@ func TestMap2(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map2[CompA, CompB]
 	mapper = mapper.New(&w)
@@ -384,7 +384,7 @@ func TestMap2NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap2[CompA, CompB](&w)
 
@@ -600,7 +600,7 @@ func TestMap3(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map3[CompA, CompB, CompC]
 	mapper = mapper.New(&w)
@@ -686,7 +686,7 @@ func TestMap3NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap3[CompA, CompB, CompC](&w)
 
@@ -902,7 +902,7 @@ func TestMap4(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map4[CompA, CompB, CompC, CompD]
 	mapper = mapper.New(&w)
@@ -992,7 +992,7 @@ func TestMap4NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
 
@@ -1208,7 +1208,7 @@ func TestMap5(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map5[CompA, CompB, CompC, CompD, CompE]
 	mapper = mapper.New(&w)
@@ -1302,7 +1302,7 @@ func TestMap5NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
 
@@ -1518,7 +1518,7 @@ func TestMap6(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map6[CompA, CompB, CompC, CompD, CompE, CompF]
 	mapper = mapper.New(&w)
@@ -1616,7 +1616,7 @@ func TestMap6NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 
@@ -1832,7 +1832,7 @@ func TestMap7(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map7[CompA, CompB, CompC, CompD, CompE, CompF, CompG]
 	mapper = mapper.New(&w)
@@ -1934,7 +1934,7 @@ func TestMap7NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 
@@ -2150,7 +2150,7 @@ func TestMap8(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH]
 	mapper = mapper.New(&w)
@@ -2256,7 +2256,7 @@ func TestMap8NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 
@@ -2472,7 +2472,7 @@ func TestMap9(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI]
 	mapper = mapper.New(&w)
@@ -2582,7 +2582,7 @@ func TestMap9NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
 
@@ -2798,7 +2798,7 @@ func TestMap10(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ]
 	mapper = mapper.New(&w)
@@ -2913,7 +2913,7 @@ func TestMap10NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
 
@@ -3129,7 +3129,7 @@ func TestMap11(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK]
 	mapper = mapper.New(&w)
@@ -3248,7 +3248,7 @@ func TestMap11NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
 
@@ -3464,7 +3464,7 @@ func TestMap12(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL]
 	mapper = mapper.New(&w)
@@ -3587,7 +3587,7 @@ func TestMap12NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	NewObserver(OnCreateEntity, func(_ Entity) {}).Register(&w)
+	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
 

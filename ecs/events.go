@@ -170,11 +170,10 @@ type Observer struct {
 }
 
 // NewObserver creates a new observer for the given event type.
-func NewObserver(evt EventType, callback func(Entity)) *Observer {
+func NewObserver(evt EventType) *Observer {
 	return &Observer{
-		event:    evt,
-		id:       maxObserverID,
-		callback: callback,
+		event: evt,
+		id:    maxObserverID,
 	}
 }
 
@@ -204,8 +203,20 @@ func (o *Observer) Without(comps ...Comp) *Observer {
 	return o
 }
 
+// Do sets the observers callback. Must be called exactly once before registration.
+func (o *Observer) Do(fn func(Entity)) *Observer {
+	if o.callback != nil {
+		panic("observer already has a callback")
+	}
+	o.callback = fn
+	return o
+}
+
 // Register this observer.
 func (o *Observer) Register(w *World) *Observer {
+	if o.callback == nil {
+		panic("observer callback must be set via Do before registering")
+	}
 	if o.id != maxObserverID {
 		panic("observer is already registered")
 	}

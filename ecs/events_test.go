@@ -6,7 +6,7 @@ import (
 
 func TestNewObserver(t *testing.T) {
 	w := NewWorld()
-	obs := NewObserver(OnCreateEntity, func(e Entity) {}).Register(&w)
+	obs := NewObserver(OnCreateEntity).Do(func(e Entity) {}).Register(&w)
 
 	expectPanicsWithValue(t, "can't modify a registered observer",
 		func() {
@@ -17,13 +17,22 @@ func TestNewObserver(t *testing.T) {
 			obs.Without(C[Position]())
 		})
 
-	obs = NewObserver(OnAdd, func(e Entity) {})
+	obs = NewObserver(OnAdd).Do(func(e Entity) {})
 	expectPanicsWithValue(t, "can use Observer.Without only for OnCreateEntity and OnRemoveEntity events",
 		func() {
 			obs.Without(C[Position]())
 		})
 
-	obs = NewObserver(OnCreateEntity, func(e Entity) {})
+	expectPanicsWithValue(t, "observer callback must be set via Do before registering",
+		func() {
+			NewObserver(OnCreateEntity).Register(&w)
+		})
+	expectPanicsWithValue(t, "observer already has a callback",
+		func() {
+			NewObserver(OnCreateEntity).Do(func(e Entity) {}).Do(func(e Entity) {})
+		})
+
+	obs = NewObserver(OnCreateEntity).Do(func(e Entity) {})
 
 	obs = obs.With(C[Position]())
 	expectEqual(t, 1, len(obs.with))
@@ -40,15 +49,17 @@ func TestNewObserver(t *testing.T) {
 func TestObserverRegister(t *testing.T) {
 	w := NewWorld()
 
-	obs1 := NewObserver(OnCreateEntity, func(e Entity) {}).
+	obs1 := NewObserver(OnCreateEntity).
 		With(C[Position]()).
 		With(C[Velocity]()).
 		Without(C[Heading]()).
+		Do(func(e Entity) {}).
 		Register(&w)
 	expectTrue(t, w.storage.observers.HasObservers(OnCreateEntity))
 
-	obs2 := NewObserver(OnCreateEntity, func(e Entity) {}).
+	obs2 := NewObserver(OnCreateEntity).
 		With(C[Position]()).
+		Do(func(e Entity) {}).
 		Register(&w)
 
 	expectPanicsWithValue(t, "observer is already registered",
@@ -85,11 +96,11 @@ func TestObserverOnCreateEntity(t *testing.T) {
 
 	callCount := 0
 
-	NewObserver(OnCreateEntity,
-		func(e Entity) {
+	NewObserver(OnCreateEntity).
+		With(C[Position]()).
+		Do(func(e Entity) {
 			callCount++
 		}).
-		With(C[Position]()).
 		Register(&w)
 
 	builder1.NewEntity(&Position{})
@@ -113,10 +124,11 @@ func TestObserverOnCreateEntities(t *testing.T) {
 
 	callCount := 0
 
-	NewObserver(OnCreateEntity,
-		func(e Entity) {
+	NewObserver(OnCreateEntity).
+		Do(func(e Entity) {
 			callCount++
-		}).Register(&w)
+		}).
+		Register(&w)
 
 	w.NewEntities(10, nil)
 	expectEqual(t, 10, callCount)
@@ -132,11 +144,11 @@ func TestObserverOnRemoveEntity(t *testing.T) {
 
 	callCount := 0
 
-	NewObserver(OnRemoveEntity,
-		func(e Entity) {
+	NewObserver(OnRemoveEntity).
+		With(C[Position]()).
+		Do(func(e Entity) {
 			callCount++
 		}).
-		With(C[Position]()).
 		Register(&w)
 
 	e := builder1.NewEntity(&Position{})
@@ -165,18 +177,18 @@ func TestObserverOnAddRemove(t *testing.T) {
 	callAdd := 0
 	callRemove := 0
 
-	NewObserver(OnAdd,
-		func(e Entity) {
+	NewObserver(OnAdd).
+		With(C[Position]()).
+		Do(func(e Entity) {
 			callAdd++
 		}).
-		With(C[Position]()).
 		Register(&w)
 
-	NewObserver(OnRemove,
-		func(e Entity) {
+	NewObserver(OnRemove).
+		With(C[Position]()).
+		Do(func(e Entity) {
 			callRemove++
 		}).
-		With(C[Position]()).
 		Register(&w)
 
 	e := w.NewEntity()
@@ -206,11 +218,11 @@ func TestObserverOnSet(t *testing.T) {
 
 	callCount := 0
 
-	NewObserver(OnSet,
-		func(e Entity) {
+	NewObserver(OnSet).
+		With(C[Position]()).
+		Do(func(e Entity) {
 			callCount++
 		}).
-		With(C[Position]()).
 		Register(&w)
 
 	e := builder1.NewEntity(&Position{})
