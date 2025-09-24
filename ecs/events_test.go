@@ -135,7 +135,7 @@ func TestObserverOnRemoveEntity(t *testing.T) {
 	expectEqual(t, 11, callCount)
 }
 
-func TestObserverOnAddRemoveEntity(t *testing.T) {
+func TestObserverOnAddRemove(t *testing.T) {
 	w := NewWorld()
 
 	builder1 := NewMap1[Position](&w)
@@ -177,4 +177,29 @@ func TestObserverOnAddRemoveEntity(t *testing.T) {
 
 	builder1.RemoveBatch(filter1.Batch(), nil)
 	expectEqual(t, 11, callRemove)
+}
+
+func TestObserverOnSet(t *testing.T) {
+	w := NewWorld()
+
+	builder1 := NewMap1[Position](&w)
+	builder2 := NewMap1[Velocity](&w)
+
+	callCount := 0
+
+	NewObserver(OnSet,
+		func(e Entity) {
+			callCount++
+		}).
+		With(C[Position]()).
+		Register(&w)
+
+	e := builder1.NewEntity(&Position{})
+	builder2.Add(e, &Velocity{})
+	expectEqual(t, 0, callCount)
+
+	builder1.Set(e, &Position{})
+	expectEqual(t, 1, callCount)
+	builder2.Set(e, &Velocity{})
+	expectEqual(t, 1, callCount)
 }
