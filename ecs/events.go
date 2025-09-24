@@ -21,7 +21,7 @@ const (
 	// OnSet event.
 	OnSet
 	// OnChangeTarget event.
-	OnChangeTarget
+	//OnChangeTarget
 
 	eventsEnd
 )
