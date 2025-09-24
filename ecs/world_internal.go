@@ -65,7 +65,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 
 	w.storage.registerTargets(relations)
 
-	return &oldArchetype.mask, &w.storage.archetypes[newTable.id].mask
+	return &oldArchetype.mask, &w.storage.archetypes[newTable.archetype].mask
 }
 
 type batchTable struct {
