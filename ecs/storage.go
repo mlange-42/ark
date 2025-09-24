@@ -167,7 +167,7 @@ func (s *storage) getUnchecked(entity Entity, component ID) unsafe.Pointer {
 
 func (s *storage) has(entity Entity, component ID) bool {
 	if !s.entityPool.Alive(entity) {
-		panic("can't get component of a dead entity")
+		panic("can't check component of a dead entity")
 	}
 	return s.hasUnchecked(entity, component)
 }
