@@ -35,9 +35,10 @@ type observerManager struct {
 
 func newObserverManager() observerManager {
 	return observerManager{
-		observers: make([][]*Observer, eventsEnd),
-		pool:      newIntPool[observerID](32),
-		indices:   map[observerID]int{},
+		observers:    make([][]*Observer, eventsEnd),
+		hasObservers: make([]bool, eventsEnd),
+		pool:         newIntPool[observerID](32),
+		indices:      map[observerID]int{},
 	}
 }
 

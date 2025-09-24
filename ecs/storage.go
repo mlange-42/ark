@@ -120,7 +120,7 @@ func (s *storage) RemoveEntity(entity Entity) {
 	if s.observers.HasObservers(OnRemoveEntity) {
 		l := s.lock()
 		mask := &s.archetypes[table.archetype].mask
-		s.observers.FireRemoveEntity(entity, mask)
+		s.observers.doFireRemoveEntity(entity, mask)
 		s.unlock(l)
 	}
 
@@ -343,7 +343,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				s.moveEntities(table, newTable, uint32(table.Len()))
 			}
 			archetype.FreeTable(table)
-			s.cache.removeTable(s, table)
+			s.cache.removeTable(table)
 
 			newRelations = newRelations[:0]
 		}

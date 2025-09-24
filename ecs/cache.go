@@ -108,7 +108,7 @@ func (c *cache) addTable(storage *storage, table *table) {
 //
 // Can only be used for tables that have a relation target.
 // Tables without a relation are never removed.
-func (c *cache) removeTable(storage *storage, table *table) {
+func (c *cache) removeTable(table *table) {
 	//if !table.HasRelations() {
 	//	// unreachable
 	//	return

@@ -223,9 +223,9 @@ func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
 func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 
@@ -523,9 +523,9 @@ func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
 func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
@@ -853,9 +853,9 @@ func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation
 func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
@@ -1209,9 +1209,9 @@ func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ..
 func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
@@ -1591,9 +1591,9 @@ func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *
 func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
@@ -1999,9 +1999,9 @@ func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, 
 func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
@@ -2433,9 +2433,9 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *
 func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
@@ -2893,9 +2893,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, 
 func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
@@ -3379,9 +3379,9 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatch(batch *Batch, a *A, b *B, c *
 func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
@@ -3891,9 +3891,9 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatch(batch *Batch, a *A, b *B,
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
@@ -4429,9 +4429,9 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatch(batch *Batch, a *A, b 
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
@@ -4993,9 +4993,9 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatch(batch *Batch, a *A,
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]

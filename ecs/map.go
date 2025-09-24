@@ -204,9 +204,9 @@ func (m *Map[T]) AddBatch(batch *Batch, comp *T, target ...Entity) {
 func (m *Map[T]) AddBatchFn(batch *Batch, fn func(entity Entity, comp *T), target ...Entity) {
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			column := m.storage.columns[tableID]
 

@@ -272,9 +272,9 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...Re
 func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			{{- range $upper}}
 			column{{.}} := m.storage{{.}}.columns[tableID]
