@@ -80,7 +80,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...Relation) Entit
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$args}}), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -90,7 +90,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$args}}), rel ...Rela
 			{{- end}}
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 

@@ -4,14 +4,14 @@ import (
 	"reflect"
 )
 
-func (w *World) newEntity(ids []ID, relations []relationID) Entity {
+func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 	w.checkLocked()
 	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 	entity, _ := w.storage.createEntity(newTable.id)
 	w.storage.registerTargets(relations)
 
-	return entity
+	return entity, &w.storage.archetypes[newTable.archetype].mask
 }
 
 func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableID, int) {

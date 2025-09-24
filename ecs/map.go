@@ -43,11 +43,11 @@ func (m *Map[T]) NewEntity(comp *T, target ...Entity) Entity {
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) NewEntityFn(fn func(a *T), target ...Entity) Entity {
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	entity := m.world.newEntity(m.ids[:], m.relations)
+	entity, mask := m.world.newEntity(m.ids[:], m.relations)
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 

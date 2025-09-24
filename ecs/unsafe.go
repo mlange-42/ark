@@ -14,13 +14,17 @@ type Unsafe struct {
 
 // NewEntity creates a new entity with the given components.
 func (u Unsafe) NewEntity(ids ...ID) Entity {
-	return u.world.newEntity(ids, nil)
+	entity, mask := u.world.newEntity(ids, nil)
+	u.world.storage.observers.FireCreateEntity(entity, mask)
+	return entity
 }
 
 // NewEntityRel creates a new entity with the given components and relation targets.
 func (u Unsafe) NewEntityRel(ids []ID, relations ...Relation) Entity {
 	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
-	return u.world.newEntity(ids, u.cachedRelations)
+	entity, mask := u.world.newEntity(ids, u.cachedRelations)
+	u.world.storage.observers.FireCreateEntity(entity, mask)
+	return entity
 }
 
 // Get returns a pointer to the given component of an [Entity].
@@ -81,7 +85,11 @@ func (u Unsafe) Add(entity Entity, comp ...ID) {
 	if !u.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	u.world.exchange(entity, comp, nil, nil)
+	if len(comp) == 0 {
+		panic("at least one component required to add")
+	}
+	oldMask, newMask := u.world.exchange(entity, comp, nil, nil)
+	u.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // AddRel adds the given components and relation targets to an entity.
@@ -89,8 +97,12 @@ func (u Unsafe) AddRel(entity Entity, comps []ID, relations ...Relation) {
 	if !u.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
+	if len(comps) == 0 {
+		panic("at least one component required to add")
+	}
 	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
-	u.world.exchange(entity, comps, nil, u.cachedRelations)
+	oldMask, newMask := u.world.exchange(entity, comps, nil, u.cachedRelations)
+	u.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Remove the given components from an entity.
@@ -98,7 +110,11 @@ func (u Unsafe) Remove(entity Entity, comp ...ID) {
 	if !u.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	u.world.exchange(entity, nil, comp, nil)
+	if len(comp) == 0 {
+		panic("at least one component required to remove")
+	}
+	oldMask, newMask := u.world.exchange(entity, nil, comp, nil)
+	u.world.storage.observers.FireRemove(entity, oldMask, newMask)
 }
 
 // Exchange the given components on entity.
@@ -106,8 +122,18 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 	if !u.world.Alive(entity) {
 		panic("can't exchange components on a dead entity")
 	}
+	if len(add) == 0 && len(remove) == 0 {
+		panic("at least one component required to add or remove")
+	}
 	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
-	u.world.exchange(entity, add, remove, u.cachedRelations)
+	oldMask, newMask := u.world.exchange(entity, add, remove, u.cachedRelations)
+
+	if len(add) > 0 {
+		u.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	}
+	if len(remove) > 0 {
+		u.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	}
 }
 
 // IDs returns all component IDs of an entity.

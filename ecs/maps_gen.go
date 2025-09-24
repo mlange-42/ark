@@ -55,7 +55,7 @@ func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -63,7 +63,7 @@ func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
 			(*A)(m.storageA.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -345,7 +345,7 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -354,7 +354,7 @@ func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
 			(*B)(m.storageB.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -665,7 +665,7 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -675,7 +675,7 @@ func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) 
 			(*C)(m.storageC.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -1011,7 +1011,7 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) En
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1022,7 +1022,7 @@ func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...R
 			(*D)(m.storageD.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -1383,7 +1383,7 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1395,7 +1395,7 @@ func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E),
 			(*E)(m.storageE.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -1781,7 +1781,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1794,7 +1794,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *
 			(*F)(m.storageF.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -2205,7 +2205,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2219,7 +2219,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, 
 			(*G)(m.storageG.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -2655,7 +2655,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2670,7 +2670,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *
 			(*H)(m.storageH.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -3131,7 +3131,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntity(a *A, b *B, c *C, d *D, e *E
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -3147,7 +3147,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, 
 			(*I)(m.storageI.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -3633,7 +3633,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntity(a *A, b *B, c *C, d *D, 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -3650,7 +3650,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c 
 			(*J)(m.storageJ.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -4161,7 +4161,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntity(a *A, b *B, c *C, d *
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -4179,7 +4179,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B,
 			(*K)(m.storageK.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -4715,7 +4715,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntity(a *A, b *B, c *C, 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -4734,7 +4734,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b 
 			(*L)(m.storageL.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, &m.mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
