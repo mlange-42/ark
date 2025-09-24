@@ -22,29 +22,48 @@ func TestNewObserver(t *testing.T) {
 		func() {
 			obs.Without(C[Position]())
 		})
+
+	obs = NewObserver(OnCreateEntity, func(e Entity) {})
+
+	obs = obs.With(C[Position]())
+	expectEqual(t, 1, len(obs.with))
+
+	obs = obs.Without()
+	expectEqual(t, 0, len(obs.without))
+	expectFalse(t, obs.hasWithout)
+
+	obs = obs.Without(C[Position]())
+	expectEqual(t, 1, len(obs.without))
+	expectTrue(t, obs.hasWithout)
 }
 
 func TestObserverRegister(t *testing.T) {
 	w := NewWorld()
 
-	obs := NewObserver(OnCreateEntity, func(e Entity) {}).
+	obs1 := NewObserver(OnCreateEntity, func(e Entity) {}).
 		With(C[Position]()).
 		With(C[Velocity]()).
 		Without(C[Heading]()).
 		Register(&w)
 	expectTrue(t, w.storage.observers.HasObservers(OnCreateEntity))
 
+	obs2 := NewObserver(OnCreateEntity, func(e Entity) {}).
+		With(C[Position]()).
+		Register(&w)
+
 	expectPanicsWithValue(t, "observer is already registered",
 		func() {
-			obs.Register(&w)
+			obs1.Register(&w)
 		})
 
-	obs.Unregister(&w)
+	obs1.Unregister(&w)
+	expectTrue(t, w.storage.observers.HasObservers(OnCreateEntity))
+	obs2.Unregister(&w)
 	expectFalse(t, w.storage.observers.HasObservers(OnCreateEntity))
 
 	expectPanicsWithValue(t, "observer is not registered",
 		func() {
-			obs.Unregister(&w)
+			obs1.Unregister(&w)
 		})
 }
 
