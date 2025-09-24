@@ -7,6 +7,7 @@ type observerID uint16
 const maxObserverID = math.MaxUint16
 
 // EventType is the type for event identifiers.
+// See [Observer] for details on events.
 type EventType uint8
 
 const (
@@ -25,6 +26,85 @@ const (
 
 	eventsEnd
 )
+
+// Observer for ECS events.
+//
+// Observers react to structural changes, such as entity creation, removal, and component addition/removal.
+// Use the methods With, Without, and Do to configure the observer before registering it.
+type Observer struct {
+	event       EventType
+	with        []Comp
+	without     []Comp
+	withMask    bitMask
+	withoutMask bitMask
+	hasWithout  bool
+	callback    func(Entity)
+	id          observerID
+}
+
+// NewObserver creates a new ECS event observer for the specified event type.
+func NewObserver(evt EventType) *Observer {
+	return &Observer{
+		event: evt,
+		id:    maxObserverID,
+	}
+}
+
+// With adds components the observer observes.
+func (o *Observer) With(comps ...Comp) *Observer {
+	if o.id != maxObserverID {
+		panic("can't modify a registered observer")
+	}
+	o.with = append(o.with, comps...)
+	return o
+}
+
+// Without adds components the observer excludes.
+// Only valid for [OnCreateEntity] and [OnRemoveEntity].
+func (o *Observer) Without(comps ...Comp) *Observer {
+	if o.id != maxObserverID {
+		panic("can't modify a registered observer")
+	}
+	if o.event != OnCreateEntity && o.event != OnRemoveEntity {
+		panic("can use Observer.Without only for OnCreateEntity and OnRemoveEntity events")
+	}
+	if len(comps) == 0 {
+		return o
+	}
+	o.without = append(o.without, comps...)
+	o.hasWithout = true
+	return o
+}
+
+// Do sets the observer's callback. Must be called exactly once before registration.
+func (o *Observer) Do(fn func(Entity)) *Observer {
+	if o.callback != nil {
+		panic("observer already has a callback")
+	}
+	o.callback = fn
+	return o
+}
+
+// Register this observer.
+func (o *Observer) Register(w *World) *Observer {
+	if o.callback == nil {
+		panic("observer callback must be set via Do before registering")
+	}
+	if o.id != maxObserverID {
+		panic("observer is already registered")
+	}
+	w.registerObserver(o)
+	return o
+}
+
+// Unregister this observer.
+func (o *Observer) Unregister(w *World) *Observer {
+	if o.id == maxObserverID {
+		panic("observer is not registered")
+	}
+	w.unregisterObserver(o)
+	return o
+}
 
 type observerManager struct {
 	observers    [][]*Observer
@@ -155,83 +235,4 @@ func (m *observerManager) doFireSet(e Entity, mask *bitMask) {
 			o.callback(e)
 		}
 	}
-}
-
-// Observer for ECS events.
-//
-// Observers react to structural changes, such as entity creation, removal, and component addition/removal.
-// Use the methods With, Without, and Do to configure the observer before registering it.
-type Observer struct {
-	event       EventType
-	with        []Comp
-	without     []Comp
-	withMask    bitMask
-	withoutMask bitMask
-	hasWithout  bool
-	callback    func(Entity)
-	id          observerID
-}
-
-// NewObserver creates a new ECS event observer for the specified event type.
-func NewObserver(evt EventType) *Observer {
-	return &Observer{
-		event: evt,
-		id:    maxObserverID,
-	}
-}
-
-// With adds components the observer observes.
-func (o *Observer) With(comps ...Comp) *Observer {
-	if o.id != maxObserverID {
-		panic("can't modify a registered observer")
-	}
-	o.with = append(o.with, comps...)
-	return o
-}
-
-// Without adds components the observer excludes.
-// Only valid for [OnCreateEntity] and [OnRemoveEntity].
-func (o *Observer) Without(comps ...Comp) *Observer {
-	if o.id != maxObserverID {
-		panic("can't modify a registered observer")
-	}
-	if o.event != OnCreateEntity && o.event != OnRemoveEntity {
-		panic("can use Observer.Without only for OnCreateEntity and OnRemoveEntity events")
-	}
-	if len(comps) == 0 {
-		return o
-	}
-	o.without = append(o.without, comps...)
-	o.hasWithout = true
-	return o
-}
-
-// Do sets the observers callback. Must be called exactly once before registration.
-func (o *Observer) Do(fn func(Entity)) *Observer {
-	if o.callback != nil {
-		panic("observer already has a callback")
-	}
-	o.callback = fn
-	return o
-}
-
-// Register this observer.
-func (o *Observer) Register(w *World) *Observer {
-	if o.callback == nil {
-		panic("observer callback must be set via Do before registering")
-	}
-	if o.id != maxObserverID {
-		panic("observer is already registered")
-	}
-	w.registerObserver(o)
-	return o
-}
-
-// Unregister this observer.
-func (o *Observer) Unregister(w *World) *Observer {
-	if o.id == maxObserverID {
-		panic("observer is not registered")
-	}
-	w.unregisterObserver(o)
-	return o
 }
