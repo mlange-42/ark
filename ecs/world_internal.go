@@ -116,7 +116,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 		}
 	}
 
-	if len(add) > 0 && w.storage.observers.HasObservers(OnAdd) {
+	if len(add) > 0 && w.storage.observers.HasObservers(OnAddComponent) {
 		for _, batch := range batchTables {
 			table := &w.storage.tables[batch.newTable]
 			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].id].mask
@@ -127,7 +127,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			}
 		}
 	}
-	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemove) {
+	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponent) {
 		for _, batch := range batchTables {
 			table := &w.storage.tables[batch.newTable]
 			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].id].mask

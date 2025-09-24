@@ -17,7 +17,7 @@ func TestNewObserver(t *testing.T) {
 			obs.Without(C[Position]())
 		})
 
-	obs = NewObserver(OnAdd).Do(func(e Entity) {})
+	obs = NewObserver(OnAddComponent).Do(func(e Entity) {})
 	expectPanicsWithValue(t, "can use Observer.Without only for OnCreateEntity and OnRemoveEntity events",
 		func() {
 			obs.Without(C[Position]())
@@ -177,14 +177,14 @@ func TestObserverOnAddRemove(t *testing.T) {
 	callAdd := 0
 	callRemove := 0
 
-	NewObserver(OnAdd).
+	NewObserver(OnAddComponent).
 		With(C[Position]()).
 		Do(func(e Entity) {
 			callAdd++
 		}).
 		Register(&w)
 
-	NewObserver(OnRemove).
+	NewObserver(OnRemoveComponent).
 		With(C[Position]()).
 		Do(func(e Entity) {
 			callRemove++
@@ -218,7 +218,7 @@ func TestObserverOnSet(t *testing.T) {
 
 	callCount := 0
 
-	NewObserver(OnSet).
+	NewObserver(OnSetComponent).
 		With(C[Position]()).
 		Do(func(e Entity) {
 			callCount++

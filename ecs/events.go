@@ -14,12 +14,12 @@ const (
 	OnCreateEntity EventType = iota
 	// OnRemoveEntity event.
 	OnRemoveEntity
-	// OnAdd event.
-	OnAdd
-	// OnRemove event.
-	OnRemove
-	// OnSet event.
-	OnSet
+	// OnAddComponent event.
+	OnAddComponent
+	// OnRemoveComponent event.
+	OnRemoveComponent
+	// OnSetComponent event.
+	OnSetComponent
 	// OnChangeTarget event.
 	//OnChangeTarget
 
@@ -109,14 +109,14 @@ func (m *observerManager) doFireRemoveEntity(e Entity, mask *bitMask) {
 }
 
 func (m *observerManager) FireAdd(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.hasObservers[OnAdd] {
+	if !m.hasObservers[OnAddComponent] {
 		return
 	}
 	m.doFireAdd(e, oldMask, newMask)
 }
 
 func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask) {
-	observers := m.observers[OnAdd]
+	observers := m.observers[OnAddComponent]
 	for _, o := range observers {
 		if newMask.Contains(&o.withMask) && !oldMask.ContainsAny(&o.withMask) {
 			o.callback(e)
@@ -125,14 +125,14 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 }
 
 func (m *observerManager) FireRemove(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.hasObservers[OnRemove] {
+	if !m.hasObservers[OnRemoveComponent] {
 		return
 	}
 	m.doFireRemove(e, oldMask, newMask)
 }
 
 func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitMask) {
-	observers := m.observers[OnRemove]
+	observers := m.observers[OnRemoveComponent]
 	for _, o := range observers {
 		if oldMask.Contains(&o.withMask) && !newMask.ContainsAny(&o.withMask) {
 			o.callback(e)
@@ -141,14 +141,14 @@ func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitM
 }
 
 func (m *observerManager) FireSet(e Entity, mask *bitMask) {
-	if !m.hasObservers[OnSet] {
+	if !m.hasObservers[OnSetComponent] {
 		return
 	}
 	m.doFireSet(e, mask)
 }
 
 func (m *observerManager) doFireSet(e Entity, mask *bitMask) {
-	observers := m.observers[OnSet]
+	observers := m.observers[OnSetComponent]
 	for i := range observers {
 		o := observers[i]
 		if mask.Contains(&o.withMask) {
@@ -157,7 +157,10 @@ func (m *observerManager) doFireSet(e Entity, mask *bitMask) {
 	}
 }
 
-// Observer for events.
+// Observer for ECS events.
+//
+// Observers react to structural changes, such as entity creation, removal, and component addition/removal.
+// Use the methods With, Without, and Do to configure the observer before registering it.
 type Observer struct {
 	event       EventType
 	with        []Comp
@@ -169,7 +172,7 @@ type Observer struct {
 	id          observerID
 }
 
-// NewObserver creates a new observer for the given event type.
+// NewObserver creates a new ECS event observer for the specified event type.
 func NewObserver(evt EventType) *Observer {
 	return &Observer{
 		event: evt,
