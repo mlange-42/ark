@@ -20,6 +20,7 @@ func TestObserverManager(t *testing.T) {
 		}).
 		With(C[Position]()).
 		With(C[Velocity]()).
+		Without(C[Heading]()).
 		Register(&w)
 
 	w.storage.observers.FireCreateEntity(Entity{id: 1}, &posVelMask)
