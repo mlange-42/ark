@@ -137,7 +137,6 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity
 	}
 	m.world.unlock(lock)
 	
-
 	if m.world.storage.observers.HasObservers(OnCreateEntity) {
 		for i := range count {
 			index := uintptr(start + i)
