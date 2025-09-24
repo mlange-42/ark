@@ -99,13 +99,6 @@ func (m *observerManager) doFireCreateEntity(e Entity, mask *bitMask) {
 	}
 }
 
-func (m *observerManager) FireRemoveEntity(e Entity, mask *bitMask) {
-	if !m.hasObservers[OnRemoveEntity] {
-		return
-	}
-	m.doFireRemoveEntity(e, mask)
-}
-
 func (m *observerManager) doFireRemoveEntity(e Entity, mask *bitMask) {
 	observers := m.observers[OnRemoveEntity]
 	for _, o := range observers {
