@@ -14,12 +14,12 @@ const (
 	OnCreateEntity EventType = iota
 	// OnRemoveEntity event.
 	OnRemoveEntity
-	// OnAddComponent event.
-	OnAddComponent
-	// OnRemoveComponent event.
-	OnRemoveComponent
-	// OnSetComponent event.
-	OnSetComponent
+	// OnAddComponents event.
+	OnAddComponents
+	// OnRemoveComponents event.
+	OnRemoveComponents
+	// OnSetComponents event.
+	OnSetComponents
 	// OnChangeTarget event.
 	//OnChangeTarget
 
@@ -109,14 +109,14 @@ func (m *observerManager) doFireRemoveEntity(e Entity, mask *bitMask) {
 }
 
 func (m *observerManager) FireAdd(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.hasObservers[OnAddComponent] {
+	if !m.hasObservers[OnAddComponents] {
 		return
 	}
 	m.doFireAdd(e, oldMask, newMask)
 }
 
 func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask) {
-	observers := m.observers[OnAddComponent]
+	observers := m.observers[OnAddComponents]
 	for _, o := range observers {
 		if newMask.Contains(&o.withMask) && !oldMask.ContainsAny(&o.withMask) {
 			o.callback(e)
@@ -125,14 +125,14 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 }
 
 func (m *observerManager) FireRemove(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.hasObservers[OnRemoveComponent] {
+	if !m.hasObservers[OnRemoveComponents] {
 		return
 	}
 	m.doFireRemove(e, oldMask, newMask)
 }
 
 func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitMask) {
-	observers := m.observers[OnRemoveComponent]
+	observers := m.observers[OnRemoveComponents]
 	for _, o := range observers {
 		if oldMask.Contains(&o.withMask) && !newMask.ContainsAny(&o.withMask) {
 			o.callback(e)
@@ -141,14 +141,14 @@ func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitM
 }
 
 func (m *observerManager) FireSet(e Entity, mask *bitMask) {
-	if !m.hasObservers[OnSetComponent] {
+	if !m.hasObservers[OnSetComponents] {
 		return
 	}
 	m.doFireSet(e, mask)
 }
 
 func (m *observerManager) doFireSet(e Entity, mask *bitMask) {
-	observers := m.observers[OnSetComponent]
+	observers := m.observers[OnSetComponents]
 	for i := range observers {
 		o := observers[i]
 		if mask.Contains(&o.withMask) {
