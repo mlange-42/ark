@@ -120,3 +120,47 @@ func TestObserverOnRemoveEntity(t *testing.T) {
 	w.RemoveEntities(filter2.Batch(), nil)
 	expectEqual(t, 11, callCount)
 }
+
+func TestObserverOnAddRemoveEntity(t *testing.T) {
+	w := NewWorld()
+
+	builder1 := NewMap1[Position](&w)
+	builder2 := NewMap1[Velocity](&w)
+	filter1 := NewFilter1[Position](&w)
+	filter2 := NewFilter1[Velocity](&w)
+
+	callAdd := 0
+	callRemove := 0
+
+	NewObserver(OnAdd,
+		func(e Entity) {
+			callAdd++
+		}).
+		With(C[Position]()).
+		Register(&w)
+
+	NewObserver(OnRemove,
+		func(e Entity) {
+			callRemove++
+		}).
+		With(C[Position]()).
+		Register(&w)
+
+	e := w.NewEntity()
+	builder1.Add(e, &Position{})
+	expectEqual(t, 1, callAdd)
+	builder2.Add(e, &Velocity{})
+	expectEqual(t, 1, callAdd)
+
+	builder2.Remove(e)
+	expectEqual(t, 0, callRemove)
+	builder1.Remove(e)
+	expectEqual(t, 1, callRemove)
+
+	builder2.NewBatch(10, &Velocity{})
+	builder1.AddBatch(filter2.Batch(), &Position{})
+	expectEqual(t, 11, callAdd)
+
+	builder1.RemoveBatch(filter1.Batch(), nil)
+	expectEqual(t, 11, callRemove)
+}
