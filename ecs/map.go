@@ -4,6 +4,7 @@ package ecs
 //
 // Instances should be created during initialization and stored, e.g. in systems.
 type Map[T any] struct {
+	mask      bitMask
 	world     *World
 	storage   *componentStorage
 	relations []relationID
@@ -15,6 +16,7 @@ type Map[T any] struct {
 func NewMap[T any](w *World) *Map[T] {
 	id := ComponentID[T](w)
 	return &Map[T]{
+		mask:    newMask(id),
 		world:   w,
 		id:      id,
 		ids:     [1]ID{id},
@@ -178,6 +180,8 @@ func (m *Map[T]) Set(entity Entity, comp *T) {
 
 	index := &m.world.storage.entities[entity.id]
 	*(*T)(m.storage.columns[index.table].Get(uintptr(index.row))) = *comp
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped component to all entities matching the given batch filter.

@@ -199,6 +199,8 @@ func (m *Map1[A]) Set(entity Entity, a *A) {
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
 	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -496,6 +498,8 @@ func (m *Map2[A, B]) Set(entity Entity, a *A, b *B) {
 	row := uintptr(index.row)
 	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
 	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -823,6 +827,8 @@ func (m *Map3[A, B, C]) Set(entity Entity, a *A, b *B, c *C) {
 	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
 	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
 	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1176,6 +1182,8 @@ func (m *Map4[A, B, C, D]) Set(entity Entity, a *A, b *B, c *C, d *D) {
 	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
 	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
 	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1555,6 +1563,8 @@ func (m *Map5[A, B, C, D, E]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E) {
 	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
 	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
 	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -1960,6 +1970,8 @@ func (m *Map6[A, B, C, D, E, F]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E
 	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
 	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
 	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -2391,6 +2403,8 @@ func (m *Map7[A, B, C, D, E, F, G]) Set(entity Entity, a *A, b *B, c *C, d *D, e
 	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
 	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
 	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -2848,6 +2862,8 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Set(entity Entity, a *A, b *B, c *C, d *D
 	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
 	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
 	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -3331,6 +3347,8 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Set(entity Entity, a *A, b *B, c *C, d
 	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
 	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
 	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -3840,6 +3858,8 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Set(entity Entity, a *A, b *B, c *
 	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
 	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
 	*(*J)(m.storageJ.columns[index.table].Get(row)) = *j
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -4375,6 +4395,8 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Set(entity Entity, a *A, b *B, 
 	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
 	*(*J)(m.storageJ.columns[index.table].Get(row)) = *j
 	*(*K)(m.storageK.columns[index.table].Get(row)) = *k
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -4936,6 +4958,8 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Set(entity Entity, a *A, b *
 	*(*J)(m.storageJ.columns[index.table].Get(row)) = *j
 	*(*K)(m.storageK.columns[index.table].Get(row)) = *k
 	*(*L)(m.storageL.columns[index.table].Get(row)) = *l
+
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.

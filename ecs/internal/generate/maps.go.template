@@ -246,6 +246,8 @@ func (m *Map{{.}}{{$genericsShort}}) Set(entity Entity, {{$args}}) {
 	{{- range $i, $v := $upper}}
 	*(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row)) = *{{index $lower $i}}
 	{{- end}}
+	
+	m.world.storage.observers.FireSet(entity, &m.mask)
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
