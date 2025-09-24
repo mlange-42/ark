@@ -116,28 +116,28 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...Relat
 func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity, {{$args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
-	if fn == nil {
-		return
-	}
 
-	table := &m.world.storage.tables[tableID]
-	{{- range $upper}}
-	column{{.}} := m.storage{{.}}.columns[tableID]
-	{{- end}}
+	if fn != nil {
+		table := &m.world.storage.tables[tableID]
+		{{- range $upper}}
+		column{{.}} := m.storage{{.}}.columns[tableID]
+		{{- end}}
 
-	lock := m.world.lock()
-	for i := range count {
-		index := uintptr(start + i)
-		fn(
-			table.GetEntity(index),
-			{{- range $upper}}
-			(*{{.}})(column{{.}}.Get(index)),
-			{{- end}}
-		)
+		lock := m.world.lock()
+		for i := range count {
+			index := uintptr(start + i)
+			fn(
+				table.GetEntity(index),
+				{{- range $upper}}
+				(*{{.}})(column{{.}}.Get(index)),
+				{{- end}}
+			)
+		}
+		m.world.unlock(lock)
 	}
-	m.world.unlock(lock)
 	
 	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		table := &m.world.storage.tables[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)

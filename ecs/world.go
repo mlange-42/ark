@@ -42,20 +42,21 @@ func (w *World) NewEntity() Entity {
 // The callback function can be nil.
 func (w *World) NewEntities(count int, fn func(entity Entity)) {
 	tableID, start := w.newEntities(count, nil, nil)
-	if fn == nil {
-		return
+
+	if fn != nil {
+		table := &w.storage.tables[tableID]
+		lock := w.lock()
+		for i := range count {
+			index := uintptr(start + i)
+			fn(
+				table.GetEntity(index),
+			)
+		}
+		w.unlock(lock)
 	}
-	table := &w.storage.tables[tableID]
-	lock := w.lock()
-	for i := range count {
-		index := uintptr(start + i)
-		fn(
-			table.GetEntity(index),
-		)
-	}
-	w.unlock(lock)
 
 	if w.storage.observers.HasObservers(OnCreateEntity) {
+		table := &w.storage.tables[tableID]
 		mask := &w.storage.archetypes[table.archetype].mask
 		for i := range count {
 			index := uintptr(start + i)

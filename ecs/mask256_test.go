@@ -65,6 +65,8 @@ func TestMask256(t *testing.T) {
 	expectFalse(t, mask.IsZero())
 	expectTrue(t, (&bitMask256{}).IsZero())
 
+	empty := newMask()
+	expectTrue(t, mask.Contains(&empty))
 }
 
 func TestBitMask256Copy(t *testing.T) {

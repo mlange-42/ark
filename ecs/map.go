@@ -71,24 +71,24 @@ func (m *Map[T]) NewBatch(count int, comp *T, target ...Entity) {
 func (m *Map[T]) NewBatchFn(count int, fn func(entity Entity, comp *T), target ...Entity) {
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids[:], m.relations)
-	if fn == nil {
-		return
-	}
 
-	table := &m.world.storage.tables[tableID]
-	column := m.storage.columns[tableID]
+	if fn != nil {
+		table := &m.world.storage.tables[tableID]
+		column := m.storage.columns[tableID]
 
-	lock := m.world.lock()
-	for i := range count {
-		index := uintptr(start + i)
-		fn(
-			table.GetEntity(index),
-			(*T)(column.Get(index)),
-		)
+		lock := m.world.lock()
+		for i := range count {
+			index := uintptr(start + i)
+			fn(
+				table.GetEntity(index),
+				(*T)(column.Get(index)),
+			)
+		}
+		m.world.unlock(lock)
 	}
-	m.world.unlock(lock)
 
 	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		table := &m.world.storage.tables[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)

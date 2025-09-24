@@ -89,6 +89,20 @@ func TestObserverOnCreateEntity(t *testing.T) {
 	expectEqual(t, 12, callCount)
 }
 
+func TestObserverOnCreateEntities(t *testing.T) {
+	w := NewWorld()
+
+	callCount := 0
+
+	NewObserver(OnCreateEntity,
+		func(e Entity) {
+			callCount++
+		}).Register(&w)
+
+	w.NewEntities(10, nil)
+	expectEqual(t, 10, callCount)
+}
+
 func TestObserverOnRemoveEntity(t *testing.T) {
 	w := NewWorld()
 
