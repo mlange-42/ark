@@ -10,6 +10,8 @@ func (w *World) newEntity(ids []ID, relations []relationID) Entity {
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 	entity, _ := w.storage.createEntity(newTable.id)
 	w.storage.registerTargets(relations)
+
+	w.storage.observers.FireCreateEntity(entity, &mask)
 	return entity
 }
 
@@ -63,6 +65,13 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
 
 	w.storage.registerTargets(relations)
+
+	if len(add) > 0 {
+		w.storage.observers.FireAdd(entity, &oldArchetype.mask, &mask)
+	}
+	if len(rem) > 0 {
+		w.storage.observers.FireRemove(entity, &oldArchetype.mask, &mask)
+	}
 }
 
 func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
@@ -258,12 +267,12 @@ func (w *World) unregisterObserver(obs *Observer) {
 
 // lock the world and get the lock bit for later unlocking.
 func (w *World) lock() uint8 {
-	return w.locks.Lock()
+	return w.storage.locks.Lock()
 }
 
 // unlock unlocks the given lock bit.
 func (w *World) unlock(l uint8) {
-	w.locks.Unlock(l)
+	w.storage.locks.Unlock(l)
 }
 
 // checkLocked checks if the world is locked, and panics if so.

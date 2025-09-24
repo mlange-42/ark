@@ -78,6 +78,10 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 	m.hasObservers[o.event] = last > 0
 }
 
+func (m *observerManager) HasObservers(evt EventType) bool {
+	return m.hasObservers[evt]
+}
+
 func (m *observerManager) FireCreateEntity(e Entity, mask *bitMask) {
 	if !m.hasObservers[OnCreateEntity] {
 		return

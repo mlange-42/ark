@@ -10,7 +10,6 @@ import (
 // World is the central type holding entity and component data, as well as resources.
 type World struct {
 	stats     *stats.World
-	locks     lock
 	resources Resources
 	storage   storage
 }
@@ -26,7 +25,6 @@ func NewWorld(initialCapacity ...int) World {
 	return World{
 		storage:   newStorage(16, initialCapacity...),
 		resources: newResources(),
-		locks:     newLock(),
 		stats:     &stats.World{},
 	}
 }
@@ -109,7 +107,7 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 
 // IsLocked returns whether the world is locked by any queries.
 func (w *World) IsLocked() bool {
-	return w.locks.IsLocked()
+	return w.storage.locks.IsLocked()
 }
 
 // Resources of the world.
@@ -139,7 +137,6 @@ func (w *World) Reset() {
 	w.checkLocked()
 
 	w.storage.Reset()
-	w.locks.Reset()
 	w.resources.reset()
 }
 
