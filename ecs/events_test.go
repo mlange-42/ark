@@ -23,6 +23,8 @@ func TestObserverManager(t *testing.T) {
 		Without(C[Heading]()).
 		Register(&w)
 
+	expectTrue(t, w.storage.observers.HasObservers(OnCreateEntity))
+
 	w.storage.observers.FireCreateEntity(Entity{id: 1}, &posVelMask)
 	expectTrue(t, called)
 
