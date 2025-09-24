@@ -34,6 +34,7 @@ func (w *World) NewEntity() Entity {
 	w.checkLocked()
 
 	entity, _ := w.storage.createEntity(0)
+	w.storage.observers.FireCreateEntity(entity, &w.storage.archetypes[0].mask)
 	return entity
 }
 
@@ -53,6 +54,14 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 		)
 	}
 	w.unlock(lock)
+
+	if w.storage.observers.HasObservers(OnCreateEntity) {
+		mask := &w.storage.archetypes[table.archetype].mask
+		for i := range count {
+			index := uintptr(start + i)
+			w.storage.observers.doFireCreateEntity(table.GetEntity(index), mask)
+		}
+	}
 }
 
 // Alive return whether the given entity is alive.
@@ -76,18 +85,39 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 	w.checkLocked()
 
 	tables := w.storage.getTables(batch)
+
+	if fn != nil {
+		l := w.lock()
+		for _, tableID := range tables {
+			table := &w.storage.tables[tableID]
+			len := uintptr(table.Len())
+			var i uintptr
+			for i = range len {
+				fn(table.GetEntity(i))
+			}
+		}
+		w.unlock(l)
+	}
+
+	if w.storage.observers.HasObservers(OnRemoveEntity) {
+		l := w.lock()
+		for _, tableID := range tables {
+			table := &w.storage.tables[tableID]
+			mask := &w.storage.archetypes[table.archetype].mask
+			len := uintptr(table.Len())
+			var i uintptr
+			for i = range len {
+				w.storage.observers.doFireRemoveEntity(table.GetEntity(i), mask)
+			}
+		}
+		w.unlock(l)
+	}
+
 	cleanup := []Entity{}
 	for _, tableID := range tables {
 		table := &w.storage.tables[tableID]
 		len := uintptr(table.Len())
 		var i uintptr
-		if fn != nil {
-			l := w.lock()
-			for i = range len {
-				fn(table.GetEntity(i))
-			}
-			w.unlock(l)
-		}
 		for i = range len {
 			entity := table.GetEntity(i)
 			if w.storage.isTarget[entity.id] {
