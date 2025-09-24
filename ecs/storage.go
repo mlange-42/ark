@@ -19,6 +19,7 @@ type storage struct {
 	cache              cache              // Filter cache
 	entityPool         entityPool         // Entity pool for creation and recycling
 	registry           componentRegistry  // Component registry
+	observers          observerManager    // Observer/event manager
 	config             config             // Storage configuration (initial capacities)
 }
 
@@ -48,6 +49,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	return storage{
 		config:         config,
 		registry:       reg,
+		observers:      newObserverManager(),
 		cache:          newCache(),
 		entities:       entities,
 		isTarget:       isTarget,

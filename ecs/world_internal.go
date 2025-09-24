@@ -248,6 +248,10 @@ func (w *World) resourceID(tp reflect.Type) ResID {
 	return ResID{id: id}
 }
 
+func (w *World) registerObserver(obs *Observer) {
+	w.storage.observers.AddObserver(obs, &w.storage.registry)
+}
+
 // lock the world and get the lock bit for later unlocking.
 func (w *World) lock() uint8 {
 	return w.locks.Lock()
