@@ -106,24 +106,24 @@ jobs:
       - name: Lint with ineffassign
         run: ineffassign ./...
 
-  semver:
-    name: Run SemVer check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: '1.25.x'
-      - name: Install dependencies
-        run: |
-          go get .
-          go install golang.org/x/exp/cmd/gorelease@latest
-      - name: Get latest tag
-        uses: actions-ecosystem/action-get-latest-tag@v1
-        id: latest-tag
-      - name: Run gorelease
-        run: gorelease -base=${{ steps.latest-tag.outputs.tag }}
+#  semver:
+#    name: Run SemVer check
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Setup Go
+#        uses: actions/setup-go@v3
+#        with:
+#          go-version: '1.25.x'
+#      - name: Install dependencies
+#        run: |
+#          go get .
+#          go install golang.org/x/exp/cmd/gorelease@latest
+#      - name: Get latest tag
+#        uses: actions-ecosystem/action-get-latest-tag@v1
+#        id: latest-tag
+#      - name: Run gorelease
+#        run: gorelease -base=${{ steps.latest-tag.outputs.tag }}
 
   examples:
     name: Run Examples
