@@ -404,6 +404,11 @@ func TestWorldLock(t *testing.T) {
 	expectTrue(t, w.IsLocked())
 	w.unlock(l2)
 	expectFalse(t, w.IsLocked())
+
+	l := w.storage.lock()
+	expectTrue(t, w.IsLocked())
+	w.storage.unlock(l)
+	expectFalse(t, w.IsLocked())
 }
 
 func TestWorldRemoveGC(t *testing.T) {

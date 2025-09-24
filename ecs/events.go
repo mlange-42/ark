@@ -201,7 +201,7 @@ func (o *Observer) Without(comps ...Comp) *Observer {
 		panic("can't modify a registered observer")
 	}
 	if o.event != OnCreateEntity && o.event != OnRemoveEntity {
-		panic("can use Without only for OnCreateEntity and OnRemoveEntity events")
+		panic("can use Observer.Without only for OnCreateEntity and OnRemoveEntity events")
 	}
 	if len(comps) == 0 {
 		return o
