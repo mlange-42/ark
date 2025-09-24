@@ -12,12 +12,21 @@ func TestObserverManager(t *testing.T) {
 	velID := ComponentID[Velocity](&w)
 	posVelMask := newMask(posID, velID)
 
-	NewObserver(OnCreateEntity,
+	called := false
+	obs := NewObserver(OnCreateEntity,
 		func(e Entity) {
+			called = true
 			fmt.Println(e)
 		}).
-		With(C[Position](), C[Heading]()).
+		With(C[Position]()).
+		With(C[Velocity]()).
 		Register(&w)
 
 	w.storage.observers.FireCreateEntity(Entity{id: 1}, &posVelMask)
+	expectTrue(t, called)
+
+	called = false
+	obs.Unregister(&w)
+	w.storage.observers.FireCreateEntity(Entity{id: 1}, &posVelMask)
+	expectFalse(t, called)
 }

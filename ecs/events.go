@@ -29,12 +29,14 @@ const (
 type observerManager struct {
 	observers [][]*Observer
 	pool      intPool[observerID]
+	indices   map[observerID]int
 }
 
 func newObserverManager() observerManager {
 	return observerManager{
 		observers: make([][]*Observer, eventsEnd),
 		pool:      newIntPool[observerID](32),
+		indices:   map[observerID]int{},
 	}
 }
 
@@ -51,6 +53,26 @@ func (m *observerManager) AddObserver(o *Observer, reg *componentRegistry) {
 	}
 
 	m.observers[o.event] = append(m.observers[o.event], o)
+	m.indices[o.id] = len(m.observers[o.event]) - 1
+}
+
+func (m *observerManager) RemoveObserver(o *Observer) {
+	idx, ok := m.indices[o.id]
+	if !ok {
+		panic("can't unregister observer, not found")
+	}
+	delete(m.indices, o.id)
+
+	observers := m.observers[o.event]
+	observers[idx].id = maxObserverID
+
+	last := len(observers) - 1
+	if idx != last {
+		observers[idx], observers[last] = observers[last], observers[idx]
+		m.indices[observers[idx].id] = idx
+	}
+	observers[last] = nil
+	m.observers[o.event] = observers[:last]
 }
 
 func (m *observerManager) FireCreateEntity(e Entity, mask *bitMask) {
@@ -145,6 +167,18 @@ func (o *Observer) Without(comps ...Comp) *Observer {
 
 // Register this observer.
 func (o *Observer) Register(w *World) *Observer {
+	if o.id != maxObserverID {
+		panic("observer is already registered")
+	}
 	w.registerObserver(o)
+	return o
+}
+
+// Unregister this observer.
+func (o *Observer) Unregister(w *World) *Observer {
+	if o.id == maxObserverID {
+		panic("observer is not registered")
+	}
+	w.unregisterObserver(o)
 	return o
 }

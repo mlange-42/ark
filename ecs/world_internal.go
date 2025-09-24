@@ -252,6 +252,10 @@ func (w *World) registerObserver(obs *Observer) {
 	w.storage.observers.AddObserver(obs, &w.storage.registry)
 }
 
+func (w *World) unregisterObserver(obs *Observer) {
+	w.storage.observers.RemoveObserver(obs)
+}
+
 // lock the world and get the lock bit for later unlocking.
 func (w *World) lock() uint8 {
 	return w.locks.Lock()
