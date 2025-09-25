@@ -49,6 +49,14 @@ func (b *bitMask256) Not() bitMask256 {
 	}
 }
 
+// OrI calculates the OR of this mask and other in-place.
+func (b *bitMask256) OrI(other *bitMask256) {
+	b.bits[0] |= other.bits[0]
+	b.bits[1] |= other.bits[1]
+	b.bits[2] |= other.bits[2]
+	b.bits[3] |= other.bits[3]
+}
+
 // IsZero returns whether no bits are set in the mask.
 func (b *bitMask256) IsZero() bool {
 	return b.bits[0] == 0 && b.bits[1] == 0 && b.bits[2] == 0 && b.bits[3] == 0
@@ -57,6 +65,11 @@ func (b *bitMask256) IsZero() bool {
 // Reset the mask setting all bits to false.
 func (b *bitMask256) Reset() {
 	b.bits = [4]uint64{0, 0, 0, 0}
+}
+
+// SetAll sets all bits to 1.
+func (b *bitMask256) SetAll() {
+	b.bits = [4]uint64{^uint64(0), ^uint64(0), ^uint64(0), ^uint64(0)}
 }
 
 // Contains reports if the other mask is a subset of this mask.
