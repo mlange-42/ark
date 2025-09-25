@@ -7,6 +7,9 @@ import (
 func TestMap(t *testing.T) {
 	w := NewWorld(1024)
 
+	Observe(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
+
 	posMap := NewMap[Position](&w)
 	velMap := NewMap[Velocity](&w)
 
@@ -82,6 +85,8 @@ func TestMapNewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
+	Observe(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+
 	mapper := NewMap[CompA](&w)
 
 	for range n {
@@ -106,6 +111,8 @@ func TestMapNewBatch(t *testing.T) {
 func TestMapNewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
+
+	Observe(OnCreateEntity).With(C[Heading]()).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap[CompA](&w)
 

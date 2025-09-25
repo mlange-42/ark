@@ -4,6 +4,7 @@ package ecs
 //
 // Instances should be created during initialization and stored, e.g. in systems.
 type Map[T any] struct {
+	mask      bitMask
 	world     *World
 	storage   *componentStorage
 	relations []relationID
@@ -15,6 +16,7 @@ type Map[T any] struct {
 func NewMap[T any](w *World) *Map[T] {
 	id := ComponentID[T](w)
 	return &Map[T]{
+		mask:    newMask(id),
 		world:   w,
 		id:      id,
 		ids:     [1]ID{id},
@@ -41,10 +43,11 @@ func (m *Map[T]) NewEntity(comp *T, target ...Entity) Entity {
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) NewEntityFn(fn func(a *T), target ...Entity) Entity {
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	entity := m.world.newEntity(m.ids[:], m.relations)
+	entity, mask := m.world.newEntity(m.ids[:], m.relations)
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -68,22 +71,34 @@ func (m *Map[T]) NewBatch(count int, comp *T, target ...Entity) {
 func (m *Map[T]) NewBatchFn(count int, fn func(entity Entity, comp *T), target ...Entity) {
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids[:], m.relations)
-	if fn == nil {
-		return
+
+	if fn != nil {
+		table := &m.world.storage.tables[tableID]
+		column := m.storage.columns[tableID]
+
+		lock := m.world.lock()
+		for i := range count {
+			index := uintptr(start + i)
+			fn(
+				table.GetEntity(index),
+				(*T)(column.Get(index)),
+			)
+		}
+		m.world.unlock(lock)
 	}
 
-	table := &m.world.storage.tables[tableID]
-	column := m.storage.columns[tableID]
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		table := &m.world.storage.tables[tableID]
 
-	lock := m.world.lock()
-	for i := range count {
-		index := uintptr(start + i)
-		fn(
-			table.GetEntity(index),
-			(*T)(column.Get(index)),
-		)
+		earlyOut := true
+		for i := range count {
+			index := uintptr(start + i)
+			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+				break
+			}
+			earlyOut = false
+		}
 	}
-	m.world.unlock(lock)
 }
 
 // Get returns the mapped component for the given entity.
@@ -160,10 +175,12 @@ func (m *Map[T]) AddFn(entity Entity, fn func(a *T), target ...Entity) {
 		panic("can't add a component to a dead entity")
 	}
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	m.world.exchange(entity, m.ids[:], nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids[:], nil, m.relations)
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}
+
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped component of the given entity to the given values.
@@ -178,6 +195,11 @@ func (m *Map[T]) Set(entity Entity, comp *T) {
 
 	index := &m.world.storage.entities[entity.id]
 	*(*T)(m.storage.columns[index.table].Get(uintptr(index.row))) = *comp
+
+	if m.world.storage.observers.HasObservers(OnSetComponents) {
+		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+	}
 }
 
 // AddBatch adds the mapped component to all entities matching the given batch filter.
@@ -200,9 +222,9 @@ func (m *Map[T]) AddBatch(batch *Batch, comp *T, target ...Entity) {
 func (m *Map[T]) AddBatchFn(batch *Batch, fn func(entity Entity, comp *T), target ...Entity) {
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			column := m.storage.columns[tableID]
 

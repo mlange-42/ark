@@ -19,6 +19,8 @@ type storage struct {
 	cache              cache              // Filter cache
 	entityPool         entityPool         // Entity pool for creation and recycling
 	registry           componentRegistry  // Component registry
+	locks              lock               // World locks
+	observers          observerManager    // Observer/event manager
 	config             config             // Storage configuration (initial capacities)
 }
 
@@ -48,6 +50,8 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	return storage{
 		config:         config,
 		registry:       reg,
+		locks:          newLock(),
+		observers:      newObserverManager(),
 		cache:          newCache(),
 		entities:       entities,
 		isTarget:       isTarget,
@@ -113,6 +117,13 @@ func (s *storage) RemoveEntity(entity Entity) {
 	index := &s.entities[entity.id]
 	table := &s.tables[index.table]
 
+	if s.observers.HasObservers(OnRemoveEntity) {
+		l := s.lock()
+		mask := &s.archetypes[table.archetype].mask
+		s.observers.doFireRemoveEntity(entity, mask, true)
+		s.unlock(l)
+	}
+
 	swapped := table.Remove(index.row)
 
 	s.entityPool.Recycle(entity)
@@ -134,6 +145,7 @@ func (s *storage) Reset() {
 	s.entityPool.Reset()
 	s.isTarget = s.isTarget[:reservedEntities]
 	s.cache.Reset()
+	s.locks.Reset()
 
 	for i := range s.archetypes {
 		s.archetypes[i].Reset(s)
@@ -155,7 +167,7 @@ func (s *storage) getUnchecked(entity Entity, component ID) unsafe.Pointer {
 
 func (s *storage) has(entity Entity, component ID) bool {
 	if !s.entityPool.Alive(entity) {
-		panic("can't get component of a dead entity")
+		panic("can't check component of a dead entity")
 	}
 	return s.hasUnchecked(entity, component)
 }
@@ -331,7 +343,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				s.moveEntities(table, newTable, uint32(table.Len()))
 			}
 			archetype.FreeTable(table)
-			s.cache.removeTable(s, table)
+			s.cache.removeTable(table)
 
 			newRelations = newRelations[:0]
 		}
@@ -533,4 +545,14 @@ func (s *storage) Shrink(stopAfter time.Duration) bool {
 	}
 
 	return false
+}
+
+// lock the world and get the lock bit for later unlocking.
+func (s *storage) lock() uint8 {
+	return s.locks.Lock()
+}
+
+// unlock unlocks the given lock bit.
+func (s *storage) unlock(l uint8) {
+	s.locks.Unlock(l)
 }

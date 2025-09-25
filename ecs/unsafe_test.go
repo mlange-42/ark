@@ -47,12 +47,14 @@ func TestUnsafeGet(t *testing.T) {
 
 	expectEqual(t, pos, pos2)
 
-	expectPanics(t, func() {
-		u.Get(Entity{}, posID)
-	})
-	expectPanics(t, func() {
-		u.Has(Entity{}, posID)
-	})
+	expectPanicsWithValue(t, "can't get component of a dead entity",
+		func() {
+			u.Get(Entity{}, posID)
+		})
+	expectPanicsWithValue(t, "can't check component of a dead entity",
+		func() {
+			u.Has(Entity{}, posID)
+		})
 }
 
 func TestUnsafeRelations(t *testing.T) {
@@ -98,15 +100,31 @@ func TestUnsafeAddRemove(t *testing.T) {
 	u.Remove(e1, posID)
 	expectFalse(t, u.Has(e1, posID))
 
-	expectPanics(t, func() {
-		u.Add(Entity{}, posID)
-	})
-	expectPanics(t, func() {
-		u.AddRel(Entity{}, []ID{posID, childID}, RelID(childID, e1))
-	})
-	expectPanics(t, func() {
-		u.Remove(Entity{}, posID)
-	})
+	expectPanicsWithValue(t, "at least one component required to add",
+		func() {
+			u.Add(e1)
+		})
+	expectPanicsWithValue(t, "at least one component required to add",
+		func() {
+			u.AddRel(e1, []ID{}, RelID(childID, e1))
+		})
+	expectPanicsWithValue(t, "at least one component required to remove",
+		func() {
+			u.Remove(e1)
+		})
+
+	expectPanicsWithValue(t, "can't add components to a dead entity",
+		func() {
+			u.Add(Entity{}, posID)
+		})
+	expectPanicsWithValue(t, "can't add components to a dead entity",
+		func() {
+			u.AddRel(Entity{}, []ID{posID, childID}, RelID(childID, e1))
+		})
+	expectPanicsWithValue(t, "can't remove components from a dead entity",
+		func() {
+			u.Remove(Entity{}, posID)
+		})
 }
 
 func TestUnsafeExchange(t *testing.T) {
@@ -127,9 +145,15 @@ func TestUnsafeExchange(t *testing.T) {
 	expectNotNil(t, child)
 	expectEqual(t, parent, u.GetRelation(e, childID))
 
-	expectPanics(t, func() {
-		u.Exchange(Entity{}, []ID{childID}, []ID{posID})
-	})
+	expectPanicsWithValue(t, "can't exchange components on a dead entity",
+		func() {
+			u.Exchange(Entity{}, []ID{childID}, []ID{posID})
+		})
+
+	expectPanicsWithValue(t, "at least one component required to add or remove",
+		func() {
+			u.Exchange(e, []ID{}, []ID{})
+		})
 }
 
 func TestUnsafeIDs(t *testing.T) {
@@ -149,9 +173,10 @@ func TestUnsafeIDs(t *testing.T) {
 	expectEqual(t, posID.Index(), ids.Get(0).Index())
 	expectEqual(t, velID.Index(), ids.Get(1).Index())
 
-	expectPanics(t, func() {
-		u.IDs(Entity{})
-	})
+	expectPanicsWithValue(t, "can't get component IDs of a dead entity",
+		func() {
+			u.IDs(Entity{})
+		})
 }
 
 func TestUnsafeEntityDump(t *testing.T) {

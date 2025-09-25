@@ -80,7 +80,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...Relation) Entit
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$args}}), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	entity := m.world.newEntity(m.ids, m.relations)
+	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -90,6 +90,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$args}}), rel ...Rela
 			{{- end}}
 		)
 	}
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -115,26 +116,37 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...Relat
 func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity, {{$args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
-	if fn == nil {
-		return
-	}
 
-	table := &m.world.storage.tables[tableID]
-	{{- range $upper}}
-	column{{.}} := m.storage{{.}}.columns[tableID]
-	{{- end}}
+	if fn != nil {
+		table := &m.world.storage.tables[tableID]
+		{{- range $upper}}
+		column{{.}} := m.storage{{.}}.columns[tableID]
+		{{- end}}
 
-	lock := m.world.lock()
-	for i := range count {
-		index := uintptr(start + i)
-		fn(
-			table.GetEntity(index),
-			{{- range $upper}}
-			(*{{.}})(column{{.}}.Get(index)),
-			{{- end}}
-		)
+		lock := m.world.lock()
+		for i := range count {
+			index := uintptr(start + i)
+			fn(
+				table.GetEntity(index),
+				{{- range $upper}}
+				(*{{.}})(column{{.}}.Get(index)),
+				{{- end}}
+			)
+		}
+		m.world.unlock(lock)
 	}
-	m.world.unlock(lock)
+	
+	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+		table := &m.world.storage.tables[tableID]
+		earlyOut := true
+		for i := range count {
+			index := uintptr(start + i)
+			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+				break
+			}
+			earlyOut = false
+		}
+	}
 }
 
 // Get returns the mapped components for the given entity.
@@ -216,7 +228,7 @@ func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...Relati
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
-	m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -226,6 +238,7 @@ func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}}), re
 			{{- end}}
 		)
 	}
+	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -246,6 +259,11 @@ func (m *Map{{.}}{{$genericsShort}}) Set(entity Entity, {{$args}}) {
 	{{- range $i, $v := $upper}}
 	*(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row)) = *{{index $lower $i}}
 	{{- end}}
+	
+	if m.world.storage.observers.HasObservers(OnSetComponents) {
+		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
@@ -270,9 +288,9 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...Re
 func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			{{- range $upper}}
 			column{{.}} := m.storage{{.}}.columns[tableID]

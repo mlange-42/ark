@@ -29,6 +29,9 @@ func TestMap{{.}}(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
+	Observe(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
+	Observe(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
+
 	var mapper *Map{{.}}{{$generics}}
 	mapper = mapper.New(&w)
 	mapA := NewMap[CompA](&w)
@@ -112,6 +115,8 @@ func TestMap{{.}}Nil(t *testing.T) {
 func TestMap{{.}}NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
+	
+	Observe(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
 
 	mapper := NewMap{{.}}{{$generics}}(&w)
 
@@ -137,6 +142,8 @@ func TestMap{{.}}NewBatch(t *testing.T) {
 func TestMap{{.}}NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
+	
+	Observe(OnCreateEntity).With(C[Heading]()).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap{{.}}{{$generics}}(&w)
 

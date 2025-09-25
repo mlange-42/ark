@@ -53,6 +53,11 @@ func (b *bitMask64) Not() bitMask64 {
 	}
 }
 
+// OrI calculates the OR of this mask and other in-place.
+func (b *bitMask64) OrI(other *bitMask64) {
+	b.bits |= other.bits
+}
+
 // IsZero returns whether no bits are set in the mask.
 func (b *bitMask64) IsZero() bool {
 	return b.bits == 0

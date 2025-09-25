@@ -109,6 +109,8 @@ func TestWorldNewEntities(t *testing.T) {
 	n := 100
 	w := NewWorld(16)
 
+	Observe(OnCreateEntity).With(C[Position]()).Do(func(e Entity) {}).Register(&w)
+
 	cnt := 0
 	w.NewEntities(n, func(entity Entity) {
 		expectEqual(t, cnt+2, int(entity.ID()))
@@ -403,6 +405,11 @@ func TestWorldLock(t *testing.T) {
 	w.unlock(l1)
 	expectTrue(t, w.IsLocked())
 	w.unlock(l2)
+	expectFalse(t, w.IsLocked())
+
+	l := w.storage.lock()
+	expectTrue(t, w.IsLocked())
+	w.storage.unlock(l)
 	expectFalse(t, w.IsLocked())
 }
 

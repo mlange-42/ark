@@ -10,7 +10,6 @@ import (
 // World is the central type holding entity and component data, as well as resources.
 type World struct {
 	stats     *stats.World
-	locks     lock
 	resources Resources
 	storage   storage
 }
@@ -26,7 +25,6 @@ func NewWorld(initialCapacity ...int) World {
 	return World{
 		storage:   newStorage(16, initialCapacity...),
 		resources: newResources(),
-		locks:     newLock(),
 		stats:     &stats.World{},
 	}
 }
@@ -36,6 +34,7 @@ func (w *World) NewEntity() Entity {
 	w.checkLocked()
 
 	entity, _ := w.storage.createEntity(0)
+	w.storage.observers.FireCreateEntity(entity, &w.storage.archetypes[0].mask)
 	return entity
 }
 
@@ -43,18 +42,31 @@ func (w *World) NewEntity() Entity {
 // The callback function can be nil.
 func (w *World) NewEntities(count int, fn func(entity Entity)) {
 	tableID, start := w.newEntities(count, nil, nil)
-	if fn == nil {
-		return
+
+	if fn != nil {
+		table := &w.storage.tables[tableID]
+		lock := w.lock()
+		for i := range count {
+			index := uintptr(start + i)
+			fn(
+				table.GetEntity(index),
+			)
+		}
+		w.unlock(lock)
 	}
-	table := &w.storage.tables[tableID]
-	lock := w.lock()
-	for i := range count {
-		index := uintptr(start + i)
-		fn(
-			table.GetEntity(index),
-		)
+
+	if w.storage.observers.HasObservers(OnCreateEntity) {
+		table := &w.storage.tables[tableID]
+		mask := &w.storage.archetypes[table.archetype].mask
+		earlyOut := true
+		for i := range count {
+			index := uintptr(start + i)
+			if !w.storage.observers.doFireCreateEntity(table.GetEntity(index), mask, earlyOut) {
+				break
+			}
+			earlyOut = false
+		}
 	}
-	w.unlock(lock)
 }
 
 // Alive return whether the given entity is alive.
@@ -78,18 +90,43 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 	w.checkLocked()
 
 	tables := w.storage.getTables(batch)
+
+	if fn != nil {
+		l := w.lock()
+		for _, tableID := range tables {
+			table := &w.storage.tables[tableID]
+			len := uintptr(table.Len())
+			var i uintptr
+			for i = range len {
+				fn(table.GetEntity(i))
+			}
+		}
+		w.unlock(l)
+	}
+
+	if w.storage.observers.HasObservers(OnRemoveEntity) {
+		l := w.lock()
+		for _, tableID := range tables {
+			table := &w.storage.tables[tableID]
+			mask := &w.storage.archetypes[table.archetype].mask
+			len := uintptr(table.Len())
+			var i uintptr
+			earlyOut := true
+			for i = range len {
+				if !w.storage.observers.doFireRemoveEntity(table.GetEntity(i), mask, earlyOut) {
+					break
+				}
+				earlyOut = false
+			}
+		}
+		w.unlock(l)
+	}
+
 	cleanup := []Entity{}
 	for _, tableID := range tables {
 		table := &w.storage.tables[tableID]
 		len := uintptr(table.Len())
 		var i uintptr
-		if fn != nil {
-			l := w.lock()
-			for i = range len {
-				fn(table.GetEntity(i))
-			}
-			w.unlock(l)
-		}
 		for i = range len {
 			entity := table.GetEntity(i)
 			if w.storage.isTarget[entity.id] {
@@ -109,7 +146,7 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 
 // IsLocked returns whether the world is locked by any queries.
 func (w *World) IsLocked() bool {
-	return w.locks.IsLocked()
+	return w.storage.locks.IsLocked()
 }
 
 // Resources of the world.
@@ -139,7 +176,6 @@ func (w *World) Reset() {
 	w.checkLocked()
 
 	w.storage.Reset()
-	w.locks.Reset()
 	w.resources.reset()
 }
 

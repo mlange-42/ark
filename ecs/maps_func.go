@@ -1,9 +1,9 @@
 package ecs
 
 func removeBatch(world *World, batch *Batch, ids []ID, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len int)
+	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
+		process = func(tableID tableID, start, len uint32) {
 			table := world.storage.tables[tableID]
 
 			lock := world.lock()

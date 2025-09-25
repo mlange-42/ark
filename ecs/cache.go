@@ -2,9 +2,9 @@ package ecs
 
 import "math"
 
-type cacheID uint32
+type cacheID uint16
 
-const maxCacheID = math.MaxUint32
+const maxCacheID = math.MaxUint16
 
 // Cache entry for a filter.
 type cacheEntry struct {
@@ -108,7 +108,7 @@ func (c *cache) addTable(storage *storage, table *table) {
 //
 // Can only be used for tables that have a relation target.
 // Tables without a relation are never removed.
-func (c *cache) removeTable(storage *storage, table *table) {
+func (c *cache) removeTable(table *table) {
 	//if !table.HasRelations() {
 	//	// unreachable
 	//	return

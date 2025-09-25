@@ -64,6 +64,14 @@ func TestMask64(t *testing.T) {
 
 	expectFalse(t, mask.IsZero())
 	expectTrue(t, (&bitMask64{}).IsZero())
+
+	mask = newMask64(id(1))
+	other1 = newMask64(id(2))
+	mask.OrI(&other1)
+	expectFalse(t, mask.Get(0))
+	expectTrue(t, mask.Get(1))
+	expectTrue(t, mask.Get(2))
+	expectFalse(t, mask.Get(0))
 }
 
 func TestBitMask64Copy(t *testing.T) {

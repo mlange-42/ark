@@ -243,7 +243,7 @@ func (a *archetype) Reset(storage *storage) {
 	for i := len(a.tables.tables) - 1; i >= 0; i-- {
 		table := &storage.tables[a.tables.tables[i]]
 		table.Reset()
-		storage.cache.removeTable(storage, table)
+		storage.cache.removeTable(table)
 	}
 
 	a.FreeAllTables(storage)
