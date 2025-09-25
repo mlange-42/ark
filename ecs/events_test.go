@@ -94,23 +94,30 @@ func TestObserverRegister(t *testing.T) {
 
 	obs1 = NewObserver(OnCreateEntity).Do(func(e Entity) {}).Register(&w)
 	obs2 = NewObserver(OnCreateEntity).With(C[Position]()).Do(func(e Entity) {}).Register(&w)
+	obs3 := NewObserver(OnCreateEntity).With(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
+	obs3.Unregister(&w)
 	expectTrue(t, w.storage.observers.anyNoWith[OnCreateEntity])
 	obs1.Unregister(&w)
 	expectFalse(t, w.storage.observers.anyNoWith[OnCreateEntity])
-	obs2.Unregister(&w)
 
 	mask := &w.storage.observers.masks[OnAddComponents]
-	obs1 = NewObserver(OnAddComponents).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
-	expectTrue(t, mask.Get(0))
-	expectFalse(t, mask.Get(1))
-	obs2 = NewObserver(OnAddComponents).Do(func(e Entity) {}).Register(&w)
+	obs1 = NewObserver(OnAddComponents).For(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
+	obs2 = NewObserver(OnAddComponents).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectTrue(t, mask.Get(0))
 	expectTrue(t, mask.Get(1))
-	obs1.Unregister(&w)
+	expectFalse(t, mask.Get(2))
+	obs3 = NewObserver(OnAddComponents).Do(func(e Entity) {}).Register(&w)
 	expectTrue(t, mask.Get(0))
 	expectTrue(t, mask.Get(1))
+	expectTrue(t, mask.Get(2))
 	obs2.Unregister(&w)
-	expectTrue(t, mask.IsZero())
+	expectTrue(t, mask.Get(0))
+	expectTrue(t, mask.Get(1))
+	expectTrue(t, mask.Get(2))
+	obs3.Unregister(&w)
+	expectFalse(t, mask.Get(0))
+	expectTrue(t, mask.Get(1))
+	expectFalse(t, mask.Get(2))
 }
 
 func TestObserverManager(t *testing.T) {
@@ -233,11 +240,11 @@ func TestObserverOnAddRemove(t *testing.T) {
 		Register(&w)
 
 	e := w.NewEntity()
+	builder3.Add(e, &Heading{})
+	expectEqual(t, 0, callAdd)
 	builder1.Add(e, &Position{})
 	expectEqual(t, 1, callAdd)
 	builder2.Add(e, &Velocity{})
-	expectEqual(t, 1, callAdd)
-	builder3.Add(e, &Heading{})
 	expectEqual(t, 1, callAdd)
 
 	builder3.Remove(e)
