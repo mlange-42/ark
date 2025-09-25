@@ -141,20 +141,20 @@ func newObserverManager() observerManager {
 	}
 }
 
-func (m *observerManager) AddObserver(o *Observer, reg *componentRegistry) {
+func (m *observerManager) AddObserver(o *Observer, w *World) {
 	o.id = m.pool.Get()
 
 	for _, c := range o.comps {
-		id, _ := reg.ComponentID(c.tp)
-		o.compsMask.Set(id, true)
+		id := TypeID(w, c.tp)
+		o.compsMask.Set(id.id, true)
 	}
 	for _, c := range o.with {
-		id, _ := reg.ComponentID(c.tp)
-		o.withMask.Set(id, true)
+		id := TypeID(w, c.tp)
+		o.withMask.Set(id.id, true)
 	}
 	for _, c := range o.without {
-		id, _ := reg.ComponentID(c.tp)
-		o.withoutMask.Set(id, true)
+		id := TypeID(w, c.tp)
+		o.withoutMask.Set(id.id, true)
 	}
 
 	m.observers[o.event] = append(m.observers[o.event], o)

@@ -128,7 +128,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	for i := range batchTables {
 		batch := &batchTables[i]
 
-		start, len := w.exchangeTable(batch.oldTable, batch.newTable, add, rem, relations)
+		start, len := w.exchangeTable(batch.oldTable, batch.newTable, relations)
 		if fn != nil {
 			fn(batch.newTable, start, len)
 		}
@@ -149,7 +149,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	}
 }
 
-func (w *World) exchangeTable(oldTableID, newTableID tableID, add []ID, rem []ID, relations []relationID) (uint32, uint32) {
+func (w *World) exchangeTable(oldTableID, newTableID tableID, relations []relationID) (uint32, uint32) {
 	oldTable := &w.storage.tables[oldTableID]
 
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
@@ -300,7 +300,7 @@ func (w *World) resourceID(tp reflect.Type) ResID {
 }
 
 func (w *World) registerObserver(obs *Observer) {
-	w.storage.observers.AddObserver(obs, &w.storage.registry)
+	w.storage.observers.AddObserver(obs, w)
 }
 
 func (w *World) unregisterObserver(obs *Observer) {

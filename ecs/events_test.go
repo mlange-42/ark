@@ -375,3 +375,86 @@ func TestObserverWithout(t *testing.T) {
 	builder1.Remove(e)
 	expectEqual(t, 1, callRemove)
 }
+
+func benchmarkEventsPos(b *testing.B, n int) {
+	w := NewWorld()
+
+	if n > 0 {
+		NewObserver(OnAddComponents).
+			For(C[CompA]()).
+			Do(func(e Entity) {}).
+			Register(&w)
+	}
+
+	for i := 1; i < n; i++ {
+		NewObserver(OnAddComponents).
+			For(C[CompB]()).
+			Do(func(e Entity) {}).
+			Register(&w)
+	}
+
+	oldMask := newMask()
+	newMask := newMask(ComponentID[CompA](&w))
+
+	for b.Loop() {
+		w.storage.observers.FireAdd(Entity{}, &oldMask, &newMask)
+	}
+}
+
+func benchmarkEventsNeg(b *testing.B, n int) {
+	w := NewWorld()
+
+	for range n {
+		NewObserver(OnAddComponents).
+			For(C[CompA]()).
+			Do(func(e Entity) {}).
+			Register(&w)
+	}
+
+	oldMask := newMask()
+	newMask := newMask(ComponentID[CompB](&w))
+
+	for b.Loop() {
+		w.storage.observers.FireAdd(Entity{}, &oldMask, &newMask)
+	}
+}
+
+func BenchmarkEventsPos_0Obs(b *testing.B) {
+	benchmarkEventsPos(b, 0)
+}
+
+func BenchmarkEventsPos_1Obs(b *testing.B) {
+	benchmarkEventsPos(b, 1)
+}
+
+func BenchmarkEventsPos_2Obs(b *testing.B) {
+	benchmarkEventsPos(b, 2)
+}
+
+func BenchmarkEventsPos_5Obs(b *testing.B) {
+	benchmarkEventsPos(b, 5)
+}
+
+func BenchmarkEventsPos_10Obs(b *testing.B) {
+	benchmarkEventsPos(b, 10)
+}
+
+func BenchmarkEventsNeg_0Obs(b *testing.B) {
+	benchmarkEventsNeg(b, 0)
+}
+
+func BenchmarkEventsNeg_1Obs(b *testing.B) {
+	benchmarkEventsNeg(b, 1)
+}
+
+func BenchmarkEventsNeg_2Obs(b *testing.B) {
+	benchmarkEventsNeg(b, 2)
+}
+
+func BenchmarkEventsNeg_5Obs(b *testing.B) {
+	benchmarkEventsNeg(b, 5)
+}
+
+func BenchmarkEventsNeg_10Obs(b *testing.B) {
+	benchmarkEventsNeg(b, 10)
+}
