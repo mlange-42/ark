@@ -304,6 +304,75 @@ func TestObserverComponentsWith(t *testing.T) {
 		}).
 		Register(&w)
 
+	Observe(OnAddComponents).
+		For(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
+
+	Observe(OnRemoveComponents).
+		For(C[Position]()).
+		With(C[Velocity]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callRemove++
+		}).
+		Register(&w)
+
+	Observe(OnRemoveComponents).
+		For(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
+
+	Observe(OnSetComponents).
+		For(C[Position]()).
+		With(C[Velocity]()).
+		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
+			callSet++
+		}).
+		Register(&w)
+
+	Observe(OnSetComponents).
+		For(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
+
+	e := builder2.NewEntity(&Velocity{})
+
+	builder1.Add(e, &Position{})
+	expectEqual(t, 1, callAdd)
+
+	builder1.Set(e, &Position{})
+	expectEqual(t, 1, callSet)
+
+	builder1.Remove(e)
+	expectEqual(t, 1, callRemove)
+
+	e = w.NewEntity()
+
+	builder1.Add(e, &Position{})
+	expectEqual(t, 1, callAdd)
+
+	builder1.Set(e, &Position{})
+	expectEqual(t, 1, callSet)
+
+	builder1.Remove(e)
+	expectEqual(t, 1, callRemove)
+}
+
+func TestObserverComponentsWithSimple(t *testing.T) {
+	w := NewWorld()
+
+	builder1 := NewMap1[Position](&w)
+	builder2 := NewMap1[Velocity](&w)
+
+	callAdd := 0
+	callRemove := 0
+	callSet := 0
+
+	Observe(OnAddComponents).
+		For(C[Position]()).
+		With(C[Velocity]()).
+		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
+			callAdd++
+		}).
+		Register(&w)
+
 	Observe(OnRemoveComponents).
 		For(C[Position]()).
 		With(C[Velocity]()).
