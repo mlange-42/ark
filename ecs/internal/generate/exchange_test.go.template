@@ -77,6 +77,9 @@ func TestExchange{{.}}Remove(t *testing.T) {
 func TestExchange{{.}}AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
+	
+	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 
 	exchange := NewExchange{{.}}{{$generics}}(&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)

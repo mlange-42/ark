@@ -112,6 +112,8 @@ func TestMapNewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
+	Observe(OnCreateEntity).With(C[Heading]()).Do(func(_ Entity) {}).Register(&w)
+
 	mapper := NewMap[CompA](&w)
 
 	for range n {

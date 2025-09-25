@@ -109,6 +109,8 @@ func TestWorldNewEntities(t *testing.T) {
 	n := 100
 	w := NewWorld(16)
 
+	Observe(OnCreateEntity).With(C[Position]()).Do(func(e Entity) {}).Register(&w)
+
 	cnt := 0
 	w.NewEntities(n, func(entity Entity) {
 		expectEqual(t, cnt+2, int(entity.ID()))
