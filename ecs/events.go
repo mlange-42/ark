@@ -13,26 +13,37 @@ const maxObserverID = math.MaxUint16
 type EventType uint8
 
 const (
-	// OnCreateEntity event.
-	OnCreateEntity EventType = iota
-	// OnRemoveEntity event.
-	OnRemoveEntity
-	// OnAddComponents event.
-	OnAddComponents
-	// OnRemoveComponents event.
-	OnRemoveComponents
-	// OnSetComponents event.
-	OnSetComponents
-	// OnChangeTarget event.
-	//OnChangeTarget
 
+	// OnCreateEntity event.
+	// Fired after an entity is created.
+	OnCreateEntity EventType = iota
+
+	// OnRemoveEntity event.
+	// Fired before an entity is removed.
+	OnRemoveEntity
+
+	// OnAddComponents event.
+	// Fired after components are added to an entity.
+	OnAddComponents
+
+	// OnRemoveComponents event.
+	// Fired before components are removed from an entity.
+	OnRemoveComponents
+
+	// OnSetComponents event.
+	// Fired after components are set from an entity.
+	OnSetComponents
+
+	// Marker for number of event types.
 	eventsEnd
 )
 
 // Observer for ECS events.
 //
 // Observers react to structural changes, such as entity creation, removal, and component addition/removal.
-// Use the methods NewObserver, With, Without, and Do to configure the observer before registering it.
+// Use the methods Observe, With, Without, and Do to configure the observer before registering it.
+//
+// See [EventType] for available events.
 type Observer struct {
 	compsMask   bitMask
 	withMask    bitMask
@@ -60,7 +71,11 @@ func Observe(evt EventType) *Observer {
 }
 
 // For adds components that the observer observes.
-// Can only be used with OnAddComponents and OnRemoveComponents.
+// Can only be used with OnAddComponents, OnRemoveComponents and OnSetComponents.
+// The observer triggers if these components are added to or removed from an entity.
+// If multiple components are provided, all must be added/removed at the same time to trigger the observer.
+//
+// Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer) For(comps ...Comp) *Observer {
 	if o.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -76,7 +91,10 @@ func (o *Observer) For(comps ...Comp) *Observer {
 	return o
 }
 
-// With adds components that entities must have to trigger.
+// With adds components that entities must have to trigger the observer.
+// If multiple components are provided, the entity must have all of them.
+//
+// Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer) With(comps ...Comp) *Observer {
 	if o.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -89,7 +107,10 @@ func (o *Observer) With(comps ...Comp) *Observer {
 	return o
 }
 
-// Without adds components the observer excludes.
+// Without adds components that entities must not have to trigger the observer.
+// If multiple components are provided, the entity must not have any of them.
+//
+// Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer) Without(comps ...Comp) *Observer {
 	if o.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -111,7 +132,7 @@ func (o *Observer) Do(fn func(Entity)) *Observer {
 	return o
 }
 
-// Register this observer.
+// Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer) Register(w *World) *Observer {
 	if o.callback == nil {
 		panic("observer callback must be set via Do before registering")
@@ -301,7 +322,7 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 			(!m.allComps[OnAddComponents].ContainsAny(newMask) || oldMask.Contains(&m.allComps[OnAddComponents])) {
 			return false
 		}
-		if !m.anyNoWith[OnAddComponents] && !m.allWith[OnAddComponents].ContainsAny(newMask) {
+		if !m.anyNoWith[OnAddComponents] && !m.allWith[OnAddComponents].ContainsAny(oldMask) {
 			return false
 		}
 	}
@@ -311,10 +332,10 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 		if o.hasComps && (!newMask.Contains(&o.compsMask) || oldMask.ContainsAny(&o.compsMask)) {
 			continue
 		}
-		if o.hasWith && !newMask.Contains(&o.withMask) {
+		if o.hasWith && !oldMask.Contains(&o.withMask) {
 			continue
 		}
-		if o.hasWithout && newMask.ContainsAny(&o.withoutMask) {
+		if o.hasWithout && oldMask.ContainsAny(&o.withoutMask) {
 			continue
 		}
 		o.callback(e)
@@ -329,7 +350,7 @@ func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitM
 			(!m.allComps[OnRemoveComponents].ContainsAny(oldMask) || newMask.Contains(&m.allComps[OnRemoveComponents])) {
 			return false
 		}
-		if !m.anyNoWith[OnRemoveComponents] && !m.allWith[OnRemoveComponents].ContainsAny(newMask) {
+		if !m.anyNoWith[OnRemoveComponents] && !m.allWith[OnRemoveComponents].ContainsAny(oldMask) {
 			return false
 		}
 	}
@@ -339,10 +360,10 @@ func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitM
 		if o.hasComps && (newMask.Contains(&o.compsMask) || !oldMask.ContainsAny(&o.compsMask)) {
 			continue
 		}
-		if o.hasWith && !newMask.Contains(&o.withMask) {
+		if o.hasWith && !oldMask.Contains(&o.withMask) {
 			continue
 		}
-		if o.hasWithout && newMask.ContainsAny(&o.withoutMask) {
+		if o.hasWithout && oldMask.ContainsAny(&o.withoutMask) {
 			continue
 		}
 		o.callback(e)

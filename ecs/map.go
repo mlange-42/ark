@@ -184,8 +184,12 @@ func (m *Map[T]) AddFn(entity Entity, fn func(a *T), target ...Entity) {
 }
 
 // Set the mapped component of the given entity to the given values.
-//
 // Requires the entity to already have the mapped component.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map[T]) Set(entity Entity, comp *T) {
 	if !m.world.Alive(entity) {
