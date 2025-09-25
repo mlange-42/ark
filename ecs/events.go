@@ -290,7 +290,8 @@ func (m *observerManager) FireAdd(e Entity, oldMask *bitMask, newMask *bitMask) 
 }
 
 func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.anyNoComps[OnAddComponents] && !m.compsOr[OnAddComponents].ContainsAny(newMask) {
+	if !m.anyNoComps[OnAddComponents] &&
+		(!m.compsOr[OnAddComponents].ContainsAny(newMask) || oldMask.Contains(&m.compsOr[OnAddComponents])) {
 		return
 	}
 	if !m.anyNoWith[OnAddComponents] && !m.withOr[OnAddComponents].ContainsAny(newMask) {
@@ -312,7 +313,8 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 }
 
 func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.anyNoComps[OnRemoveComponents] && !m.compsOr[OnRemoveComponents].ContainsAny(oldMask) {
+	if !m.anyNoComps[OnRemoveComponents] &&
+		(!m.compsOr[OnRemoveComponents].ContainsAny(oldMask) || newMask.Contains(&m.compsOr[OnRemoveComponents])) {
 		return
 	}
 	if !m.anyNoWith[OnRemoveComponents] && !m.withOr[OnRemoveComponents].ContainsAny(newMask) {
