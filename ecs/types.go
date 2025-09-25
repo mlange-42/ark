@@ -68,7 +68,7 @@ type Batch struct {
 
 // EntityDump is a dump of the entire entity data of the world.
 //
-// See [World.DumpEntities] and [World.LoadEntities].
+// See [Unsafe.DumpEntities] and [Unsafe.LoadEntities].
 type EntityDump struct {
 	Entities  []Entity // Entities in the World's entity pool.
 	Alive     []uint32 // IDs of all alive entities in query iteration order.

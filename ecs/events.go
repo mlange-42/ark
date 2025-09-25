@@ -13,26 +13,37 @@ const maxObserverID = math.MaxUint16
 type EventType uint8
 
 const (
-	// OnCreateEntity event.
-	OnCreateEntity EventType = iota
-	// OnRemoveEntity event.
-	OnRemoveEntity
-	// OnAddComponents event.
-	OnAddComponents
-	// OnRemoveComponents event.
-	OnRemoveComponents
-	// OnSetComponents event.
-	OnSetComponents
-	// OnChangeTarget event.
-	//OnChangeTarget
 
+	// OnCreateEntity event.
+	// Fired after an entity is created.
+	OnCreateEntity EventType = iota
+
+	// OnRemoveEntity event.
+	// Fired before an entity is removed.
+	OnRemoveEntity
+
+	// OnAddComponents event.
+	// Fired after components are added to an entity.
+	OnAddComponents
+
+	// OnRemoveComponents event.
+	// Fired before components are removed from an entity.
+	OnRemoveComponents
+
+	// OnSetComponents event.
+	// Fired after components are set from an entity.
+	OnSetComponents
+
+	// Marker for number of event types.
 	eventsEnd
 )
 
 // Observer for ECS events.
 //
 // Observers react to structural changes, such as entity creation, removal, and component addition/removal.
-// Use the methods NewObserver, With, Without, and Do to configure the observer before registering it.
+// Use the methods Observe, With, Without, and Do to configure the observer before registering it.
+//
+// See [EventType] for available events.
 type Observer struct {
 	compsMask   bitMask
 	withMask    bitMask
@@ -301,7 +312,7 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 			(!m.allComps[OnAddComponents].ContainsAny(newMask) || oldMask.Contains(&m.allComps[OnAddComponents])) {
 			return false
 		}
-		if !m.anyNoWith[OnAddComponents] && !m.allWith[OnAddComponents].ContainsAny(newMask) {
+		if !m.anyNoWith[OnAddComponents] && !m.allWith[OnAddComponents].ContainsAny(oldMask) {
 			return false
 		}
 	}
@@ -311,10 +322,10 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 		if o.hasComps && (!newMask.Contains(&o.compsMask) || oldMask.ContainsAny(&o.compsMask)) {
 			continue
 		}
-		if o.hasWith && !newMask.Contains(&o.withMask) {
+		if o.hasWith && !oldMask.Contains(&o.withMask) {
 			continue
 		}
-		if o.hasWithout && newMask.ContainsAny(&o.withoutMask) {
+		if o.hasWithout && oldMask.ContainsAny(&o.withoutMask) {
 			continue
 		}
 		o.callback(e)
@@ -329,7 +340,7 @@ func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitM
 			(!m.allComps[OnRemoveComponents].ContainsAny(oldMask) || newMask.Contains(&m.allComps[OnRemoveComponents])) {
 			return false
 		}
-		if !m.anyNoWith[OnRemoveComponents] && !m.allWith[OnRemoveComponents].ContainsAny(newMask) {
+		if !m.anyNoWith[OnRemoveComponents] && !m.allWith[OnRemoveComponents].ContainsAny(oldMask) {
 			return false
 		}
 	}
@@ -339,10 +350,10 @@ func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitM
 		if o.hasComps && (newMask.Contains(&o.compsMask) || !oldMask.ContainsAny(&o.compsMask)) {
 			continue
 		}
-		if o.hasWith && !newMask.Contains(&o.withMask) {
+		if o.hasWith && !oldMask.Contains(&o.withMask) {
 			continue
 		}
-		if o.hasWithout && newMask.ContainsAny(&o.withoutMask) {
+		if o.hasWithout && oldMask.ContainsAny(&o.withoutMask) {
 			continue
 		}
 		o.callback(e)
