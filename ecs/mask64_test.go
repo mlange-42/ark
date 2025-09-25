@@ -65,10 +65,6 @@ func TestMask64(t *testing.T) {
 	expectFalse(t, mask.IsZero())
 	expectTrue(t, (&bitMask64{}).IsZero())
 
-	mask = newMask64()
-	mask.SetAll()
-	expectTrue(t, mask.Get(0))
-
 	mask = newMask64(id(1))
 	other1 = newMask64(id(2))
 	mask.OrI(&other1)

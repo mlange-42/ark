@@ -67,11 +67,6 @@ func (b *bitMask256) Reset() {
 	b.bits = [4]uint64{0, 0, 0, 0}
 }
 
-// SetAll sets all bits to 1.
-func (b *bitMask256) SetAll() {
-	b.bits = [4]uint64{^uint64(0), ^uint64(0), ^uint64(0), ^uint64(0)}
-}
-
 // Contains reports if the other mask is a subset of this mask.
 func (b *bitMask256) Contains(other *bitMask256) bool {
 	b0, b1, b2, b3 := b.bits[0], b.bits[1], b.bits[2], b.bits[3]

@@ -100,24 +100,16 @@ func TestObserverRegister(t *testing.T) {
 	obs1.Unregister(&w)
 	expectFalse(t, w.storage.observers.anyNoWith[OnCreateEntity])
 
-	mask := &w.storage.observers.masks[OnAddComponents]
+	anyNoComps := &w.storage.observers.anyNoComps[OnAddComponents]
 	obs1 = Observe(OnAddComponents).For(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
 	obs2 = Observe(OnAddComponents).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
-	expectTrue(t, mask.Get(0))
-	expectTrue(t, mask.Get(1))
-	expectFalse(t, mask.Get(2))
+	expectFalse(t, *anyNoComps)
 	obs3 = Observe(OnAddComponents).Do(func(e Entity) {}).Register(&w)
-	expectTrue(t, mask.Get(0))
-	expectTrue(t, mask.Get(1))
-	expectTrue(t, mask.Get(2))
+	expectTrue(t, *anyNoComps)
 	obs2.Unregister(&w)
-	expectTrue(t, mask.Get(0))
-	expectTrue(t, mask.Get(1))
-	expectTrue(t, mask.Get(2))
+	expectTrue(t, *anyNoComps)
 	obs3.Unregister(&w)
-	expectFalse(t, mask.Get(0))
-	expectTrue(t, mask.Get(1))
-	expectFalse(t, mask.Get(2))
+	expectFalse(t, *anyNoComps)
 }
 
 func TestObserverManager(t *testing.T) {

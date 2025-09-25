@@ -1,6 +1,8 @@
 package ecs
 
-import "math"
+import (
+	"math"
+)
 
 type observerID uint16
 
@@ -130,6 +132,7 @@ type observerManager struct {
 	hasObservers []bool
 	masks        []bitMask
 	anyNoWith    []bool
+	anyNoComps   []bool
 	pool         intPool[observerID]
 	indices      map[observerID]int
 }
@@ -139,6 +142,7 @@ func newObserverManager() observerManager {
 		observers:    make([][]*Observer, eventsEnd),
 		hasObservers: make([]bool, eventsEnd),
 		anyNoWith:    make([]bool, eventsEnd),
+		anyNoComps:   make([]bool, eventsEnd),
 		masks:        make([]bitMask, eventsEnd),
 		pool:         newIntPool[observerID](32),
 		indices:      map[observerID]int{},
@@ -168,7 +172,6 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 	if o.event == OnCreateEntity || o.event == OnRemoveEntity {
 		if o.withMask.IsZero() {
 			m.anyNoWith[o.event] = true
-			m.masks[o.event].SetAll()
 			return
 		}
 		m.masks[o.event].OrI(&o.withMask)
@@ -176,7 +179,7 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 	}
 
 	if o.compsMask.IsZero() {
-		m.masks[o.event].SetAll()
+		m.anyNoComps[o.event] = true
 		return
 	}
 	m.masks[o.event].OrI(&o.compsMask)
@@ -207,7 +210,6 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 		for _, o := range m.observers[o.event] {
 			if o.withMask.IsZero() {
 				m.anyNoWith[o.event] = true
-				mask.SetAll()
 				break
 			}
 			mask.OrI(&o.withMask)
@@ -217,9 +219,10 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 	}
 
 	var mask bitMask
+	m.anyNoComps[o.event] = false
 	for _, o := range m.observers[o.event] {
 		if o.compsMask.IsZero() {
-			mask.SetAll()
+			m.anyNoComps[o.event] = true
 			break
 		}
 		mask.OrI(&o.compsMask)
@@ -272,7 +275,7 @@ func (m *observerManager) FireAdd(e Entity, oldMask *bitMask, newMask *bitMask) 
 }
 
 func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.masks[OnAddComponents].ContainsAny(newMask) {
+	if !m.anyNoComps[OnAddComponents] && !m.masks[OnAddComponents].ContainsAny(newMask) {
 		return
 	}
 	observers := m.observers[OnAddComponents]
@@ -286,7 +289,7 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 }
 
 func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.masks[OnRemoveComponents].ContainsAny(oldMask) {
+	if !m.anyNoComps[OnRemoveComponents] && !m.masks[OnRemoveComponents].ContainsAny(oldMask) {
 		return
 	}
 	observers := m.observers[OnRemoveComponents]
@@ -300,7 +303,7 @@ func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitM
 }
 
 func (m *observerManager) doFireSet(e Entity, mask *bitMask, newMask *bitMask) {
-	if !m.masks[OnSetComponents].ContainsAny(mask) {
+	if !m.anyNoComps[OnSetComponents] && !m.masks[OnSetComponents].ContainsAny(mask) {
 		return
 	}
 	observers := m.observers[OnSetComponents]

@@ -45,7 +45,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	newIndex := newTable.Add(entity)
 
-	if w.storage.observers.HasObservers(OnRemoveComponents) {
+	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
 		l := w.lock()
 		w.storage.observers.doFireRemove(entity, &oldArchetype.mask, &mask)
 		w.unlock(l)
