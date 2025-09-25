@@ -9,6 +9,7 @@ func TestMap1(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map1[CompA]
 	mapper = mapper.New(&w)
@@ -303,6 +304,7 @@ func TestMap2(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map2[CompA, CompB]
 	mapper = mapper.New(&w)
@@ -601,6 +603,7 @@ func TestMap3(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map3[CompA, CompB, CompC]
 	mapper = mapper.New(&w)
@@ -903,6 +906,7 @@ func TestMap4(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map4[CompA, CompB, CompC, CompD]
 	mapper = mapper.New(&w)
@@ -1209,6 +1213,7 @@ func TestMap5(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map5[CompA, CompB, CompC, CompD, CompE]
 	mapper = mapper.New(&w)
@@ -1519,6 +1524,7 @@ func TestMap6(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map6[CompA, CompB, CompC, CompD, CompE, CompF]
 	mapper = mapper.New(&w)
@@ -1833,6 +1839,7 @@ func TestMap7(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map7[CompA, CompB, CompC, CompD, CompE, CompF, CompG]
 	mapper = mapper.New(&w)
@@ -2151,6 +2158,7 @@ func TestMap8(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH]
 	mapper = mapper.New(&w)
@@ -2473,6 +2481,7 @@ func TestMap9(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI]
 	mapper = mapper.New(&w)
@@ -2799,6 +2808,7 @@ func TestMap10(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ]
 	mapper = mapper.New(&w)
@@ -3130,6 +3140,7 @@ func TestMap11(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK]
 	mapper = mapper.New(&w)
@@ -3465,6 +3476,7 @@ func TestMap12(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL]
 	mapper = mapper.New(&w)

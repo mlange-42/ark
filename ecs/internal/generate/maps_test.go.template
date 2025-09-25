@@ -30,6 +30,7 @@ func TestMap{{.}}(t *testing.T) {
 	w := NewWorld(4)
 
 	NewObserver(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
+	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map{{.}}{{$generics}}
 	mapper = mapper.New(&w)
