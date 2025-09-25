@@ -91,6 +91,20 @@ func TestObserverRegister(t *testing.T) {
 		func() {
 			obs1.Unregister(&w)
 		})
+
+	obs1 = NewObserver(OnCreateEntity).Do(func(e Entity) {}).Register(&w)
+	expectTrue(t, w.storage.observers.anyNoWith[OnCreateEntity])
+	obs1.Unregister(&w)
+	expectFalse(t, w.storage.observers.anyNoWith[OnCreateEntity])
+
+	obs1 = NewObserver(OnAddComponents).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
+	expectEqual(t, [4]uint64{1, 0, 0, 0}, w.storage.observers.masks[OnAddComponents].bits)
+	obs2 = NewObserver(OnAddComponents).Do(func(e Entity) {}).Register(&w)
+	expectEqual(t, [4]uint64{^uint64(0), ^uint64(0), ^uint64(0), ^uint64(0)}, w.storage.observers.masks[OnAddComponents].bits)
+	obs2.Unregister(&w)
+	expectEqual(t, [4]uint64{1, 0, 0, 0}, w.storage.observers.masks[OnAddComponents].bits)
+	obs1.Unregister(&w)
+	expectTrue(t, w.storage.observers.masks[OnAddComponents].IsZero())
 }
 
 func TestObserverManager(t *testing.T) {
