@@ -189,6 +189,7 @@ func TestObserverOnAddRemove(t *testing.T) {
 
 	builder1 := NewMap1[Position](&w)
 	builder2 := NewMap1[Velocity](&w)
+	builder3 := NewMap1[Heading](&w)
 	filter1 := NewFilter1[Position](&w)
 	filter2 := NewFilter1[Velocity](&w)
 
@@ -216,7 +217,11 @@ func TestObserverOnAddRemove(t *testing.T) {
 	expectEqual(t, 1, callAdd)
 	builder2.Add(e, &Velocity{})
 	expectEqual(t, 1, callAdd)
+	builder3.Add(e, &Heading{})
+	expectEqual(t, 1, callAdd)
 
+	builder3.Remove(e)
+	expectEqual(t, 0, callRemove)
 	builder2.Remove(e)
 	expectEqual(t, 0, callRemove)
 	builder1.Remove(e)
