@@ -474,6 +474,70 @@ func TestObserverComponentsWithout(t *testing.T) {
 	expectEqual(t, 1, callRemove)
 }
 
+func TestObserverEntitiesWith(t *testing.T) {
+	w := NewWorld()
+
+	builder1 := NewMap1[Position](&w)
+	builder2 := NewMap1[Velocity](&w)
+
+	callAdd := 0
+	callRemove := 0
+
+	Observe(OnCreateEntity).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveEntity).Do(func(e Entity) {}).Register(&w)
+
+	Observe(OnCreateEntity).
+		With(C[Velocity]()).
+		Do(func(e Entity) { callAdd++ }).
+		Register(&w)
+	Observe(OnRemoveEntity).
+		With(C[Velocity]()).
+		Do(func(e Entity) { callRemove++ }).
+		Register(&w)
+
+	e1 := builder1.NewEntity(&Position{})
+	expectEqual(t, 0, callAdd)
+	e2 := builder2.NewEntity(&Velocity{})
+	expectEqual(t, 1, callAdd)
+
+	w.RemoveEntity(e1)
+	expectEqual(t, 0, callRemove)
+	w.RemoveEntity(e2)
+	expectEqual(t, 1, callRemove)
+}
+
+func TestObserverEntitiesWithout(t *testing.T) {
+	w := NewWorld()
+
+	builder1 := NewMap1[Position](&w)
+	builder2 := NewMap1[Velocity](&w)
+
+	callAdd := 0
+	callRemove := 0
+
+	Observe(OnCreateEntity).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveEntity).Do(func(e Entity) {}).Register(&w)
+
+	Observe(OnCreateEntity).
+		Without(C[Velocity]()).
+		Do(func(e Entity) { callAdd++ }).
+		Register(&w)
+	Observe(OnRemoveEntity).
+		Without(C[Velocity]()).
+		Do(func(e Entity) { callRemove++ }).
+		Register(&w)
+
+	e1 := builder2.NewEntity(&Velocity{})
+	expectEqual(t, 0, callAdd)
+	e2 := builder1.NewEntity(&Position{})
+	expectEqual(t, 1, callAdd)
+
+	w.RemoveEntity(e1)
+	expectEqual(t, 0, callRemove)
+	w.RemoveEntity(e2)
+	expectEqual(t, 1, callRemove)
+}
+
 func TestObserverWildcardComponents(t *testing.T) {
 	w := NewWorld()
 
