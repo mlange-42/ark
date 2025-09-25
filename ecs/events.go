@@ -30,7 +30,7 @@ const (
 // Observer for ECS events.
 //
 // Observers react to structural changes, such as entity creation, removal, and component addition/removal.
-// Use the methods With, Without, and Do to configure the observer before registering it.
+// Use the methods NewObserver, With, Without, and Do to configure the observer before registering it.
 type Observer struct {
 	event       EventType
 	with        []Comp
@@ -43,6 +43,9 @@ type Observer struct {
 }
 
 // NewObserver creates a new ECS event observer for the specified event type.
+//
+// Observers react to structural changes, such as entity creation, removal, and component addition/removal.
+// Use the methods With, Without, and Do to configure the observer before registering it.
 func NewObserver(evt EventType) *Observer {
 	return &Observer{
 		event: evt,
