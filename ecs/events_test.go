@@ -6,8 +6,12 @@ import (
 
 func TestNewObserver(t *testing.T) {
 	w := NewWorld()
-	obs := NewObserver(OnCreateEntity).Do(func(e Entity) {}).Register(&w)
+	obs := NewObserver(OnAddComponents).Do(func(e Entity) {}).Register(&w)
 
+	expectPanicsWithValue(t, "can't modify a registered observer",
+		func() {
+			obs.For(C[Position]())
+		})
 	expectPanicsWithValue(t, "can't modify a registered observer",
 		func() {
 			obs.With(C[Position]())
