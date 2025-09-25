@@ -13,7 +13,7 @@ func ExampleObserver() {
 		}).
 		Register(&world)
 
-	// Unregister later of required.
+	// Unregister later if required.
 	obs.Unregister(&world)
 }
 

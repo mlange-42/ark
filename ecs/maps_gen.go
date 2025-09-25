@@ -200,8 +200,12 @@ func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map1[A]) Set(entity Entity, a *A) {
 	if !m.world.Alive(entity) {
@@ -513,8 +517,12 @@ func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) 
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map2[A, B]) Set(entity Entity, a *A, b *B) {
 	if !m.world.Alive(entity) {
@@ -856,8 +864,12 @@ func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...R
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map3[A, B, C]) Set(entity Entity, a *A, b *B, c *C) {
 	if !m.world.Alive(entity) {
@@ -1225,8 +1237,12 @@ func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D),
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map4[A, B, C, D]) Set(entity Entity, a *A, b *B, c *C, d *D) {
 	if !m.world.Alive(entity) {
@@ -1620,8 +1636,12 @@ func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map5[A, B, C, D, E]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E) {
 	if !m.world.Alive(entity) {
@@ -2041,8 +2061,12 @@ func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, 
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map6[A, B, C, D, E, F]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F) {
 	if !m.world.Alive(entity) {
@@ -2488,8 +2512,12 @@ func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map7[A, B, C, D, E, F, G]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G) {
 	if !m.world.Alive(entity) {
@@ -2961,8 +2989,12 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, 
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map8[A, B, C, D, E, F, G, H]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H) {
 	if !m.world.Alive(entity) {
@@ -3460,8 +3492,12 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(a *A, b *
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I) {
 	if !m.world.Alive(entity) {
@@ -3985,8 +4021,12 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(a *A,
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J) {
 	if !m.world.Alive(entity) {
@@ -4536,8 +4576,12 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(a 
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K) {
 	if !m.world.Alive(entity) {
@@ -5113,8 +5157,12 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func
 }
 
 // Set the mapped components of the given entity to the given values.
-//
 // Requires the entity to already have all the mapped components.
+//
+// Triggers an OnSetComponents event, which is not the case when assigning by
+// pointer dereference or assigning to fields. This can be used to notify observers
+// about component updates.
+//
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L) {
 	if !m.world.Alive(entity) {

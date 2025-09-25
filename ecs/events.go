@@ -71,7 +71,11 @@ func Observe(evt EventType) *Observer {
 }
 
 // For adds components that the observer observes.
-// Can only be used with OnAddComponents and OnRemoveComponents.
+// Can only be used with OnAddComponents, OnRemoveComponents and OnSetComponents.
+// The observer triggers if these components are added to or removed from an entity.
+// If multiple components are provided, all must be added/removed at the same time to trigger the observer.
+//
+// Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer) For(comps ...Comp) *Observer {
 	if o.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -87,7 +91,10 @@ func (o *Observer) For(comps ...Comp) *Observer {
 	return o
 }
 
-// With adds components that entities must have to trigger.
+// With adds components that entities must have to trigger the observer.
+// If multiple components are provided, the entity must have all of them.
+//
+// Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer) With(comps ...Comp) *Observer {
 	if o.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -100,7 +107,10 @@ func (o *Observer) With(comps ...Comp) *Observer {
 	return o
 }
 
-// Without adds components the observer excludes.
+// Without adds components that entities must not have to trigger the observer.
+// If multiple components are provided, the entity must not have any of them.
+//
+// Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer) Without(comps ...Comp) *Observer {
 	if o.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -122,7 +132,7 @@ func (o *Observer) Do(fn func(Entity)) *Observer {
 	return o
 }
 
-// Register this observer.
+// Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer) Register(w *World) *Observer {
 	if o.callback == nil {
 		panic("observer callback must be set via Do before registering")
