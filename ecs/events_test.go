@@ -44,8 +44,13 @@ func TestNewObserver(t *testing.T) {
 	obs = obs.For(C[Position]())
 	expectEqual(t, 1, len(obs.comps))
 
+	obs = obs.Without()
+	expectEqual(t, 0, len(obs.with))
+	expectFalse(t, obs.hasWith)
+
 	obs = obs.With(C[Position]())
 	expectEqual(t, 1, len(obs.with))
+	expectTrue(t, obs.hasWith)
 
 	obs = obs.Without()
 	expectEqual(t, 0, len(obs.without))
