@@ -41,8 +41,13 @@ func TestObserve(t *testing.T) {
 
 	obs = Observe(OnAddComponents).Do(func(e Entity) {})
 
+	obs = obs.For()
+	expectEqual(t, 0, len(obs.comps))
+	expectFalse(t, obs.hasComps)
+
 	obs = obs.For(C[Position]())
 	expectEqual(t, 1, len(obs.comps))
+	expectTrue(t, obs.hasComps)
 
 	obs = obs.With()
 	expectEqual(t, 0, len(obs.with))
@@ -280,7 +285,7 @@ func TestObserverOnSet(t *testing.T) {
 	expectEqual(t, 1, callCount)
 }
 
-func TestObserverWith(t *testing.T) {
+func TestObserverComponentsWith(t *testing.T) {
 	w := NewWorld()
 
 	builder1 := NewMap1[Position](&w)
@@ -340,7 +345,7 @@ func TestObserverWith(t *testing.T) {
 	expectEqual(t, 1, callRemove)
 }
 
-func TestObserverWithout(t *testing.T) {
+func TestObserverComponentsWithout(t *testing.T) {
 	w := NewWorld()
 
 	builder1 := NewMap1[Position](&w)
