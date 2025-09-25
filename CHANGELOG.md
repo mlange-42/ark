@@ -9,6 +9,7 @@
 
 ### Features
 
+- Adds an event system for ECS operations, like entity creation/removal and component addition/removal (#330)
 - Adds method `World.Shrink` for freeing memory that exceeds current requirements (#323)
 
 ### Performance
