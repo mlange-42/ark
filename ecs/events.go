@@ -137,8 +137,8 @@ type observerManager struct {
 	hasObservers []bool
 	compsOr      []bitMask
 	withOr       []bitMask
-	anyNoWith    []bool
 	anyNoComps   []bool
+	anyNoWith    []bool
 	pool         intPool[observerID]
 	indices      map[observerID]int
 }
@@ -147,8 +147,8 @@ func newObserverManager() observerManager {
 	return observerManager{
 		observers:    make([][]*Observer, eventsEnd),
 		hasObservers: make([]bool, eventsEnd),
-		anyNoWith:    make([]bool, eventsEnd),
 		anyNoComps:   make([]bool, eventsEnd),
+		anyNoWith:    make([]bool, eventsEnd),
 		compsOr:      make([]bitMask, eventsEnd),
 		withOr:       make([]bitMask, eventsEnd),
 		pool:         newIntPool[observerID](32),
