@@ -93,7 +93,7 @@ func TestObserverRegister(t *testing.T) {
 		})
 
 	obs1 = NewObserver(OnCreateEntity).Do(func(e Entity) {}).Register(&w)
-	obs2 = NewObserver(OnCreateEntity).With(C[Position]()).Do(func(e Entity) {}).Register(&w)
+	_ = NewObserver(OnCreateEntity).With(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	obs3 := NewObserver(OnCreateEntity).With(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
 	obs3.Unregister(&w)
 	expectTrue(t, w.storage.observers.anyNoWith[OnCreateEntity])
