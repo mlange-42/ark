@@ -225,7 +225,7 @@ func TestObserverOnSet(t *testing.T) {
 	callCount := 0
 
 	NewObserver(OnSetComponents).
-		With(C[Position]()).
+		For(C[Position]()).
 		Do(func(e Entity) {
 			callCount++
 		}).
