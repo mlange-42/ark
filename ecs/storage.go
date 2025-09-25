@@ -120,7 +120,7 @@ func (s *storage) RemoveEntity(entity Entity) {
 	if s.observers.HasObservers(OnRemoveEntity) {
 		l := s.lock()
 		mask := &s.archetypes[table.archetype].mask
-		s.observers.doFireRemoveEntity(entity, mask)
+		s.observers.doFireRemoveEntity(entity, mask, true)
 		s.unlock(l)
 	}
 

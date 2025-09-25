@@ -47,7 +47,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 
 	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
 		l := w.lock()
-		w.storage.observers.doFireRemove(entity, &oldArchetype.mask, &mask)
+		w.storage.observers.doFireRemove(entity, &oldArchetype.mask, &mask, true)
 		w.unlock(l)
 	}
 
@@ -118,8 +118,12 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			oldMask := &w.storage.archetypes[table.id].mask
 			newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].id].mask
 			len := uintptr(batch.len)
+			earlyOut := true
 			for i := uintptr(0); i < len; i++ {
-				w.storage.observers.doFireRemove(table.GetEntity(uintptr(i)), oldMask, newMask)
+				if !w.storage.observers.doFireRemove(table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
+					break
+				}
+				earlyOut = false
 			}
 		}
 		w.unlock(l)
@@ -142,8 +146,12 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].id].mask
 			newMask := &w.storage.archetypes[table.id].mask
 			len := uintptr(batch.start + batch.len)
+			earlyOut := true
 			for i := uintptr(batch.start); i < len; i++ {
-				w.storage.observers.doFireAdd(table.GetEntity(uintptr(i)), oldMask, newMask)
+				if !w.storage.observers.doFireAdd(table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
+					break
+				}
+				earlyOut = false
 			}
 		}
 	}

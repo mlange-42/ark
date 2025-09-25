@@ -89,9 +89,14 @@ func (m *Map[T]) NewBatchFn(count int, fn func(entity Entity, comp *T), target .
 
 	if m.world.storage.observers.HasObservers(OnCreateEntity) {
 		table := &m.world.storage.tables[tableID]
+
+		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask)
+			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+				break
+			}
+			earlyOut = false
 		}
 	}
 }

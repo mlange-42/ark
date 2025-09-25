@@ -29,8 +29,8 @@ func TestMap{{.}}(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	NewObserver(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
-	NewObserver(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
+	Observe(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map{{.}}{{$generics}}
 	mapper = mapper.New(&w)
@@ -116,7 +116,7 @@ func TestMap{{.}}NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 	
-	NewObserver(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
+	Observe(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
 
 	mapper := NewMap{{.}}{{$generics}}(&w)
 
