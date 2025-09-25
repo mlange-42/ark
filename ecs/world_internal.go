@@ -45,6 +45,12 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	newIndex := newTable.Add(entity)
 
+	if w.storage.observers.HasObservers(OnRemoveComponents) {
+		l := w.lock()
+		w.storage.observers.doFireRemove(entity, &oldArchetype.mask, &mask)
+		w.unlock(l)
+	}
+
 	// Get the old table and archetype again, as the pointer may have changed.
 	oldTable = &w.storage.tables[oldTable.id]
 	oldArchetype = &w.storage.archetypes[oldTable.archetype]
@@ -87,33 +93,49 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	}
 
 	tables := w.storage.getTables(batch)
-	batchTables := make([]batchTable, len(tables))
+	batchTables := make([]batchTable, 0, len(tables))
 	var totalEntities uint32 = 0
-	for i, tableID := range tables {
+	for _, tableID := range tables {
 		table := &w.storage.tables[tableID]
-		batchTables[i] = batchTable{
-			len: uint32(table.Len()),
+
+		if table.Len() == 0 {
+			continue
 		}
+		oldArchetype := &w.storage.archetypes[table.archetype]
+		mask := oldArchetype.mask
+		newTable := w.storage.findOrCreateTable(table, add, rem, relations, &mask)
+
+		batchTables = append(batchTables, batchTable{
+			oldTable: table.id,
+			newTable: newTable.id,
+			len:      uint32(table.Len()),
+		})
 		totalEntities += uint32(table.Len())
 	}
 
-	for i, tableID := range tables {
-		tableLen := batchTables[i].len
+	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
+		l := w.lock()
+		for _, batch := range batchTables {
+			table := &w.storage.tables[batch.oldTable]
+			oldMask := &w.storage.archetypes[table.id].mask
+			newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].id].mask
+			len := uintptr(batch.len)
+			for i := uintptr(0); i < len; i++ {
+				w.storage.observers.doFireRemove(table.GetEntity(uintptr(i)), oldMask, newMask)
+			}
+		}
+		w.unlock(l)
+	}
 
-		if tableLen == 0 {
-			continue
-		}
-		table := &w.storage.tables[tableID]
-		t, start, len := w.exchangeTable(table, tableLen, add, rem, relations)
+	for i := range batchTables {
+		batch := &batchTables[i]
+
+		start, len := w.exchangeTable(batch.oldTable, batch.newTable, add, rem, relations)
 		if fn != nil {
-			fn(t, start, len)
+			fn(batch.newTable, start, len)
 		}
-		batchTables[i] = batchTable{
-			oldTable: table.id,
-			newTable: t,
-			start:    uint32(start),
-			len:      uint32(len),
-		}
+		batch.start = uint32(start)
+		batch.len = uint32(len)
 	}
 
 	if len(add) > 0 && w.storage.observers.HasObservers(OnAddComponents) {
@@ -122,36 +144,26 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].id].mask
 			newMask := &w.storage.archetypes[table.id].mask
 			len := uintptr(batch.start + batch.len)
-			for i := uintptr(0); i < len; i++ {
+			for i := uintptr(batch.start); i < len; i++ {
 				w.storage.observers.doFireAdd(table.GetEntity(uintptr(i)), oldMask, newMask)
-			}
-		}
-	}
-	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
-		for _, batch := range batchTables {
-			table := &w.storage.tables[batch.newTable]
-			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].id].mask
-			newMask := &w.storage.archetypes[table.id].mask
-			len := uintptr(batch.start + batch.len)
-			for i := uintptr(0); i < len; i++ {
-				w.storage.observers.doFireRemove(table.GetEntity(uintptr(i)), oldMask, newMask)
 			}
 		}
 	}
 }
 
-func (w *World) exchangeTable(oldTable *table, oldLen uint32, add []ID, rem []ID, relations []relationID) (tableID, uint32, uint32) {
-	oldArchetype := &w.storage.archetypes[oldTable.archetype]
+func (w *World) exchangeTable(oldTableID, newTableID tableID, add []ID, rem []ID, relations []relationID) (uint32, uint32) {
+	oldTable := &w.storage.tables[oldTableID]
 
+	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 	oldIDs := oldArchetype.components
 
-	mask := oldArchetype.mask
-	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
-	// Get the old table again, as pointers may have changed.
-	oldTable = &w.storage.tables[oldTable.id]
+	newTable := &w.storage.tables[newTableID]
+	newArchetype := &w.storage.archetypes[newTable.archetype]
+
+	mask := &newArchetype.mask
 
 	startIdx := uint32(newTable.Len())
-	count := oldLen
+	count := oldTable.len
 
 	var i uint32
 	for i = range count {
@@ -162,19 +174,19 @@ func (w *World) exchangeTable(oldTable *table, oldLen uint32, add []ID, rem []ID
 		index.row = uint32(idx)
 	}
 
-	newTable.AddAllEntities(oldTable, uint32(oldLen))
+	newTable.AddAllEntities(oldTable, uint32(count))
 	for _, id := range oldIDs {
 		if mask.Get(id.id) {
 			oldCol := oldTable.GetColumn(id)
 			newCol := newTable.GetColumn(id)
-			newCol.CopyToEnd(oldCol, newTable.len, uint32(oldLen))
+			newCol.CopyToEnd(oldCol, newTable.len, uint32(count))
 		}
 	}
 
 	oldTable.Reset()
 	w.storage.registerTargets(relations)
 
-	return newTable.id, uint32(startIdx), uint32(count)
+	return uint32(startIdx), uint32(count)
 }
 
 // setRelations sets the target entities for an entity relations.

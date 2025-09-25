@@ -242,9 +242,7 @@ func (m *Map[T]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove a component from a dead entity")
 	}
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids[:], nil)
-
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids[:], nil)
 }
 
 // RemoveBatch removes the mapped component from all entities matching the given batch filter,

@@ -310,8 +310,7 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Ent
 
 // Remove the mapped components from the given entity.
 func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,

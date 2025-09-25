@@ -109,6 +109,7 @@ func TestObserverOnCreateEntity(t *testing.T) {
 	NewObserver(OnCreateEntity).
 		With(C[Position]()).
 		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
 			callCount++
 		}).
 		Register(&w)
@@ -136,6 +137,7 @@ func TestObserverOnCreateEntities(t *testing.T) {
 
 	NewObserver(OnCreateEntity).
 		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
 			callCount++
 		}).
 		Register(&w)
@@ -157,6 +159,7 @@ func TestObserverOnRemoveEntity(t *testing.T) {
 	NewObserver(OnRemoveEntity).
 		With(C[Position]()).
 		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
 			callCount++
 		}).
 		Register(&w)
@@ -190,6 +193,7 @@ func TestObserverOnAddRemove(t *testing.T) {
 	NewObserver(OnAddComponents).
 		For(C[Position]()).
 		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
 			callAdd++
 		}).
 		Register(&w)
@@ -197,6 +201,7 @@ func TestObserverOnAddRemove(t *testing.T) {
 	NewObserver(OnRemoveComponents).
 		For(C[Position]()).
 		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
 			callRemove++
 		}).
 		Register(&w)
@@ -231,6 +236,7 @@ func TestObserverOnSet(t *testing.T) {
 	NewObserver(OnSetComponents).
 		For(C[Position]()).
 		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
 			callCount++
 		}).
 		Register(&w)
@@ -259,6 +265,7 @@ func TestObserverWith(t *testing.T) {
 		For(C[Position]()).
 		With(C[Velocity]()).
 		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
 			callAdd++
 		}).
 		Register(&w)
@@ -267,6 +274,7 @@ func TestObserverWith(t *testing.T) {
 		For(C[Position]()).
 		With(C[Velocity]()).
 		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
 			callRemove++
 		}).
 		Register(&w)
@@ -275,6 +283,7 @@ func TestObserverWith(t *testing.T) {
 		For(C[Position]()).
 		With(C[Velocity]()).
 		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
 			callSet++
 		}).
 		Register(&w)
@@ -316,6 +325,7 @@ func TestObserverWithout(t *testing.T) {
 		For(C[Position]()).
 		Without(C[Velocity]()).
 		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
 			callAdd++
 		}).
 		Register(&w)
@@ -324,6 +334,7 @@ func TestObserverWithout(t *testing.T) {
 		For(C[Position]()).
 		Without(C[Velocity]()).
 		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
 			callRemove++
 		}).
 		Register(&w)
@@ -332,6 +343,7 @@ func TestObserverWithout(t *testing.T) {
 		For(C[Position]()).
 		Without(C[Velocity]()).
 		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
 			callSet++
 		}).
 		Register(&w)

@@ -257,8 +257,7 @@ func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...
 
 // Remove the mapped components from the given entity.
 func (m *Map1[A]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -572,8 +571,7 @@ func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B)
 
 // Remove the mapped components from the given entity.
 func (m *Map2[A, B]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -917,8 +915,7 @@ func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b 
 
 // Remove the mapped components from the given entity.
 func (m *Map3[A, B, C]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -1288,8 +1285,7 @@ func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A,
 
 // Remove the mapped components from the given entity.
 func (m *Map4[A, B, C, D]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -1685,8 +1681,7 @@ func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a 
 
 // Remove the mapped components from the given entity.
 func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -2108,8 +2103,7 @@ func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity,
 
 // Remove the mapped components from the given entity.
 func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -2557,8 +2551,7 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Enti
 
 // Remove the mapped components from the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -3032,8 +3025,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity E
 
 // Remove the mapped components from the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -3533,8 +3525,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(entit
 
 // Remove the mapped components from the given entity.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -4060,8 +4051,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(e
 
 // Remove the mapped components from the given entity.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -4613,8 +4603,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn fun
 
 // Remove the mapped components from the given entity.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -5192,8 +5181,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn 
 
 // Remove the mapped components from the given entity.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Remove(entity Entity) {
-	oldMask, newMask := m.world.exchange(entity, nil, m.ids, nil)
-	m.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	m.world.exchange(entity, nil, m.ids, nil)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,

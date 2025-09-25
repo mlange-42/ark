@@ -113,8 +113,7 @@ func (u Unsafe) Remove(entity Entity, comp ...ID) {
 	if len(comp) == 0 {
 		panic("at least one component required to remove")
 	}
-	oldMask, newMask := u.world.exchange(entity, nil, comp, nil)
-	u.world.storage.observers.FireRemove(entity, oldMask, newMask)
+	u.world.exchange(entity, nil, comp, nil)
 }
 
 // Exchange the given components on entity.
@@ -130,9 +129,6 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 
 	if len(add) > 0 {
 		u.world.storage.observers.FireAdd(entity, oldMask, newMask)
-	}
-	if len(remove) > 0 {
-		u.world.storage.observers.FireRemove(entity, oldMask, newMask)
 	}
 }
 
