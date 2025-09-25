@@ -33,8 +33,10 @@ const (
 // Use the methods NewObserver, With, Without, and Do to configure the observer before registering it.
 type Observer struct {
 	event       EventType
+	comps       []Comp
 	with        []Comp
 	without     []Comp
+	compsMask   bitMask
 	withMask    bitMask
 	withoutMask bitMask
 	hasWithout  bool
@@ -53,7 +55,20 @@ func NewObserver(evt EventType) *Observer {
 	}
 }
 
-// With adds components the observer observes.
+// For adds components that the observer observes.
+// Can only be used with OnAddComponents and OnRemoveComponents.
+func (o *Observer) For(comps ...Comp) *Observer {
+	if o.id != maxObserverID {
+		panic("can't modify a registered observer")
+	}
+	if o.event != OnAddComponents && o.event != OnRemoveComponents && o.event != OnSetComponents {
+		panic("can use Observer.For only for OnAddComponents, OnRemoveComponents and OnSetComponents events")
+	}
+	o.comps = append(o.comps, comps...)
+	return o
+}
+
+// With adds components that entities must have to trigger.
 func (o *Observer) With(comps ...Comp) *Observer {
 	if o.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -63,13 +78,9 @@ func (o *Observer) With(comps ...Comp) *Observer {
 }
 
 // Without adds components the observer excludes.
-// Only valid for [OnCreateEntity] and [OnRemoveEntity].
 func (o *Observer) Without(comps ...Comp) *Observer {
 	if o.id != maxObserverID {
 		panic("can't modify a registered observer")
-	}
-	if o.event != OnCreateEntity && o.event != OnRemoveEntity {
-		panic("can use Observer.Without only for OnCreateEntity and OnRemoveEntity events")
 	}
 	if len(comps) == 0 {
 		return o
@@ -128,6 +139,10 @@ func newObserverManager() observerManager {
 func (m *observerManager) AddObserver(o *Observer, reg *componentRegistry) {
 	o.id = m.pool.Get()
 
+	for _, c := range o.comps {
+		id, _ := reg.ComponentID(c.tp)
+		o.compsMask.Set(id, true)
+	}
 	for _, c := range o.with {
 		id, _ := reg.ComponentID(c.tp)
 		o.withMask.Set(id, true)
@@ -201,7 +216,8 @@ func (m *observerManager) FireAdd(e Entity, oldMask *bitMask, newMask *bitMask) 
 func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask) {
 	observers := m.observers[OnAddComponents]
 	for _, o := range observers {
-		if newMask.Contains(&o.withMask) && !oldMask.ContainsAny(&o.withMask) {
+		if newMask.Contains(&o.compsMask) && !oldMask.ContainsAny(&o.compsMask) &&
+			newMask.Contains(&o.withMask) && (!o.hasWithout || !newMask.ContainsAny(&o.withoutMask)) {
 			o.callback(e)
 		}
 	}
@@ -217,24 +233,26 @@ func (m *observerManager) FireRemove(e Entity, oldMask *bitMask, newMask *bitMas
 func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitMask) {
 	observers := m.observers[OnRemoveComponents]
 	for _, o := range observers {
-		if oldMask.Contains(&o.withMask) && !newMask.ContainsAny(&o.withMask) {
+		if oldMask.Contains(&o.compsMask) && !newMask.ContainsAny(&o.compsMask) &&
+			newMask.Contains(&o.withMask) && (!o.hasWithout || !newMask.ContainsAny(&o.withoutMask)) {
 			o.callback(e)
 		}
 	}
 }
 
-func (m *observerManager) FireSet(e Entity, mask *bitMask) {
+func (m *observerManager) FireSet(e Entity, mask *bitMask, newMask *bitMask) {
 	if !m.hasObservers[OnSetComponents] {
 		return
 	}
-	m.doFireSet(e, mask)
+	m.doFireSet(e, mask, newMask)
 }
 
-func (m *observerManager) doFireSet(e Entity, mask *bitMask) {
+func (m *observerManager) doFireSet(e Entity, mask *bitMask, newMask *bitMask) {
 	observers := m.observers[OnSetComponents]
 	for i := range observers {
 		o := observers[i]
-		if mask.Contains(&o.withMask) {
+		if mask.Contains(&o.compsMask) &&
+			newMask.Contains(&o.withMask) && (!o.hasWithout || !newMask.ContainsAny(&o.withoutMask)) {
 			o.callback(e)
 		}
 	}

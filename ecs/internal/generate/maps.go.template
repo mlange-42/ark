@@ -256,7 +256,10 @@ func (m *Map{{.}}{{$genericsShort}}) Set(entity Entity, {{$args}}) {
 	*(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row)) = *{{index $lower $i}}
 	{{- end}}
 	
-	m.world.storage.observers.FireSet(entity, &m.mask)
+	if m.world.storage.observers.HasObservers(OnSetComponents) {
+		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
