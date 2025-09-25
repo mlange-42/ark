@@ -45,11 +45,11 @@ type Observer struct {
 	hasWith     bool
 }
 
-// NewObserver creates a new ECS event observer for the specified event type.
+// Observe creates a new ECS event observer for the specified event type.
 //
 // Observers react to structural changes, such as entity creation, removal, and component addition/removal.
 // Use the methods With, Without, and Do to configure the observer before registering it.
-func NewObserver(evt EventType) *Observer {
+func Observe(evt EventType) *Observer {
 	return &Observer{
 		event: evt,
 		id:    maxObserverID,
