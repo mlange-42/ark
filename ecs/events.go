@@ -135,8 +135,8 @@ func (o *Observer) Unregister(w *World) *Observer {
 type observerManager struct {
 	observers    [][]*Observer
 	hasObservers []bool
-	compsOr      []bitMask
-	withOr       []bitMask
+	allComps     []bitMask
+	allWith      []bitMask
 	anyNoComps   []bool
 	anyNoWith    []bool
 	pool         intPool[observerID]
@@ -149,8 +149,8 @@ func newObserverManager() observerManager {
 		hasObservers: make([]bool, eventsEnd),
 		anyNoComps:   make([]bool, eventsEnd),
 		anyNoWith:    make([]bool, eventsEnd),
-		compsOr:      make([]bitMask, eventsEnd),
-		withOr:       make([]bitMask, eventsEnd),
+		allComps:     make([]bitMask, eventsEnd),
+		allWith:      make([]bitMask, eventsEnd),
 		pool:         newIntPool[observerID](32),
 		indices:      map[observerID]int{},
 	}
@@ -177,7 +177,7 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 	m.hasObservers[o.event] = true
 
 	if o.hasWith {
-		m.withOr[o.event].OrI(&o.withMask)
+		m.allWith[o.event].OrI(&o.withMask)
 	} else {
 		m.anyNoWith[o.event] = true
 	}
@@ -187,7 +187,7 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 	}
 
 	if o.hasComps {
-		m.compsOr[o.event].OrI(&o.compsMask)
+		m.allComps[o.event].OrI(&o.compsMask)
 	} else {
 		m.anyNoComps[o.event] = true
 	}
@@ -212,31 +212,31 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 	m.observers[o.event] = observers[:last]
 	m.hasObservers[o.event] = last > 0
 
-	var withOr bitMask
+	var allWith bitMask
 	m.anyNoWith[o.event] = false
 	for _, o := range m.observers[o.event] {
 		if !o.hasWith {
 			m.anyNoWith[o.event] = true
 			break
 		}
-		withOr.OrI(&o.withMask)
+		allWith.OrI(&o.withMask)
 	}
-	m.withOr[o.event] = withOr
+	m.allWith[o.event] = allWith
 
 	if o.event == OnCreateEntity || o.event == OnRemoveEntity {
 		return
 	}
 
-	var compsOr bitMask
+	var allComps bitMask
 	m.anyNoComps[o.event] = false
 	for _, o := range m.observers[o.event] {
 		if !o.hasComps {
 			m.anyNoComps[o.event] = true
 			break
 		}
-		compsOr.OrI(&o.compsMask)
+		allComps.OrI(&o.compsMask)
 	}
-	m.compsOr[o.event] = compsOr
+	m.allComps[o.event] = allComps
 }
 
 func (m *observerManager) HasObservers(evt EventType) bool {
@@ -251,7 +251,7 @@ func (m *observerManager) FireCreateEntity(e Entity, mask *bitMask) {
 }
 
 func (m *observerManager) doFireCreateEntity(e Entity, mask *bitMask) {
-	if !m.anyNoWith[OnCreateEntity] && !m.withOr[OnCreateEntity].ContainsAny(mask) {
+	if !m.anyNoWith[OnCreateEntity] && !m.allWith[OnCreateEntity].ContainsAny(mask) {
 		return
 	}
 	observers := m.observers[OnCreateEntity]
@@ -267,7 +267,7 @@ func (m *observerManager) doFireCreateEntity(e Entity, mask *bitMask) {
 }
 
 func (m *observerManager) doFireRemoveEntity(e Entity, mask *bitMask) {
-	if !m.anyNoWith[OnRemoveEntity] && !m.withOr[OnRemoveEntity].ContainsAny(mask) {
+	if !m.anyNoWith[OnRemoveEntity] && !m.allWith[OnRemoveEntity].ContainsAny(mask) {
 		return
 	}
 	observers := m.observers[OnRemoveEntity]
@@ -291,10 +291,10 @@ func (m *observerManager) FireAdd(e Entity, oldMask *bitMask, newMask *bitMask) 
 
 func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask) {
 	if !m.anyNoComps[OnAddComponents] &&
-		(!m.compsOr[OnAddComponents].ContainsAny(newMask) || oldMask.Contains(&m.compsOr[OnAddComponents])) {
+		(!m.allComps[OnAddComponents].ContainsAny(newMask) || oldMask.Contains(&m.allComps[OnAddComponents])) {
 		return
 	}
-	if !m.anyNoWith[OnAddComponents] && !m.withOr[OnAddComponents].ContainsAny(newMask) {
+	if !m.anyNoWith[OnAddComponents] && !m.allWith[OnAddComponents].ContainsAny(newMask) {
 		return
 	}
 	observers := m.observers[OnAddComponents]
@@ -314,10 +314,10 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 
 func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitMask) {
 	if !m.anyNoComps[OnRemoveComponents] &&
-		(!m.compsOr[OnRemoveComponents].ContainsAny(oldMask) || newMask.Contains(&m.compsOr[OnRemoveComponents])) {
+		(!m.allComps[OnRemoveComponents].ContainsAny(oldMask) || newMask.Contains(&m.allComps[OnRemoveComponents])) {
 		return
 	}
-	if !m.anyNoWith[OnRemoveComponents] && !m.withOr[OnRemoveComponents].ContainsAny(newMask) {
+	if !m.anyNoWith[OnRemoveComponents] && !m.allWith[OnRemoveComponents].ContainsAny(newMask) {
 		return
 	}
 	observers := m.observers[OnRemoveComponents]
@@ -336,10 +336,10 @@ func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitM
 }
 
 func (m *observerManager) doFireSet(e Entity, mask *bitMask, newMask *bitMask) {
-	if !m.anyNoComps[OnSetComponents] && !m.compsOr[OnSetComponents].ContainsAny(mask) {
+	if !m.anyNoComps[OnSetComponents] && !m.allComps[OnSetComponents].ContainsAny(mask) {
 		return
 	}
-	if !m.anyNoWith[OnSetComponents] && !m.withOr[OnSetComponents].ContainsAny(newMask) {
+	if !m.anyNoWith[OnSetComponents] && !m.allWith[OnSetComponents].ContainsAny(newMask) {
 		return
 	}
 	observers := m.observers[OnSetComponents]
