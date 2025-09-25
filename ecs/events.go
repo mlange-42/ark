@@ -223,13 +223,6 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 	}
 }
 
-func (m *observerManager) FireRemove(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.hasObservers[OnRemoveComponents] {
-		return
-	}
-	m.doFireRemove(e, oldMask, newMask)
-}
-
 func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitMask) {
 	observers := m.observers[OnRemoveComponents]
 	for _, o := range observers {

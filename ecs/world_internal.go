@@ -94,7 +94,6 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 
 	tables := w.storage.getTables(batch)
 	batchTables := make([]batchTable, 0, len(tables))
-	var totalEntities uint32 = 0
 	for _, tableID := range tables {
 		table := &w.storage.tables[tableID]
 
@@ -110,7 +109,6 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			newTable: newTable.id,
 			len:      uint32(table.Len()),
 		})
-		totalEntities += uint32(table.Len())
 	}
 
 	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
