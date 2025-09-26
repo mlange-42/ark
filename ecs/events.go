@@ -197,18 +197,18 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 	o.id = m.pool.Get()
 
 	for _, c := range o.comps {
-		id := TypeID(w, c.tp)
+		id := c.getID(w)
 		o.compsMask.Set(id.id, true)
 	}
 	for _, c := range o.with {
-		id := TypeID(w, c.tp)
+		id := c.getID(w)
 		o.withMask.Set(id.id, true)
 	}
 	if o.exclusive {
 		o.withoutMask = o.withMask.Not()
 	} else {
 		for _, c := range o.without {
-			id := TypeID(w, c.tp)
+			id := c.getID(w)
 			o.withoutMask.Set(id.id, true)
 		}
 	}
