@@ -8,6 +8,10 @@ import (
 )
 
 var world = ecs.NewWorld()
+var builder = ecs.NewMap1[Position](&world)
+
+var entity = builder.NewEntity(&Position{})
+var uiElement = world.NewEntity()
 
 type Position struct {
 	X float64
@@ -91,4 +95,35 @@ func TestObserveAddWith(t *testing.T) {
 		With(ecs.C[Velocity]()).
 		Without(ecs.C[Altitude]()).
 		Do(func(e ecs.Entity, p *Position) { /* ... */ })
+}
+
+func TestNewEventType(t *testing.T) {
+	var OnSomethingHappened = ecs.NewEventType()
+
+	_ = OnSomethingHappened
+}
+
+func TestEventEmit(t *testing.T) {
+	// Define the event type.
+	var OnSynchronized = ecs.NewEventType()
+
+	// Add an observer for the event type.
+	ecs.Observe1[Position](OnSynchronized).
+		Do(func(e ecs.Entity, p *Position) { /*...*/ }).
+		Register(&world)
+
+	// Define the event.
+	event := ecs.NewEvent(OnSynchronized, &world).
+		For(ecs.C[Position]())
+
+	// Emit the event for an entity.
+	event.Emit(entity)
+}
+
+func TestEventClick(t *testing.T) {
+	// Define the event type.
+	var OnClick = ecs.NewEventType()
+
+	// Emit a click event.
+	ecs.NewEvent(OnClick, &world).Emit(uiElement)
 }
