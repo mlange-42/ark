@@ -2,12 +2,31 @@ package ecs
 
 import (
 	"fmt"
+	"math"
 	"testing"
 )
 
+var customEvent = NewEventType()
+
+func TestNewEventType(t *testing.T) {
+	e := NewEventType()
+	expectEqual(t, eventsEnd+1, e)
+	e = NewEventType()
+	expectEqual(t, eventsEnd+2, e)
+
+	for {
+		e = NewEventType()
+		if e == math.MaxUint8 {
+			break
+		}
+	}
+
+	expectPanicsWithValue(t, "reached maximum number of custom event types",
+		func() { NewEventType() })
+}
+
 func TestCustomEvent(t *testing.T) {
 	world := NewWorld()
-	customEvent := NewEventType()
 	builder := NewMap2[Position, Velocity](&world)
 
 	callCount := 0
@@ -28,9 +47,21 @@ func TestCustomEvent(t *testing.T) {
 	expectEqual(t, 2, callCount)
 }
 
+func TestCustomEventZero(t *testing.T) {
+	world := NewWorld()
+
+	callCount := 0
+	Observe(customEvent).
+		Do(func(e Entity) { callCount++ }).
+		Register(&world)
+
+	evt := NewEvent(customEvent, &world)
+	evt.Emit(Entity{})
+	expectEqual(t, 1, callCount)
+}
+
 func TestCustomEventGeneric(t *testing.T) {
 	world := NewWorld()
-	customEvent := NewEventType()
 	builder := NewMap2[Position, Velocity](&world)
 
 	callCount := 0
@@ -50,7 +81,6 @@ func TestCustomEventGeneric(t *testing.T) {
 
 func TestCustomEventEmpty(t *testing.T) {
 	world := NewWorld()
-	customEvent := NewEventType()
 	builder := NewMap2[Position, Velocity](&world)
 
 	callCount := 0
@@ -65,4 +95,30 @@ func TestCustomEventEmpty(t *testing.T) {
 	evt := NewEvent(customEvent, &world)
 	evt.Emit(e)
 	expectEqual(t, 1, callCount)
+}
+
+func TestCustomEventErrors(t *testing.T) {
+	world := NewWorld()
+
+	Observe1[Position](customEvent).
+		Do(func(e Entity, p *Position) {}).
+		Register(&world)
+
+	e := world.NewEntity()
+
+	expectPanicsWithValue(t, "only custom events can be emitted manually",
+		func() {
+			NewEvent(OnCreateEntity, &world)
+		})
+
+	expectPanicsWithValue(t, "entity does not have the required event components",
+		func() {
+			NewEvent(customEvent, &world).For(C[Position]()).Emit(e)
+		})
+
+	world.RemoveEntity(e)
+	expectPanicsWithValue(t, "can't emit an event for a dead entity",
+		func() {
+			NewEvent(customEvent, &world).Emit(e)
+		})
 }

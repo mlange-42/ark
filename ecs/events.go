@@ -39,16 +39,15 @@ const (
 	eventsEnd
 )
 
-var nextUserEvent = eventsEnd
+var nextUserEvent = eventsEnd - 1
 
 // NewEventType creates a new EventType for custom events.
 func NewEventType() EventType {
 	if nextUserEvent == math.MaxUint8 {
 		panic("reached maximum number of custom event types")
 	}
-	e := EventType(nextUserEvent)
 	nextUserEvent++
-	return e
+	return EventType(nextUserEvent)
 }
 
 type observerManager struct {

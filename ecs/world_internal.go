@@ -344,7 +344,7 @@ func (w *World) emitEvent(e *Event, entity Entity) {
 		mask = &w.storage.archetypes[w.storage.tables[table].archetype].mask
 	}
 	if !mask.Contains(&e.mask) {
-		panic("entity does not have the required components")
+		panic("entity does not have the required event components")
 	}
 	w.storage.observers.FireCustom(e.eventType, entity, &e.mask, mask)
 }
