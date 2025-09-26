@@ -1,0 +1,156 @@
+package ecs
+
+import (
+	"fmt"
+	"math"
+	"testing"
+)
+
+var customEvent = NewEventType()
+
+func TestNewEventType(t *testing.T) {
+	e := NewEventType()
+	expectEqual(t, eventsEnd+1, e)
+	e = NewEventType()
+	expectEqual(t, eventsEnd+2, e)
+
+	for {
+		e = NewEventType()
+		if e == math.MaxUint8 {
+			break
+		}
+	}
+
+	expectPanicsWithValue(t, "reached maximum number of custom event types",
+		func() { NewEventType() })
+}
+
+func TestCustomEvent(t *testing.T) {
+	world := NewWorld()
+	builder := NewMap2[Position, Velocity](&world)
+
+	callCount := 0
+	Observe(customEvent).
+		For(C[Position]()).
+		Do(func(e Entity) { callCount++ }).
+		Register(&world)
+
+	e := builder.NewEntity(&Position{1, 2}, &Velocity{3, 4})
+
+	evt := NewEvent(customEvent, &world).For(C[Position]())
+
+	evt.Emit(e)
+	expectEqual(t, 1, callCount)
+	NewEvent(customEvent, &world).For(C[Velocity]()).Emit(e)
+	expectEqual(t, 1, callCount)
+	evt.Emit(e)
+	expectEqual(t, 2, callCount)
+}
+
+func TestCustomEventZero(t *testing.T) {
+	world := NewWorld()
+
+	callCount := 0
+	Observe(customEvent).
+		Do(func(e Entity) { callCount++ }).
+		Register(&world)
+
+	evt := NewEvent(customEvent, &world)
+	evt.Emit(Entity{})
+	expectEqual(t, 1, callCount)
+}
+
+func TestCustomEventGeneric(t *testing.T) {
+	world := NewWorld()
+	builder := NewMap2[Position, Velocity](&world)
+
+	callCount := 0
+	Observe1[Position](customEvent).
+		Do(func(e Entity, pos *Position) {
+			callCount++
+			fmt.Printf("%#v", pos)
+		}).
+		Register(&world)
+
+	e := builder.NewEntity(&Position{1, 2}, &Velocity{3, 4})
+
+	evt := NewEvent(customEvent, &world).For(C[Position]())
+	evt.Emit(e)
+	expectEqual(t, 1, callCount)
+}
+
+func TestCustomEventEmpty(t *testing.T) {
+	world := NewWorld()
+	builder := NewMap2[Position, Velocity](&world)
+
+	callCount := 0
+	Observe(customEvent).
+		Do(func(e Entity) {
+			callCount++
+		}).
+		Register(&world)
+
+	e := builder.NewEntity(&Position{1, 2}, &Velocity{3, 4})
+
+	evt := NewEvent(customEvent, &world)
+	evt.Emit(e)
+	expectEqual(t, 1, callCount)
+}
+
+func TestCustomEventErrors(t *testing.T) {
+	world := NewWorld()
+
+	Observe1[Position](customEvent).
+		Do(func(e Entity, p *Position) {}).
+		Register(&world)
+
+	e := world.NewEntity()
+
+	expectPanicsWithValue(t, "only custom events can be emitted manually",
+		func() {
+			NewEvent(OnCreateEntity, &world)
+		})
+
+	expectPanicsWithValue(t, "entity does not have the required event components",
+		func() {
+			NewEvent(customEvent, &world).For(C[Position]()).Emit(e)
+		})
+
+	world.RemoveEntity(e)
+	expectPanicsWithValue(t, "can't emit an event for a dead entity",
+		func() {
+			NewEvent(customEvent, &world).Emit(e)
+		})
+}
+
+func BenchmarkEventEmit(b *testing.B) {
+	w := NewWorld()
+	builder := NewMap1[Position](&w)
+	e := builder.NewEntity(&Position{})
+
+	evt := NewEvent(customEvent, &w)
+
+	for b.Loop() {
+		evt.Emit(e)
+	}
+}
+
+func BenchmarkEventCreateEmit(b *testing.B) {
+	w := NewWorld()
+	builder := NewMap1[Position](&w)
+	e := builder.NewEntity(&Position{})
+
+	for b.Loop() {
+		NewEvent(customEvent, &w).Emit(e)
+	}
+}
+
+func BenchmarkEventCreateForEmit(b *testing.B) {
+	w := NewWorld()
+	builder := NewMap1[Position](&w)
+	e := builder.NewEntity(&Position{})
+
+	for b.Loop() {
+		NewEvent(customEvent, &w).For(C[Position]()).Emit(e)
+	}
+}
