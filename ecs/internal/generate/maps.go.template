@@ -11,6 +11,7 @@ package ecs
 {{- $genericsShort := join "[" ", " "]" $upper -}}
 {{- $return := join "" ", " "" $lower -}}
 {{- $returnTypes := join "(*" ", *" ")" $upper -}}
+{{- $fn_args := join "*" ", *" "" $upper -}}
 {{- $args := arguments $lower $upper "" "" -}}
 {{- $args2 := arguments $lower $upper "p" "" -}}
 {{- $mask := join "id" ", id" "" $upper -}}
@@ -78,7 +79,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...Relation) Entit
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$args}}), rel ...Relation) Entity {
+func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$fn_args}}), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -113,7 +114,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...Relat
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity, {{$args}}), rel ...Relation) {
+func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn_args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -228,7 +229,7 @@ func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...Relati
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$args}}), rel ...Relation) {
+func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -291,7 +292,7 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...Re
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Entity, {{$args}}), rel ...Relation) {
+func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(Entity, {{$fn_args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
