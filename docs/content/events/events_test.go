@@ -17,7 +17,7 @@ type Position struct {
 func TestEventsBasic(t *testing.T) {
 	// Create an observer.
 	ecs.Observe(ecs.OnCreateEntity).
-		For(ecs.C[Position]()).
+		With(ecs.C[Position]()).
 		Do(func(e ecs.Entity) {
 			fmt.Printf("%#v\n", e)
 		}).
