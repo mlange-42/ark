@@ -9,10 +9,13 @@ type observerID uint32
 const maxObserverID = math.MaxUint32
 
 // EventType is the type for event identifiers.
+// Use [NewEventType] to create custom events types.
+// See below for predefined event types.
 //
 // See [Observer] for details on events and observers.
 type EventType uint8
 
+// Predefined event types.
 const (
 
 	// OnCreateEntity event.
@@ -42,6 +45,9 @@ const (
 var nextUserEvent = eventsEnd - 1
 
 // NewEventType creates a new EventType for custom events.
+// Custom event types should be stored in global variables.
+//
+// The maximum number of event types is 255, with 5 predefined and 250 potential custom types.
 func NewEventType() EventType {
 	if nextUserEvent == math.MaxUint8 {
 		panic("reached maximum number of custom event types")
