@@ -74,6 +74,8 @@ func Observe(evt EventType) *Observer {
 // For adds components that the observer observes.
 // Can only be used with OnAddComponents, OnRemoveComponents and OnSetComponents.
 // The observer triggers if these components are added to or removed from an entity.
+//
+// If not specified, the observer triggers on any component addition or removal.
 // If multiple components are provided, all must be added/removed at the same time to trigger the observer.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
