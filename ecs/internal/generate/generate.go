@@ -13,3 +13,4 @@ package main
 //go:generate go fmt ../../exchange_gen.go
 //go:generate go fmt ../../exchange_gen_test.go
 //go:generate go fmt ../../observers_gen.go
+//go:generate go fmt ../../observers_gen_test.go

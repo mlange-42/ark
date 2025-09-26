@@ -71,19 +71,24 @@ func (o *Observer{{.}}{{$genericsShort}}) Do(fn func(Entity, {{$fn_args}})) *Obs
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer{{.}}{{$genericsShort}}) Register(w *World) *Observer{{.}}{{$genericsShort}} {
+	if o.observer.id != maxObserverID {
+		panic("observer is already registered")
+	}
 	{{- range $i, $v := $upper}}
 	storage{{$v}} := &w.storage.components[ComponentID[{{$v}}](w).id]
 	{{- end}}
 
-	o.observer.callback = func(e Entity) {
-		index := &w.storage.entities[e.id]
-		row := uintptr(index.row)
-		o.callback(
-			e,
-			{{- range $i, $v := $upper}}
-			(*{{$v}})(storage{{$v}}.columns[index.table].Get(row)),
-			{{- end}}
-		)
+	if o.callback != nil {
+		o.observer.callback = func(e Entity) {
+			index := &w.storage.entities[e.id]
+			row := uintptr(index.row)
+			o.callback(
+				e,
+				{{- range $i, $v := $upper}}
+				(*{{$v}})(storage{{$v}}.columns[index.table].Get(row)),
+				{{- end}}
+			)
+		}
 	}
 
 	// TODO: optimize to use IDs.

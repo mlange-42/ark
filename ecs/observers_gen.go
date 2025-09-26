@@ -64,15 +64,20 @@ func (o *Observer1[A]) Do(fn func(Entity, *A)) *Observer1[A] {
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer1[A]) Register(w *World) *Observer1[A] {
+	if o.observer.id != maxObserverID {
+		panic("observer is already registered")
+	}
 	storageA := &w.storage.components[ComponentID[A](w).id]
 
-	o.observer.callback = func(e Entity) {
-		index := &w.storage.entities[e.id]
-		row := uintptr(index.row)
-		o.callback(
-			e,
-			(*A)(storageA.columns[index.table].Get(row)),
-		)
+	if o.callback != nil {
+		o.observer.callback = func(e Entity) {
+			index := &w.storage.entities[e.id]
+			row := uintptr(index.row)
+			o.callback(
+				e,
+				(*A)(storageA.columns[index.table].Get(row)),
+			)
+		}
 	}
 
 	// TODO: optimize to use IDs.
@@ -151,17 +156,22 @@ func (o *Observer2[A, B]) Do(fn func(Entity, *A, *B)) *Observer2[A, B] {
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer2[A, B]) Register(w *World) *Observer2[A, B] {
+	if o.observer.id != maxObserverID {
+		panic("observer is already registered")
+	}
 	storageA := &w.storage.components[ComponentID[A](w).id]
 	storageB := &w.storage.components[ComponentID[B](w).id]
 
-	o.observer.callback = func(e Entity) {
-		index := &w.storage.entities[e.id]
-		row := uintptr(index.row)
-		o.callback(
-			e,
-			(*A)(storageA.columns[index.table].Get(row)),
-			(*B)(storageB.columns[index.table].Get(row)),
-		)
+	if o.callback != nil {
+		o.observer.callback = func(e Entity) {
+			index := &w.storage.entities[e.id]
+			row := uintptr(index.row)
+			o.callback(
+				e,
+				(*A)(storageA.columns[index.table].Get(row)),
+				(*B)(storageB.columns[index.table].Get(row)),
+			)
+		}
 	}
 
 	// TODO: optimize to use IDs.
@@ -241,19 +251,24 @@ func (o *Observer3[A, B, C]) Do(fn func(Entity, *A, *B, *C)) *Observer3[A, B, C]
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer3[A, B, C]) Register(w *World) *Observer3[A, B, C] {
+	if o.observer.id != maxObserverID {
+		panic("observer is already registered")
+	}
 	storageA := &w.storage.components[ComponentID[A](w).id]
 	storageB := &w.storage.components[ComponentID[B](w).id]
 	storageC := &w.storage.components[ComponentID[C](w).id]
 
-	o.observer.callback = func(e Entity) {
-		index := &w.storage.entities[e.id]
-		row := uintptr(index.row)
-		o.callback(
-			e,
-			(*A)(storageA.columns[index.table].Get(row)),
-			(*B)(storageB.columns[index.table].Get(row)),
-			(*C)(storageC.columns[index.table].Get(row)),
-		)
+	if o.callback != nil {
+		o.observer.callback = func(e Entity) {
+			index := &w.storage.entities[e.id]
+			row := uintptr(index.row)
+			o.callback(
+				e,
+				(*A)(storageA.columns[index.table].Get(row)),
+				(*B)(storageB.columns[index.table].Get(row)),
+				(*C)(storageC.columns[index.table].Get(row)),
+			)
+		}
 	}
 
 	// TODO: optimize to use IDs.
@@ -334,21 +349,26 @@ func (o *Observer4[A, B, C, D]) Do(fn func(Entity, *A, *B, *C, *D)) *Observer4[A
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer4[A, B, C, D]) Register(w *World) *Observer4[A, B, C, D] {
+	if o.observer.id != maxObserverID {
+		panic("observer is already registered")
+	}
 	storageA := &w.storage.components[ComponentID[A](w).id]
 	storageB := &w.storage.components[ComponentID[B](w).id]
 	storageC := &w.storage.components[ComponentID[C](w).id]
 	storageD := &w.storage.components[ComponentID[D](w).id]
 
-	o.observer.callback = func(e Entity) {
-		index := &w.storage.entities[e.id]
-		row := uintptr(index.row)
-		o.callback(
-			e,
-			(*A)(storageA.columns[index.table].Get(row)),
-			(*B)(storageB.columns[index.table].Get(row)),
-			(*C)(storageC.columns[index.table].Get(row)),
-			(*D)(storageD.columns[index.table].Get(row)),
-		)
+	if o.callback != nil {
+		o.observer.callback = func(e Entity) {
+			index := &w.storage.entities[e.id]
+			row := uintptr(index.row)
+			o.callback(
+				e,
+				(*A)(storageA.columns[index.table].Get(row)),
+				(*B)(storageB.columns[index.table].Get(row)),
+				(*C)(storageC.columns[index.table].Get(row)),
+				(*D)(storageD.columns[index.table].Get(row)),
+			)
+		}
 	}
 
 	// TODO: optimize to use IDs.

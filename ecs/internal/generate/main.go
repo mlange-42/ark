@@ -24,6 +24,7 @@ var files = []genFile{
 	{"./exchange.go.template", "../../exchange_gen.go"},
 	{"./exchange_test.go.template", "../../exchange_gen_test.go"},
 	{"./observers.go.template", "../../observers_gen.go"},
+	{"./observers_test.go.template", "../../observers_gen_test.go"},
 }
 
 func main() {
