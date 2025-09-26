@@ -57,12 +57,13 @@ type Observer struct {
 	hasComps    bool
 	hasWithout  bool
 	hasWith     bool
+	exclusive   bool
 }
 
 // Observe creates a new ECS event observer for the specified event type.
 //
 // Observers react to structural changes, such as entity creation, removal, and component addition/removal.
-// Use the methods With, Without, and Do to configure the observer before registering it.
+// Use the methods For, With, Without, Exclusive, and Do to configure the observer before registering it.
 func Observe(evt EventType) *Observer {
 	return &Observer{
 		event: evt,
@@ -119,6 +120,19 @@ func (o *Observer) Without(comps ...Comp) *Observer {
 		return o
 	}
 	o.without = append(o.without, comps...)
+	o.hasWithout = true
+	return o
+}
+
+// Exclusive makes the observer exclusive in the sense that the components given by [Observer.With]
+// are matched exactly, and no other components are allowed.
+//
+// Overwrites components set via [Observer.Without].
+func (o *Observer) Exclusive() *Observer {
+	if o.id != maxObserverID {
+		panic("can't modify a registered observer")
+	}
+	o.exclusive = true
 	o.hasWithout = true
 	return o
 }
@@ -188,9 +202,13 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 		id := TypeID(w, c.tp)
 		o.withMask.Set(id.id, true)
 	}
-	for _, c := range o.without {
-		id := TypeID(w, c.tp)
-		o.withoutMask.Set(id.id, true)
+	if o.exclusive {
+		o.withoutMask = o.withMask.Not()
+	} else {
+		for _, c := range o.without {
+			id := TypeID(w, c.tp)
+			o.withoutMask.Set(id.id, true)
+		}
 	}
 
 	m.observers[o.event] = append(m.observers[o.event], o)
