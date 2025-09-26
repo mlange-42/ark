@@ -4,9 +4,9 @@ import (
 	"math"
 )
 
-type observerID uint16
+type observerID uint32
 
-const maxObserverID = math.MaxUint16
+const maxObserverID = math.MaxUint32
 
 // EventType is the type for event identifiers.
 // See [Observer] for details on events.
