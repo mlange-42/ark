@@ -42,14 +42,40 @@ The callback is set up to be able to distinguish between these event types (if n
 
 ## Filters
 
-**Component events** (`OnAddComponents`, `OnRemoveComponents`, `OnSetComponents`)
-can be filtered by the affected components using {{< api ecs Observer.For >}}.
-If this filter is not used, the observer triggers on any events of its type.
-If a single component is specified, the observer triggers only on add/remove/set of this component.
-If multiple components are specified, all must be added/removed/set at the same time for the observer to trigger.
+Observers filter for the components specified by their generic parameters.
+Additional components can be specified using {{< api ecs Observer.For >}},
+but they are not directly accessible in the callback.
 
-**All events** can be filtered by the composition of the affected entity via
+If multiple components are specified (in parameters and in `For`),
+all these components must be affected (added, removed, created, ...)
+at the same time for the observer to trigger.
+
+Further, events can be filtered by the composition of the affected entity via
 {{< api ecs Observer.With >}}, {{< api ecs Observer.Without >}} and {{< api ecs Observer.Exclusive >}}, just like [queries](../queries/).
+
+**Examples** (leaving out observer registration):
+
+Both observers are triggered when an entity with `Position` is created.
+The first one has direct access to the component in the callback while the second does not:
+
+{{< code-func events_test.go TestObserveCreate >}}
+
+Both observers are triggered when an entity with `Position` as well as `Velocity` is created:
+
+{{< code-func events_test.go TestObserve2Create >}}
+
+An observer that is triggered when any entity is created, irrespective of its components:
+
+{{< code-func events_test.go TestObserveCreateEmpty >}}
+
+An observer that is triggered when a `Position` component is added to an existing entity:
+
+{{< code-func events_test.go TestObserveAdd >}}
+
+An observer that is triggered when a `Position` component is added to an entity
+that has `Velocity`, but not `Altitude` (or rather, had before the operation):
+
+{{< code-func events_test.go TestObserveAddWith >}}
 
 ## Event timing
 
@@ -68,6 +94,5 @@ For [batch operations](../batch), all events are fired before or after the entir
 For batch creation or addition, events are fired after the potential batch callback
 is executed for all entities, allowing to inspect the result.
 
-## Observer order
-
-Observer order for the same event type is undefined.
+Note that observer order is undefined. Observers are not necessarily triggered
+in the same order as they were registered.
