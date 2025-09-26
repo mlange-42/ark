@@ -91,6 +91,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 		}
 		return
 	}
+	lock := w.lock()
 
 	tables := w.storage.getTables(batch)
 	batchTables := make([]batchTable, 0, len(tables))
@@ -112,7 +113,6 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	}
 
 	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
-		l := w.lock()
 		for _, batch := range batchTables {
 			table := &w.storage.tables[batch.oldTable]
 			oldMask := &w.storage.archetypes[table.id].mask
@@ -126,7 +126,6 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 				earlyOut = false
 			}
 		}
-		w.unlock(l)
 	}
 
 	for i := range batchTables {
@@ -141,7 +140,6 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	}
 
 	if len(add) > 0 && w.storage.observers.HasObservers(OnAddComponents) {
-		lock := w.lock()
 		for _, batch := range batchTables {
 			table := &w.storage.tables[batch.newTable]
 			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].id].mask
@@ -155,8 +153,8 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 				earlyOut = false
 			}
 		}
-		w.unlock(lock)
 	}
+	w.unlock(lock)
 }
 
 func (w *World) exchangeTable(oldTableID, newTableID tableID, relations []relationID) (uint32, uint32) {

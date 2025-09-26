@@ -302,7 +302,6 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Ent
 			column{{.}} := m.storage{{.}}.columns[tableID]
 			{{- end}}
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -312,7 +311,6 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(entity Ent
 					{{- end}}
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)

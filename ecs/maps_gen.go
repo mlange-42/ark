@@ -251,7 +251,6 @@ func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...
 			table := &m.world.storage.tables[tableID]
 			columnA := m.storageA.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -259,7 +258,6 @@ func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...
 					(*A)(columnA.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -574,7 +572,6 @@ func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B)
 			columnA := m.storageA.columns[tableID]
 			columnB := m.storageB.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -583,7 +580,6 @@ func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B)
 					(*B)(columnB.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -927,7 +923,6 @@ func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b 
 			columnB := m.storageB.columns[tableID]
 			columnC := m.storageC.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -937,7 +932,6 @@ func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b 
 					(*C)(columnC.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -1306,7 +1300,6 @@ func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A,
 			columnC := m.storageC.columns[tableID]
 			columnD := m.storageD.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -1317,7 +1310,6 @@ func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A,
 					(*D)(columnD.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -1711,7 +1703,6 @@ func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a 
 			columnD := m.storageD.columns[tableID]
 			columnE := m.storageE.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -1723,7 +1714,6 @@ func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a 
 					(*E)(columnE.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -2142,7 +2132,6 @@ func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity,
 			columnE := m.storageE.columns[tableID]
 			columnF := m.storageF.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -2155,7 +2144,6 @@ func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity,
 					(*F)(columnF.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -2599,7 +2587,6 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Enti
 			columnF := m.storageF.columns[tableID]
 			columnG := m.storageG.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -2613,7 +2600,6 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Enti
 					(*G)(columnG.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -3082,7 +3068,6 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity E
 			columnG := m.storageG.columns[tableID]
 			columnH := m.storageH.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -3097,7 +3082,6 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity E
 					(*H)(columnH.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -3591,7 +3575,6 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(entit
 			columnH := m.storageH.columns[tableID]
 			columnI := m.storageI.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -3607,7 +3590,6 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(entit
 					(*I)(columnI.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -4126,7 +4108,6 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(e
 			columnI := m.storageI.columns[tableID]
 			columnJ := m.storageJ.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -4143,7 +4124,6 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(e
 					(*J)(columnJ.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -4687,7 +4667,6 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn fun
 			columnJ := m.storageJ.columns[tableID]
 			columnK := m.storageK.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -4705,7 +4684,6 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn fun
 					(*K)(columnK.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)
@@ -5274,7 +5252,6 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn 
 			columnK := m.storageK.columns[tableID]
 			columnL := m.storageL.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -5293,7 +5270,6 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn 
 					(*L)(columnL.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids, nil, m.relations, process)

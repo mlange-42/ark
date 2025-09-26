@@ -708,7 +708,7 @@ func TestWorldShrinkTime(t *testing.T) {
 	childFilter := NewFilter1[ChildOf](&w)
 
 	parents := []Entity{}
-	w.NewEntities(10000, func(entity Entity) {
+	w.NewEntities(25000, func(entity Entity) {
 		parents = append(parents, entity)
 	})
 	for _, parent := range parents {

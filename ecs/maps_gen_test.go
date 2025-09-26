@@ -125,6 +125,7 @@ func TestMap1NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter1[CompA](&w)
@@ -222,6 +223,7 @@ func TestMap1AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -426,6 +428,7 @@ func TestMap2NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter2[CompA, CompB](&w)
@@ -523,6 +526,7 @@ func TestMap2AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -731,6 +735,7 @@ func TestMap3NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter3[CompA, CompB, CompC](&w)
@@ -828,6 +833,7 @@ func TestMap3AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -1040,6 +1046,7 @@ func TestMap4NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
@@ -1137,6 +1144,7 @@ func TestMap4AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -1353,6 +1361,7 @@ func TestMap5NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
@@ -1450,6 +1459,7 @@ func TestMap5AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -1670,6 +1680,7 @@ func TestMap6NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
@@ -1767,6 +1778,7 @@ func TestMap6AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -1991,6 +2003,7 @@ func TestMap7NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
@@ -2088,6 +2101,7 @@ func TestMap7AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -2316,6 +2330,7 @@ func TestMap8NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
@@ -2413,6 +2428,7 @@ func TestMap8AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -2645,6 +2661,7 @@ func TestMap9NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
@@ -2742,6 +2759,7 @@ func TestMap9AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -2979,6 +2997,7 @@ func TestMap10NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
@@ -3076,6 +3095,7 @@ func TestMap10AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -3317,6 +3337,7 @@ func TestMap11NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
@@ -3414,6 +3435,7 @@ func TestMap11AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -3659,6 +3681,7 @@ func TestMap12NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH, i *CompI, j *CompJ, k *CompK, l *CompL) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
@@ -3756,6 +3779,7 @@ func TestMap12AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
