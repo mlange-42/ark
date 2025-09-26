@@ -89,6 +89,8 @@ func TestCompType(t *testing.T) {
 	expectEqual(t, 1, id.id)
 	expectEqual(t, 1, c.id.id)
 	expectTrue(t, c.hasID)
+
+	expectEqual(t, 1, c.getID(&w).id)
 }
 
 func TestResourceTypeID(t *testing.T) {
