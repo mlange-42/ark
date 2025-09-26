@@ -1,7 +1,6 @@
 package ecs
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -344,8 +343,8 @@ func (w *World) emitEvent(e *Event, entity Entity) {
 		table := w.storage.entities[entity.id].table
 		mask = &w.storage.archetypes[w.storage.tables[table].archetype].mask
 	}
-	if e.hasComp && !mask.Get(e.component.id) {
-		panic(fmt.Sprintf("event entity does not have component with ID %d", e.component.id))
+	if !mask.Contains(&e.mask) {
+		panic("entity does not have the required components")
 	}
-	w.storage.observers.FireCustom(e.eventType, entity, e.component, e.hasComp, mask)
+	w.storage.observers.FireCustom(e.eventType, entity, &e.mask, mask)
 }

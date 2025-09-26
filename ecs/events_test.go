@@ -18,7 +18,6 @@ func TestCustomEvent(t *testing.T) {
 	e := world.NewEntity()
 
 	evt := NewEvent(customEvent, &world).For(C[Position]())
-	expectTrue(t, evt.hasComp)
 
 	evt.Emit(e)
 	expectEqual(t, 1, callCount)

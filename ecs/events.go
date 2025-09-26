@@ -307,15 +307,15 @@ func (m *observerManager) doFireSet(e Entity, mask *bitMask, newMask *bitMask) {
 	}
 }
 
-func (m *observerManager) FireCustom(evt EventType, e Entity, comp ID, hasComp bool, entityMask *bitMask) {
+func (m *observerManager) FireCustom(evt EventType, e Entity, mask, entityMask *bitMask) {
 	if !m.hasObservers[evt] {
 		return
 	}
-	m.doFireCustom(evt, e, comp, hasComp, entityMask)
+	m.doFireCustom(evt, e, mask, entityMask)
 }
 
-func (m *observerManager) doFireCustom(evt EventType, e Entity, comp ID, hasComp bool, entityMask *bitMask) {
-	if !m.anyNoComps[evt] && (!hasComp || !m.allComps[evt].Get(comp.id)) {
+func (m *observerManager) doFireCustom(evt EventType, e Entity, mask, entityMask *bitMask) {
+	if !m.anyNoComps[evt] && !m.allComps[OnSetComponents].ContainsAny(mask) {
 		return
 	}
 	if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(entityMask) {
@@ -323,10 +323,7 @@ func (m *observerManager) doFireCustom(evt EventType, e Entity, comp ID, hasComp
 	}
 	observers := m.observers[evt]
 	for _, o := range observers {
-		if hasComp && o.hasComps && !o.compsMask.Get(comp.id) {
-			continue
-		}
-		if o.hasComps && !hasComp {
+		if o.hasComps && !mask.Contains(&o.compsMask) {
 			continue
 		}
 		if o.hasWith && !entityMask.Contains(&o.withMask) {
@@ -343,8 +340,7 @@ func (m *observerManager) doFireCustom(evt EventType, e Entity, comp ID, hasComp
 type Event struct {
 	world     *World
 	eventType EventType
-	component ID
-	hasComp   bool
+	mask      bitMask
 }
 
 // NewEvent creates a new event for the given type.
@@ -358,15 +354,14 @@ func NewEvent(e EventType, world *World) Event {
 	}
 }
 
-// For sets the event's component type. Optional.
+// For sets the event's component types. Optional.
 // For best performance, store the event after setting the component type,
 // and re-use afterwards be overwriting the entity.
-func (e Event) For(comp Comp) Event {
-	if e.hasComp {
-		panic("event already has a component")
+func (e Event) For(comps ...Comp) Event {
+	for i := range comps {
+		id := TypeID(e.world, comps[i].tp)
+		e.mask.Set(id.id, true)
 	}
-	e.component = TypeID(e.world, comp.tp)
-	e.hasComp = true
 	return e
 }
 
