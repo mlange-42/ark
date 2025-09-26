@@ -72,13 +72,6 @@ func (o *Observer2[A, B]) Do(fn func(Entity, *A, *B)) *Observer2[A, B] {
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer2[A, B]) Register(w *World) *Observer2[A, B] {
-	if o.callback == nil {
-		panic("observer callback must be set via Do before registering")
-	}
-	if o.observer.id != maxObserverID {
-		panic("observer is already registered")
-	}
-
 	idA := ComponentID[A](w)
 	idB := ComponentID[A](w)
 	storageA := &w.storage.components[idA.id]
@@ -105,9 +98,6 @@ func (o *Observer2[A, B]) Register(w *World) *Observer2[A, B] {
 
 // Unregister this observer.
 func (o *Observer2[A, B]) Unregister(w *World) *Observer2[A, B] {
-	if o.observer.id == maxObserverID {
-		panic("observer is not registered")
-	}
 	w.unregisterObserver(&o.observer)
 	return o
 }

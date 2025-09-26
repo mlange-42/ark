@@ -150,21 +150,12 @@ func (o *Observer) Do(fn func(Entity)) *Observer {
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer) Register(w *World) *Observer {
-	if o.callback == nil {
-		panic("observer callback must be set via Do before registering")
-	}
-	if o.id != maxObserverID {
-		panic("observer is already registered")
-	}
 	w.registerObserver(o)
 	return o
 }
 
 // Unregister this observer.
 func (o *Observer) Unregister(w *World) *Observer {
-	if o.id == maxObserverID {
-		panic("observer is not registered")
-	}
 	w.unregisterObserver(o)
 	return o
 }
@@ -194,6 +185,13 @@ func newObserverManager() observerManager {
 }
 
 func (m *observerManager) AddObserver(o *Observer, w *World) {
+	if o.callback == nil {
+		panic("observer callback must be set via Do before registering")
+	}
+	if o.id != maxObserverID {
+		panic("observer is already registered")
+	}
+
 	o.id = m.pool.Get()
 
 	for _, c := range o.comps {
@@ -235,6 +233,10 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 }
 
 func (m *observerManager) RemoveObserver(o *Observer) {
+	if o.id == maxObserverID {
+		panic("observer is not registered")
+	}
+
 	idx, ok := m.indices[o.id]
 	if !ok {
 		panic("can't unregister observer, not found")
