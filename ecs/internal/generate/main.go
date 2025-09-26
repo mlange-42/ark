@@ -23,6 +23,7 @@ var files = []genFile{
 	{"./maps_test.go.template", "../../maps_gen_test.go"},
 	{"./exchange.go.template", "../../exchange_gen.go"},
 	{"./exchange_test.go.template", "../../exchange_gen_test.go"},
+	{"./observers.go.template", "../../observers_gen.go"},
 }
 
 func main() {

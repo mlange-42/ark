@@ -19,5 +19,5 @@ func TestObserver2(t *testing.T) {
 	//e := w.NewEntity()
 	//builder.Add(e, &Position{}, &Velocity{})
 
-	builder.NewEntity(&Position{}, &Velocity{})
+	builder.NewEntity(&Position{1, 2}, &Velocity{3, 4})
 }
