@@ -2,9 +2,9 @@ package ecs
 
 import "math"
 
-type cacheID uint16
+type cacheID uint32
 
-const maxCacheID = math.MaxUint16
+const maxCacheID = math.MaxUint32
 
 // Cache entry for a filter.
 type cacheEntry struct {
