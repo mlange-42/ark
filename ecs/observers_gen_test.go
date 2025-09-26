@@ -38,29 +38,36 @@ func TestObserve1(t *testing.T) {
 
 	obs = Observe1[CompA](OnAddComponents).Do(func(e Entity, a *CompA) {})
 
-	obs = obs.For()
-	expectEqual(t, 0, len(obs.observer.comps))
-	expectFalse(t, obs.observer.hasComps)
+	obs.For()
+	expectEqual(t, 0, len(obs.comps))
 
-	obs = obs.For(C[Position]())
-	expectEqual(t, 1, len(obs.observer.comps))
-	expectTrue(t, obs.observer.hasComps)
+	obs.For(C[Position]())
+	expectEqual(t, 1, len(obs.comps))
 
-	obs = obs.With()
+	obs.With()
 	expectEqual(t, 0, len(obs.observer.with))
 	expectFalse(t, obs.observer.hasWith)
 
-	obs = obs.With(C[Position]())
+	obs.With(C[Position]())
 	expectEqual(t, 1, len(obs.observer.with))
 	expectTrue(t, obs.observer.hasWith)
 
-	obs = obs.Without()
+	obs.Without()
 	expectEqual(t, 0, len(obs.observer.without))
 	expectFalse(t, obs.observer.hasWithout)
 
-	obs = obs.Without(C[Position]())
+	obs.Without(C[Position]())
 	expectEqual(t, 1, len(obs.observer.without))
 	expectTrue(t, obs.observer.hasWithout)
+
+	obs.Register(&w)
+	expectEqual(t, 1+1, len(obs.observer.comps))
+	expectTrue(t, obs.observer.hasComps)
+
+	obs.Unregister(&w)
+	obs.Register(&w)
+	expectEqual(t, 1+1, len(obs.observer.comps))
+	expectTrue(t, obs.observer.hasComps)
 }
 
 func TestObserver1Register(t *testing.T) {
@@ -138,29 +145,36 @@ func TestObserve2(t *testing.T) {
 
 	obs = Observe2[CompA, CompB](OnAddComponents).Do(func(e Entity, a *CompA, b *CompB) {})
 
-	obs = obs.For()
-	expectEqual(t, 0, len(obs.observer.comps))
-	expectFalse(t, obs.observer.hasComps)
+	obs.For()
+	expectEqual(t, 0, len(obs.comps))
 
-	obs = obs.For(C[Position]())
-	expectEqual(t, 1, len(obs.observer.comps))
-	expectTrue(t, obs.observer.hasComps)
+	obs.For(C[Position]())
+	expectEqual(t, 1, len(obs.comps))
 
-	obs = obs.With()
+	obs.With()
 	expectEqual(t, 0, len(obs.observer.with))
 	expectFalse(t, obs.observer.hasWith)
 
-	obs = obs.With(C[Position]())
+	obs.With(C[Position]())
 	expectEqual(t, 1, len(obs.observer.with))
 	expectTrue(t, obs.observer.hasWith)
 
-	obs = obs.Without()
+	obs.Without()
 	expectEqual(t, 0, len(obs.observer.without))
 	expectFalse(t, obs.observer.hasWithout)
 
-	obs = obs.Without(C[Position]())
+	obs.Without(C[Position]())
 	expectEqual(t, 1, len(obs.observer.without))
 	expectTrue(t, obs.observer.hasWithout)
+
+	obs.Register(&w)
+	expectEqual(t, 2+1, len(obs.observer.comps))
+	expectTrue(t, obs.observer.hasComps)
+
+	obs.Unregister(&w)
+	obs.Register(&w)
+	expectEqual(t, 2+1, len(obs.observer.comps))
+	expectTrue(t, obs.observer.hasComps)
 }
 
 func TestObserver2Register(t *testing.T) {
@@ -239,29 +253,36 @@ func TestObserve3(t *testing.T) {
 
 	obs = Observe3[CompA, CompB, CompC](OnAddComponents).Do(func(e Entity, a *CompA, b *CompB, c *CompC) {})
 
-	obs = obs.For()
-	expectEqual(t, 0, len(obs.observer.comps))
-	expectFalse(t, obs.observer.hasComps)
+	obs.For()
+	expectEqual(t, 0, len(obs.comps))
 
-	obs = obs.For(C[Position]())
-	expectEqual(t, 1, len(obs.observer.comps))
-	expectTrue(t, obs.observer.hasComps)
+	obs.For(C[Position]())
+	expectEqual(t, 1, len(obs.comps))
 
-	obs = obs.With()
+	obs.With()
 	expectEqual(t, 0, len(obs.observer.with))
 	expectFalse(t, obs.observer.hasWith)
 
-	obs = obs.With(C[Position]())
+	obs.With(C[Position]())
 	expectEqual(t, 1, len(obs.observer.with))
 	expectTrue(t, obs.observer.hasWith)
 
-	obs = obs.Without()
+	obs.Without()
 	expectEqual(t, 0, len(obs.observer.without))
 	expectFalse(t, obs.observer.hasWithout)
 
-	obs = obs.Without(C[Position]())
+	obs.Without(C[Position]())
 	expectEqual(t, 1, len(obs.observer.without))
 	expectTrue(t, obs.observer.hasWithout)
+
+	obs.Register(&w)
+	expectEqual(t, 3+1, len(obs.observer.comps))
+	expectTrue(t, obs.observer.hasComps)
+
+	obs.Unregister(&w)
+	obs.Register(&w)
+	expectEqual(t, 3+1, len(obs.observer.comps))
+	expectTrue(t, obs.observer.hasComps)
 }
 
 func TestObserver3Register(t *testing.T) {
@@ -341,29 +362,36 @@ func TestObserve4(t *testing.T) {
 
 	obs = Observe4[CompA, CompB, CompC, CompD](OnAddComponents).Do(func(e Entity, a *CompA, b *CompB, c *CompC, d *CompD) {})
 
-	obs = obs.For()
-	expectEqual(t, 0, len(obs.observer.comps))
-	expectFalse(t, obs.observer.hasComps)
+	obs.For()
+	expectEqual(t, 0, len(obs.comps))
 
-	obs = obs.For(C[Position]())
-	expectEqual(t, 1, len(obs.observer.comps))
-	expectTrue(t, obs.observer.hasComps)
+	obs.For(C[Position]())
+	expectEqual(t, 1, len(obs.comps))
 
-	obs = obs.With()
+	obs.With()
 	expectEqual(t, 0, len(obs.observer.with))
 	expectFalse(t, obs.observer.hasWith)
 
-	obs = obs.With(C[Position]())
+	obs.With(C[Position]())
 	expectEqual(t, 1, len(obs.observer.with))
 	expectTrue(t, obs.observer.hasWith)
 
-	obs = obs.Without()
+	obs.Without()
 	expectEqual(t, 0, len(obs.observer.without))
 	expectFalse(t, obs.observer.hasWithout)
 
-	obs = obs.Without(C[Position]())
+	obs.Without(C[Position]())
 	expectEqual(t, 1, len(obs.observer.without))
 	expectTrue(t, obs.observer.hasWithout)
+
+	obs.Register(&w)
+	expectEqual(t, 4+1, len(obs.observer.comps))
+	expectTrue(t, obs.observer.hasComps)
+
+	obs.Unregister(&w)
+	obs.Register(&w)
+	expectEqual(t, 4+1, len(obs.observer.comps))
+	expectTrue(t, obs.observer.hasComps)
 }
 
 func TestObserver4Register(t *testing.T) {

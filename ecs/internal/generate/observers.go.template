@@ -15,6 +15,7 @@ package ecs
 type Observer{{.}}{{$generics}} struct {
 	observer Observer
 	callback func(Entity, {{$fn_args}})
+	comps    []Comp
 }
 
 // Observe{{.}} creates a new Observer{{.}}.
@@ -31,7 +32,16 @@ func Observe{{.}}{{$generics}}(evt EventType) *Observer{{.}}{{$genericsShort}} {
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer{{.}}{{$genericsShort}}) For(comps ...Comp) *Observer{{.}}{{$genericsShort}} {
-	o.observer.For(comps...)
+	if o.observer.id != maxObserverID {
+		panic("can't modify a registered observer")
+	}
+	if len(comps) == 0 {
+		return o
+	}
+	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
+		return o.With(comps...)
+	}
+	o.comps = append(o.comps, comps...)
 	return o
 }
 
@@ -93,12 +103,16 @@ func (o *Observer{{.}}{{$genericsShort}}) Register(w *World) *Observer{{.}}{{$ge
 		}
 	}
 
-	// TODO: optimize to use IDs.
+	o.observer.comps = o.observer.comps[:0]
 	o.observer.For(
 		{{- range $i, $v := $upper}}
 		comp[{{$v}}](),
 		{{- end}}
 	)
+	o.observer.For(
+		o.comps...
+	)
+
 	w.registerObserver(&o.observer)
 	return o
 }

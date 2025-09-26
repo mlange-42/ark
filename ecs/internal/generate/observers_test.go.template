@@ -47,29 +47,36 @@ func TestObserve{{.}}(t *testing.T) {
 
 	obs = Observe{{.}}{{$generics}}(OnAddComponents).Do(func(e Entity, {{$args}}) {})
 
-	obs = obs.For()
-	expectEqual(t, 0, len(obs.observer.comps))
-	expectFalse(t, obs.observer.hasComps)
+	obs.For()
+	expectEqual(t, 0, len(obs.comps))
 
-	obs = obs.For(C[Position]())
-	expectEqual(t, 1, len(obs.observer.comps))
-	expectTrue(t, obs.observer.hasComps)
+	obs.For(C[Position]())
+	expectEqual(t, 1, len(obs.comps))
 
-	obs = obs.With()
+	obs.With()
 	expectEqual(t, 0, len(obs.observer.with))
 	expectFalse(t, obs.observer.hasWith)
 
-	obs = obs.With(C[Position]())
+	obs.With(C[Position]())
 	expectEqual(t, 1, len(obs.observer.with))
 	expectTrue(t, obs.observer.hasWith)
 
-	obs = obs.Without()
+	obs.Without()
 	expectEqual(t, 0, len(obs.observer.without))
 	expectFalse(t, obs.observer.hasWithout)
 
-	obs = obs.Without(C[Position]())
+	obs.Without(C[Position]())
 	expectEqual(t, 1, len(obs.observer.without))
 	expectTrue(t, obs.observer.hasWithout)
+
+	obs.Register(&w)
+	expectEqual(t, {{.}} + 1, len(obs.observer.comps))
+	expectTrue(t, obs.observer.hasComps)
+	
+	obs.Unregister(&w)
+	obs.Register(&w)
+	expectEqual(t, {{.}} + 1, len(obs.observer.comps))
+	expectTrue(t, obs.observer.hasComps)
 }
 
 func TestObserver{{.}}Register(t *testing.T) {

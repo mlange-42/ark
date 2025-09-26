@@ -8,6 +8,7 @@ package ecs
 type Observer1[A any] struct {
 	observer Observer
 	callback func(Entity, *A)
+	comps    []Comp
 }
 
 // Observe1 creates a new Observer1.
@@ -24,7 +25,16 @@ func Observe1[A any](evt EventType) *Observer1[A] {
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer1[A]) For(comps ...Comp) *Observer1[A] {
-	o.observer.For(comps...)
+	if o.observer.id != maxObserverID {
+		panic("can't modify a registered observer")
+	}
+	if len(comps) == 0 {
+		return o
+	}
+	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
+		return o.With(comps...)
+	}
+	o.comps = append(o.comps, comps...)
 	return o
 }
 
@@ -82,10 +92,14 @@ func (o *Observer1[A]) Register(w *World) *Observer1[A] {
 		}
 	}
 
-	// TODO: optimize to use IDs.
+	o.observer.comps = o.observer.comps[:0]
 	o.observer.For(
 		comp[A](),
 	)
+	o.observer.For(
+		o.comps...,
+	)
+
 	w.registerObserver(&o.observer)
 	return o
 }
@@ -102,6 +116,7 @@ func (o *Observer1[A]) Unregister(w *World) *Observer1[A] {
 type Observer2[A any, B any] struct {
 	observer Observer
 	callback func(Entity, *A, *B)
+	comps    []Comp
 }
 
 // Observe2 creates a new Observer2.
@@ -118,7 +133,16 @@ func Observe2[A any, B any](evt EventType) *Observer2[A, B] {
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer2[A, B]) For(comps ...Comp) *Observer2[A, B] {
-	o.observer.For(comps...)
+	if o.observer.id != maxObserverID {
+		panic("can't modify a registered observer")
+	}
+	if len(comps) == 0 {
+		return o
+	}
+	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
+		return o.With(comps...)
+	}
+	o.comps = append(o.comps, comps...)
 	return o
 }
 
@@ -178,11 +202,15 @@ func (o *Observer2[A, B]) Register(w *World) *Observer2[A, B] {
 		}
 	}
 
-	// TODO: optimize to use IDs.
+	o.observer.comps = o.observer.comps[:0]
 	o.observer.For(
 		comp[A](),
 		comp[B](),
 	)
+	o.observer.For(
+		o.comps...,
+	)
+
 	w.registerObserver(&o.observer)
 	return o
 }
@@ -199,6 +227,7 @@ func (o *Observer2[A, B]) Unregister(w *World) *Observer2[A, B] {
 type Observer3[A any, B any, C any] struct {
 	observer Observer
 	callback func(Entity, *A, *B, *C)
+	comps    []Comp
 }
 
 // Observe3 creates a new Observer3.
@@ -215,7 +244,16 @@ func Observe3[A any, B any, C any](evt EventType) *Observer3[A, B, C] {
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer3[A, B, C]) For(comps ...Comp) *Observer3[A, B, C] {
-	o.observer.For(comps...)
+	if o.observer.id != maxObserverID {
+		panic("can't modify a registered observer")
+	}
+	if len(comps) == 0 {
+		return o
+	}
+	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
+		return o.With(comps...)
+	}
+	o.comps = append(o.comps, comps...)
 	return o
 }
 
@@ -277,12 +315,16 @@ func (o *Observer3[A, B, C]) Register(w *World) *Observer3[A, B, C] {
 		}
 	}
 
-	// TODO: optimize to use IDs.
+	o.observer.comps = o.observer.comps[:0]
 	o.observer.For(
 		comp[A](),
 		comp[B](),
 		comp[C](),
 	)
+	o.observer.For(
+		o.comps...,
+	)
+
 	w.registerObserver(&o.observer)
 	return o
 }
@@ -299,6 +341,7 @@ func (o *Observer3[A, B, C]) Unregister(w *World) *Observer3[A, B, C] {
 type Observer4[A any, B any, C any, D any] struct {
 	observer Observer
 	callback func(Entity, *A, *B, *C, *D)
+	comps    []Comp
 }
 
 // Observe4 creates a new Observer4.
@@ -315,7 +358,16 @@ func Observe4[A any, B any, C any, D any](evt EventType) *Observer4[A, B, C, D] 
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer4[A, B, C, D]) For(comps ...Comp) *Observer4[A, B, C, D] {
-	o.observer.For(comps...)
+	if o.observer.id != maxObserverID {
+		panic("can't modify a registered observer")
+	}
+	if len(comps) == 0 {
+		return o
+	}
+	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
+		return o.With(comps...)
+	}
+	o.comps = append(o.comps, comps...)
 	return o
 }
 
@@ -379,13 +431,17 @@ func (o *Observer4[A, B, C, D]) Register(w *World) *Observer4[A, B, C, D] {
 		}
 	}
 
-	// TODO: optimize to use IDs.
+	o.observer.comps = o.observer.comps[:0]
 	o.observer.For(
 		comp[A](),
 		comp[B](),
 		comp[C](),
 		comp[D](),
 	)
+	o.observer.For(
+		o.comps...,
+	)
+
 	w.registerObserver(&o.observer)
 	return o
 }
