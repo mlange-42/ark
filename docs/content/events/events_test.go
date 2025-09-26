@@ -14,12 +14,20 @@ type Position struct {
 	Y float64
 }
 
+type Velocity struct {
+	X float64
+	Y float64
+}
+
+type Altitude struct {
+	Z float64
+}
+
 func TestEventsBasic(t *testing.T) {
 	// Create an observer.
-	ecs.Observe(ecs.OnCreateEntity).
-		With(ecs.C[Position]()).
-		Do(func(e ecs.Entity) {
-			fmt.Printf("%#v\n", e)
+	ecs.Observe1[Position](ecs.OnCreateEntity).
+		Do(func(e ecs.Entity, pos *Position) {
+			fmt.Printf("%#v\n", pos)
 		}).
 		Register(&world)
 
@@ -30,7 +38,7 @@ func TestEventsBasic(t *testing.T) {
 
 func TestCombineObservers(t *testing.T) {
 	// Common callback.
-	fn := func(evt ecs.EventType, entity ecs.Entity) {
+	fn := func(evt ecs.EventType, entity ecs.Entity, pos *Position) {
 		if evt == ecs.OnAddComponents {
 			// do something
 		}
@@ -40,12 +48,47 @@ func TestCombineObservers(t *testing.T) {
 	}
 
 	// Observer for adding components.
-	ecs.Observe(ecs.OnAddComponents).
-		Do(func(e ecs.Entity) { fn(ecs.OnAddComponents, e) }).
+	ecs.Observe1[Position](ecs.OnAddComponents).
+		Do(func(e ecs.Entity, pos *Position) { fn(ecs.OnAddComponents, e, pos) }).
 		Register(&world)
 
 	// Observer for removing components.
-	ecs.Observe(ecs.OnRemoveComponents).
-		Do(func(e ecs.Entity) { fn(ecs.OnRemoveComponents, e) }).
+	ecs.Observe1[Position](ecs.OnRemoveComponents).
+		Do(func(e ecs.Entity, pos *Position) { fn(ecs.OnRemoveComponents, e, pos) }).
 		Register(&world)
+}
+
+func TestObserveCreate(t *testing.T) {
+	ecs.Observe1[Position](ecs.OnCreateEntity).
+		Do(func(e ecs.Entity, p *Position) { /* ... */ })
+
+	ecs.Observe(ecs.OnCreateEntity).
+		With(ecs.C[Position]()).
+		Do(func(e ecs.Entity) { /* ... */ })
+}
+
+func TestObserve2Create(t *testing.T) {
+	ecs.Observe2[Position, Velocity](ecs.OnCreateEntity).
+		Do(func(e ecs.Entity, p *Position, v *Velocity) { /* ... */ })
+
+	ecs.Observe1[Position](ecs.OnCreateEntity).
+		With(ecs.C[Velocity]()).
+		Do(func(e ecs.Entity, p *Position) { /* ... */ })
+}
+
+func TestObserveCreateEmpty(t *testing.T) {
+	ecs.Observe(ecs.OnCreateEntity).
+		Do(func(e ecs.Entity) { /* ... */ })
+}
+
+func TestObserveAdd(t *testing.T) {
+	ecs.Observe1[Position](ecs.OnAddComponents).
+		Do(func(e ecs.Entity, p *Position) { /* ... */ })
+}
+
+func TestObserveAddWith(t *testing.T) {
+	ecs.Observe1[Position](ecs.OnAddComponents).
+		With(ecs.C[Velocity]()).
+		Without(ecs.C[Altitude]()).
+		Do(func(e ecs.Entity, p *Position) { /* ... */ })
 }
