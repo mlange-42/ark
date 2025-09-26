@@ -60,6 +60,11 @@ func C[T any]() Comp {
 	return Comp{reflect.TypeFor[T]()}
 }
 
+// Alias for C if shadowed by another C.
+func comp[T any]() Comp {
+	return Comp{reflect.TypeFor[T]()}
+}
+
 // Type returns the reflect.Type of the component.
 func (c Comp) Type() reflect.Type {
 	return c.tp

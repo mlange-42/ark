@@ -25,14 +25,10 @@ func TestObserve(t *testing.T) {
 			obs.Exclusive()
 		})
 
-	expectPanicsWithValue(t, "can use Observer.For only for OnAddComponents, OnRemoveComponents and OnSetComponents events",
-		func() {
-			Observe(OnCreateEntity).For(C[Position]())
-		})
-	expectPanicsWithValue(t, "can use Observer.For only for OnAddComponents, OnRemoveComponents and OnSetComponents events",
-		func() {
-			Observe(OnRemoveEntity).For(C[Position]())
-		})
+	obs = Observe(OnCreateEntity).For(C[Position]())
+	expectTrue(t, obs.hasWith)
+	obs = Observe(OnRemoveEntity).For(C[Position]())
+	expectTrue(t, obs.hasWith)
 
 	expectPanicsWithValue(t, "observer callback must be set via Do before registering",
 		func() {
