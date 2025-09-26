@@ -1,7 +1,7 @@
 +++
 title = 'Architecture'
 type = 'docs'
-weight = 130
+weight = 140
 description = "Ark's internal ECS architecture."
 +++
 

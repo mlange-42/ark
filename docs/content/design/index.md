@@ -1,7 +1,7 @@
 +++
 title = 'Design philosophy'
 type = 'docs'
-weight = 120
+weight = 130
 description = "Ark's design philosophy and limitations."
 +++
 Unlike most other ECS implementations, Ark is primarily designed for the development of scientific,
