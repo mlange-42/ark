@@ -361,7 +361,7 @@ func NewEvent(e EventType, world *World) Event {
 
 // For sets the event's component types. Optional.
 // For best performance, store the event after setting the component type,
-// and re-use afterwards be overwriting the entity.
+// and re-use afterwards.
 func (e Event) For(comps ...Comp) Event {
 	for i := range comps {
 		id := TypeID(e.world, comps[i].tp)
