@@ -72,22 +72,23 @@ func Observe(evt EventType) *Observer {
 }
 
 // For adds components that the observer observes.
-// Can only be used with OnAddComponents, OnRemoveComponents and OnSetComponents.
-// The observer triggers if these components are added to or removed from an entity.
+// The component events, the observer triggers if these components are added to or removed from an entity.
 //
 // If not specified, the observer triggers on any component addition or removal.
 // If multiple components are provided, all must be added/removed at the same time to trigger the observer.
+//
+// For entity events (OnCreateEntity, OnRemoveEntity), is has the same effect as With.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer) For(comps ...Comp) *Observer {
 	if o.id != maxObserverID {
 		panic("can't modify a registered observer")
 	}
-	if o.event != OnAddComponents && o.event != OnRemoveComponents && o.event != OnSetComponents {
-		panic("can use Observer.For only for OnAddComponents, OnRemoveComponents and OnSetComponents events")
-	}
 	if len(comps) == 0 {
 		return o
+	}
+	if o.event == OnCreateEntity || o.event == OnRemoveEntity {
+		return o.With(comps...)
 	}
 	o.comps = append(o.comps, comps...)
 	o.hasComps = true

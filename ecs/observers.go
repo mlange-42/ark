@@ -16,6 +16,24 @@ func Observe2[A any, B any](evt EventType) *Observer2[A, B] {
 	}
 }
 
+// For adds further components that the observer observes, in addition to its generic parameters.
+//
+// Method calls can be chained, which has the same effect as calling with multiple arguments.
+func (o *Observer2[A, B]) For(comps ...Comp) *Observer2[A, B] {
+	if o.observer.id != maxObserverID {
+		panic("can't modify a registered observer")
+	}
+	if len(comps) == 0 {
+		return o
+	}
+	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
+		return o.With(comps...)
+	}
+	o.observer.comps = append(o.observer.comps, comps...)
+	o.observer.hasComps = true
+	return o
+}
+
 // With adds components that entities must have to trigger the observer.
 // If multiple components are provided, the entity must have all of them.
 //
