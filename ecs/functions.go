@@ -1,6 +1,8 @@
 package ecs
 
-import "reflect"
+import (
+	"reflect"
+)
 
 // ComponentID returns the [ID] for a component type via generics.
 // Registers the type if it is not already registered.
@@ -52,17 +54,28 @@ func TypeID(w *World, tp reflect.Type) ID {
 // Comp is a helper to pass component types to functions and methods.
 // Use function [C] to create one.
 type Comp struct {
-	tp reflect.Type
+	tp    reflect.Type
+	id    ID
+	hasID bool
 }
 
 // C creates a [Comp] instance for the given type.
 func C[T any]() Comp {
-	return Comp{reflect.TypeFor[T]()}
+	return Comp{tp: reflect.TypeFor[T]()}
 }
 
 // Type returns the reflect.Type of the component.
 func (c Comp) Type() reflect.Type {
 	return c.tp
+}
+
+func (c *Comp) getID(w *World) ID {
+	if c.hasID {
+		return c.id
+	}
+	c.id = TypeID(w, c.tp)
+	c.hasID = true
+	return c.id
 }
 
 // ResourceID returns the [ResID] for a resource type via generics.
