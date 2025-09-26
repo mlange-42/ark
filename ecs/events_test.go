@@ -20,6 +20,10 @@ func TestObserve(t *testing.T) {
 		func() {
 			obs.Without(C[Position]())
 		})
+	expectPanicsWithValue(t, "can't modify a registered observer",
+		func() {
+			obs.Exclusive()
+		})
 
 	expectPanicsWithValue(t, "can use Observer.For only for OnAddComponents, OnRemoveComponents and OnSetComponents events",
 		func() {
