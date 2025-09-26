@@ -139,6 +139,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity
 	if m.world.storage.observers.HasObservers(OnCreateEntity) {
 		table := &m.world.storage.tables[tableID]
 		earlyOut := true
+		lock := m.world.lock()
 		for i := range count {
 			index := uintptr(start + i)
 			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
@@ -146,6 +147,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(entity Entity
 			}
 			earlyOut = false
 		}
+		m.world.unlock(lock)
 	}
 }
 
