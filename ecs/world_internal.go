@@ -331,3 +331,17 @@ func (w *World) checkLocked() {
 		panic("cannot modify a locked world: collect entities into a slice and apply changes after query iteration has completed")
 	}
 }
+
+func (w *World) emitEvent(e *Event, entity Entity) {
+	var mask *bitMask
+	if entity.IsZero() {
+		mask = &w.storage.archetypes[0].mask
+	} else {
+		if !w.Alive(entity) {
+			panic("can't emit an event for a dead entity")
+		}
+		table := w.storage.entities[entity.id].table
+		mask = &w.storage.archetypes[w.storage.tables[table].archetype].mask
+	}
+	w.storage.observers.FireCustom(e.eventType, entity, e.component, e.hasComp, mask)
+}

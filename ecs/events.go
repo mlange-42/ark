@@ -39,6 +39,18 @@ const (
 	eventsEnd
 )
 
+var nextUserEvent = eventsEnd
+
+// NewEventType creates a new EventType for custom events.
+func NewEventType() EventType {
+	if nextUserEvent == math.MaxUint8 {
+		panic("reached maximum number of custom event types")
+	}
+	e := EventType(nextUserEvent)
+	nextUserEvent++
+	return e
+}
+
 type observerManager struct {
 	observers    [][]*Observer
 	hasObservers []bool
@@ -52,12 +64,12 @@ type observerManager struct {
 
 func newObserverManager() observerManager {
 	return observerManager{
-		observers:    make([][]*Observer, eventsEnd),
-		hasObservers: make([]bool, eventsEnd),
-		anyNoComps:   make([]bool, eventsEnd),
-		anyNoWith:    make([]bool, eventsEnd),
-		allComps:     make([]bitMask, eventsEnd),
-		allWith:      make([]bitMask, eventsEnd),
+		observers:    make([][]*Observer, math.MaxUint8),
+		hasObservers: make([]bool, math.MaxUint8),
+		anyNoComps:   make([]bool, math.MaxUint8),
+		anyNoWith:    make([]bool, math.MaxUint8),
+		allComps:     make([]bitMask, math.MaxUint8),
+		allWith:      make([]bitMask, math.MaxUint8),
 		pool:         newIntPool[observerID](32),
 		indices:      map[observerID]int{},
 	}
@@ -293,4 +305,72 @@ func (m *observerManager) doFireSet(e Entity, mask *bitMask, newMask *bitMask) {
 		}
 		o.callback(e)
 	}
+}
+
+func (m *observerManager) FireCustom(evt EventType, e Entity, comp ID, hasComp bool, mask *bitMask) {
+	if !m.hasObservers[evt] {
+		return
+	}
+	m.doFireCustom(evt, e, comp, hasComp, mask)
+}
+
+func (m *observerManager) doFireCustom(evt EventType, e Entity, comp ID, hasComp bool, mask *bitMask) {
+	if !m.anyNoComps[evt] && (!hasComp || !m.allComps[evt].Get(comp.id)) {
+		return
+	}
+	if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(mask) {
+		return
+	}
+	observers := m.observers[evt]
+	for _, o := range observers {
+		if hasComp && o.hasComps && !o.compsMask.Get(comp.id) {
+			continue
+		}
+		if o.hasComps && !hasComp {
+			continue
+		}
+		if o.hasWith && !mask.Contains(&o.withMask) {
+			continue
+		}
+		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
+			continue
+		}
+		o.callback(e)
+	}
+}
+
+// Event is a custom event.
+type Event struct {
+	world     *World
+	eventType EventType
+	component ID
+	hasComp   bool
+}
+
+// NewEvent creates a new event for the given type.
+func NewEvent(e EventType, world *World) Event {
+	if e < eventsEnd {
+		panic("only custom events can be emitted manually")
+	}
+	return Event{
+		world:     world,
+		eventType: e,
+	}
+}
+
+// For sets the event's component type. Optional.
+// For best performance, store the event after setting the component type,
+// and re-use afterwards be overwriting the entity.
+func (e Event) For(comp Comp) Event {
+	if e.hasComp {
+		panic("event already has a component")
+	}
+	e.component = TypeID(e.world, comp.tp)
+	e.hasComp = true
+	return e
+}
+
+// Emit the event for the given entity.
+func (e Event) Emit(entity Entity) {
+	e.world.emitEvent(&e, entity)
 }
