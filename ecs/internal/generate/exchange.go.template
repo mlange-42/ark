@@ -59,7 +59,7 @@ func NewExchange{{.}}{{$generics}}(world *World) *Exchange{{.}}{{$genericsShort}
 // Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange{{.}}{{$genericsShort}}) Removes(components ...Comp) *Exchange{{.}}{{$genericsShort}} {
 	for _, c := range components {
-		ex.remove = append(ex.remove, c.getID(ex.world))
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
 	return ex
 }

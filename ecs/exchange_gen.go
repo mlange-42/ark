@@ -41,7 +41,7 @@ func NewExchange1[A any](world *World) *Exchange1[A] {
 // Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange1[A]) Removes(components ...Comp) *Exchange1[A] {
 	for _, c := range components {
-		ex.remove = append(ex.remove, c.getID(ex.world))
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
 	return ex
 }
@@ -228,7 +228,7 @@ func NewExchange2[A any, B any](world *World) *Exchange2[A, B] {
 // Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange2[A, B]) Removes(components ...Comp) *Exchange2[A, B] {
 	for _, c := range components {
-		ex.remove = append(ex.remove, c.getID(ex.world))
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
 	return ex
 }
@@ -427,7 +427,7 @@ func NewExchange3[A any, B any, C any](world *World) *Exchange3[A, B, C] {
 // Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange3[A, B, C]) Removes(components ...Comp) *Exchange3[A, B, C] {
 	for _, c := range components {
-		ex.remove = append(ex.remove, c.getID(ex.world))
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
 	return ex
 }
@@ -634,7 +634,7 @@ func NewExchange4[A any, B any, C any, D any](world *World) *Exchange4[A, B, C, 
 // Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange4[A, B, C, D]) Removes(components ...Comp) *Exchange4[A, B, C, D] {
 	for _, c := range components {
-		ex.remove = append(ex.remove, c.getID(ex.world))
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
 	return ex
 }
@@ -849,7 +849,7 @@ func NewExchange5[A any, B any, C any, D any, E any](world *World) *Exchange5[A,
 // Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange5[A, B, C, D, E]) Removes(components ...Comp) *Exchange5[A, B, C, D, E] {
 	for _, c := range components {
-		ex.remove = append(ex.remove, c.getID(ex.world))
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
 	return ex
 }
@@ -1072,7 +1072,7 @@ func NewExchange6[A any, B any, C any, D any, E any, F any](world *World) *Excha
 // Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange6[A, B, C, D, E, F]) Removes(components ...Comp) *Exchange6[A, B, C, D, E, F] {
 	for _, c := range components {
-		ex.remove = append(ex.remove, c.getID(ex.world))
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
 	return ex
 }
@@ -1303,7 +1303,7 @@ func NewExchange7[A any, B any, C any, D any, E any, F any, G any](world *World)
 // Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange7[A, B, C, D, E, F, G]) Removes(components ...Comp) *Exchange7[A, B, C, D, E, F, G] {
 	for _, c := range components {
-		ex.remove = append(ex.remove, c.getID(ex.world))
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
 	return ex
 }
@@ -1542,7 +1542,7 @@ func NewExchange8[A any, B any, C any, D any, E any, F any, G any, H any](world 
 // Can be called multiple times in chains, or once with multiple arguments.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) Removes(components ...Comp) *Exchange8[A, B, C, D, E, F, G, H] {
 	for _, c := range components {
-		ex.remove = append(ex.remove, c.getID(ex.world))
+		ex.remove = append(ex.remove, ex.world.componentID(c.tp))
 	}
 	return ex
 }

@@ -71,26 +71,8 @@ func TestComponentInfo(t *testing.T) {
 }
 
 func TestCompType(t *testing.T) {
-	w := NewWorld()
-
 	c := C[Position]()
 	expectEqual(t, reflect.TypeFor[Position](), c.Type())
-	expectFalse(t, c.hasID)
-	expectEqual(t, 0, c.id.id)
-	id := c.getID(&w)
-	expectEqual(t, 0, id.id)
-	expectEqual(t, 0, c.id.id)
-	expectTrue(t, c.hasID)
-
-	c = C[Velocity]()
-	expectFalse(t, c.hasID)
-	expectEqual(t, 0, c.id.id)
-	id = c.getID(&w)
-	expectEqual(t, 1, id.id)
-	expectEqual(t, 1, c.id.id)
-	expectTrue(t, c.hasID)
-
-	expectEqual(t, 1, c.getID(&w).id)
 }
 
 func TestResourceTypeID(t *testing.T) {

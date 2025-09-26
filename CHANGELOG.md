@@ -23,7 +23,6 @@
 - Speeds up query creation by optimized world locking (#318)
 - Optimizes bit mask methods by using less math and more bit-wise operations (#319)
 - Speeds up memory allocation for archetype tables and bulk copying by avoiding reflection (#321)
-- Component identifiers created with `C[...]()` cache their component ID for reuse (#339)
 
 ### Documentation
 

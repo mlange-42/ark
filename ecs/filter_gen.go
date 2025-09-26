@@ -47,7 +47,7 @@ func NewFilter0(world *World) *Filter0 {
 func (f *Filter0) With(comps ...Comp) *Filter0 {
 	f.checkModify()
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id.id, true)
 	}
@@ -62,7 +62,7 @@ func (f *Filter0) Without(comps ...Comp) *Filter0 {
 		return f
 	}
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id.id, true)
 		f.filter.hasWithout = true
 	}
@@ -240,7 +240,7 @@ func NewFilter1[A any](world *World) *Filter1[A] {
 func (f *Filter1[A]) With(comps ...Comp) *Filter1[A] {
 	f.checkModify()
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id.id, true)
 	}
@@ -255,7 +255,7 @@ func (f *Filter1[A]) Without(comps ...Comp) *Filter1[A] {
 		return f
 	}
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id.id, true)
 		f.filter.hasWithout = true
 	}
@@ -430,7 +430,7 @@ func NewFilter2[A any, B any](world *World) *Filter2[A, B] {
 func (f *Filter2[A, B]) With(comps ...Comp) *Filter2[A, B] {
 	f.checkModify()
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id.id, true)
 	}
@@ -445,7 +445,7 @@ func (f *Filter2[A, B]) Without(comps ...Comp) *Filter2[A, B] {
 		return f
 	}
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id.id, true)
 		f.filter.hasWithout = true
 	}
@@ -626,7 +626,7 @@ func NewFilter3[A any, B any, C any](world *World) *Filter3[A, B, C] {
 func (f *Filter3[A, B, C]) With(comps ...Comp) *Filter3[A, B, C] {
 	f.checkModify()
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id.id, true)
 	}
@@ -641,7 +641,7 @@ func (f *Filter3[A, B, C]) Without(comps ...Comp) *Filter3[A, B, C] {
 		return f
 	}
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id.id, true)
 		f.filter.hasWithout = true
 	}
@@ -824,7 +824,7 @@ func NewFilter4[A any, B any, C any, D any](world *World) *Filter4[A, B, C, D] {
 func (f *Filter4[A, B, C, D]) With(comps ...Comp) *Filter4[A, B, C, D] {
 	f.checkModify()
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id.id, true)
 	}
@@ -839,7 +839,7 @@ func (f *Filter4[A, B, C, D]) Without(comps ...Comp) *Filter4[A, B, C, D] {
 		return f
 	}
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id.id, true)
 		f.filter.hasWithout = true
 	}
@@ -1024,7 +1024,7 @@ func NewFilter5[A any, B any, C any, D any, E any](world *World) *Filter5[A, B, 
 func (f *Filter5[A, B, C, D, E]) With(comps ...Comp) *Filter5[A, B, C, D, E] {
 	f.checkModify()
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id.id, true)
 	}
@@ -1039,7 +1039,7 @@ func (f *Filter5[A, B, C, D, E]) Without(comps ...Comp) *Filter5[A, B, C, D, E] 
 		return f
 	}
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id.id, true)
 		f.filter.hasWithout = true
 	}
@@ -1226,7 +1226,7 @@ func NewFilter6[A any, B any, C any, D any, E any, F any](world *World) *Filter6
 func (f *Filter6[A, B, C, D, E, F]) With(comps ...Comp) *Filter6[A, B, C, D, E, F] {
 	f.checkModify()
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id.id, true)
 	}
@@ -1241,7 +1241,7 @@ func (f *Filter6[A, B, C, D, E, F]) Without(comps ...Comp) *Filter6[A, B, C, D, 
 		return f
 	}
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id.id, true)
 		f.filter.hasWithout = true
 	}
@@ -1430,7 +1430,7 @@ func NewFilter7[A any, B any, C any, D any, E any, F any, G any](world *World) *
 func (f *Filter7[A, B, C, D, E, F, G]) With(comps ...Comp) *Filter7[A, B, C, D, E, F, G] {
 	f.checkModify()
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id.id, true)
 	}
@@ -1445,7 +1445,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Without(comps ...Comp) *Filter7[A, B, C, 
 		return f
 	}
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id.id, true)
 		f.filter.hasWithout = true
 	}
@@ -1636,7 +1636,7 @@ func NewFilter8[A any, B any, C any, D any, E any, F any, G any, H any](world *W
 func (f *Filter8[A, B, C, D, E, F, G, H]) With(comps ...Comp) *Filter8[A, B, C, D, E, F, G, H] {
 	f.checkModify()
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id.id, true)
 	}
@@ -1651,7 +1651,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Without(comps ...Comp) *Filter8[A, B, 
 		return f
 	}
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id.id, true)
 		f.filter.hasWithout = true
 	}
