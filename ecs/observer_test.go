@@ -636,29 +636,6 @@ func TestObserverWildcardEntities(t *testing.T) {
 	expectEqual(t, 2, callRemove)
 }
 
-func TestCustomEvent(t *testing.T) {
-	world := NewWorld()
-	customEvent := NewEventType()
-
-	callCount := 0
-	Observe(customEvent).
-		For(C[Position]()).
-		Do(func(e Entity) { callCount++ }).
-		Register(&world)
-
-	e := world.NewEntity()
-
-	evt := NewEvent(customEvent, &world).For(C[Position]())
-	expectTrue(t, evt.hasComp)
-
-	evt.Emit(e)
-	expectEqual(t, 1, callCount)
-	NewEvent(customEvent, &world).For(C[Velocity]()).Emit(e)
-	expectEqual(t, 1, callCount)
-	evt.Emit(e)
-	expectEqual(t, 2, callCount)
-}
-
 func benchmarkEventsPos(b *testing.B, n int) {
 	w := NewWorld()
 

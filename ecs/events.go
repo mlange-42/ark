@@ -307,18 +307,18 @@ func (m *observerManager) doFireSet(e Entity, mask *bitMask, newMask *bitMask) {
 	}
 }
 
-func (m *observerManager) FireCustom(evt EventType, e Entity, comp ID, hasComp bool, mask *bitMask) {
+func (m *observerManager) FireCustom(evt EventType, e Entity, comp ID, hasComp bool, entityMask *bitMask) {
 	if !m.hasObservers[evt] {
 		return
 	}
-	m.doFireCustom(evt, e, comp, hasComp, mask)
+	m.doFireCustom(evt, e, comp, hasComp, entityMask)
 }
 
-func (m *observerManager) doFireCustom(evt EventType, e Entity, comp ID, hasComp bool, mask *bitMask) {
+func (m *observerManager) doFireCustom(evt EventType, e Entity, comp ID, hasComp bool, entityMask *bitMask) {
 	if !m.anyNoComps[evt] && (!hasComp || !m.allComps[evt].Get(comp.id)) {
 		return
 	}
-	if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(mask) {
+	if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(entityMask) {
 		return
 	}
 	observers := m.observers[evt]
@@ -329,10 +329,10 @@ func (m *observerManager) doFireCustom(evt EventType, e Entity, comp ID, hasComp
 		if o.hasComps && !hasComp {
 			continue
 		}
-		if o.hasWith && !mask.Contains(&o.withMask) {
+		if o.hasWith && !entityMask.Contains(&o.withMask) {
 			continue
 		}
-		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
+		if o.hasWithout && entityMask.ContainsAny(&o.withoutMask) {
 			continue
 		}
 		o.callback(e)
