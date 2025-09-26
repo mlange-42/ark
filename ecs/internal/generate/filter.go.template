@@ -65,7 +65,7 @@ func NewFilter{{.}}{{$generics}}(world *World) *Filter{{.}}{{$genericsShort}} {
 func (f *Filter{{.}}{{$genericsShort}}) With(comps ...Comp) *Filter{{.}}{{$genericsShort}} {
 	f.checkModify()
 	for _, c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
 		f.filter.mask.Set(id.id, true)
 	}
@@ -80,7 +80,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Without(comps ...Comp) *Filter{{.}}{{$ge
 		return f
 	}
 	for _,c := range comps {
-		id := c.getID(f.world)
+		id := f.world.componentID(c.tp)
 		f.filter.without.Set(id.id, true)
 		f.filter.hasWithout = true
 	}
