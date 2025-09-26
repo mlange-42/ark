@@ -89,8 +89,8 @@ func (m *Map[T]) NewBatchFn(count int, fn func(entity Entity, comp *T), target .
 
 	if m.world.storage.observers.HasObservers(OnCreateEntity) {
 		table := &m.world.storage.tables[tableID]
-
 		earlyOut := true
+		lock := m.world.lock()
 		for i := range count {
 			index := uintptr(start + i)
 			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
@@ -98,6 +98,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(entity Entity, comp *T), target .
 			}
 			earlyOut = false
 		}
+		m.world.unlock(lock)
 	}
 }
 
@@ -232,7 +233,6 @@ func (m *Map[T]) AddBatchFn(batch *Batch, fn func(entity Entity, comp *T), targe
 			table := &m.world.storage.tables[tableID]
 			column := m.storage.columns[tableID]
 
-			lock := m.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -240,7 +240,6 @@ func (m *Map[T]) AddBatchFn(batch *Batch, fn func(entity Entity, comp *T), targe
 					(*T)(column.Get(index)),
 				)
 			}
-			m.world.unlock(lock)
 		}
 	}
 	m.world.exchangeBatch(batch, m.ids[:], nil, m.relations, process)

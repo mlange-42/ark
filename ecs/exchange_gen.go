@@ -165,7 +165,6 @@ func (ex *Exchange1[A]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *
 			table := &ex.world.storage.tables[tableID]
 			columnA := table.GetColumn(ex.ids[0])
 
-			lock := ex.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -173,7 +172,6 @@ func (ex *Exchange1[A]) exchangeBatchFn(batch *Batch, fn func(entity Entity, a *
 					(*A)(columnA.Get(index)),
 				)
 			}
-			ex.world.unlock(lock)
 		}
 	}
 	if remove {
@@ -357,7 +355,6 @@ func (ex *Exchange2[A, B]) exchangeBatchFn(batch *Batch, fn func(entity Entity, 
 			columnA := table.GetColumn(ex.ids[0])
 			columnB := table.GetColumn(ex.ids[1])
 
-			lock := ex.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -366,7 +363,6 @@ func (ex *Exchange2[A, B]) exchangeBatchFn(batch *Batch, fn func(entity Entity, 
 					(*B)(columnB.Get(index)),
 				)
 			}
-			ex.world.unlock(lock)
 		}
 	}
 	if remove {
@@ -561,7 +557,6 @@ func (ex *Exchange3[A, B, C]) exchangeBatchFn(batch *Batch, fn func(entity Entit
 			columnB := table.GetColumn(ex.ids[1])
 			columnC := table.GetColumn(ex.ids[2])
 
-			lock := ex.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -571,7 +566,6 @@ func (ex *Exchange3[A, B, C]) exchangeBatchFn(batch *Batch, fn func(entity Entit
 					(*C)(columnC.Get(index)),
 				)
 			}
-			ex.world.unlock(lock)
 		}
 	}
 	if remove {
@@ -773,7 +767,6 @@ func (ex *Exchange4[A, B, C, D]) exchangeBatchFn(batch *Batch, fn func(entity En
 			columnC := table.GetColumn(ex.ids[2])
 			columnD := table.GetColumn(ex.ids[3])
 
-			lock := ex.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -784,7 +777,6 @@ func (ex *Exchange4[A, B, C, D]) exchangeBatchFn(batch *Batch, fn func(entity En
 					(*D)(columnD.Get(index)),
 				)
 			}
-			ex.world.unlock(lock)
 		}
 	}
 	if remove {
@@ -993,7 +985,6 @@ func (ex *Exchange5[A, B, C, D, E]) exchangeBatchFn(batch *Batch, fn func(entity
 			columnD := table.GetColumn(ex.ids[3])
 			columnE := table.GetColumn(ex.ids[4])
 
-			lock := ex.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -1005,7 +996,6 @@ func (ex *Exchange5[A, B, C, D, E]) exchangeBatchFn(batch *Batch, fn func(entity
 					(*E)(columnE.Get(index)),
 				)
 			}
-			ex.world.unlock(lock)
 		}
 	}
 	if remove {
@@ -1221,7 +1211,6 @@ func (ex *Exchange6[A, B, C, D, E, F]) exchangeBatchFn(batch *Batch, fn func(ent
 			columnE := table.GetColumn(ex.ids[4])
 			columnF := table.GetColumn(ex.ids[5])
 
-			lock := ex.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -1234,7 +1223,6 @@ func (ex *Exchange6[A, B, C, D, E, F]) exchangeBatchFn(batch *Batch, fn func(ent
 					(*F)(columnF.Get(index)),
 				)
 			}
-			ex.world.unlock(lock)
 		}
 	}
 	if remove {
@@ -1457,7 +1445,6 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) exchangeBatchFn(batch *Batch, fn func(
 			columnF := table.GetColumn(ex.ids[5])
 			columnG := table.GetColumn(ex.ids[6])
 
-			lock := ex.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -1471,7 +1458,6 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) exchangeBatchFn(batch *Batch, fn func(
 					(*G)(columnG.Get(index)),
 				)
 			}
-			ex.world.unlock(lock)
 		}
 	}
 	if remove {
@@ -1701,7 +1687,6 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) exchangeBatchFn(batch *Batch, fn fu
 			columnG := table.GetColumn(ex.ids[6])
 			columnH := table.GetColumn(ex.ids[7])
 
-			lock := ex.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -1716,7 +1701,6 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) exchangeBatchFn(batch *Batch, fn fu
 					(*H)(columnH.Get(index)),
 				)
 			}
-			ex.world.unlock(lock)
 		}
 	}
 	if remove {

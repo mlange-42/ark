@@ -194,7 +194,6 @@ func (ex *Exchange{{.}}{{$genericsShort}}) exchangeBatchFn(batch *Batch, fn func
 			column{{$v}} := table.GetColumn(ex.ids[{{$i}}])
 			{{- end}}
 
-			lock := ex.world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(
@@ -204,7 +203,6 @@ func (ex *Exchange{{.}}{{$genericsShort}}) exchangeBatchFn(batch *Batch, fn func
 					{{- end}}
 				)
 			}
-			ex.world.unlock(lock)
 		}
 	}
 	if remove {

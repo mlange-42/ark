@@ -154,6 +154,7 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, {{$args}}) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter{{$nFilter}}{{$genericsFilter}}(&w)
@@ -251,6 +252,7 @@ func TestMap{{.}}AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity){
 		pos.X = float64(cnt)

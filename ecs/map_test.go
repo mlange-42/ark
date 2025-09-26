@@ -123,6 +123,7 @@ func TestMapNewBatchFn(t *testing.T) {
 	mapper.NewBatchFn(2*n, func(entity Entity, a *CompA) {
 		a.X = 5
 		a.Y = 6
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter := NewFilter1[CompA](&w)
@@ -194,6 +195,7 @@ func TestMapAddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -223,6 +225,7 @@ func TestMapAddBatchFn(t *testing.T) {
 	cnt = 0
 	mapper.RemoveBatch(filter2.Batch(), func(entity Entity) {
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	expectEqual(t, 2*n, cnt)
 

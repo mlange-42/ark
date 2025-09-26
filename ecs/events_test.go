@@ -138,11 +138,12 @@ func TestObserverOnCreateEntity(t *testing.T) {
 	builder2 := NewMap1[Velocity](&w)
 
 	callCount := 0
+	isBatch := false
 
 	Observe(OnCreateEntity).
 		With(C[Position]()).
 		Do(func(e Entity) {
-			expectFalse(t, w.IsLocked())
+			expectEqual(t, isBatch, w.IsLocked())
 			callCount++
 		}).
 		Register(&w)
@@ -157,6 +158,7 @@ func TestObserverOnCreateEntity(t *testing.T) {
 	w.Unsafe().NewEntity(velID)
 	expectEqual(t, 2, callCount)
 
+	isBatch = true
 	builder1.NewBatch(10, &Position{})
 	expectEqual(t, 12, callCount)
 	builder2.NewBatch(10, &Velocity{})
@@ -170,7 +172,7 @@ func TestObserverOnCreateEntities(t *testing.T) {
 
 	Observe(OnCreateEntity).
 		Do(func(e Entity) {
-			expectFalse(t, w.IsLocked())
+			expectTrue(t, w.IsLocked())
 			callCount++
 		}).
 		Register(&w)
@@ -223,11 +225,12 @@ func TestObserverOnAddRemove(t *testing.T) {
 
 	callAdd := 0
 	callRemove := 0
+	isBatch := false
 
 	Observe(OnAddComponents).
 		For(C[Position]()).
 		Do(func(e Entity) {
-			expectFalse(t, w.IsLocked())
+			expectEqual(t, isBatch, w.IsLocked())
 			callAdd++
 		}).
 		Register(&w)
@@ -254,6 +257,8 @@ func TestObserverOnAddRemove(t *testing.T) {
 	expectEqual(t, 0, callRemove)
 	builder1.Remove(e)
 	expectEqual(t, 1, callRemove)
+
+	isBatch = true
 
 	builder2.NewBatch(10, &Velocity{})
 	builder1.AddBatch(filter2.Batch(), &Position{})

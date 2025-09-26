@@ -6,12 +6,10 @@ func removeBatch(world *World, batch *Batch, ids []ID, fn func(entity Entity)) {
 		process = func(tableID tableID, start, len uint32) {
 			table := world.storage.tables[tableID]
 
-			lock := world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(table.GetEntity(index))
 			}
-			world.unlock(lock)
 		}
 	}
 	world.exchangeBatch(batch, nil, ids, nil, process)

@@ -58,7 +58,7 @@ The observer callbacks are executed immediately by any fired event.
 
 Events for entity creation and for adding or setting components are fired after the operation.
 Hence, the new or changed components can be inspected in the observer's callback.
-In this case, the world is in an [unlocked](../queries#world-lock) state when the callback is executed.
+If emitted from individual operations, the world is in an [unlocked](../queries#world-lock) state when the callback is executed. Contrary, when emitted from a batch operation, the world is [locked](../queries#world-lock).
 
 Events for entity or component removal are fired before the operation.
 This way, the entity or component to be removed can be inspected in the observer's callback.
@@ -68,6 +68,6 @@ For [batch operations](../batch), all events are fired before or after the entir
 For batch creation or addition, events are fired after the potential batch callback
 is executed for all entities, allowing to inspect the result.
 
-### Observer order
+## Observer order
 
 Observer order for the same event type is undefined.

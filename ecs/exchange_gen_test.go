@@ -120,6 +120,7 @@ func TestExchange1AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -132,6 +133,7 @@ func TestExchange1AddBatchFn(t *testing.T) {
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -216,6 +218,7 @@ func TestExchange1ExchangeBatchFn(t *testing.T) {
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -346,6 +349,7 @@ func TestExchange2AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -358,6 +362,7 @@ func TestExchange2AddBatchFn(t *testing.T) {
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -442,6 +447,7 @@ func TestExchange2ExchangeBatchFn(t *testing.T) {
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -572,6 +578,7 @@ func TestExchange3AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -584,6 +591,7 @@ func TestExchange3AddBatchFn(t *testing.T) {
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -668,6 +676,7 @@ func TestExchange3ExchangeBatchFn(t *testing.T) {
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -798,6 +807,7 @@ func TestExchange4AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -810,6 +820,7 @@ func TestExchange4AddBatchFn(t *testing.T) {
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -894,6 +905,7 @@ func TestExchange4ExchangeBatchFn(t *testing.T) {
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -1024,6 +1036,7 @@ func TestExchange5AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -1036,6 +1049,7 @@ func TestExchange5AddBatchFn(t *testing.T) {
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -1120,6 +1134,7 @@ func TestExchange5ExchangeBatchFn(t *testing.T) {
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -1250,6 +1265,7 @@ func TestExchange6AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -1262,6 +1278,7 @@ func TestExchange6AddBatchFn(t *testing.T) {
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -1346,6 +1363,7 @@ func TestExchange6ExchangeBatchFn(t *testing.T) {
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -1476,6 +1494,7 @@ func TestExchange7AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -1488,6 +1507,7 @@ func TestExchange7AddBatchFn(t *testing.T) {
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -1572,6 +1592,7 @@ func TestExchange7ExchangeBatchFn(t *testing.T) {
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -1702,6 +1723,7 @@ func TestExchange8AddBatchFn(t *testing.T) {
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
 		pos.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 	posVelMap.NewBatchFn(n, func(entity Entity, pos *Position, _ *Velocity) {
 		pos.X = float64(cnt)
@@ -1714,6 +1736,7 @@ func TestExchange8AddBatchFn(t *testing.T) {
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
@@ -1798,6 +1821,7 @@ func TestExchange8ExchangeBatchFn(t *testing.T) {
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 		a.X = float64(cnt)
 		cnt++
+		expectTrue(t, w.IsLocked())
 	})
 
 	filter2 := NewFilter1[CompA](&w)
