@@ -506,6 +506,24 @@ func TestObserverEntitiesWith(t *testing.T) {
 	expectEqual(t, 1, callRemove)
 }
 
+func TestObserverExclusive(t *testing.T) {
+	w := NewWorld()
+
+	obs := Observe(OnCreateEntity).
+		With(C[Position]()).
+		Exclusive().
+		Do(func(e Entity) {}).Register(&w)
+
+	expectTrue(t, obs.withMask.Get(0))
+	expectFalse(t, obs.withMask.Get(1))
+
+	expectFalse(t, obs.withoutMask.Get(0))
+	expectTrue(t, obs.withoutMask.Get(1))
+
+	expectTrue(t, obs.exclusive)
+	expectTrue(t, obs.hasWithout)
+}
+
 func TestObserverEntitiesWithout(t *testing.T) {
 	w := NewWorld()
 

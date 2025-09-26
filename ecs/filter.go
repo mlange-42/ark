@@ -28,7 +28,7 @@ func (f UnsafeFilter) Without(ids ...ID) UnsafeFilter {
 	return f
 }
 
-// Exclusive makes the filter exclusive in the sense that the component composition is matched exactly,
+// Exclusive makes the filter exclusive in the sense that the components composition is matched exactly,
 // and no other components are allowed.
 //
 // Overwrites components set via [Filter.Without].
