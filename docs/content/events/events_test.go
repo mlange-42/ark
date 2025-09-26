@@ -27,3 +27,25 @@ func TestEventsBasic(t *testing.T) {
 	builder := ecs.NewMap1[Position](&world)
 	builder.NewEntity(&Position{X: 10, Y: 11})
 }
+
+func TestCombineObservers(t *testing.T) {
+	// Common callback.
+	fn := func(evt ecs.EventType, entity ecs.Entity) {
+		if evt == ecs.OnAddComponents {
+			// do something
+		}
+		if evt == ecs.OnRemoveComponents {
+			// do something
+		}
+	}
+
+	// Observer for adding components.
+	ecs.Observe(ecs.OnAddComponents).
+		Do(func(e ecs.Entity) { fn(ecs.OnAddComponents, e) }).
+		Register(&world)
+
+	// Observer for removing components.
+	ecs.Observe(ecs.OnRemoveComponents).
+		Do(func(e ecs.Entity) { fn(ecs.OnRemoveComponents, e) }).
+		Register(&world)
+}
