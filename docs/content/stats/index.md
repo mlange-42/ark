@@ -1,7 +1,7 @@
 +++
 title = 'World statistics'
 type = "docs"
-weight = 90
+weight = 100
 description = "Ark's world statistics feature for engine insights."
 +++
 Ark only exposes the API required for actual use.
