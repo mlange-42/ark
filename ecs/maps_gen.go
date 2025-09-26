@@ -53,7 +53,7 @@ func (m *Map1[A]) NewEntity(a *A, rel ...Relation) Entity {
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map1[A]) NewEntityFn(fn func(a *A), rel ...Relation) Entity {
+func (m *Map1[A]) NewEntityFn(fn func(*A), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -84,7 +84,7 @@ func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map1[A]) NewBatchFn(count int, fn func(entity Entity, a *A), rel ...Relation) {
+func (m *Map1[A]) NewBatchFn(count int, fn func(Entity, *A), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -188,7 +188,7 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map1[A]) AddFn(entity Entity, fn func(a *A), rel ...Relation) {
+func (m *Map1[A]) AddFn(entity Entity, fn func(*A), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -242,7 +242,7 @@ func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A), rel ...Relation) {
+func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(Entity, *A), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -353,7 +353,7 @@ func (m *Map2[A, B]) NewEntity(a *A, b *B, rel ...Relation) Entity {
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map2[A, B]) NewEntityFn(fn func(a *A, b *B), rel ...Relation) Entity {
+func (m *Map2[A, B]) NewEntityFn(fn func(*A, *B), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -386,7 +386,7 @@ func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map2[A, B]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B), rel ...Relation) {
+func (m *Map2[A, B]) NewBatchFn(count int, fn func(Entity, *A, *B), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -504,7 +504,7 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map2[A, B]) AddFn(entity Entity, fn func(a *A, b *B), rel ...Relation) {
+func (m *Map2[A, B]) AddFn(entity Entity, fn func(*A, *B), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -562,7 +562,7 @@ func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B), rel ...Relation) {
+func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -683,7 +683,7 @@ func (m *Map3[A, B, C]) NewEntity(a *A, b *B, c *C, rel ...Relation) Entity {
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map3[A, B, C]) NewEntityFn(fn func(a *A, b *B, c *C), rel ...Relation) Entity {
+func (m *Map3[A, B, C]) NewEntityFn(fn func(*A, *B, *C), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -718,7 +718,7 @@ func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
+func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(Entity, *A, *B, *C), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -850,7 +850,7 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(a *A, b *B, c *C), rel ...Relation) {
+func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(*A, *B, *C), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -912,7 +912,7 @@ func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C), rel ...Relation) {
+func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -1039,7 +1039,7 @@ func (m *Map4[A, B, C, D]) NewEntity(a *A, b *B, c *C, d *D, rel ...Relation) En
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map4[A, B, C, D]) NewEntityFn(fn func(a *A, b *B, c *C, d *D), rel ...Relation) Entity {
+func (m *Map4[A, B, C, D]) NewEntityFn(fn func(*A, *B, *C, *D), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -1076,7 +1076,7 @@ func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Re
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
+func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -1222,7 +1222,7 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D), rel ...Relation) {
+func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(*A, *B, *C, *D), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -1288,7 +1288,7 @@ func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ..
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D), rel ...Relation) {
+func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -1421,7 +1421,7 @@ func (m *Map5[A, B, C, D, E]) NewEntity(a *A, b *B, c *C, d *D, e *E, rel ...Rel
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) Entity {
+func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(*A, *B, *C, *D, *E), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -1460,7 +1460,7 @@ func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
+func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -1620,7 +1620,7 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
+func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -1690,7 +1690,7 @@ func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E), rel ...Relation) {
+func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -1829,7 +1829,7 @@ func (m *Map6[A, B, C, D, E, F]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F, r
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) Entity {
+func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -1870,7 +1870,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
+func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -2044,7 +2044,7 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
+func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -2118,7 +2118,7 @@ func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, 
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F), rel ...Relation) {
+func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -2263,7 +2263,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntity(a *A, b *B, c *C, d *D, e *E, f *F
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) Entity {
+func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F, *G), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -2306,7 +2306,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
+func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -2494,7 +2494,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
+func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -2572,7 +2572,7 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G), rel ...Relation) {
+func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -2723,7 +2723,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntity(a *A, b *B, c *C, d *D, e *E, f
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) Entity {
+func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -2768,7 +2768,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
+func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -2970,7 +2970,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
+func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -3052,7 +3052,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, 
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H), rel ...Relation) {
+func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -3209,7 +3209,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntity(a *A, b *B, c *C, d *D, e *E
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) Entity {
+func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -3256,7 +3256,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatch(count int, a *A, b *B, c *C, 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
+func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -3472,7 +3472,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Add(entity Entity, a *A, b *B, c *C, d
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
+func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -3558,7 +3558,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatch(batch *Batch, a *A, b *B, c *
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I), rel ...Relation) {
+func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -3721,7 +3721,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntity(a *A, b *B, c *C, d *D, 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) Entity {
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I, *J), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -3770,7 +3770,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatch(count int, a *A, b *B, c 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -4000,7 +4000,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Add(entity Entity, a *A, b *B, c *
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I, *J), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -4090,7 +4090,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatch(batch *Batch, a *A, b *B,
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J), rel ...Relation) {
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -4259,7 +4259,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntity(a *A, b *B, c *C, d *
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) Entity {
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -4310,7 +4310,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatch(count int, a *A, b *B,
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -4554,7 +4554,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Add(entity Entity, a *A, b *B, 
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -4648,7 +4648,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatch(batch *Batch, a *A, b 
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K), rel ...Relation) {
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)
@@ -4823,7 +4823,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntity(a *A, b *B, c *C, 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) Entity {
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
@@ -4876,7 +4876,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatch(count int, a *A, b 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -5134,7 +5134,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Add(entity Entity, a *A, b *
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
@@ -5232,7 +5232,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatch(batch *Batch, a *A,
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn func(entity Entity, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L), rel ...Relation) {
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 
 	var process func(tableID tableID, start, len uint32)

@@ -41,7 +41,7 @@ func (m *Map[T]) NewEntity(comp *T, target ...Entity) Entity {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointer outside of the current context!
-func (m *Map[T]) NewEntityFn(fn func(a *T), target ...Entity) Entity {
+func (m *Map[T]) NewEntityFn(fn func(*T), target ...Entity) Entity {
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
 	entity, mask := m.world.newEntity(m.ids[:], m.relations)
 	if fn != nil {
@@ -68,7 +68,7 @@ func (m *Map[T]) NewBatch(count int, comp *T, target ...Entity) {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map[T]) NewBatchFn(count int, fn func(entity Entity, comp *T), target ...Entity) {
+func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids[:], m.relations)
 
@@ -171,7 +171,7 @@ func (m *Map[T]) Add(entity Entity, comp *T, target ...Entity) {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointer outside of the current context!
-func (m *Map[T]) AddFn(entity Entity, fn func(a *T), target ...Entity) {
+func (m *Map[T]) AddFn(entity Entity, fn func(*T), target ...Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't add a component to a dead entity")
 	}
@@ -224,7 +224,7 @@ func (m *Map[T]) AddBatch(batch *Batch, comp *T, target ...Entity) {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map[T]) AddBatchFn(batch *Batch, fn func(entity Entity, comp *T), target ...Entity) {
+func (m *Map[T]) AddBatchFn(batch *Batch, fn func(Entity, *T), target ...Entity) {
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
 
 	var process func(tableID tableID, start, len uint32)
