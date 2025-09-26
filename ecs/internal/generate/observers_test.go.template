@@ -12,8 +12,6 @@ import "testing"
 
 {{- $generics := join "[Comp" ", Comp" "]" $upper -}}
 {{- $args := arguments $lower $upper "" "Comp" -}}
-{{- $mapArgs := join "&Comp" "{}, &Comp" "{}" $upper -}}
-{{- $comps := join "" ", " "" $lower -}}
 
 func TestObserve{{.}}(t *testing.T) {
 	w := NewWorld()
