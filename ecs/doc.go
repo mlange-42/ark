@@ -16,6 +16,7 @@
 //   - [Map] provides access to a single component, like [Map.Get] and [Map.Add], [Map.Remove].
 //   - [Exchange1], [Exchange2] etc. allows to add, remove and exchange components.
 //   - [Resource] provides access the world's [Resources].
+//   - [Observer], [Observer1], etc. allow to react on ECS operations.
 //   - See the separate module [ark-serde] for serialization.
 //
 // # ECS Manipulations

@@ -6,6 +6,7 @@ package ecs
 // Use the methods Observe, With, Without, and Do to configure the observer before registering it.
 //
 // See [EventType] for available events.
+// See also [Observer1], [Observer2], etc.
 type Observer struct {
 	compsMask   bitMask
 	withMask    bitMask
@@ -26,6 +27,8 @@ type Observer struct {
 //
 // Observers react to structural changes, such as entity creation, removal, and component addition/removal.
 // Use the methods For, With, Without, Exclusive, and Do to configure the observer before registering it.
+//
+// See also [Observe1], [Observe2], etc.
 func Observe(evt EventType) *Observer {
 	return &Observer{
 		event: evt,

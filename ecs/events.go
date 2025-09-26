@@ -9,7 +9,8 @@ type observerID uint32
 const maxObserverID = math.MaxUint32
 
 // EventType is the type for event identifiers.
-// See [Observer] for details on events.
+//
+// See [Observer] for details on events and observers.
 type EventType uint8
 
 const (

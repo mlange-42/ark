@@ -10,6 +10,8 @@ package ecs
 {{- $fn_args := join "*" ", *" "" $upper -}}
 
 // Observer{{.}} is a generic observer for {{.}} components.
+//
+// See [Observer] for details on events and observers.
 type Observer{{.}}{{$generics}} struct {
 	observer Observer
 	callback func(Entity, {{$fn_args}})
