@@ -4,6 +4,10 @@ type = "docs"
 weight = 80
 description = "Ark's event system and observers."
 +++
+> [!NOTE]
+> This feature is not yet released and is planned for Ark v0.6.0.
+> You can try it out on the `main` branch.
+
 Ark provides an an event system with observers that allow an application to react on events,
 such as adding and removing components and entities.
 
@@ -63,3 +67,7 @@ In this case, the world is [locked](../queries#world-lock) when the callback is 
 For [batch operations](../batch), all events are fired before or after the entire batch, respectively.
 For batch creation or addition, events are fired after the potential batch callback
 is executed for all entities, allowing to inspect the result.
+
+### Observer order
+
+Observer order for the same event type is undefined.
