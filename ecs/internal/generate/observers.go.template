@@ -38,9 +38,6 @@ func (o *Observer{{.}}{{$genericsShort}}) For(comps ...Comp) *Observer{{.}}{{$ge
 	if len(comps) == 0 {
 		return o
 	}
-	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
-		return o.With(comps...)
-	}
 	o.comps = append(o.comps, comps...)
 	return o
 }
@@ -86,21 +83,21 @@ func (o *Observer{{.}}{{$genericsShort}}) Register(w *World) *Observer{{.}}{{$ge
 	if o.observer.id != maxObserverID {
 		panic("observer is already registered")
 	}
-	{{- range $i, $v := $upper}}
+	if o.callback == nil {
+		panic("observer callback must be set via Do before registering")
+	}
+	{{range $i, $v := $upper}}
 	storage{{$v}} := &w.storage.components[ComponentID[{{$v}}](w).id]
 	{{- end}}
-
-	if o.callback != nil {
-		o.observer.callback = func(e Entity) {
-			index := &w.storage.entities[e.id]
-			row := uintptr(index.row)
-			o.callback(
-				e,
-				{{- range $i, $v := $upper}}
-				(*{{$v}})(storage{{$v}}.columns[index.table].Get(row)),
-				{{- end}}
-			)
-		}
+	o.observer.callback = func(e Entity) {
+		index := &w.storage.entities[e.id]
+		row := uintptr(index.row)
+		o.callback(
+			e,
+			{{- range $i, $v := $upper}}
+			(*{{$v}})(storage{{$v}}.columns[index.table].Get(row)),
+			{{- end}}
+		)
 	}
 
 	o.observer.comps = o.observer.comps[:0]

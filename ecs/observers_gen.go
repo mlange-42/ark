@@ -31,9 +31,6 @@ func (o *Observer1[A]) For(comps ...Comp) *Observer1[A] {
 	if len(comps) == 0 {
 		return o
 	}
-	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
-		return o.With(comps...)
-	}
 	o.comps = append(o.comps, comps...)
 	return o
 }
@@ -79,17 +76,18 @@ func (o *Observer1[A]) Register(w *World) *Observer1[A] {
 	if o.observer.id != maxObserverID {
 		panic("observer is already registered")
 	}
-	storageA := &w.storage.components[ComponentID[A](w).id]
+	if o.callback == nil {
+		panic("observer callback must be set via Do before registering")
+	}
 
-	if o.callback != nil {
-		o.observer.callback = func(e Entity) {
-			index := &w.storage.entities[e.id]
-			row := uintptr(index.row)
-			o.callback(
-				e,
-				(*A)(storageA.columns[index.table].Get(row)),
-			)
-		}
+	storageA := &w.storage.components[ComponentID[A](w).id]
+	o.observer.callback = func(e Entity) {
+		index := &w.storage.entities[e.id]
+		row := uintptr(index.row)
+		o.callback(
+			e,
+			(*A)(storageA.columns[index.table].Get(row)),
+		)
 	}
 
 	o.observer.comps = o.observer.comps[:0]
@@ -139,9 +137,6 @@ func (o *Observer2[A, B]) For(comps ...Comp) *Observer2[A, B] {
 	if len(comps) == 0 {
 		return o
 	}
-	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
-		return o.With(comps...)
-	}
 	o.comps = append(o.comps, comps...)
 	return o
 }
@@ -187,19 +182,20 @@ func (o *Observer2[A, B]) Register(w *World) *Observer2[A, B] {
 	if o.observer.id != maxObserverID {
 		panic("observer is already registered")
 	}
+	if o.callback == nil {
+		panic("observer callback must be set via Do before registering")
+	}
+
 	storageA := &w.storage.components[ComponentID[A](w).id]
 	storageB := &w.storage.components[ComponentID[B](w).id]
-
-	if o.callback != nil {
-		o.observer.callback = func(e Entity) {
-			index := &w.storage.entities[e.id]
-			row := uintptr(index.row)
-			o.callback(
-				e,
-				(*A)(storageA.columns[index.table].Get(row)),
-				(*B)(storageB.columns[index.table].Get(row)),
-			)
-		}
+	o.observer.callback = func(e Entity) {
+		index := &w.storage.entities[e.id]
+		row := uintptr(index.row)
+		o.callback(
+			e,
+			(*A)(storageA.columns[index.table].Get(row)),
+			(*B)(storageB.columns[index.table].Get(row)),
+		)
 	}
 
 	o.observer.comps = o.observer.comps[:0]
@@ -250,9 +246,6 @@ func (o *Observer3[A, B, C]) For(comps ...Comp) *Observer3[A, B, C] {
 	if len(comps) == 0 {
 		return o
 	}
-	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
-		return o.With(comps...)
-	}
 	o.comps = append(o.comps, comps...)
 	return o
 }
@@ -298,21 +291,22 @@ func (o *Observer3[A, B, C]) Register(w *World) *Observer3[A, B, C] {
 	if o.observer.id != maxObserverID {
 		panic("observer is already registered")
 	}
+	if o.callback == nil {
+		panic("observer callback must be set via Do before registering")
+	}
+
 	storageA := &w.storage.components[ComponentID[A](w).id]
 	storageB := &w.storage.components[ComponentID[B](w).id]
 	storageC := &w.storage.components[ComponentID[C](w).id]
-
-	if o.callback != nil {
-		o.observer.callback = func(e Entity) {
-			index := &w.storage.entities[e.id]
-			row := uintptr(index.row)
-			o.callback(
-				e,
-				(*A)(storageA.columns[index.table].Get(row)),
-				(*B)(storageB.columns[index.table].Get(row)),
-				(*C)(storageC.columns[index.table].Get(row)),
-			)
-		}
+	o.observer.callback = func(e Entity) {
+		index := &w.storage.entities[e.id]
+		row := uintptr(index.row)
+		o.callback(
+			e,
+			(*A)(storageA.columns[index.table].Get(row)),
+			(*B)(storageB.columns[index.table].Get(row)),
+			(*C)(storageC.columns[index.table].Get(row)),
+		)
 	}
 
 	o.observer.comps = o.observer.comps[:0]
@@ -364,9 +358,6 @@ func (o *Observer4[A, B, C, D]) For(comps ...Comp) *Observer4[A, B, C, D] {
 	if len(comps) == 0 {
 		return o
 	}
-	if o.observer.event == OnCreateEntity || o.observer.event == OnRemoveEntity {
-		return o.With(comps...)
-	}
 	o.comps = append(o.comps, comps...)
 	return o
 }
@@ -412,23 +403,24 @@ func (o *Observer4[A, B, C, D]) Register(w *World) *Observer4[A, B, C, D] {
 	if o.observer.id != maxObserverID {
 		panic("observer is already registered")
 	}
+	if o.callback == nil {
+		panic("observer callback must be set via Do before registering")
+	}
+
 	storageA := &w.storage.components[ComponentID[A](w).id]
 	storageB := &w.storage.components[ComponentID[B](w).id]
 	storageC := &w.storage.components[ComponentID[C](w).id]
 	storageD := &w.storage.components[ComponentID[D](w).id]
-
-	if o.callback != nil {
-		o.observer.callback = func(e Entity) {
-			index := &w.storage.entities[e.id]
-			row := uintptr(index.row)
-			o.callback(
-				e,
-				(*A)(storageA.columns[index.table].Get(row)),
-				(*B)(storageB.columns[index.table].Get(row)),
-				(*C)(storageC.columns[index.table].Get(row)),
-				(*D)(storageD.columns[index.table].Get(row)),
-			)
-		}
+	o.observer.callback = func(e Entity) {
+		index := &w.storage.entities[e.id]
+		row := uintptr(index.row)
+		o.callback(
+			e,
+			(*A)(storageA.columns[index.table].Get(row)),
+			(*B)(storageB.columns[index.table].Get(row)),
+			(*C)(storageC.columns[index.table].Get(row)),
+			(*D)(storageD.columns[index.table].Get(row)),
+		)
 	}
 
 	o.observer.comps = o.observer.comps[:0]
