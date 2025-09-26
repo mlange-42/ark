@@ -315,7 +315,7 @@ func (m *observerManager) FireCustom(evt EventType, e Entity, mask, entityMask *
 }
 
 func (m *observerManager) doFireCustom(evt EventType, e Entity, mask, entityMask *bitMask) {
-	if !m.anyNoComps[evt] && !m.allComps[OnSetComponents].ContainsAny(mask) {
+	if !m.anyNoComps[evt] && !m.allComps[evt].ContainsAny(mask) {
 		return
 	}
 	if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(entityMask) {

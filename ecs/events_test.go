@@ -8,6 +8,7 @@ import (
 func TestCustomEvent(t *testing.T) {
 	world := NewWorld()
 	customEvent := NewEventType()
+	builder := NewMap2[Position, Velocity](&world)
 
 	callCount := 0
 	Observe(customEvent).
@@ -15,7 +16,7 @@ func TestCustomEvent(t *testing.T) {
 		Do(func(e Entity) { callCount++ }).
 		Register(&world)
 
-	e := world.NewEntity()
+	e := builder.NewEntity(&Position{1, 2}, &Velocity{3, 4})
 
 	evt := NewEvent(customEvent, &world).For(C[Position]())
 
@@ -44,4 +45,24 @@ func TestCustomEventGeneric(t *testing.T) {
 
 	evt := NewEvent(customEvent, &world).For(C[Position]())
 	evt.Emit(e)
+	expectEqual(t, 1, callCount)
+}
+
+func TestCustomEventEmpty(t *testing.T) {
+	world := NewWorld()
+	customEvent := NewEventType()
+	builder := NewMap2[Position, Velocity](&world)
+
+	callCount := 0
+	Observe(customEvent).
+		Do(func(e Entity) {
+			callCount++
+		}).
+		Register(&world)
+
+	e := builder.NewEntity(&Position{1, 2}, &Velocity{3, 4})
+
+	evt := NewEvent(customEvent, &world)
+	evt.Emit(e)
+	expectEqual(t, 1, callCount)
 }
