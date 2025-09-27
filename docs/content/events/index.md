@@ -96,3 +96,33 @@ is executed for all entities, allowing to inspect the result.
 
 Note that observer order is undefined. Observers are not necessarily triggered
 in the same order as they were registered.
+
+## Custom events
+
+Ark's event system can also be used for custom, user-defined events.
+They work exactly the same as the predefined events, but can be emitted in user code.
+
+Define custom event types using {{< api ecs NewEventType >}}:
+
+{{< code-func events_test.go TestNewEventType >}}
+
+Ideally, custom event types are stored as global variables of the applications.
+
+Use custom events like this:
+
+{{< code-func events_test.go TestEventEmit >}}
+
+Observers might not be interested in components, or in more than one component.
+This is also supported by custom events:
+
+{{< code-func events_test.go TestEventClick >}}
+
+Here, the event is created and emitted in a single expression.
+However, it is recommended to store events after construction and to reuse them for `Emit`.
+Particularly for events with components, as event construction involves an overhead
+for component ID lookup of &approx;20ns per component.
+
+For custom events, observer [filters](#filters) work exactly the same as for predefined events.
+The components in the generic parameters of the observer, as well as those defined by `For`,
+are matched against the components of the event.
+`With`, `Without` and `Exclusive` are matched against the entity for which the event is emitted.
