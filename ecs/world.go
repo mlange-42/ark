@@ -167,7 +167,10 @@ func (w *World) Unsafe() Unsafe {
 	}
 }
 
-// Event creates a new event for the given type.
+// Event creates a new event of the given type.
+//
+// The event can be further configured using [Event.For].
+// It must be emitted using [Event.Emit] to have an effect.
 //
 // See [Event] and [Observer] for details.
 func (w *World) Event(tp EventType) Event {

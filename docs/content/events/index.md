@@ -8,11 +8,11 @@ description = "Ark's event system and observers."
 > This feature is not yet released and is planned for Ark v0.6.0.
 > You can try it out on the `main` branch.
 
-Ark provides an an event system with observers that allow an application to react on events,
+Ark provides an event system with observers that allow an application to react on events,
 such as adding and removing components and entities.
 
 Observers can filter for the events they are interested in, in several ways.
-A callback function with is executed for the affected entity whenever an observer's filter matches.
+A callback function is executed for the affected entity whenever an observer's filter matches.
 
 ## Example
 
@@ -23,11 +23,11 @@ A callback function with is executed for the affected entity whenever an observe
 Observers are specific for different event types, and each observer can react only to one type.
 See [below](#combining-multiple-types) for how to react on multiple different types.
 
-- **OnCreateEntity** &mdash; Fires after a new entity is created.  
-- **OnRemoveEntity** &mdash; Fires before an entity is removed.
-- **OnAddComponents** &mdash; Fires after components are added to an existing entity.
-- **OnRemoveComponents** &mdash; Fires before components are removed from an entity.
-- **OnSetComponents** &mdash; Fires after existing components are set from an entity.
+- **OnCreateEntity** &mdash; Emitted after a new entity is created.  
+- **OnRemoveEntity** &mdash; Emitted before an entity is removed.
+- **OnAddComponents** &mdash; Emitted after components are added to an existing entity.
+- **OnRemoveComponents** &mdash; Emitted before components are removed from an entity.
+- **OnSetComponents** &mdash; Emitted after existing components are set from an entity.
 
 If multiple components are added/removed/set for an entity,
 one event is emitted for the entire operation.
@@ -46,9 +46,10 @@ Observers filter for the components specified by their generic parameters.
 Additional components can be specified using {{< api ecs Observer.For >}},
 but they are not directly accessible in the callback.
 
-If multiple components are specified (in parameters and in `For`),
-all these components must be affected (added, removed, created, ...)
-at the same time for the observer to trigger.
+Observers only trigger when all specified components (in parameters and in `For`)
+are affected in a single operation.
+For example, if an observer watches `Position` and `Velocity`,
+both must be added or removed together for the observer to activate
 
 Further, events can be filtered by the composition of the affected entity via
 {{< api ecs Observer.With >}}, {{< api ecs Observer.Without >}} and {{< api ecs Observer.Exclusive >}}, just like [queries](../queries/).
@@ -79,19 +80,19 @@ that has `Velocity`, but not `Altitude` (or rather, had before the operation):
 
 ## Event timing
 
-The time an event is fired relative to the operation it is related to depends on the event's type.
-The observer callbacks are executed immediately by any fired event.
+The time an event is emitted relative to the operation it is related to depends on the event's type.
+The observer callbacks are executed immediately by any emitted event.
 
-Events for entity creation and for adding or setting components are fired after the operation.
+Events for entity creation and for adding or setting components are emitted after the operation.
 Hence, the new or changed components can be inspected in the observer's callback.
 If emitted from individual operations, the world is in an [unlocked](../queries#world-lock) state when the callback is executed. Contrary, when emitted from a batch operation, the world is [locked](../queries#world-lock).
 
-Events for entity or component removal are fired before the operation.
+Events for entity or component removal are emitted before the operation.
 This way, the entity or component to be removed can be inspected in the observer's callback.
 In this case, the world is [locked](../queries#world-lock) when the callback is executed.
 
-For [batch operations](../batch), all events are fired before or after the entire batch, respectively.
-For batch creation or addition, events are fired after the potential batch callback
+For [batch operations](../batch), all events are emitted before or after the entire batch, respectively.
+For batch creation or addition, events are emitted after the potential batch callback
 is executed for all entities, allowing to inspect the result.
 
 Note that observer order is undefined. Observers are not necessarily triggered
@@ -99,8 +100,10 @@ in the same order as they were registered.
 
 ## Custom events
 
-Ark's event system can also be used for custom, user-defined events.
-They work exactly the same as the predefined events, but can be emitted in user code.
+Custom events in Ark allow developers to define and emit their own event types,
+enabling application-specific logic such as UI interactions, game state changes,
+or domain-specific triggers.
+These events support the same filtering and observer mechanisms as built-in events.
 
 Define custom event types using {{< api ecs NewEventType >}}:
 
@@ -119,8 +122,9 @@ This is also supported by custom events:
 
 Here, the event is created and emitted in a single expression.
 However, it is recommended to store events after construction and to reuse them for `Emit`.
-Particularly for events with components, as event construction involves an overhead
-for component ID lookup of &approx;20ns per component.
+Reusing event instances is especially important for events with components,
+as it avoids repeated lookups and improves runtime efficiency.
+The overhead for component ID lookup is &approx;20ns per component.
 
 For custom events, observer [filters](#filters) work exactly the same as for predefined events.
 The components in the generic parameters of the observer, as well as those defined by `For`,
