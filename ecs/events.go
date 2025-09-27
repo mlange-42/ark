@@ -342,21 +342,12 @@ func (m *observerManager) doFireCustom(evt EventType, e Entity, mask, entityMask
 }
 
 // Event is a custom event.
+//
+// Create events using [World.Event].
 type Event struct {
 	world     *World
 	eventType EventType
 	mask      bitMask
-}
-
-// NewEvent creates a new event for the given type.
-func NewEvent(e EventType, world *World) Event {
-	if e < eventsEnd {
-		panic("only custom events can be emitted manually")
-	}
-	return Event{
-		world:     world,
-		eventType: e,
-	}
 }
 
 // For sets the event's component types. Optional.

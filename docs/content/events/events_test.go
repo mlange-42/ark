@@ -113,7 +113,7 @@ func TestEventEmit(t *testing.T) {
 		Register(&world)
 
 	// Define the event.
-	event := ecs.NewEvent(OnSynchronized, &world).
+	event := world.Event(OnSynchronized).
 		For(ecs.C[Position]())
 
 	// Emit the event for an entity.
@@ -125,7 +125,7 @@ func TestEventClick(t *testing.T) {
 	var OnClick = ecs.NewEventType()
 
 	// Emit a click event.
-	ecs.NewEvent(OnClick, &world).Emit(uiElement)
+	world.Event(OnClick).Emit(uiElement)
 }
 
 func TestEventZeroEntity(t *testing.T) {
@@ -133,5 +133,5 @@ func TestEventZeroEntity(t *testing.T) {
 	var OnGameOver = ecs.NewEventType()
 
 	// Emit a game over event.
-	ecs.NewEvent(OnGameOver, &world).Emit(ecs.Entity{})
+	world.Event(OnGameOver).Emit(ecs.Entity{})
 }

@@ -643,20 +643,20 @@ func TestObserverCustomEvents(t *testing.T) {
 	e1 := w.NewEntity()
 	e2 := builder.NewEntity(&Position{})
 
-	NewEvent(customEvent, &w).Emit(e1)
+	w.Event(customEvent).Emit(e1)
 
 	callCount := 0
 
 	obs := Observe(customEvent).With(comp[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
-	NewEvent(customEvent, &w).Emit(e1)
+	w.Event(customEvent).Emit(e1)
 	obs.Unregister(&w)
 
 	Observe(customEvent).Do(func(e Entity) { callCount++ }).Register(&w)
 	Observe(customEvent).For(C[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
 	Observe(customEvent).With(C[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
 	Observe(customEvent).Without(C[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
-	NewEvent(customEvent, &w).Emit(e1)
-	NewEvent(customEvent, &w).Emit(e2)
+	w.Event(customEvent).Emit(e1)
+	w.Event(customEvent).Emit(e2)
 
 	expectEqual(t, 4, callCount)
 }
