@@ -2,21 +2,6 @@ package ecs_test
 
 import "github.com/mlange-42/ark/ecs"
 
-func ExampleObserver() {
-	world := ecs.NewWorld()
-
-	// Create an Observer.
-	obs := ecs.Observe(ecs.OnCreateEntity).
-		With(ecs.C[Position]()).
-		Do(func(e ecs.Entity) {
-			// do something
-		}).
-		Register(&world)
-
-	// Unregister later if required.
-	obs.Unregister(&world)
-}
-
 func ExampleEventType_onCreateEntity() {
 	world := ecs.NewWorld()
 

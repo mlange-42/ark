@@ -126,3 +126,7 @@ For custom events, observer [filters](#filters) work exactly the same as for pre
 The components in the generic parameters of the observer, as well as those defined by `For`,
 are matched against the components of the event.
 `With`, `Without` and `Exclusive` are matched against the entity for which the event is emitted.
+
+Note that custom events can also be emitted for the zero entity:
+
+{{< code-func events_test.go TestEventZeroEntity >}}

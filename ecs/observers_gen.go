@@ -111,6 +111,8 @@ func (o *Observer1[A]) Unregister(w *World) *Observer1[A] {
 // Observer2 is a generic observer for 2 components.
 //
 // See [Observer] for details on events and observers.
+//
+// See [Observer1] for an example.
 type Observer2[A any, B any] struct {
 	observer Observer
 	callback func(Entity, *A, *B)
@@ -130,6 +132,8 @@ func Observe2[A any, B any](evt EventType) *Observer2[A, B] {
 // For adds further components that the observer observes, in addition to its generic parameters.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+//
+// See [Observer1.For] for an example.
 func (o *Observer2[A, B]) For(comps ...Comp) *Observer2[A, B] {
 	if o.observer.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -145,6 +149,8 @@ func (o *Observer2[A, B]) For(comps ...Comp) *Observer2[A, B] {
 // If multiple components are provided, the entity must have all of them.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+//
+// See [Observer1.With] for an example.
 func (o *Observer2[A, B]) With(comps ...Comp) *Observer2[A, B] {
 	o.observer.With(comps...)
 	return o
@@ -154,6 +160,8 @@ func (o *Observer2[A, B]) With(comps ...Comp) *Observer2[A, B] {
 // If multiple components are provided, the entity must not have any of them.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+//
+// See [Observer1.Without] for an example.
 func (o *Observer2[A, B]) Without(comps ...Comp) *Observer2[A, B] {
 	o.observer.Without(comps...)
 	return o
@@ -163,6 +171,8 @@ func (o *Observer2[A, B]) Without(comps ...Comp) *Observer2[A, B] {
 // are matched exactly, and no other components are allowed.
 //
 // Overwrites components set via [Observer.Without].
+//
+// See [Observer1.Exclusive] for an example.
 func (o *Observer2[A, B]) Exclusive() *Observer2[A, B] {
 	o.observer.Exclusive()
 	return o
@@ -220,6 +230,8 @@ func (o *Observer2[A, B]) Unregister(w *World) *Observer2[A, B] {
 // Observer3 is a generic observer for 3 components.
 //
 // See [Observer] for details on events and observers.
+//
+// See [Observer1] for an example.
 type Observer3[A any, B any, C any] struct {
 	observer Observer
 	callback func(Entity, *A, *B, *C)
@@ -239,6 +251,8 @@ func Observe3[A any, B any, C any](evt EventType) *Observer3[A, B, C] {
 // For adds further components that the observer observes, in addition to its generic parameters.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+//
+// See [Observer1.For] for an example.
 func (o *Observer3[A, B, C]) For(comps ...Comp) *Observer3[A, B, C] {
 	if o.observer.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -254,6 +268,8 @@ func (o *Observer3[A, B, C]) For(comps ...Comp) *Observer3[A, B, C] {
 // If multiple components are provided, the entity must have all of them.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+//
+// See [Observer1.With] for an example.
 func (o *Observer3[A, B, C]) With(comps ...Comp) *Observer3[A, B, C] {
 	o.observer.With(comps...)
 	return o
@@ -263,6 +279,8 @@ func (o *Observer3[A, B, C]) With(comps ...Comp) *Observer3[A, B, C] {
 // If multiple components are provided, the entity must not have any of them.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+//
+// See [Observer1.Without] for an example.
 func (o *Observer3[A, B, C]) Without(comps ...Comp) *Observer3[A, B, C] {
 	o.observer.Without(comps...)
 	return o
@@ -272,6 +290,8 @@ func (o *Observer3[A, B, C]) Without(comps ...Comp) *Observer3[A, B, C] {
 // are matched exactly, and no other components are allowed.
 //
 // Overwrites components set via [Observer.Without].
+//
+// See [Observer1.Exclusive] for an example.
 func (o *Observer3[A, B, C]) Exclusive() *Observer3[A, B, C] {
 	o.observer.Exclusive()
 	return o
@@ -332,6 +352,8 @@ func (o *Observer3[A, B, C]) Unregister(w *World) *Observer3[A, B, C] {
 // Observer4 is a generic observer for 4 components.
 //
 // See [Observer] for details on events and observers.
+//
+// See [Observer1] for an example.
 type Observer4[A any, B any, C any, D any] struct {
 	observer Observer
 	callback func(Entity, *A, *B, *C, *D)
@@ -351,6 +373,8 @@ func Observe4[A any, B any, C any, D any](evt EventType) *Observer4[A, B, C, D] 
 // For adds further components that the observer observes, in addition to its generic parameters.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+//
+// See [Observer1.For] for an example.
 func (o *Observer4[A, B, C, D]) For(comps ...Comp) *Observer4[A, B, C, D] {
 	if o.observer.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -366,6 +390,8 @@ func (o *Observer4[A, B, C, D]) For(comps ...Comp) *Observer4[A, B, C, D] {
 // If multiple components are provided, the entity must have all of them.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+//
+// See [Observer1.With] for an example.
 func (o *Observer4[A, B, C, D]) With(comps ...Comp) *Observer4[A, B, C, D] {
 	o.observer.With(comps...)
 	return o
@@ -375,6 +401,8 @@ func (o *Observer4[A, B, C, D]) With(comps ...Comp) *Observer4[A, B, C, D] {
 // If multiple components are provided, the entity must not have any of them.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+//
+// See [Observer1.Without] for an example.
 func (o *Observer4[A, B, C, D]) Without(comps ...Comp) *Observer4[A, B, C, D] {
 	o.observer.Without(comps...)
 	return o
@@ -384,6 +412,8 @@ func (o *Observer4[A, B, C, D]) Without(comps ...Comp) *Observer4[A, B, C, D] {
 // are matched exactly, and no other components are allowed.
 //
 // Overwrites components set via [Observer.Without].
+//
+// See [Observer1.Exclusive] for an example.
 func (o *Observer4[A, B, C, D]) Exclusive() *Observer4[A, B, C, D] {
 	o.observer.Exclusive()
 	return o
