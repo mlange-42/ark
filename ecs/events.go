@@ -60,6 +60,32 @@ func NewEventType() EventType {
 	return EventType(nextUserEvent)
 }
 
+// Event is a custom event.
+//
+// Create events using [World.Event].
+type Event struct {
+	world     *World
+	eventType EventType
+	mask      bitMask
+}
+
+// For sets the event's component types. Optional.
+//
+// For best performance, store the event after setting component types,
+// and re-use afterwards.
+func (e Event) For(comps ...Comp) Event {
+	for i := range comps {
+		id := TypeID(e.world, comps[i].tp)
+		e.mask.Set(id.id, true)
+	}
+	return e
+}
+
+// Emit the event for the given entity.
+func (e Event) Emit(entity Entity) {
+	e.world.emitEvent(&e, entity)
+}
+
 type observerManager struct {
 	observers    [][]*Observer
 	hasObservers []bool
@@ -343,30 +369,4 @@ func (m *observerManager) doFireCustom(evt EventType, e Entity, mask, entityMask
 		}
 		o.callback(e)
 	}
-}
-
-// Event is a custom event.
-//
-// Create events using [World.Event].
-type Event struct {
-	world     *World
-	eventType EventType
-	mask      bitMask
-}
-
-// For sets the event's component types. Optional.
-//
-// For best performance, store the event after setting component types,
-// and re-use afterwards.
-func (e Event) For(comps ...Comp) Event {
-	for i := range comps {
-		id := TypeID(e.world, comps[i].tp)
-		e.mask.Set(id.id, true)
-	}
-	return e
-}
-
-// Emit the event for the given entity.
-func (e Event) Emit(entity Entity) {
-	e.world.emitEvent(&e, entity)
 }
