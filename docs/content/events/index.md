@@ -23,11 +23,11 @@ A callback function with is executed for the affected entity whenever an observe
 Observers are specific for different event types, and each observer can react only to one type.
 See [below](#combining-multiple-types) for how to react on multiple different types.
 
-- **OnCreateEntity** &mdash; Fires after a new entity is created.  
-- **OnRemoveEntity** &mdash; Fires before an entity is removed.
-- **OnAddComponents** &mdash; Fires after components are added to an existing entity.
-- **OnRemoveComponents** &mdash; Fires before components are removed from an entity.
-- **OnSetComponents** &mdash; Fires after existing components are set from an entity.
+- **OnCreateEntity** &mdash; Emitted after a new entity is created.  
+- **OnRemoveEntity** &mdash; Emitted before an entity is removed.
+- **OnAddComponents** &mdash; Emitted after components are added to an existing entity.
+- **OnRemoveComponents** &mdash; Emitted before components are removed from an entity.
+- **OnSetComponents** &mdash; Emitted after existing components are set from an entity.
 
 If multiple components are added/removed/set for an entity,
 one event is emitted for the entire operation.
@@ -79,19 +79,19 @@ that has `Velocity`, but not `Altitude` (or rather, had before the operation):
 
 ## Event timing
 
-The time an event is fired relative to the operation it is related to depends on the event's type.
-The observer callbacks are executed immediately by any fired event.
+The time an event is emitted relative to the operation it is related to depends on the event's type.
+The observer callbacks are executed immediately by any emitted event.
 
-Events for entity creation and for adding or setting components are fired after the operation.
+Events for entity creation and for adding or setting components are emitted after the operation.
 Hence, the new or changed components can be inspected in the observer's callback.
 If emitted from individual operations, the world is in an [unlocked](../queries#world-lock) state when the callback is executed. Contrary, when emitted from a batch operation, the world is [locked](../queries#world-lock).
 
-Events for entity or component removal are fired before the operation.
+Events for entity or component removal are emitted before the operation.
 This way, the entity or component to be removed can be inspected in the observer's callback.
 In this case, the world is [locked](../queries#world-lock) when the callback is executed.
 
-For [batch operations](../batch), all events are fired before or after the entire batch, respectively.
-For batch creation or addition, events are fired after the potential batch callback
+For [batch operations](../batch), all events are emitted before or after the entire batch, respectively.
+For batch creation or addition, events are emitted after the potential batch callback
 is executed for all entities, allowing to inspect the result.
 
 Note that observer order is undefined. Observers are not necessarily triggered
