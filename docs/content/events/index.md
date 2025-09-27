@@ -8,11 +8,11 @@ description = "Ark's event system and observers."
 > This feature is not yet released and is planned for Ark v0.6.0.
 > You can try it out on the `main` branch.
 
-Ark provides an an event system with observers that allow an application to react on events,
+Ark provides an event system with observers that allow an application to react on events,
 such as adding and removing components and entities.
 
 Observers can filter for the events they are interested in, in several ways.
-A callback function with is executed for the affected entity whenever an observer's filter matches.
+A callback function is executed for the affected entity whenever an observer's filter matches.
 
 ## Example
 
@@ -46,9 +46,10 @@ Observers filter for the components specified by their generic parameters.
 Additional components can be specified using {{< api ecs Observer.For >}},
 but they are not directly accessible in the callback.
 
-If multiple components are specified (in parameters and in `For`),
-all these components must be affected (added, removed, created, ...)
-at the same time for the observer to trigger.
+Observers only trigger when all specified components (in parameters and in `For`)
+are affected in a single operation.
+For example, if an observer watches `Position` and `Velocity`,
+both must be added or removed together for the observer to activate
 
 Further, events can be filtered by the composition of the affected entity via
 {{< api ecs Observer.With >}}, {{< api ecs Observer.Without >}} and {{< api ecs Observer.Exclusive >}}, just like [queries](../queries/).
@@ -99,8 +100,10 @@ in the same order as they were registered.
 
 ## Custom events
 
-Ark's event system can also be used for custom, user-defined events.
-They work exactly the same as the predefined events, but can be emitted in user code.
+Custom events in Ark allow developers to define and emit their own event types,
+enabling application-specific logic such as UI interactions, game state changes,
+or domain-specific triggers.
+These events support the same filtering and observer mechanisms as built-in events.
 
 Define custom event types using {{< api ecs NewEventType >}}:
 
@@ -119,8 +122,9 @@ This is also supported by custom events:
 
 Here, the event is created and emitted in a single expression.
 However, it is recommended to store events after construction and to reuse them for `Emit`.
-Particularly for events with components, as event construction involves an overhead
-for component ID lookup of &approx;20ns per component.
+Reusing event instances is especially important for events with components,
+as it avoids repeated lookups and improves runtime efficiency.
+The overhead for component ID lookup is &approx;20ns per component.
 
 For custom events, observer [filters](#filters) work exactly the same as for predefined events.
 The components in the generic parameters of the observer, as well as those defined by `For`,
