@@ -167,6 +167,19 @@ func (w *World) Unsafe() Unsafe {
 	}
 }
 
+// Event creates a new event for the given type.
+//
+// See [Event] and [Observer] for details.
+func (w *World) Event(tp EventType) Event {
+	if tp < eventsEnd {
+		panic("only custom events can be emitted manually")
+	}
+	return Event{
+		world:     w,
+		eventType: tp,
+	}
+}
+
 // Reset removes all entities and resources from the world, and clears the filter cache.
 //
 // Does NOT free reserved memory, remove archetypes, or clear the registry.

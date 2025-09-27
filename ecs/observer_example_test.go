@@ -132,7 +132,7 @@ func ExampleEvent() {
 	world := ecs.NewWorld()
 
 	// Create an event.
-	event := ecs.NewEvent(OnSynchronize, &world).
+	event := world.Event(OnSynchronize).
 		For(ecs.C[Position]())
 
 	// Create an entity.
