@@ -127,3 +127,11 @@ func TestEventClick(t *testing.T) {
 	// Emit a click event.
 	ecs.NewEvent(OnClick, &world).Emit(uiElement)
 }
+
+func TestEventZeroEntity(t *testing.T) {
+	// Define the event type.
+	var OnGameOver = ecs.NewEventType()
+
+	// Emit a game over event.
+	ecs.NewEvent(OnGameOver, &world).Emit(ecs.Entity{})
+}

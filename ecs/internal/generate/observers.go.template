@@ -12,6 +12,10 @@ package ecs
 // Observer{{.}} is a generic observer for {{.}} components.
 //
 // See [Observer] for details on events and observers.
+{{- if ne . 1}}
+// 
+// See [Observer1] for an example.
+{{- end}}
 type Observer{{.}}{{$generics}} struct {
 	observer Observer
 	callback func(Entity, {{$fn_args}})
@@ -31,6 +35,10 @@ func Observe{{.}}{{$generics}}(evt EventType) *Observer{{.}}{{$genericsShort}} {
 // For adds further components that the observer observes, in addition to its generic parameters.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+{{- if ne . 1}}
+// 
+// See [Observer1.For] for an example.
+{{- end}}
 func (o *Observer{{.}}{{$genericsShort}}) For(comps ...Comp) *Observer{{.}}{{$genericsShort}} {
 	if o.observer.id != maxObserverID {
 		panic("can't modify a registered observer")
@@ -46,6 +54,10 @@ func (o *Observer{{.}}{{$genericsShort}}) For(comps ...Comp) *Observer{{.}}{{$ge
 // If multiple components are provided, the entity must have all of them.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+{{- if ne . 1}}
+// 
+// See [Observer1.With] for an example.
+{{- end}}
 func (o *Observer{{.}}{{$genericsShort}}) With(comps ...Comp) *Observer{{.}}{{$genericsShort}} {
 	o.observer.With(comps...)
 	return o
@@ -55,6 +67,10 @@ func (o *Observer{{.}}{{$genericsShort}}) With(comps ...Comp) *Observer{{.}}{{$g
 // If multiple components are provided, the entity must not have any of them.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
+{{- if ne . 1}}
+// 
+// See [Observer1.Without] for an example.
+{{- end}}
 func (o *Observer{{.}}{{$genericsShort}}) Without(comps ...Comp) *Observer{{.}}{{$genericsShort}} {
 	o.observer.Without(comps...)
 	return o
@@ -64,6 +80,10 @@ func (o *Observer{{.}}{{$genericsShort}}) Without(comps ...Comp) *Observer{{.}}{
 // are matched exactly, and no other components are allowed.
 //
 // Overwrites components set via [Observer.Without].
+{{- if ne . 1}}
+// 
+// See [Observer1.Exclusive] for an example.
+{{- end}}
 func (o *Observer{{.}}{{$genericsShort}}) Exclusive() *Observer{{.}}{{$genericsShort}} {
 	o.observer.Exclusive()
 	return o
