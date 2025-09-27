@@ -112,7 +112,7 @@ Use custom events like this:
 
 {{< code-func events_test.go TestEventEmit >}}
 
-Observers might not be interested in components, or in more than one.
+Observers might not be interested in components, or in more than one component.
 This is also supported by custom events:
 
 {{< code-func events_test.go TestEventClick >}}
