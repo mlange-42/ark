@@ -349,3 +349,36 @@ func TestMapRelationBatch(t *testing.T) {
 	}
 	expectEqual(t, n, cnt)
 }
+
+func TestMapAddRelationBatch(t *testing.T) {
+	n := 24
+	w := NewWorld(16)
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	obs := Observe(OnAddRelations).For(C[ChildOf]()).Do(func(e Entity) {}).Register(&w)
+
+	childMap := NewMap[ChildOf](&w)
+
+	childMap.NewBatch(n, &ChildOf{}, parent1)
+
+	obs.Unregister(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(e Entity) {}).Register(&w)
+
+	childMap.NewBatch(n, &ChildOf{}, parent2)
+
+	filter := NewFilter1[ChildOf](&w)
+	query := filter.Query(RelIdx(0, parent1))
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	expectEqual(t, n, cnt)
+
+	query = filter.Query(RelIdx(0, parent2))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	expectEqual(t, n, cnt)
+}
