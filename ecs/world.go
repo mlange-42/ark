@@ -34,7 +34,7 @@ func (w *World) NewEntity() Entity {
 	w.checkLocked()
 
 	entity, _ := w.storage.createEntity(0)
-	w.storage.observers.FireCreateEntity(OnCreateEntity, entity, &w.storage.archetypes[0].mask)
+	w.storage.observers.FireCreateEntity(entity, &w.storage.archetypes[0].mask)
 	return entity
 }
 
@@ -61,7 +61,7 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !w.storage.observers.doFireCreateEntity(OnCreateEntity, table.GetEntity(index), mask, earlyOut) {
+			if !w.storage.observers.doFireCreateEntity(table.GetEntity(index), mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -105,19 +105,41 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 		w.unlock(l)
 	}
 
-	if w.storage.observers.HasObservers(OnRemoveEntity) {
+	hasEntityObs := w.storage.observers.HasObservers(OnRemoveEntity)
+	hasRelationObs := w.storage.observers.HasObservers(OnRemoveRelations)
+	if hasEntityObs || hasRelationObs {
 		l := w.lock()
-		for _, tableID := range tables {
-			table := &w.storage.tables[tableID]
-			mask := &w.storage.archetypes[table.archetype].mask
-			len := uintptr(table.Len())
-			var i uintptr
-			earlyOut := true
-			for i = range len {
-				if !w.storage.observers.doFireRemoveEntity(OnRemoveEntity, table.GetEntity(i), mask, earlyOut) {
-					break
+		if hasEntityObs {
+			for _, tableID := range tables {
+				table := &w.storage.tables[tableID]
+				mask := &w.storage.archetypes[table.archetype].mask
+				len := uintptr(table.Len())
+				var i uintptr
+				earlyOut := true
+				for i = range len {
+					if !w.storage.observers.doFireRemoveEntity(table.GetEntity(i), mask, earlyOut) {
+						break
+					}
+					earlyOut = false
 				}
-				earlyOut = false
+			}
+		}
+		if hasRelationObs {
+			for _, tableID := range tables {
+				table := &w.storage.tables[tableID]
+				if !table.HasRelations() {
+					continue
+				}
+				mask := &w.storage.archetypes[table.archetype].mask
+				len := uintptr(table.Len())
+				var i uintptr
+				earlyOut := true
+				for i = range len {
+					if !w.storage.observers.doFireRemoveEntityRel(table.GetEntity(i), mask, earlyOut) {
+						break
+					}
+					earlyOut = false
+				}
 			}
 		}
 		w.unlock(l)

@@ -15,7 +15,7 @@ type Unsafe struct {
 // NewEntity creates a new entity with the given components.
 func (u Unsafe) NewEntity(ids ...ID) Entity {
 	entity, mask := u.world.newEntity(ids, nil)
-	u.world.storage.observers.FireCreateEntity(OnCreateEntity, entity, mask)
+	u.world.storage.observers.FireCreateEntity(entity, mask)
 	return entity
 }
 
@@ -23,9 +23,9 @@ func (u Unsafe) NewEntity(ids ...ID) Entity {
 func (u Unsafe) NewEntityRel(ids []ID, relations ...Relation) Entity {
 	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	entity, mask := u.world.newEntity(ids, u.cachedRelations)
-	u.world.storage.observers.FireCreateEntity(OnCreateEntity, entity, mask)
+	u.world.storage.observers.FireCreateEntity(entity, mask)
 	if len(relations) > 0 {
-		u.world.storage.observers.FireCreateEntity(OnAddRelations, entity, mask)
+		u.world.storage.observers.FireCreateEntityRel(entity, mask)
 	}
 	return entity
 }

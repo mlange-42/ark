@@ -47,9 +47,9 @@ func (m *Map[T]) NewEntityFn(fn func(*T), target ...Entity) Entity {
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}
-	m.world.storage.observers.FireCreateEntity(OnCreateEntity, entity, mask)
+	m.world.storage.observers.FireCreateEntity(entity, mask)
 	if len(target) > 0 {
-		m.world.storage.observers.FireCreateEntity(OnAddRelations, entity, mask)
+		m.world.storage.observers.FireCreateEntityRel(entity, mask)
 	}
 	return entity
 }
@@ -94,7 +94,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(OnCreateEntity, table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -106,7 +106,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(OnAddRelations, table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false

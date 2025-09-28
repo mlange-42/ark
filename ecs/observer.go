@@ -52,11 +52,7 @@ func (o *Observer) For(comps ...Comp) *Observer {
 	if len(comps) == 0 {
 		return o
 	}
-	if o.event == OnCreateEntity || o.event == OnRemoveEntity {
-		return o.With(comps...)
-	}
 	o.comps = append(o.comps, comps...)
-	o.hasComps = true
 	return o
 }
 
@@ -72,7 +68,6 @@ func (o *Observer) With(comps ...Comp) *Observer {
 		return o
 	}
 	o.with = append(o.with, comps...)
-	o.hasWith = true
 	return o
 }
 
@@ -88,7 +83,6 @@ func (o *Observer) Without(comps ...Comp) *Observer {
 		return o
 	}
 	o.without = append(o.without, comps...)
-	o.hasWithout = true
 	return o
 }
 
@@ -101,7 +95,6 @@ func (o *Observer) Exclusive() *Observer {
 		panic("can't modify a registered observer")
 	}
 	o.exclusive = true
-	o.hasWithout = true
 	return o
 }
 

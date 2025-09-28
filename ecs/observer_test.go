@@ -294,6 +294,58 @@ func TestObserverOnSet(t *testing.T) {
 	expectEqual(t, 1, callCount)
 }
 
+func TestObserverRelations(t *testing.T) {
+	w := NewWorld()
+	parent1 := w.NewEntity()
+	//parent2 := w.NewEntity()
+
+	builder1 := NewMap1[ChildOf](&w)
+	builder2 := NewMap1[ChildOf2](&w)
+
+	callAdd := 0
+	callRemove := 0
+	isBatch := false
+
+	Observe(OnAddRelations).
+		For(C[ChildOf]()).
+		Do(func(e Entity) {
+			expectEqual(t, isBatch, w.IsLocked())
+			callAdd++
+		}).
+		Register(&w)
+
+	Observe(OnRemoveRelations).
+		For(C[ChildOf]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callRemove++
+		}).
+		Register(&w)
+
+	e1 := builder1.NewEntity(&ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 0, callRemove)
+	e2 := builder2.NewEntity(&ChildOf2{}, RelIdx(0, parent1))
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 0, callRemove)
+
+	w.RemoveEntity(e2)
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 0, callRemove)
+	w.RemoveEntity(e1)
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 1, callRemove)
+
+	e1 = w.NewEntity()
+	builder1.Add(e1, &ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, 2, callAdd)
+	expectEqual(t, 1, callRemove)
+
+	builder1.Remove(e1)
+	expectEqual(t, 2, callAdd)
+	expectEqual(t, 2, callRemove)
+}
+
 func TestObserverComponentsWith(t *testing.T) {
 	w := NewWorld()
 
