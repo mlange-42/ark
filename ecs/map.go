@@ -48,6 +48,9 @@ func (m *Map[T]) NewEntityFn(fn func(*T), target ...Entity) Entity {
 		fn(m.GetUnchecked(entity))
 	}
 	m.world.storage.observers.FireCreateEntity(entity, mask)
+	if len(target) > 0 {
+		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+	}
 	return entity
 }
 
@@ -69,14 +72,14 @@ func (m *Map[T]) NewBatch(count int, comp *T, target ...Entity) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
+	m.world.checkLocked()
+	lock := m.world.lock()
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids[:], m.relations)
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
 		column := m.storage.columns[tableID]
-
-		lock := m.world.lock()
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -84,13 +87,11 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 				(*T)(column.Get(index)),
 			)
 		}
-		m.world.unlock(lock)
 	}
 
 	if m.world.storage.observers.HasObservers(OnCreateEntity) {
 		table := &m.world.storage.tables[tableID]
 		earlyOut := true
-		lock := m.world.lock()
 		for i := range count {
 			index := uintptr(start + i)
 			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
@@ -98,8 +99,20 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 			}
 			earlyOut = false
 		}
-		m.world.unlock(lock)
 	}
+
+	if len(target) > 0 && m.world.storage.observers.HasObservers(OnAddRelations) {
+		table := &m.world.storage.tables[tableID]
+		earlyOut := true
+		for i := range count {
+			index := uintptr(start + i)
+			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+				break
+			}
+			earlyOut = false
+		}
+	}
+	m.world.unlock(lock)
 }
 
 // Get returns the mapped component for the given entity.
@@ -181,7 +194,10 @@ func (m *Map[T]) AddFn(entity Entity, fn func(*T), target ...Entity) {
 		fn(m.GetUnchecked(entity))
 	}
 
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(target) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped component of the given entity to the given values.

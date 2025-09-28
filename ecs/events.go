@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -39,6 +40,14 @@ const (
 	// OnSetComponents event.
 	// Emitted after components are set from an entity.
 	OnSetComponents
+
+	// OnAddRelations event.
+	// Emitted after relation targets are added to an entity.
+	OnAddRelations
+
+	// OnRemoveRelations event.
+	// Emitted before relation targets are removed from an entity.
+	OnRemoveRelations
 
 	// Marker for number of event types.
 	eventsEnd
@@ -111,29 +120,54 @@ func newObserverManager() observerManager {
 }
 
 func (m *observerManager) AddObserver(o *Observer, w *World) {
-	if o.callback == nil {
-		panic("observer callback must be set via Do before registering")
-	}
 	if o.id != maxObserverID {
 		panic("observer is already registered")
+	}
+	if o.callback == nil {
+		panic("observer callback must be set via Do before registering")
 	}
 
 	o.id = m.pool.Get()
 
-	for _, c := range o.comps {
-		id := TypeID(w, c.tp)
-		o.compsMask.Set(id.id, true)
+	o.hasComps, o.hasWith, o.hasWithout = false, false, false
+
+	switch o.event {
+	case OnAddRelations, OnRemoveRelations:
+		for _, c := range o.comps {
+			id := TypeID(w, c.tp)
+			if !w.storage.registry.IsRelation[id.id] {
+				panic(fmt.Sprintf("non-relation component %d in relation observer", id.id))
+			}
+			o.compsMask.Set(id.id, true)
+			o.hasComps = true
+		}
+	case OnCreateEntity, OnRemoveEntity:
+		for _, c := range o.comps {
+			id := TypeID(w, c.tp)
+			o.withMask.Set(id.id, true)
+			o.hasWith = true
+		}
+	default:
+		for _, c := range o.comps {
+			id := TypeID(w, c.tp)
+			o.compsMask.Set(id.id, true)
+			o.hasComps = true
+		}
 	}
+
 	for _, c := range o.with {
 		id := TypeID(w, c.tp)
 		o.withMask.Set(id.id, true)
+		o.hasWith = true
 	}
 	if o.exclusive {
 		o.withoutMask = o.withMask.Not()
+		o.hasWithout = true
 	} else {
 		for _, c := range o.without {
 			id := TypeID(w, c.tp)
 			o.withoutMask.Set(id.id, true)
+			o.hasWithout = true
 		}
 	}
 
@@ -238,6 +272,40 @@ func (m *observerManager) doFireCreateEntity(e Entity, mask *bitMask, earlyOut b
 	return found
 }
 
+func (m *observerManager) FireCreateEntityRel(e Entity, mask *bitMask) {
+	if !m.hasObservers[OnAddRelations] {
+		return
+	}
+	m.doFireCreateEntityRel(e, mask, true)
+}
+
+func (m *observerManager) doFireCreateEntityRel(e Entity, mask *bitMask, earlyOut bool) bool {
+	if earlyOut {
+		if !m.anyNoComps[OnAddRelations] && !m.allComps[OnAddRelations].ContainsAny(mask) {
+			return false
+		}
+		if !m.anyNoWith[OnAddRelations] && !m.allWith[OnAddRelations].ContainsAny(mask) {
+			return false
+		}
+	}
+	observers := m.observers[OnAddRelations]
+	found := false
+	for _, o := range observers {
+		if o.hasComps && !mask.Contains(&o.compsMask) {
+			continue
+		}
+		if o.hasWith && !mask.Contains(&o.withMask) {
+			continue
+		}
+		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
+			continue
+		}
+		o.callback(e)
+		found = true
+	}
+	return found
+}
+
 func (m *observerManager) doFireRemoveEntity(e Entity, mask *bitMask, earlyOut bool) bool {
 	if earlyOut && !m.anyNoWith[OnRemoveEntity] && !m.allWith[OnRemoveEntity].ContainsAny(mask) {
 		return false
@@ -257,24 +325,51 @@ func (m *observerManager) doFireRemoveEntity(e Entity, mask *bitMask, earlyOut b
 	return found
 }
 
-func (m *observerManager) FireAdd(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.hasObservers[OnAddComponents] {
-		return
+func (m *observerManager) doFireRemoveEntityRel(e Entity, mask *bitMask, earlyOut bool) bool {
+	if earlyOut {
+		if !m.anyNoComps[OnRemoveRelations] && !m.allComps[OnRemoveRelations].ContainsAny(mask) {
+			return false
+		}
+		if !m.anyNoWith[OnRemoveRelations] && !m.allWith[OnRemoveRelations].ContainsAny(mask) {
+			return false
+		}
 	}
-	m.doFireAdd(e, oldMask, newMask, true)
+	observers := m.observers[OnRemoveRelations]
+	found := false
+	for _, o := range observers {
+		if o.hasComps && !mask.Contains(&o.compsMask) {
+			continue
+		}
+		if o.hasWith && !mask.Contains(&o.withMask) {
+			continue
+		}
+		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
+			continue
+		}
+		o.callback(e)
+		found = true
+	}
+	return found
 }
 
-func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
+func (m *observerManager) FireAdd(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask) {
+	if !m.hasObservers[evt] {
+		return
+	}
+	m.doFireAdd(evt, e, oldMask, newMask, true)
+}
+
+func (m *observerManager) doFireAdd(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
 	if earlyOut {
-		if !m.anyNoComps[OnAddComponents] &&
-			(!m.allComps[OnAddComponents].ContainsAny(newMask) || oldMask.Contains(&m.allComps[OnAddComponents])) {
+		if !m.anyNoComps[evt] &&
+			(!m.allComps[evt].ContainsAny(newMask) || oldMask.Contains(&m.allComps[evt])) {
 			return false
 		}
-		if !m.anyNoWith[OnAddComponents] && !m.allWith[OnAddComponents].ContainsAny(oldMask) {
+		if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(oldMask) {
 			return false
 		}
 	}
-	observers := m.observers[OnAddComponents]
+	observers := m.observers[evt]
 	found := false
 	for _, o := range observers {
 		if o.hasComps && (!newMask.Contains(&o.compsMask) || oldMask.ContainsAny(&o.compsMask)) {
@@ -292,17 +387,17 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 	return found
 }
 
-func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
+func (m *observerManager) doFireRemove(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
 	if earlyOut {
-		if !m.anyNoComps[OnRemoveComponents] &&
-			(!m.allComps[OnRemoveComponents].ContainsAny(oldMask) || newMask.Contains(&m.allComps[OnRemoveComponents])) {
+		if !m.anyNoComps[evt] &&
+			(!m.allComps[evt].ContainsAny(oldMask) || newMask.Contains(&m.allComps[evt])) {
 			return false
 		}
-		if !m.anyNoWith[OnRemoveComponents] && !m.allWith[OnRemoveComponents].ContainsAny(oldMask) {
+		if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(oldMask) {
 			return false
 		}
 	}
-	observers := m.observers[OnRemoveComponents]
+	observers := m.observers[evt]
 	found := false
 	for _, o := range observers {
 		if o.hasComps && (newMask.Contains(&o.compsMask) || !oldMask.ContainsAny(&o.compsMask)) {
@@ -340,6 +435,33 @@ func (m *observerManager) doFireSet(e Entity, mask *bitMask, newMask *bitMask) {
 		}
 		o.callback(e)
 	}
+}
+
+func (m *observerManager) doFireSetRelations(evt EventType, e Entity, mask *bitMask, newMask *bitMask, earlyOut bool) bool {
+	if earlyOut {
+		if !m.anyNoComps[evt] && !m.allComps[evt].ContainsAny(mask) {
+			return false
+		}
+		if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(newMask) {
+			return false
+		}
+	}
+	observers := m.observers[evt]
+	found := false
+	for _, o := range observers {
+		if o.hasComps && !mask.Contains(&o.compsMask) {
+			continue
+		}
+		if o.hasWith && !newMask.Contains(&o.withMask) {
+			continue
+		}
+		if o.hasWithout && newMask.ContainsAny(&o.withoutMask) {
+			continue
+		}
+		o.callback(e)
+		found = true
+	}
+	return found
 }
 
 func (m *observerManager) FireCustom(evt EventType, e Entity, mask, entityMask *bitMask) {

@@ -25,9 +25,9 @@ func TestObserve(t *testing.T) {
 			obs.Exclusive()
 		})
 
-	obs = Observe(OnCreateEntity).For(C[Position]())
+	obs = Observe(OnCreateEntity).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectTrue(t, obs.hasWith)
-	obs = Observe(OnRemoveEntity).For(C[Position]())
+	obs = Observe(OnRemoveEntity).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectTrue(t, obs.hasWith)
 
 	expectPanicsWithValue(t, "observer callback must be set via Do before registering",
@@ -38,30 +38,32 @@ func TestObserve(t *testing.T) {
 		func() {
 			Observe(OnCreateEntity).Do(func(e Entity) {}).Do(func(e Entity) {})
 		})
+	expectPanicsWithValue(t, "non-relation component 0 in relation observer",
+		func() {
+			Observe(OnAddRelations).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
+		})
 
-	obs = Observe(OnAddComponents).Do(func(e Entity) {})
-
-	obs = obs.For()
+	obs = Observe(OnAddComponents).For().Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 0, len(obs.comps))
 	expectFalse(t, obs.hasComps)
 
-	obs = obs.For(C[Position]())
+	obs = Observe(OnAddComponents).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 1, len(obs.comps))
 	expectTrue(t, obs.hasComps)
 
-	obs = obs.With()
+	obs = Observe(OnAddComponents).With().Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 0, len(obs.with))
 	expectFalse(t, obs.hasWith)
 
-	obs = obs.With(C[Position]())
+	obs = Observe(OnAddComponents).With(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 1, len(obs.with))
 	expectTrue(t, obs.hasWith)
 
-	obs = obs.Without()
+	obs = Observe(OnAddComponents).Without().Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 0, len(obs.without))
 	expectFalse(t, obs.hasWithout)
 
-	obs = obs.Without(C[Position]())
+	obs = Observe(OnAddComponents).Without(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 1, len(obs.without))
 	expectTrue(t, obs.hasWithout)
 }
@@ -288,6 +290,211 @@ func TestObserverOnSet(t *testing.T) {
 	expectEqual(t, 1, callCount)
 	builder2.Set(e, &Velocity{})
 	expectEqual(t, 1, callCount)
+}
+
+func TestObserverRelations(t *testing.T) {
+	w := NewWorld()
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	builder1 := NewMap1[ChildOf](&w)
+	builder2 := NewMap1[ChildOf2](&w)
+
+	callAdd := 0
+	callRemove := 0
+
+	Observe(OnAddRelations).
+		For(C[ChildOf]()).
+		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
+			callAdd++
+		}).
+		Register(&w)
+
+	Observe(OnRemoveRelations).
+		For(C[ChildOf]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callRemove++
+		}).
+		Register(&w)
+
+	e1 := builder1.NewEntity(&ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 0, callRemove)
+	e2 := builder2.NewEntity(&ChildOf2{}, RelIdx(0, parent1))
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 0, callRemove)
+
+	w.RemoveEntity(e2)
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 0, callRemove)
+	w.RemoveEntity(e1)
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 1, callRemove)
+
+	e1 = w.NewEntity()
+	builder1.Add(e1, &ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, 2, callAdd)
+	expectEqual(t, 1, callRemove)
+	e2 = w.NewEntity()
+	builder2.Add(e2, &ChildOf2{}, RelIdx(0, parent1))
+	expectEqual(t, 2, callAdd)
+	expectEqual(t, 1, callRemove)
+
+	builder1.SetRelations(e1, RelIdx(0, parent2))
+	expectEqual(t, 3, callAdd)
+	expectEqual(t, 2, callRemove)
+	builder2.SetRelations(e2, RelIdx(0, parent2))
+	expectEqual(t, 3, callAdd)
+	expectEqual(t, 2, callRemove)
+
+	builder2.Remove(e2)
+	expectEqual(t, 3, callAdd)
+	expectEqual(t, 2, callRemove)
+	builder1.Remove(e1)
+	expectEqual(t, 3, callAdd)
+	expectEqual(t, 3, callRemove)
+}
+
+func TestObserverRelationsBatch(t *testing.T) {
+	w := NewWorld()
+
+	parentBuilder := NewMap1[Position](&w)
+	builder1 := NewMap1[ChildOf](&w)
+	builder2 := NewMap1[ChildOf2](&w)
+	filter0 := NewFilter0(&w).Exclusive()
+	filter1 := NewFilter1[ChildOf](&w)
+	filter2 := NewFilter1[ChildOf2](&w)
+
+	parent1 := parentBuilder.NewEntity(&Position{})
+	parent2 := parentBuilder.NewEntity(&Position{})
+
+	callAdd := 0
+	callRemove := 0
+
+	Observe(OnAddRelations).
+		For(C[ChildOf]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callAdd++
+		}).
+		Register(&w)
+
+	Observe(OnRemoveRelations).
+		For(C[ChildOf]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callRemove++
+		}).
+		Register(&w)
+
+	builder1.NewBatch(10, &ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, 10, callAdd)
+	expectEqual(t, 0, callRemove)
+	builder2.NewBatch(10, &ChildOf2{}, RelIdx(0, parent1))
+	expectEqual(t, 10, callAdd)
+	expectEqual(t, 0, callRemove)
+
+	w.RemoveEntities(filter2.Batch(), nil)
+	expectEqual(t, 10, callAdd)
+	expectEqual(t, 0, callRemove)
+	w.RemoveEntities(filter1.Batch(), nil)
+	expectEqual(t, 10, callAdd)
+	expectEqual(t, 10, callRemove)
+
+	w.NewEntities(10, nil)
+	builder1.AddBatch(filter0.Batch(), &ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, 20, callAdd)
+	expectEqual(t, 10, callRemove)
+	w.NewEntities(10, nil)
+	builder2.AddBatch(filter0.Batch(), &ChildOf2{}, RelIdx(0, parent1))
+	expectEqual(t, 20, callAdd)
+	expectEqual(t, 10, callRemove)
+
+	builder1.SetRelationsBatch(filter1.Batch(), nil, RelIdx(0, parent2))
+	expectEqual(t, 30, callAdd)
+	expectEqual(t, 20, callRemove)
+	builder2.SetRelationsBatch(filter2.Batch(), nil, RelIdx(0, parent2))
+	expectEqual(t, 30, callAdd)
+	expectEqual(t, 20, callRemove)
+
+	builder2.RemoveBatch(filter2.Batch(), nil)
+	expectEqual(t, 30, callAdd)
+	expectEqual(t, 20, callRemove)
+	builder1.RemoveBatch(filter1.Batch(), nil)
+	expectEqual(t, 30, callAdd)
+	expectEqual(t, 30, callRemove)
+}
+
+func TestObserverRelationsFilterEarly(t *testing.T) {
+	w := NewWorld()
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	builder1 := NewMap1[ChildOf](&w)
+
+	callAdd := 0
+	callRemove := 0
+
+	Observe(OnAddRelations).
+		For(C[ChildOf]()).
+		With(C[Position]()).
+		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
+			callAdd++
+		}).
+		Register(&w)
+
+	Observe(OnRemoveRelations).
+		For(C[ChildOf]()).
+		With(C[Position]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callRemove++
+		}).
+		Register(&w)
+
+	e1 := builder1.NewEntity(&ChildOf{}, RelIdx(0, parent1))
+	w.RemoveEntity(e1)
+
+	e1 = w.NewEntity()
+	builder1.Add(e1, &ChildOf{}, RelIdx(0, parent1))
+
+	builder1.SetRelations(e1, RelIdx(0, parent2))
+	builder1.Remove(e1)
+
+	expectEqual(t, 0, callAdd)
+	expectEqual(t, 0, callRemove)
+}
+
+func TestObserverRelationsFilter(t *testing.T) {
+	w := NewWorld()
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	builder1 := NewMap2[Position, ChildOf](&w)
+
+	Observe(OnAddRelations).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Do(func(e Entity) {}).Register(&w)
+
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(e Entity) {}).Register(&w)
+
+	Observe(OnAddRelations).With(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).With(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
+
+	Observe(OnAddRelations).Without(C[Position]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Without(C[Position]()).Do(func(e Entity) {}).Register(&w)
+
+	e1 := builder1.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, parent1))
+	w.RemoveEntity(e1)
+
+	e1 = w.NewEntity()
+	builder1.Add(e1, &Position{}, &ChildOf{}, RelIdx(1, parent1))
+
+	builder1.SetRelations(e1, RelIdx(1, parent2))
+	builder1.Remove(e1)
 }
 
 func TestObserverComponentsWith(t *testing.T) {
@@ -682,7 +889,7 @@ func benchmarkEventsPos(b *testing.B, n int) {
 	newMask := newMask(ComponentID[CompA](&w))
 
 	for b.Loop() {
-		w.storage.observers.FireAdd(Entity{}, &oldMask, &newMask)
+		w.storage.observers.FireAdd(OnAddComponents, Entity{}, &oldMask, &newMask)
 	}
 }
 
@@ -700,7 +907,7 @@ func benchmarkEventsNeg(b *testing.B, n int) {
 	newMask := newMask(ComponentID[CompB](&w))
 
 	for b.Loop() {
-		w.storage.observers.FireAdd(Entity{}, &oldMask, &newMask)
+		w.storage.observers.FireAdd(OnAddComponents, Entity{}, &oldMask, &newMask)
 	}
 }
 

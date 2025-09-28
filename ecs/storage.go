@@ -65,7 +65,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []relationID, outMask *bitMask) *table {
+func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []relationID, outMask *bitMask) (*table, bool) {
 	startNode := s.archetypes[oldTable.archetype].node
 
 	node := s.graph.Find(startNode, add, remove, outMask)
@@ -77,6 +77,7 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		node.archetype = arch.id
 	}
 
+	relationRemoved := false
 	var allRelations []relationID
 	if len(remove) > 0 {
 		// filter out removed relations
@@ -84,6 +85,8 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		for _, rel := range oldTable.relationIDs {
 			if arch.mask.Get(rel.component.id) {
 				allRelations = append(allRelations, rel)
+			} else {
+				relationRemoved = true
 			}
 		}
 		allRelations = append(allRelations, relations...)
@@ -98,7 +101,7 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 	if !ok {
 		table = s.createTable(arch, allRelations)
 	}
-	return table
+	return table, relationRemoved
 }
 
 func (s *storage) AddComponent(id uint8) {
@@ -117,10 +120,18 @@ func (s *storage) RemoveEntity(entity Entity) {
 	index := &s.entities[entity.id]
 	table := &s.tables[index.table]
 
-	if s.observers.HasObservers(OnRemoveEntity) {
+	hasEntityObs := s.observers.HasObservers(OnRemoveEntity)
+	hasRelationObs := table.HasRelations() && s.observers.HasObservers(OnRemoveRelations)
+	if hasEntityObs || hasRelationObs {
 		l := s.lock()
-		mask := &s.archetypes[table.archetype].mask
-		s.observers.doFireRemoveEntity(entity, mask, true)
+		if hasEntityObs {
+			mask := &s.archetypes[table.archetype].mask
+			s.observers.doFireRemoveEntity(entity, mask, true)
+		}
+		if hasRelationObs {
+			mask := &s.archetypes[table.archetype].mask
+			s.observers.doFireRemoveEntityRel(entity, mask, true)
+		}
 		s.unlock(l)
 	}
 
@@ -391,7 +402,7 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 	return result
 }
 
-func (s *storage) getExchangeTargets(oldTable *table, relations []relationID) ([]relationID, bool) {
+func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, mask *bitMask) ([]relationID, bool) {
 	changed := false
 	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(oldTable.columns))
@@ -408,6 +419,8 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID) ([
 		}
 		if rel.target == targets[column.index] {
 			continue
+		} else if mask != nil {
+			mask.Set(rel.component.id, true)
 		}
 		targets[column.index] = rel.target
 		changed = true

@@ -24,6 +24,9 @@ func (u Unsafe) NewEntityRel(ids []ID, relations ...Relation) Entity {
 	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	entity, mask := u.world.newEntity(ids, u.cachedRelations)
 	u.world.storage.observers.FireCreateEntity(entity, mask)
+	if len(relations) > 0 {
+		u.world.storage.observers.FireCreateEntityRel(entity, mask)
+	}
 	return entity
 }
 
@@ -89,7 +92,7 @@ func (u Unsafe) Add(entity Entity, comp ...ID) {
 		panic("at least one component required to add")
 	}
 	oldMask, newMask := u.world.exchange(entity, comp, nil, nil)
-	u.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	u.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
 }
 
 // AddRel adds the given components and relation targets to an entity.
@@ -102,7 +105,10 @@ func (u Unsafe) AddRel(entity Entity, comps []ID, relations ...Relation) {
 	}
 	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	oldMask, newMask := u.world.exchange(entity, comps, nil, u.cachedRelations)
-	u.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	u.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(relations) > 0 {
+		u.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Remove the given components from an entity.
@@ -128,7 +134,10 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 	oldMask, newMask := u.world.exchange(entity, add, remove, u.cachedRelations)
 
 	if len(add) > 0 {
-		u.world.storage.observers.FireAdd(entity, oldMask, newMask)
+		u.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+		if len(relations) > 0 {
+			u.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		}
 	}
 }
 

@@ -15,6 +15,9 @@ import "testing"
 {{- $mapArgs := join "&Comp" "{}, &Comp" "{}" $upper -}}
 {{- $comps := join "" ", " "" $lower -}}
 
+{{- $genericsRel := replace $generics "CompA" "ChildOf" -}}
+{{- $mapArgsRel := replace $mapArgs "CompA" "ChildOf" -}}
+
 func TestExchange{{.}}(t *testing.T) {
 	w := NewWorld(16)
 
@@ -60,6 +63,29 @@ func TestExchange{{.}}Add(t *testing.T) {
 	expectTrue(t, mapper.HasAll(e))
 }
 
+func TestExchange{{.}}Relations(t *testing.T) {
+	w := NewWorld(8)
+	
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+
+	ex := NewExchange{{.}}{{$genericsRel}}(&w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](&w)
+	mapper2 := NewMap1[Position](&w)
+	
+	parent1 := w.NewEntity()
+	
+	e1 := w.NewEntity()
+	ex.Add(e1, {{$mapArgsRel}}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e1, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e1, 0))
+
+	e2 := mapper2.NewEntity(&Position{})
+	ex.Exchange(e2, {{$mapArgsRel}}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e2, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e2, 0))
+}
+
 func TestExchange{{.}}Remove(t *testing.T) {
 	w := NewWorld(16)
 
@@ -80,6 +106,8 @@ func TestExchange{{.}}AddBatch(t *testing.T) {
 	
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange{{.}}{{$generics}}(&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)

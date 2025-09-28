@@ -9,6 +9,8 @@ func TestMap(t *testing.T) {
 
 	Observe(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 	Observe(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
 
 	posMap := NewMap[Position](&w)
 	velMap := NewMap[Velocity](&w)
@@ -86,6 +88,8 @@ func TestMapNewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	Observe(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap[CompA](&w)
 
@@ -113,6 +117,8 @@ func TestMapNewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	Observe(OnCreateEntity).With(C[Heading]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap[CompA](&w)
 
@@ -125,6 +131,7 @@ func TestMapNewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter1[CompA](&w)
 	query := filter.Query()
@@ -336,6 +343,39 @@ func TestMapRelationBatch(t *testing.T) {
 	expectEqual(t, 0, cnt)
 
 	query = filter.Query(RelIdx(0, parent3))
+	cnt = 0
+	for query.Next() {
+		cnt++
+	}
+	expectEqual(t, n, cnt)
+}
+
+func TestMapAddRelationBatch(t *testing.T) {
+	n := 24
+	w := NewWorld(16)
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	obs := Observe(OnAddRelations).For(C[ChildOf]()).Do(func(e Entity) {}).Register(&w)
+
+	childMap := NewMap[ChildOf](&w)
+
+	childMap.NewBatch(n, &ChildOf{}, parent1)
+
+	obs.Unregister(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(e Entity) {}).Register(&w)
+
+	childMap.NewBatch(n, &ChildOf{}, parent2)
+
+	filter := NewFilter1[ChildOf](&w)
+	query := filter.Query(RelIdx(0, parent1))
+	cnt := 0
+	for query.Next() {
+		cnt++
+	}
+	expectEqual(t, n, cnt)
+
+	query = filter.Query(RelIdx(0, parent2))
 	cnt = 0
 	for query.Next() {
 		cnt++

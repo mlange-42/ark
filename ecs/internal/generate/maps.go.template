@@ -92,6 +92,9 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$fn_args}}), rel ...R
 		)
 	}
 	m.world.storage.observers.FireCreateEntity(entity, mask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+	}
 	return entity
 }
 
@@ -115,6 +118,8 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...Relat
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn_args}}), rel ...Relation) {
+	m.world.checkLocked()
+	lock := m.world.lock()
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
@@ -123,8 +128,6 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 		{{- range $upper}}
 		column{{.}} := m.storage{{.}}.columns[tableID]
 		{{- end}}
-
-		lock := m.world.lock()
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -134,13 +137,11 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 				{{- end}}
 			)
 		}
-		m.world.unlock(lock)
 	}
 	
 	if m.world.storage.observers.HasObservers(OnCreateEntity) {
 		table := &m.world.storage.tables[tableID]
 		earlyOut := true
-		lock := m.world.lock()
 		for i := range count {
 			index := uintptr(start + i)
 			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
@@ -148,8 +149,19 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 			}
 			earlyOut = false
 		}
-		m.world.unlock(lock)
 	}
+	if len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations) {
+		table := &m.world.storage.tables[tableID]
+		earlyOut := true
+		for i := range count {
+			index := uintptr(start + i)
+			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+				break
+			}
+			earlyOut = false
+		}
+	}
+	m.world.unlock(lock)
 }
 
 // Get returns the mapped components for the given entity.
@@ -241,7 +253,10 @@ func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_args}}),
 			{{- end}}
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.

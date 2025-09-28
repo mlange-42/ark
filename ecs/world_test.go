@@ -117,6 +117,7 @@ func TestWorldNewEntities(t *testing.T) {
 		cnt++
 	})
 	expectEqual(t, n, cnt)
+	expectFalse(t, w.IsLocked())
 
 	w.NewEntities(n, nil)
 
@@ -132,6 +133,8 @@ func TestWorldNewEntities(t *testing.T) {
 func TestWorldRemoveEntities(t *testing.T) {
 	n := 12
 	w := NewWorld(16)
+
+	Observe(OnRemoveRelations).For(C[ChildOf]()).Do(func(e Entity) {}).Register(&w)
 
 	posMap := NewMap1[Position](&w)
 	velMap := NewMap1[Velocity](&w)
@@ -340,6 +343,33 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 32, cnt)
+}
+
+func TestWorldRelationBatchSkip(t *testing.T) {
+	w := NewWorld(16)
+	builder := NewMap[ChildOf](&w)
+	filter := NewFilter1[ChildOf](&w)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	builder.NewEntity(&ChildOf{}, parent1)
+	builder.NewEntity(&ChildOf{}, parent2)
+	e := builder.NewEntity(&ChildOf{}, parent3)
+
+	w.RemoveEntity(e)
+
+	callAdd := 0
+	callRem := 0
+	Observe(OnAddRelations).Do(func(e Entity) { callAdd++ }).Register(&w)
+	Observe(OnRemoveRelations).Do(func(e Entity) { callRem++ }).Register(&w)
+
+	cnt := 0
+	builder.SetRelationBatch(filter.Batch(), parent2, func(entity Entity) { cnt++ })
+	expectEqual(t, 1, cnt)
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 1, callRem)
 }
 
 func TestWorldReset(t *testing.T) {

@@ -41,25 +41,24 @@ func (w *World) NewEntity() Entity {
 // NewEntities creates a batch of new entities without any components, running the given callback function on each.
 // The callback function can be nil.
 func (w *World) NewEntities(count int, fn func(entity Entity)) {
+	w.checkLocked()
+	lock := w.lock()
 	tableID, start := w.newEntities(count, nil, nil)
 
 	if fn != nil {
 		table := &w.storage.tables[tableID]
-		lock := w.lock()
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
 				table.GetEntity(index),
 			)
 		}
-		w.unlock(lock)
 	}
 
 	if w.storage.observers.HasObservers(OnCreateEntity) {
 		table := &w.storage.tables[tableID]
 		mask := &w.storage.archetypes[table.archetype].mask
 		earlyOut := true
-		lock := w.lock()
 		for i := range count {
 			index := uintptr(start + i)
 			if !w.storage.observers.doFireCreateEntity(table.GetEntity(index), mask, earlyOut) {
@@ -67,8 +66,8 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 			}
 			earlyOut = false
 		}
-		w.unlock(lock)
 	}
+	w.unlock(lock)
 }
 
 // Alive return whether the given entity is alive.
@@ -106,19 +105,41 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 		w.unlock(l)
 	}
 
-	if w.storage.observers.HasObservers(OnRemoveEntity) {
+	hasEntityObs := w.storage.observers.HasObservers(OnRemoveEntity)
+	hasRelationObs := w.storage.observers.HasObservers(OnRemoveRelations)
+	if hasEntityObs || hasRelationObs {
 		l := w.lock()
-		for _, tableID := range tables {
-			table := &w.storage.tables[tableID]
-			mask := &w.storage.archetypes[table.archetype].mask
-			len := uintptr(table.Len())
-			var i uintptr
-			earlyOut := true
-			for i = range len {
-				if !w.storage.observers.doFireRemoveEntity(table.GetEntity(i), mask, earlyOut) {
-					break
+		if hasEntityObs {
+			for _, tableID := range tables {
+				table := &w.storage.tables[tableID]
+				mask := &w.storage.archetypes[table.archetype].mask
+				len := uintptr(table.Len())
+				var i uintptr
+				earlyOut := true
+				for i = range len {
+					if !w.storage.observers.doFireRemoveEntity(table.GetEntity(i), mask, earlyOut) {
+						break
+					}
+					earlyOut = false
 				}
-				earlyOut = false
+			}
+		}
+		if hasRelationObs {
+			for _, tableID := range tables {
+				table := &w.storage.tables[tableID]
+				if !table.HasRelations() {
+					continue
+				}
+				mask := &w.storage.archetypes[table.archetype].mask
+				len := uintptr(table.Len())
+				var i uintptr
+				earlyOut := true
+				for i = range len {
+					if !w.storage.observers.doFireRemoveEntityRel(table.GetEntity(i), mask, earlyOut) {
+						break
+					}
+					earlyOut = false
+				}
 			}
 		}
 		w.unlock(l)

@@ -49,6 +49,29 @@ func TestExchange1Add(t *testing.T) {
 	expectTrue(t, mapper.HasAll(e))
 }
 
+func TestExchange1Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+
+	ex := NewExchange1[ChildOf](&w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](&w)
+	mapper2 := NewMap1[Position](&w)
+
+	parent1 := w.NewEntity()
+
+	e1 := w.NewEntity()
+	ex.Add(e1, &ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e1, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e1, 0))
+
+	e2 := mapper2.NewEntity(&Position{})
+	ex.Exchange(e2, &ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e2, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e2, 0))
+}
+
 func TestExchange1Remove(t *testing.T) {
 	w := NewWorld(16)
 
@@ -69,6 +92,8 @@ func TestExchange1AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange1[CompA](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -278,6 +303,29 @@ func TestExchange2Add(t *testing.T) {
 	expectTrue(t, mapper.HasAll(e))
 }
 
+func TestExchange2Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+
+	ex := NewExchange2[ChildOf, CompB](&w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](&w)
+	mapper2 := NewMap1[Position](&w)
+
+	parent1 := w.NewEntity()
+
+	e1 := w.NewEntity()
+	ex.Add(e1, &ChildOf{}, &CompB{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e1, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e1, 0))
+
+	e2 := mapper2.NewEntity(&Position{})
+	ex.Exchange(e2, &ChildOf{}, &CompB{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e2, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e2, 0))
+}
+
 func TestExchange2Remove(t *testing.T) {
 	w := NewWorld(16)
 
@@ -298,6 +346,8 @@ func TestExchange2AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange2[CompA, CompB](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -507,6 +557,29 @@ func TestExchange3Add(t *testing.T) {
 	expectTrue(t, mapper.HasAll(e))
 }
 
+func TestExchange3Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+
+	ex := NewExchange3[ChildOf, CompB, CompC](&w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](&w)
+	mapper2 := NewMap1[Position](&w)
+
+	parent1 := w.NewEntity()
+
+	e1 := w.NewEntity()
+	ex.Add(e1, &ChildOf{}, &CompB{}, &CompC{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e1, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e1, 0))
+
+	e2 := mapper2.NewEntity(&Position{})
+	ex.Exchange(e2, &ChildOf{}, &CompB{}, &CompC{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e2, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e2, 0))
+}
+
 func TestExchange3Remove(t *testing.T) {
 	w := NewWorld(16)
 
@@ -527,6 +600,8 @@ func TestExchange3AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange3[CompA, CompB, CompC](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -736,6 +811,29 @@ func TestExchange4Add(t *testing.T) {
 	expectTrue(t, mapper.HasAll(e))
 }
 
+func TestExchange4Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+
+	ex := NewExchange4[ChildOf, CompB, CompC, CompD](&w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](&w)
+	mapper2 := NewMap1[Position](&w)
+
+	parent1 := w.NewEntity()
+
+	e1 := w.NewEntity()
+	ex.Add(e1, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e1, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e1, 0))
+
+	e2 := mapper2.NewEntity(&Position{})
+	ex.Exchange(e2, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e2, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e2, 0))
+}
+
 func TestExchange4Remove(t *testing.T) {
 	w := NewWorld(16)
 
@@ -756,6 +854,8 @@ func TestExchange4AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange4[CompA, CompB, CompC, CompD](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -965,6 +1065,29 @@ func TestExchange5Add(t *testing.T) {
 	expectTrue(t, mapper.HasAll(e))
 }
 
+func TestExchange5Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+
+	ex := NewExchange5[ChildOf, CompB, CompC, CompD, CompE](&w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](&w)
+	mapper2 := NewMap1[Position](&w)
+
+	parent1 := w.NewEntity()
+
+	e1 := w.NewEntity()
+	ex.Add(e1, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e1, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e1, 0))
+
+	e2 := mapper2.NewEntity(&Position{})
+	ex.Exchange(e2, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e2, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e2, 0))
+}
+
 func TestExchange5Remove(t *testing.T) {
 	w := NewWorld(16)
 
@@ -985,6 +1108,8 @@ func TestExchange5AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange5[CompA, CompB, CompC, CompD, CompE](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -1194,6 +1319,29 @@ func TestExchange6Add(t *testing.T) {
 	expectTrue(t, mapper.HasAll(e))
 }
 
+func TestExchange6Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+
+	ex := NewExchange6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](&w)
+	mapper2 := NewMap1[Position](&w)
+
+	parent1 := w.NewEntity()
+
+	e1 := w.NewEntity()
+	ex.Add(e1, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e1, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e1, 0))
+
+	e2 := mapper2.NewEntity(&Position{})
+	ex.Exchange(e2, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e2, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e2, 0))
+}
+
 func TestExchange6Remove(t *testing.T) {
 	w := NewWorld(16)
 
@@ -1214,6 +1362,8 @@ func TestExchange6AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -1423,6 +1573,29 @@ func TestExchange7Add(t *testing.T) {
 	expectTrue(t, mapper.HasAll(e))
 }
 
+func TestExchange7Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+
+	ex := NewExchange7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](&w)
+	mapper2 := NewMap1[Position](&w)
+
+	parent1 := w.NewEntity()
+
+	e1 := w.NewEntity()
+	ex.Add(e1, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e1, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e1, 0))
+
+	e2 := mapper2.NewEntity(&Position{})
+	ex.Exchange(e2, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e2, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e2, 0))
+}
+
 func TestExchange7Remove(t *testing.T) {
 	w := NewWorld(16)
 
@@ -1443,6 +1616,8 @@ func TestExchange7AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -1652,6 +1827,29 @@ func TestExchange8Add(t *testing.T) {
 	expectTrue(t, mapper.HasAll(e))
 }
 
+func TestExchange8Relations(t *testing.T) {
+	w := NewWorld(8)
+
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+
+	ex := NewExchange8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](&w)
+	mapper2 := NewMap1[Position](&w)
+
+	parent1 := w.NewEntity()
+
+	e1 := w.NewEntity()
+	ex.Add(e1, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e1, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e1, 0))
+
+	e2 := mapper2.NewEntity(&Position{})
+	ex.Exchange(e2, &ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, RelIdx(0, parent1))
+	expectEqual(t, parent1, mapper1.GetRelation(e2, 0))
+	expectEqual(t, parent1, mapper1.GetRelationUnchecked(e2, 0))
+}
+
 func TestExchange8Remove(t *testing.T) {
 	w := NewWorld(16)
 
@@ -1672,6 +1870,8 @@ func TestExchange8AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
