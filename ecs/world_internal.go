@@ -15,7 +15,6 @@ func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 }
 
 func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableID, int) {
-	w.checkLocked()
 	mask := bitMask{}
 	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 	startIdx := newTable.Len()

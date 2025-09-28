@@ -125,6 +125,7 @@ func TestMapNewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter1[CompA](&w)
 	query := filter.Query()

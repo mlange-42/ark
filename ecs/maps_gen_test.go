@@ -127,6 +127,7 @@ func TestMap1NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter1[CompA](&w)
 	query := filter.Query()
@@ -430,6 +431,7 @@ func TestMap2NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter2[CompA, CompB](&w)
 	query := filter.Query()
@@ -737,6 +739,7 @@ func TestMap3NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter3[CompA, CompB, CompC](&w)
 	query := filter.Query()
@@ -1048,6 +1051,7 @@ func TestMap4NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter4[CompA, CompB, CompC, CompD](&w)
 	query := filter.Query()
@@ -1363,6 +1367,7 @@ func TestMap5NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](&w)
 	query := filter.Query()
@@ -1682,6 +1687,7 @@ func TestMap6NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	query := filter.Query()
@@ -2005,6 +2011,7 @@ func TestMap7NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	query := filter.Query()
@@ -2332,6 +2339,7 @@ func TestMap8NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
@@ -2663,6 +2671,7 @@ func TestMap9NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
@@ -2999,6 +3008,7 @@ func TestMap10NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
@@ -3339,6 +3349,7 @@ func TestMap11NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()
@@ -3683,6 +3694,7 @@ func TestMap12NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	query := filter.Query()

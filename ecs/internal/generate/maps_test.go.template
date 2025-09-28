@@ -156,6 +156,7 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 		a.Y = 6
 		expectTrue(t, w.IsLocked())
 	})
+	expectFalse(t, w.IsLocked())
 
 	filter := NewFilter{{$nFilter}}{{$genericsFilter}}(&w)
 	query := filter.Query()

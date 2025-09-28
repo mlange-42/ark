@@ -117,6 +117,7 @@ func TestWorldNewEntities(t *testing.T) {
 		cnt++
 	})
 	expectEqual(t, n, cnt)
+	expectFalse(t, w.IsLocked())
 
 	w.NewEntities(n, nil)
 
