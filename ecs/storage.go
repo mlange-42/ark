@@ -65,7 +65,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 }
 
-func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []relationID, outMask *bitMask) *table {
+func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []relationID, outMask *bitMask) (*table, bool) {
 	startNode := s.archetypes[oldTable.archetype].node
 
 	node := s.graph.Find(startNode, add, remove, outMask)
@@ -77,6 +77,7 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		node.archetype = arch.id
 	}
 
+	relationRemoved := false
 	var allRelations []relationID
 	if len(remove) > 0 {
 		// filter out removed relations
@@ -84,6 +85,8 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		for _, rel := range oldTable.relationIDs {
 			if arch.mask.Get(rel.component.id) {
 				allRelations = append(allRelations, rel)
+			} else {
+				relationRemoved = true
 			}
 		}
 		allRelations = append(allRelations, relations...)
@@ -98,7 +101,7 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 	if !ok {
 		table = s.createTable(arch, allRelations)
 	}
-	return table
+	return table, relationRemoved
 }
 
 func (s *storage) AddComponent(id uint8) {

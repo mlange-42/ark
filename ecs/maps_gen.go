@@ -210,7 +210,10 @@ func (m *Map1[A]) AddFn(entity Entity, fn func(*A), rel ...Relation) {
 			(*A)(m.storageA.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -539,7 +542,10 @@ func (m *Map2[A, B]) AddFn(entity Entity, fn func(*A, *B), rel ...Relation) {
 			(*B)(m.storageB.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -898,7 +904,10 @@ func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(*A, *B, *C), rel ...Relatio
 			(*C)(m.storageC.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -1283,7 +1292,10 @@ func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(*A, *B, *C, *D), rel ...
 			(*D)(m.storageD.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -1694,7 +1706,10 @@ func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E), 
 			(*E)(m.storageE.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -2131,7 +2146,10 @@ func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E
 			(*F)(m.storageF.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -2594,7 +2612,10 @@ func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(*A, *B, *C, *D,
 			(*G)(m.storageG.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -3083,7 +3104,10 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(*A, *B, *C, 
 			(*H)(m.storageH.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -3598,7 +3622,10 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(*A, *B, *
 			(*I)(m.storageI.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -4139,7 +4166,10 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(*A, *
 			(*J)(m.storageJ.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -4706,7 +4736,10 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(*A
 			(*K)(m.storageK.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.
@@ -5299,7 +5332,10 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func
 			(*L)(m.storageL.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.

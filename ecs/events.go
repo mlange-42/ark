@@ -129,7 +129,7 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 
 	o.id = m.pool.Get()
 
-	if o.event == OnAddComponents || o.event == OnRemoveComponents {
+	if o.event == OnAddRelations || o.event == OnRemoveRelations {
 		for _, c := range o.comps {
 			id := TypeID(w, c.tp)
 			if !w.storage.registry.IsRelation[id.id] {
@@ -233,7 +233,7 @@ func (m *observerManager) HasObservers(evt EventType) bool {
 }
 
 func (m *observerManager) FireCreateEntity(evt EventType, e Entity, mask *bitMask) {
-	if !m.hasObservers[OnCreateEntity] {
+	if !m.hasObservers[evt] {
 		return
 	}
 	m.doFireCreateEntity(evt, e, mask, true)
@@ -277,24 +277,24 @@ func (m *observerManager) doFireRemoveEntity(evt EventType, e Entity, mask *bitM
 	return found
 }
 
-func (m *observerManager) FireAdd(e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.hasObservers[OnAddComponents] {
+func (m *observerManager) FireAdd(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask) {
+	if !m.hasObservers[evt] {
 		return
 	}
-	m.doFireAdd(e, oldMask, newMask, true)
+	m.doFireAdd(evt, e, oldMask, newMask, true)
 }
 
-func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
+func (m *observerManager) doFireAdd(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
 	if earlyOut {
-		if !m.anyNoComps[OnAddComponents] &&
-			(!m.allComps[OnAddComponents].ContainsAny(newMask) || oldMask.Contains(&m.allComps[OnAddComponents])) {
+		if !m.anyNoComps[evt] &&
+			(!m.allComps[evt].ContainsAny(newMask) || oldMask.Contains(&m.allComps[evt])) {
 			return false
 		}
-		if !m.anyNoWith[OnAddComponents] && !m.allWith[OnAddComponents].ContainsAny(oldMask) {
+		if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(oldMask) {
 			return false
 		}
 	}
-	observers := m.observers[OnAddComponents]
+	observers := m.observers[evt]
 	found := false
 	for _, o := range observers {
 		if o.hasComps && (!newMask.Contains(&o.compsMask) || oldMask.ContainsAny(&o.compsMask)) {
@@ -312,17 +312,17 @@ func (m *observerManager) doFireAdd(e Entity, oldMask *bitMask, newMask *bitMask
 	return found
 }
 
-func (m *observerManager) doFireRemove(e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
+func (m *observerManager) doFireRemove(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
 	if earlyOut {
-		if !m.anyNoComps[OnRemoveComponents] &&
-			(!m.allComps[OnRemoveComponents].ContainsAny(oldMask) || newMask.Contains(&m.allComps[OnRemoveComponents])) {
+		if !m.anyNoComps[evt] &&
+			(!m.allComps[evt].ContainsAny(oldMask) || newMask.Contains(&m.allComps[evt])) {
 			return false
 		}
-		if !m.anyNoWith[OnRemoveComponents] && !m.allWith[OnRemoveComponents].ContainsAny(oldMask) {
+		if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(oldMask) {
 			return false
 		}
 	}
-	observers := m.observers[OnRemoveComponents]
+	observers := m.observers[evt]
 	found := false
 	for _, o := range observers {
 		if o.hasComps && (newMask.Contains(&o.compsMask) || !oldMask.ContainsAny(&o.compsMask)) {

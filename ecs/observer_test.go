@@ -682,7 +682,7 @@ func benchmarkEventsPos(b *testing.B, n int) {
 	newMask := newMask(ComponentID[CompA](&w))
 
 	for b.Loop() {
-		w.storage.observers.FireAdd(Entity{}, &oldMask, &newMask)
+		w.storage.observers.FireAdd(OnAddComponents, Entity{}, &oldMask, &newMask)
 	}
 }
 
@@ -700,7 +700,7 @@ func benchmarkEventsNeg(b *testing.B, n int) {
 	newMask := newMask(ComponentID[CompB](&w))
 
 	for b.Loop() {
-		w.storage.observers.FireAdd(Entity{}, &oldMask, &newMask)
+		w.storage.observers.FireAdd(OnAddComponents, Entity{}, &oldMask, &newMask)
 	}
 }
 

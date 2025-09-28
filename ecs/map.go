@@ -194,7 +194,10 @@ func (m *Map[T]) AddFn(entity Entity, fn func(*T), target ...Entity) {
 		fn(m.GetUnchecked(entity))
 	}
 
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(target) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped component of the given entity to the given values.

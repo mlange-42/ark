@@ -253,7 +253,10 @@ func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_args}}),
 			{{- end}}
 		)
 	}
-	m.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Set the mapped components of the given entity to the given values.

@@ -7,7 +7,7 @@ import (
 func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 	w.checkLocked()
 	mask := bitMask{}
-	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
+	newTable, _ := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 	entity, _ := w.storage.createEntity(newTable.id)
 	w.storage.registerTargets(relations)
 
@@ -16,7 +16,7 @@ func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 
 func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableID, int) {
 	mask := bitMask{}
-	newTable := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
+	newTable, _ := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
 	startIdx := newTable.Len()
 	w.storage.createEntities(newTable, count)
 	w.storage.registerTargets(relations)
@@ -41,12 +41,19 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
 	mask := oldArchetype.mask
-	newTable := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
+	newTable, relRemoved := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	newIndex := newTable.Add(entity)
 
-	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
+	hasCompObs := len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents)
+	hasRelObs := len(rem) > 0 && relRemoved && w.storage.observers.HasObservers(OnRemoveRelations)
+	if hasCompObs || hasRelObs {
 		l := w.lock()
-		w.storage.observers.doFireRemove(entity, &oldArchetype.mask, &mask, true)
+		if hasCompObs {
+			w.storage.observers.doFireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
+		}
+		if hasRelObs {
+			w.storage.observers.doFireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
+		}
 		w.unlock(l)
 	}
 
@@ -92,6 +99,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	}
 	lock := w.lock()
 
+	relRemoved := false
 	tables := w.storage.getTables(batch)
 	batchTables := make([]batchTable, 0, len(tables))
 	for _, tableID := range tables {
@@ -102,8 +110,10 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 		}
 		oldArchetype := &w.storage.archetypes[table.archetype]
 		mask := oldArchetype.mask
-		newTable := w.storage.findOrCreateTable(table, add, rem, relations, &mask)
-
+		newTable, relRemovedTable := w.storage.findOrCreateTable(table, add, rem, relations, &mask)
+		if relRemovedTable {
+			relRemoved = true
+		}
 		batchTables = append(batchTables, batchTable{
 			oldTable: table.id,
 			newTable: newTable.id,
@@ -119,7 +129,22 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			len := uintptr(batch.len)
 			earlyOut := true
 			for i := uintptr(0); i < len; i++ {
-				if !w.storage.observers.doFireRemove(table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
+				if !w.storage.observers.doFireRemove(OnRemoveComponents, table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
+					break
+				}
+				earlyOut = false
+			}
+		}
+	}
+	if len(rem) > 0 && relRemoved && w.storage.observers.HasObservers(OnRemoveRelations) {
+		for _, batch := range batchTables {
+			table := &w.storage.tables[batch.oldTable]
+			oldMask := &w.storage.archetypes[table.id].mask
+			newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].id].mask
+			len := uintptr(batch.len)
+			earlyOut := true
+			for i := uintptr(0); i < len; i++ {
+				if !w.storage.observers.doFireRemove(OnRemoveRelations, table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
 					break
 				}
 				earlyOut = false
@@ -146,7 +171,22 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			len := uintptr(batch.start + batch.len)
 			earlyOut := true
 			for i := uintptr(batch.start); i < len; i++ {
-				if !w.storage.observers.doFireAdd(table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
+				if !w.storage.observers.doFireAdd(OnAddComponents, table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
+					break
+				}
+				earlyOut = false
+			}
+		}
+	}
+	if len(add) > 0 && len(relations) > 0 && w.storage.observers.HasObservers(OnAddRelations) {
+		for _, batch := range batchTables {
+			table := &w.storage.tables[batch.newTable]
+			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].id].mask
+			newMask := &w.storage.archetypes[table.id].mask
+			len := uintptr(batch.start + batch.len)
+			earlyOut := true
+			for i := uintptr(batch.start); i < len; i++ {
+				if !w.storage.observers.doFireAdd(OnAddRelations, table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
 					break
 				}
 				earlyOut = false

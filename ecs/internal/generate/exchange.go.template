@@ -90,7 +90,10 @@ func (ex *Exchange{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_ar
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // Remove the components previously specified with [Exchange{{.}}.Removes] from the given entity.
@@ -127,7 +130,10 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeFn(entity Entity, fn func({{$
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(entity, oldMask, newMask)
+	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	if len(rel) > 0 {
+		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+	}
 }
 
 // AddBatch adds the mapped components to all entities matching the given batch filter.
