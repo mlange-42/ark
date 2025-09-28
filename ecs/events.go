@@ -21,23 +21,23 @@ type EventType uint8
 const (
 
 	// OnCreateEntity event.
-	// Fired after an entity is created.
+	// Emitted after an entity is created.
 	OnCreateEntity EventType = iota
 
 	// OnRemoveEntity event.
-	// Fired before an entity is removed.
+	// Emitted before an entity is removed.
 	OnRemoveEntity
 
 	// OnAddComponents event.
-	// Fired after components are added to an entity.
+	// Emitted after components are added to an entity.
 	OnAddComponents
 
 	// OnRemoveComponents event.
-	// Fired before components are removed from an entity.
+	// Emitted before components are removed from an entity.
 	OnRemoveComponents
 
 	// OnSetComponents event.
-	// Fired after components are set from an entity.
+	// Emitted after components are set from an entity.
 	OnSetComponents
 
 	// Marker for number of event types.
