@@ -25,9 +25,9 @@ func TestObserve(t *testing.T) {
 			obs.Exclusive()
 		})
 
-	obs = Observe(OnCreateEntity).For(C[Position]())
+	obs = Observe(OnCreateEntity).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectTrue(t, obs.hasWith)
-	obs = Observe(OnRemoveEntity).For(C[Position]())
+	obs = Observe(OnRemoveEntity).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectTrue(t, obs.hasWith)
 
 	expectPanicsWithValue(t, "observer callback must be set via Do before registering",
@@ -43,29 +43,27 @@ func TestObserve(t *testing.T) {
 			Observe(OnAddRelations).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
 		})
 
-	obs = Observe(OnAddComponents).Do(func(e Entity) {})
-
-	obs = obs.For()
+	obs = Observe(OnAddComponents).For().Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 0, len(obs.comps))
 	expectFalse(t, obs.hasComps)
 
-	obs = obs.For(C[Position]())
+	obs = Observe(OnAddComponents).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 1, len(obs.comps))
 	expectTrue(t, obs.hasComps)
 
-	obs = obs.With()
+	obs = Observe(OnAddComponents).With().Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 0, len(obs.with))
 	expectFalse(t, obs.hasWith)
 
-	obs = obs.With(C[Position]())
+	obs = Observe(OnAddComponents).With(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 1, len(obs.with))
 	expectTrue(t, obs.hasWith)
 
-	obs = obs.Without()
+	obs = Observe(OnAddComponents).Without().Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 0, len(obs.without))
 	expectFalse(t, obs.hasWithout)
 
-	obs = obs.Without(C[Position]())
+	obs = Observe(OnAddComponents).Without(C[Position]()).Do(func(e Entity) {}).Register(&w)
 	expectEqual(t, 1, len(obs.without))
 	expectTrue(t, obs.hasWithout)
 }

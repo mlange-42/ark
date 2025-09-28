@@ -44,23 +44,23 @@ func TestObserve1(t *testing.T) {
 	obs.For(C[Position]())
 	expectEqual(t, 1, len(obs.comps))
 
-	obs.With()
+	obs = Observe1[CompA](OnAddComponents).With().Do(func(e Entity, a *CompA) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.with))
 	expectFalse(t, obs.observer.hasWith)
 
-	obs.With(C[Position]())
+	obs = Observe1[CompA](OnAddComponents).With(C[Position]()).Do(func(e Entity, a *CompA) {}).Register(&w)
 	expectEqual(t, 1, len(obs.observer.with))
 	expectTrue(t, obs.observer.hasWith)
 
-	obs.Without()
+	obs = Observe1[CompA](OnAddComponents).Without().Do(func(e Entity, a *CompA) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.without))
 	expectFalse(t, obs.observer.hasWithout)
 
-	obs.Without(C[Position]())
+	obs = Observe1[CompA](OnAddComponents).Without(C[Position]()).Do(func(e Entity, a *CompA) {}).Register(&w)
 	expectEqual(t, 1, len(obs.observer.without))
 	expectTrue(t, obs.observer.hasWithout)
 
-	obs.Register(&w)
+	obs = Observe1[CompA](OnAddComponents).For(C[Position]()).Do(func(e Entity, a *CompA) {}).Register(&w)
 	expectEqual(t, 1+1, len(obs.observer.comps))
 	expectTrue(t, obs.observer.hasComps)
 
@@ -151,23 +151,23 @@ func TestObserve2(t *testing.T) {
 	obs.For(C[Position]())
 	expectEqual(t, 1, len(obs.comps))
 
-	obs.With()
+	obs = Observe2[CompA, CompB](OnAddComponents).With().Do(func(e Entity, a *CompA, b *CompB) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.with))
 	expectFalse(t, obs.observer.hasWith)
 
-	obs.With(C[Position]())
+	obs = Observe2[CompA, CompB](OnAddComponents).With(C[Position]()).Do(func(e Entity, a *CompA, b *CompB) {}).Register(&w)
 	expectEqual(t, 1, len(obs.observer.with))
 	expectTrue(t, obs.observer.hasWith)
 
-	obs.Without()
+	obs = Observe2[CompA, CompB](OnAddComponents).Without().Do(func(e Entity, a *CompA, b *CompB) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.without))
 	expectFalse(t, obs.observer.hasWithout)
 
-	obs.Without(C[Position]())
+	obs = Observe2[CompA, CompB](OnAddComponents).Without(C[Position]()).Do(func(e Entity, a *CompA, b *CompB) {}).Register(&w)
 	expectEqual(t, 1, len(obs.observer.without))
 	expectTrue(t, obs.observer.hasWithout)
 
-	obs.Register(&w)
+	obs = Observe2[CompA, CompB](OnAddComponents).For(C[Position]()).Do(func(e Entity, a *CompA, b *CompB) {}).Register(&w)
 	expectEqual(t, 2+1, len(obs.observer.comps))
 	expectTrue(t, obs.observer.hasComps)
 
@@ -259,23 +259,23 @@ func TestObserve3(t *testing.T) {
 	obs.For(C[Position]())
 	expectEqual(t, 1, len(obs.comps))
 
-	obs.With()
+	obs = Observe3[CompA, CompB, CompC](OnAddComponents).With().Do(func(e Entity, a *CompA, b *CompB, c *CompC) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.with))
 	expectFalse(t, obs.observer.hasWith)
 
-	obs.With(C[Position]())
+	obs = Observe3[CompA, CompB, CompC](OnAddComponents).With(C[Position]()).Do(func(e Entity, a *CompA, b *CompB, c *CompC) {}).Register(&w)
 	expectEqual(t, 1, len(obs.observer.with))
 	expectTrue(t, obs.observer.hasWith)
 
-	obs.Without()
+	obs = Observe3[CompA, CompB, CompC](OnAddComponents).Without().Do(func(e Entity, a *CompA, b *CompB, c *CompC) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.without))
 	expectFalse(t, obs.observer.hasWithout)
 
-	obs.Without(C[Position]())
+	obs = Observe3[CompA, CompB, CompC](OnAddComponents).Without(C[Position]()).Do(func(e Entity, a *CompA, b *CompB, c *CompC) {}).Register(&w)
 	expectEqual(t, 1, len(obs.observer.without))
 	expectTrue(t, obs.observer.hasWithout)
 
-	obs.Register(&w)
+	obs = Observe3[CompA, CompB, CompC](OnAddComponents).For(C[Position]()).Do(func(e Entity, a *CompA, b *CompB, c *CompC) {}).Register(&w)
 	expectEqual(t, 3+1, len(obs.observer.comps))
 	expectTrue(t, obs.observer.hasComps)
 
@@ -368,23 +368,23 @@ func TestObserve4(t *testing.T) {
 	obs.For(C[Position]())
 	expectEqual(t, 1, len(obs.comps))
 
-	obs.With()
+	obs = Observe4[CompA, CompB, CompC, CompD](OnAddComponents).With().Do(func(e Entity, a *CompA, b *CompB, c *CompC, d *CompD) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.with))
 	expectFalse(t, obs.observer.hasWith)
 
-	obs.With(C[Position]())
+	obs = Observe4[CompA, CompB, CompC, CompD](OnAddComponents).With(C[Position]()).Do(func(e Entity, a *CompA, b *CompB, c *CompC, d *CompD) {}).Register(&w)
 	expectEqual(t, 1, len(obs.observer.with))
 	expectTrue(t, obs.observer.hasWith)
 
-	obs.Without()
+	obs = Observe4[CompA, CompB, CompC, CompD](OnAddComponents).Without().Do(func(e Entity, a *CompA, b *CompB, c *CompC, d *CompD) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.without))
 	expectFalse(t, obs.observer.hasWithout)
 
-	obs.Without(C[Position]())
+	obs = Observe4[CompA, CompB, CompC, CompD](OnAddComponents).Without(C[Position]()).Do(func(e Entity, a *CompA, b *CompB, c *CompC, d *CompD) {}).Register(&w)
 	expectEqual(t, 1, len(obs.observer.without))
 	expectTrue(t, obs.observer.hasWithout)
 
-	obs.Register(&w)
+	obs = Observe4[CompA, CompB, CompC, CompD](OnAddComponents).For(C[Position]()).Do(func(e Entity, a *CompA, b *CompB, c *CompC, d *CompD) {}).Register(&w)
 	expectEqual(t, 4+1, len(obs.observer.comps))
 	expectTrue(t, obs.observer.hasComps)
 
