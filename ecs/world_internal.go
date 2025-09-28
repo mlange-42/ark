@@ -370,8 +370,9 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 	if w.storage.observers.HasObservers(OnAddRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
 		earlyOut := true
-		for i := startIdx; i < oldLen; i++ {
-			if !w.storage.observers.doFireSetRelations(OnAddRelations, oldTable.GetEntity(uintptr(i)), &changeMask, newMask, earlyOut) {
+		for i := range oldLen {
+			index := uintptr(startIdx + i)
+			if !w.storage.observers.doFireSetRelations(OnAddRelations, oldTable.GetEntity(uintptr(index)), &changeMask, newMask, earlyOut) {
 				break
 			}
 			earlyOut = false
