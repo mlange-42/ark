@@ -40,6 +40,14 @@ const (
 	// Emitted after components are set from an entity.
 	OnSetComponents
 
+	// OnAddRelations event.
+	// Emitted after relation targets are added to an entity.
+	OnAddRelations
+
+	// OnRemoveRelations event.
+	// Emitted before relation targets are removed from an entity.
+	OnRemoveRelations
+
 	// Marker for number of event types.
 	eventsEnd
 )
