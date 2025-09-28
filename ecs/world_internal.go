@@ -124,8 +124,8 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
 		for _, batch := range batchTables {
 			table := &w.storage.tables[batch.oldTable]
-			oldMask := &w.storage.archetypes[table.id].mask
-			newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].id].mask
+			oldMask := &w.storage.archetypes[table.archetype].mask
+			newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].archetype].mask
 			len := uintptr(batch.len)
 			earlyOut := true
 			for i := uintptr(0); i < len; i++ {
@@ -139,8 +139,8 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	if len(rem) > 0 && relRemoved && w.storage.observers.HasObservers(OnRemoveRelations) {
 		for _, batch := range batchTables {
 			table := &w.storage.tables[batch.oldTable]
-			oldMask := &w.storage.archetypes[table.id].mask
-			newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].id].mask
+			oldMask := &w.storage.archetypes[table.archetype].mask
+			newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].archetype].mask
 			len := uintptr(batch.len)
 			earlyOut := true
 			for i := uintptr(0); i < len; i++ {
@@ -166,8 +166,8 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	if len(add) > 0 && w.storage.observers.HasObservers(OnAddComponents) {
 		for _, batch := range batchTables {
 			table := &w.storage.tables[batch.newTable]
-			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].id].mask
-			newMask := &w.storage.archetypes[table.id].mask
+			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].archetype].mask
+			newMask := &w.storage.archetypes[table.archetype].mask
 			len := uintptr(batch.start + batch.len)
 			earlyOut := true
 			for i := uintptr(batch.start); i < len; i++ {
@@ -181,8 +181,8 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	if len(add) > 0 && len(relations) > 0 && w.storage.observers.HasObservers(OnAddRelations) {
 		for _, batch := range batchTables {
 			table := &w.storage.tables[batch.newTable]
-			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].id].mask
-			newMask := &w.storage.archetypes[table.id].mask
+			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].archetype].mask
+			newMask := &w.storage.archetypes[table.archetype].mask
 			len := uintptr(batch.start + batch.len)
 			earlyOut := true
 			for i := uintptr(batch.start); i < len; i++ {

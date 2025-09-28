@@ -302,12 +302,11 @@ func TestObserverRelations(t *testing.T) {
 
 	callAdd := 0
 	callRemove := 0
-	isBatch := false
 
 	Observe(OnAddRelations).
 		For(C[ChildOf]()).
 		Do(func(e Entity) {
-			expectEqual(t, isBatch, w.IsLocked())
+			expectFalse(t, w.IsLocked())
 			callAdd++
 		}).
 		Register(&w)
@@ -356,6 +355,76 @@ func TestObserverRelations(t *testing.T) {
 	builder1.Remove(e1)
 	expectEqual(t, 3, callAdd)
 	expectEqual(t, 3, callRemove)
+}
+
+func TestObserverRelationsBatch(t *testing.T) {
+	w := NewWorld()
+
+	parentBuilder := NewMap1[Position](&w)
+	builder1 := NewMap1[ChildOf](&w)
+	builder2 := NewMap1[ChildOf2](&w)
+	filter0 := NewFilter0(&w).Exclusive()
+	filter1 := NewFilter1[ChildOf](&w)
+	filter2 := NewFilter1[ChildOf2](&w)
+
+	parent1 := parentBuilder.NewEntity(&Position{})
+	parent2 := parentBuilder.NewEntity(&Position{})
+
+	callAdd := 0
+	callRemove := 0
+
+	Observe(OnAddRelations).
+		For(C[ChildOf]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callAdd++
+		}).
+		Register(&w)
+
+	Observe(OnRemoveRelations).
+		For(C[ChildOf]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callRemove++
+		}).
+		Register(&w)
+
+	builder1.NewBatch(10, &ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, 10, callAdd)
+	expectEqual(t, 0, callRemove)
+	builder2.NewBatch(10, &ChildOf2{}, RelIdx(0, parent1))
+	expectEqual(t, 10, callAdd)
+	expectEqual(t, 0, callRemove)
+
+	w.RemoveEntities(filter2.Batch(), nil)
+	expectEqual(t, 10, callAdd)
+	expectEqual(t, 0, callRemove)
+	w.RemoveEntities(filter1.Batch(), nil)
+	expectEqual(t, 10, callAdd)
+	expectEqual(t, 10, callRemove)
+
+	w.NewEntities(10, nil)
+	builder1.AddBatch(filter0.Batch(), &ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, 20, callAdd)
+	expectEqual(t, 10, callRemove)
+	w.NewEntities(10, nil)
+	builder2.AddBatch(filter0.Batch(), &ChildOf2{}, RelIdx(0, parent1))
+	expectEqual(t, 20, callAdd)
+	expectEqual(t, 10, callRemove)
+
+	builder1.SetRelationsBatch(filter1.Batch(), nil, RelIdx(0, parent2))
+	expectEqual(t, 30, callAdd)
+	expectEqual(t, 20, callRemove)
+	builder2.SetRelationsBatch(filter2.Batch(), nil, RelIdx(0, parent2))
+	expectEqual(t, 30, callAdd)
+	expectEqual(t, 20, callRemove)
+
+	builder2.RemoveBatch(filter2.Batch(), nil)
+	expectEqual(t, 30, callAdd)
+	expectEqual(t, 20, callRemove)
+	builder1.RemoveBatch(filter1.Batch(), nil)
+	expectEqual(t, 30, callAdd)
+	expectEqual(t, 30, callRemove)
 }
 
 func TestObserverComponentsWith(t *testing.T) {
