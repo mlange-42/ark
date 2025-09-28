@@ -38,6 +38,10 @@ func TestObserve(t *testing.T) {
 		func() {
 			Observe(OnCreateEntity).Do(func(e Entity) {}).Do(func(e Entity) {})
 		})
+	expectPanicsWithValue(t, "non-relation component 0 in relation observer",
+		func() {
+			Observe(OnAddRelations).For(C[Position]()).Do(func(e Entity) {}).Register(&w)
+		})
 
 	obs = Observe(OnAddComponents).Do(func(e Entity) {})
 

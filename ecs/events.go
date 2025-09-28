@@ -120,11 +120,11 @@ func newObserverManager() observerManager {
 }
 
 func (m *observerManager) AddObserver(o *Observer, w *World) {
-	if o.callback == nil {
-		panic("observer callback must be set via Do before registering")
-	}
 	if o.id != maxObserverID {
 		panic("observer is already registered")
+	}
+	if o.callback == nil {
+		panic("observer callback must be set via Do before registering")
 	}
 
 	o.id = m.pool.Get()
