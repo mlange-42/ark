@@ -427,6 +427,76 @@ func TestObserverRelationsBatch(t *testing.T) {
 	expectEqual(t, 30, callRemove)
 }
 
+func TestObserverRelationsFilterEarly(t *testing.T) {
+	w := NewWorld()
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	builder1 := NewMap1[ChildOf](&w)
+
+	callAdd := 0
+	callRemove := 0
+
+	Observe(OnAddRelations).
+		For(C[ChildOf]()).
+		With(C[Position]()).
+		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
+			callAdd++
+		}).
+		Register(&w)
+
+	Observe(OnRemoveRelations).
+		For(C[ChildOf]()).
+		With(C[Position]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callRemove++
+		}).
+		Register(&w)
+
+	e1 := builder1.NewEntity(&ChildOf{}, RelIdx(0, parent1))
+	w.RemoveEntity(e1)
+
+	e1 = w.NewEntity()
+	builder1.Add(e1, &ChildOf{}, RelIdx(0, parent1))
+
+	builder1.SetRelations(e1, RelIdx(0, parent2))
+	builder1.Remove(e1)
+
+	expectEqual(t, 0, callAdd)
+	expectEqual(t, 0, callRemove)
+}
+
+func TestObserverRelationsFilter(t *testing.T) {
+	w := NewWorld()
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+
+	builder1 := NewMap2[Position, ChildOf](&w)
+
+	Observe(OnAddRelations).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Do(func(e Entity) {}).Register(&w)
+
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(e Entity) {}).Register(&w)
+
+	Observe(OnAddRelations).With(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).With(C[Velocity]()).Do(func(e Entity) {}).Register(&w)
+
+	Observe(OnAddRelations).Without(C[Position]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Without(C[Position]()).Do(func(e Entity) {}).Register(&w)
+
+	e1 := builder1.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, parent1))
+	w.RemoveEntity(e1)
+
+	e1 = w.NewEntity()
+	builder1.Add(e1, &Position{}, &ChildOf{}, RelIdx(1, parent1))
+
+	builder1.SetRelations(e1, RelIdx(1, parent2))
+	builder1.Remove(e1)
+}
+
 func TestObserverComponentsWith(t *testing.T) {
 	w := NewWorld()
 
