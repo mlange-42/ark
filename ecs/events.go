@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -128,10 +129,21 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 
 	o.id = m.pool.Get()
 
-	for _, c := range o.comps {
-		id := TypeID(w, c.tp)
-		o.compsMask.Set(id.id, true)
+	if o.event == OnAddComponents || o.event == OnRemoveComponents {
+		for _, c := range o.comps {
+			id := TypeID(w, c.tp)
+			if !w.storage.registry.IsRelation[id.id] {
+				panic(fmt.Sprintf("non-relation component %d in relation observer", id.id))
+			}
+			o.compsMask.Set(id.id, true)
+		}
+	} else {
+		for _, c := range o.comps {
+			id := TypeID(w, c.tp)
+			o.compsMask.Set(id.id, true)
+		}
 	}
+
 	for _, c := range o.with {
 		id := TypeID(w, c.tp)
 		o.withMask.Set(id.id, true)
