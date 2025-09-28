@@ -402,7 +402,7 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 	return result
 }
 
-func (s *storage) getExchangeTargets(oldTable *table, relations []relationID) ([]relationID, bool) {
+func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, mask *bitMask) ([]relationID, bool) {
 	changed := false
 	// TODO: maybe use a pool of slices?
 	targets := make([]Entity, len(oldTable.columns))
@@ -419,6 +419,8 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID) ([
 		}
 		if rel.target == targets[column.index] {
 			continue
+		} else if mask != nil {
+			mask.Set(rel.component.id, true)
 		}
 		targets[column.index] = rel.target
 		changed = true

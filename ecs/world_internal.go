@@ -244,11 +244,21 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	if len(relations) == 0 {
 		panic("no relations specified")
 	}
+	hasObserver := w.storage.observers.HasObservers(OnAddRelations) || w.storage.observers.HasObservers(OnRemoveRelations)
+	var lock uint8
+	if hasObserver {
+		lock = w.lock()
+	}
 
 	index := &w.storage.entities[entity.id]
 	oldTable := &w.storage.tables[index.table]
 
-	newRelations, changed := w.storage.getExchangeTargets(oldTable, relations)
+	var changeMask bitMask
+	var maskPointer *bitMask
+	if hasObserver {
+		maskPointer = &changeMask
+	}
+	newRelations, changed := w.storage.getExchangeTargets(oldTable, relations, maskPointer)
 	if !changed {
 		return
 	}
@@ -260,6 +270,12 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 		// Get the old table again, as pointers may have changed.
 		oldTable = &w.storage.tables[oldTable.id]
 	}
+
+	if w.storage.observers.HasObservers(OnRemoveRelations) {
+		newMask := &w.storage.archetypes[newTable.archetype].mask
+		w.storage.observers.doFireSetRelations(OnRemoveRelations, entity, &changeMask, newMask, true)
+	}
+
 	newIndex := newTable.Add(entity)
 
 	for _, id := range oldArch.components {
@@ -275,6 +291,14 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
 
 	w.storage.registerTargets(relations)
+
+	if w.storage.observers.HasObservers(OnAddRelations) {
+		newMask := &w.storage.archetypes[newTable.archetype].mask
+		w.storage.observers.doFireSetRelations(OnAddRelations, entity, &changeMask, newMask, true)
+	}
+	if hasObserver {
+		w.unlock(lock)
+	}
 }
 
 func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(table tableID, start, len int)) {
@@ -283,6 +307,8 @@ func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(
 	if len(relations) == 0 {
 		panic("no relations specified")
 	}
+	lock := w.lock()
+	hasObserver := w.storage.observers.HasObservers(OnAddRelations) || w.storage.observers.HasObservers(OnRemoveRelations)
 
 	tables := w.storage.getTables(batch)
 	lengths := make([]uint32, len(tables))
@@ -300,21 +326,26 @@ func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(
 			continue
 		}
 		table := &w.storage.tables[tableID]
-		t, start, len := w.setRelationsTable(table, int(tableLen), relations)
-		if fn != nil {
-			fn(t, start, len)
-		}
+		w.setRelationsTable(table, int(tableLen), relations, fn, hasObserver)
 	}
 
 	w.storage.registerTargets(relations)
+
+	w.unlock(lock)
 }
 
-func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relationID) (tableID, int, int) {
-	newRelations, changed := w.storage.getExchangeTargets(oldTable, relations)
+func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relationID, fn func(table tableID, start, len int), hasObserver bool) {
+	var changeMask bitMask
+	var maskPointer *bitMask
+	if hasObserver {
+		maskPointer = &changeMask
+	}
+	newRelations, changed := w.storage.getExchangeTargets(oldTable, relations, maskPointer)
 
 	if !changed {
-		return oldTable.id, 0, oldLen
+		return
 	}
+
 	oldArch := &w.storage.archetypes[oldTable.archetype]
 	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
 	if !ok {
@@ -322,11 +353,36 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 		// Get the old table again, as pointers may have changed.
 		oldTable = &w.storage.tables[oldTable.id]
 	}
+
+	if w.storage.observers.HasObservers(OnRemoveRelations) {
+		newMask := &w.storage.archetypes[newTable.archetype].mask
+		len := uintptr(oldTable.len)
+		earlyOut := true
+		for i := uintptr(0); i < len; i++ {
+			if !w.storage.observers.doFireSetRelations(OnRemoveRelations, oldTable.GetEntity(i), &changeMask, newMask, earlyOut) {
+				break
+			}
+			earlyOut = false
+		}
+	}
+
 	startIdx := newTable.Len()
 	w.storage.moveEntities(oldTable, newTable, uint32(oldLen))
 
-	return newTable.id, startIdx, oldLen
+	if fn != nil {
+		fn(newTable.id, startIdx, oldLen)
+	}
 
+	if w.storage.observers.HasObservers(OnAddRelations) {
+		newMask := &w.storage.archetypes[newTable.archetype].mask
+		earlyOut := true
+		for i := startIdx; i < oldLen; i++ {
+			if !w.storage.observers.doFireSetRelations(OnAddRelations, oldTable.GetEntity(uintptr(i)), &changeMask, newMask, earlyOut) {
+				break
+			}
+			earlyOut = false
+		}
+	}
 }
 
 func (w *World) componentID(tp reflect.Type) ID {

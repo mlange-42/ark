@@ -21,12 +21,10 @@ func setRelationsBatch(world *World, batch *Batch, fn func(entity Entity), relat
 		process = func(tableID tableID, start, len int) {
 			table := world.storage.tables[tableID]
 
-			lock := world.lock()
 			for i := range len {
 				index := uintptr(start + i)
 				fn(table.GetEntity(index))
 			}
-			world.unlock(lock)
 		}
 	}
 	world.setRelationsBatch(batch, relations, process)
