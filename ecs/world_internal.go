@@ -348,6 +348,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 		oldTable = &w.storage.tables[oldTable.id]
 	}
 
+	// TODO: move this before the entire batch?
 	if w.storage.observers.HasObservers(OnRemoveRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
 		len := uintptr(oldTable.len)
@@ -367,6 +368,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 		fn(newTable.id, startIdx, oldLen)
 	}
 
+	// TODO: move this after the entire batch?
 	if w.storage.observers.HasObservers(OnAddRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
 		earlyOut := true
