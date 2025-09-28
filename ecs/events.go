@@ -220,18 +220,18 @@ func (m *observerManager) HasObservers(evt EventType) bool {
 	return m.hasObservers[evt]
 }
 
-func (m *observerManager) FireCreateEntity(e Entity, mask *bitMask) {
+func (m *observerManager) FireCreateEntity(evt EventType, e Entity, mask *bitMask) {
 	if !m.hasObservers[OnCreateEntity] {
 		return
 	}
-	m.doFireCreateEntity(e, mask, true)
+	m.doFireCreateEntity(evt, e, mask, true)
 }
 
-func (m *observerManager) doFireCreateEntity(e Entity, mask *bitMask, earlyOut bool) bool {
-	if earlyOut && !m.anyNoWith[OnCreateEntity] && !m.allWith[OnCreateEntity].ContainsAny(mask) {
+func (m *observerManager) doFireCreateEntity(evt EventType, e Entity, mask *bitMask, earlyOut bool) bool {
+	if earlyOut && !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(mask) {
 		return false
 	}
-	observers := m.observers[OnCreateEntity]
+	observers := m.observers[evt]
 	found := false
 	for _, o := range observers {
 		if o.hasWith && !mask.Contains(&o.withMask) {
@@ -246,11 +246,11 @@ func (m *observerManager) doFireCreateEntity(e Entity, mask *bitMask, earlyOut b
 	return found
 }
 
-func (m *observerManager) doFireRemoveEntity(e Entity, mask *bitMask, earlyOut bool) bool {
-	if earlyOut && !m.anyNoWith[OnRemoveEntity] && !m.allWith[OnRemoveEntity].ContainsAny(mask) {
+func (m *observerManager) doFireRemoveEntity(evt EventType, e Entity, mask *bitMask, earlyOut bool) bool {
+	if earlyOut && !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(mask) {
 		return false
 	}
-	observers := m.observers[OnRemoveEntity]
+	observers := m.observers[evt]
 	found := false
 	for _, o := range observers {
 		if o.hasWith && !mask.Contains(&o.withMask) {

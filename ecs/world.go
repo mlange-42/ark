@@ -34,7 +34,7 @@ func (w *World) NewEntity() Entity {
 	w.checkLocked()
 
 	entity, _ := w.storage.createEntity(0)
-	w.storage.observers.FireCreateEntity(entity, &w.storage.archetypes[0].mask)
+	w.storage.observers.FireCreateEntity(OnCreateEntity, entity, &w.storage.archetypes[0].mask)
 	return entity
 }
 
@@ -58,11 +58,11 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 	if w.storage.observers.HasObservers(OnCreateEntity) {
 		table := &w.storage.tables[tableID]
 		mask := &w.storage.archetypes[table.archetype].mask
-		earlyOut := true
 		lock := w.lock()
+		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !w.storage.observers.doFireCreateEntity(table.GetEntity(index), mask, earlyOut) {
+			if !w.storage.observers.doFireCreateEntity(OnCreateEntity, table.GetEntity(index), mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -115,7 +115,7 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 			var i uintptr
 			earlyOut := true
 			for i = range len {
-				if !w.storage.observers.doFireRemoveEntity(table.GetEntity(i), mask, earlyOut) {
+				if !w.storage.observers.doFireRemoveEntity(OnRemoveEntity, table.GetEntity(i), mask, earlyOut) {
 					break
 				}
 				earlyOut = false
