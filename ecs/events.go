@@ -43,10 +43,12 @@ const (
 
 	// OnAddRelations event.
 	// Emitted after relation targets are added to an entity.
+	// Includes creating entities, added components as well as setting relation targets.
 	OnAddRelations
 
 	// OnRemoveRelations event.
 	// Emitted before relation targets are removed from an entity.
+	// Includes removing entities, removing components as well as setting relation targets.
 	OnRemoveRelations
 
 	// Marker for number of event types.
@@ -58,7 +60,7 @@ var nextUserEvent = eventsEnd - 1
 // NewEventType creates a new EventType for custom events.
 // Custom event types should be stored in global variables.
 //
-// The maximum number of event types is 255, with 5 predefined and 250 potential custom types.
+// The maximum number of event types is limited to 255, with 7 predefined and 248 potential custom types.
 //
 // See [Event] and [World.Event] for using custom events.
 func NewEventType() EventType {
