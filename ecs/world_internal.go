@@ -245,10 +245,6 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 		panic("no relations specified")
 	}
 	hasObserver := w.storage.observers.HasObservers(OnAddRelations) || w.storage.observers.HasObservers(OnRemoveRelations)
-	var lock uint8
-	if hasObserver {
-		lock = w.lock()
-	}
 
 	index := &w.storage.entities[entity.id]
 	oldTable := &w.storage.tables[index.table]
@@ -272,8 +268,10 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	}
 
 	if w.storage.observers.HasObservers(OnRemoveRelations) {
+		lock := w.lock()
 		newMask := &w.storage.archetypes[newTable.archetype].mask
 		w.storage.observers.doFireSetRelations(OnRemoveRelations, entity, &changeMask, newMask, true)
+		w.unlock(lock)
 	}
 
 	newIndex := newTable.Add(entity)
@@ -295,9 +293,6 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	if w.storage.observers.HasObservers(OnAddRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
 		w.storage.observers.doFireSetRelations(OnAddRelations, entity, &changeMask, newMask, true)
-	}
-	if hasObserver {
-		w.unlock(lock)
 	}
 }
 

@@ -295,7 +295,7 @@ func TestObserverOnSet(t *testing.T) {
 func TestObserverRelations(t *testing.T) {
 	w := NewWorld()
 	parent1 := w.NewEntity()
-	//parent2 := w.NewEntity()
+	parent2 := w.NewEntity()
 
 	builder1 := NewMap1[ChildOf](&w)
 	builder2 := NewMap1[ChildOf2](&w)
@@ -338,10 +338,24 @@ func TestObserverRelations(t *testing.T) {
 	builder1.Add(e1, &ChildOf{}, RelIdx(0, parent1))
 	expectEqual(t, 2, callAdd)
 	expectEqual(t, 1, callRemove)
-
-	builder1.Remove(e1)
+	e2 = w.NewEntity()
+	builder2.Add(e2, &ChildOf2{}, RelIdx(0, parent1))
 	expectEqual(t, 2, callAdd)
+	expectEqual(t, 1, callRemove)
+
+	builder1.SetRelations(e1, RelIdx(0, parent2))
+	expectEqual(t, 3, callAdd)
 	expectEqual(t, 2, callRemove)
+	builder2.SetRelations(e2, RelIdx(0, parent2))
+	expectEqual(t, 3, callAdd)
+	expectEqual(t, 2, callRemove)
+
+	builder2.Remove(e2)
+	expectEqual(t, 3, callAdd)
+	expectEqual(t, 2, callRemove)
+	builder1.Remove(e1)
+	expectEqual(t, 3, callAdd)
+	expectEqual(t, 3, callRemove)
 }
 
 func TestObserverComponentsWith(t *testing.T) {
