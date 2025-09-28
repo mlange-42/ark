@@ -316,7 +316,6 @@ func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(
 
 	for i, tableID := range tables {
 		tableLen := lengths[i]
-
 		if tableLen == 0 {
 			continue
 		}

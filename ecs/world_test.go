@@ -134,6 +134,8 @@ func TestWorldRemoveEntities(t *testing.T) {
 	n := 12
 	w := NewWorld(16)
 
+	Observe(OnRemoveRelations).For(C[ChildOf]()).Do(func(e Entity) {}).Register(&w)
+
 	posMap := NewMap1[Position](&w)
 	velMap := NewMap1[Velocity](&w)
 	posVelMap := NewMap2[Position, Velocity](&w)
