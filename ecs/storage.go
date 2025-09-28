@@ -117,10 +117,18 @@ func (s *storage) RemoveEntity(entity Entity) {
 	index := &s.entities[entity.id]
 	table := &s.tables[index.table]
 
-	if s.observers.HasObservers(OnRemoveEntity) {
+	hasEntityObs := s.observers.HasObservers(OnRemoveEntity)
+	hasRelationObs := table.HasRelations() && s.observers.HasObservers(OnRemoveRelations)
+	if hasEntityObs || hasRelationObs {
 		l := s.lock()
-		mask := &s.archetypes[table.archetype].mask
-		s.observers.doFireRemoveEntity(OnRemoveEntity, entity, mask, true)
+		if hasEntityObs {
+			mask := &s.archetypes[table.archetype].mask
+			s.observers.doFireRemoveEntity(OnRemoveEntity, entity, mask, true)
+		}
+		if hasRelationObs {
+			mask := &s.archetypes[table.archetype].mask
+			s.observers.doFireRemoveEntity(OnRemoveRelations, entity, mask, true)
+		}
 		s.unlock(l)
 	}
 
