@@ -80,6 +80,8 @@ func TestExchange{{.}}AddBatch(t *testing.T) {
 	
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange{{.}}{{$generics}}(&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)

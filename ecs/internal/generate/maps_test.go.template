@@ -31,6 +31,8 @@ func TestMap{{.}}(t *testing.T) {
 
 	Observe(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
 	Observe(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
 
 	var mapper *Map{{.}}{{$generics}}
 	mapper = mapper.New(&w)
@@ -117,6 +119,8 @@ func TestMap{{.}}NewBatch(t *testing.T) {
 	w := NewWorld(8)
 	
 	Observe(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap{{.}}{{$generics}}(&w)
 
@@ -144,6 +148,8 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 	
 	Observe(OnCreateEntity).With(C[Heading]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap{{.}}{{$generics}}(&w)
 
@@ -175,6 +181,9 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 
 func TestMap{{.}}Relations(t *testing.T) {
 	w := NewWorld(8)
+	
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap{{.}}{{$genericsRel}}(&w)
 
@@ -297,6 +306,10 @@ func TestMap{{.}}AddBatchFn(t *testing.T) {
 func TestMap{{.}}SetRelationsBatch(t *testing.T) {
 	n := 24
 	w := NewWorld(16)
+	
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()

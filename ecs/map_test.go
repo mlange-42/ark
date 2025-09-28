@@ -9,6 +9,8 @@ func TestMap(t *testing.T) {
 
 	Observe(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
 	Observe(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
 
 	posMap := NewMap[Position](&w)
 	velMap := NewMap[Velocity](&w)
@@ -86,6 +88,8 @@ func TestMapNewBatch(t *testing.T) {
 	w := NewWorld(8)
 
 	Observe(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap[CompA](&w)
 
@@ -113,6 +117,8 @@ func TestMapNewBatchFn(t *testing.T) {
 	w := NewWorld(8)
 
 	Observe(OnCreateEntity).With(C[Heading]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
 
 	mapper := NewMap[CompA](&w)
 

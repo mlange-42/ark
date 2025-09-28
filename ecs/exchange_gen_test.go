@@ -69,6 +69,8 @@ func TestExchange1AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange1[CompA](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -298,6 +300,8 @@ func TestExchange2AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange2[CompA, CompB](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -527,6 +531,8 @@ func TestExchange3AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange3[CompA, CompB, CompC](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -756,6 +762,8 @@ func TestExchange4AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange4[CompA, CompB, CompC, CompD](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -985,6 +993,8 @@ func TestExchange5AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange5[CompA, CompB, CompC, CompD, CompE](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -1214,6 +1224,8 @@ func TestExchange6AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -1443,6 +1455,8 @@ func TestExchange7AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
@@ -1672,6 +1686,8 @@ func TestExchange8AddBatch(t *testing.T) {
 
 	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
 	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
 
 	exchange := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[CompA]())
 	posMap := NewMap1[Position](&w)
