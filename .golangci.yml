@@ -29,6 +29,7 @@ linters:
         - commentFormatting
 
 severity:
+  default: error
   rules:
     - linters:
       - godox
