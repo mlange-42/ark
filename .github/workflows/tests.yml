@@ -87,18 +87,18 @@ jobs:
             exit 1
           fi
       - name: Run GolangCI-Lint
-        uses: golangci/golangci-lint-action@v4
+        uses: golangci/golangci-lint-action@v8
         with:
           version: latest
 
       - name: Run GolangCI-Lint (tiny)
-        uses: golangci/golangci-lint-action@v4
+        uses: golangci/golangci-lint-action@v8
         with:
-          version: v2.3
+          version: latest
           args: --build-tags=ark_tiny
 
       - name: Run GolangCI-Lint (debug)
-        uses: golangci/golangci-lint-action@v4
+        uses: golangci/golangci-lint-action@v8
         with:
           version: latest
           args: --build-tags=ark_debug
