@@ -28,10 +28,9 @@ linters:
       disabled-checks:
         - commentFormatting
 
-issues:
-  severity:
-    rules:
-      - linters:
-        - godox
-        text: "Line contains TODO/BUG/FIXME:"
-        severity: info
+severity:
+  rules:
+    - linters:
+      - godox
+      text: "TODO"
+      severity: info
