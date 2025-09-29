@@ -29,7 +29,7 @@
 
 - More explicit API reference docs for `Filter.Exclusive` and `FilterX.Exclusive` (#322)
 - Adds a stand-alone example for using Ark with the [Ebiten](https://ebitengine.org/) game engine (#329)
-- Adds a user guide chapter on the new event system (#334, #345, #346, #347, #353)
+- Adds a user guide chapter on the new event system (#334, #345, #346, #347, #353, #355)
 - Adds stand-alone examples for built-in and custom events (#354)
 
 ### Bugfixes
