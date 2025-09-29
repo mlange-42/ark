@@ -383,9 +383,12 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 	}
 	for _, rel := range relations {
 		column := oldTable.components[rel.component.id]
-		if rel.target == targets[column.index] {
-			continue
-		}
+		// TODO: check this!
+		// As rel.target is always the zero entity, and the zero entity can't be removed,
+		// this should not be possible.
+		//if rel.target == targets[column.index] {
+		//	continue
+		//}
 		targets[column.index] = rel.target
 	}
 
