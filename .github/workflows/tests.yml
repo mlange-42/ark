@@ -139,7 +139,9 @@ jobs:
       - name: Run examples
         run: |
           cd examples
+          go run ./custom_events
           go run ./entity_grid
+          go run ./events
           go run ./kdtree
           go run ./parallel
           go run ./readme
