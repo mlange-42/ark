@@ -14,8 +14,22 @@ linters:
     - unused
     - gocyclo
     - misspell
+    - copyloopvar
+    - gocheckcompilerdirectives
+    - gocritic
+    - godoclint
+    - godox
   settings:
     revive:
       rules:
         - name: unused-parameter
           exclude: ["TEST"]
+    gocritic:
+      disabled-checks:
+        - commentFormatting
+  severity:
+    rules:
+      - linters:
+        - godox
+        text: "Line contains TODO/BUG/FIXME:"
+        severity: info

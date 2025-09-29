@@ -37,7 +37,7 @@ func (m *idMap[T]) Get(index uint8) (T, bool) {
 	return m.chunks[index/idMapChunkSize][index%idMapChunkSize], true
 }
 
-// Get returns a pointer to the value at the given key and whether the key is present.
+// GetPointer returns a pointer to the value at the given key and whether the key is present.
 func (m *idMap[T]) GetPointer(index uint8) (*T, bool) {
 	if !m.used.Get(index) {
 		return nil, false

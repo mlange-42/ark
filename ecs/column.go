@@ -82,7 +82,7 @@ func (c *column) Zero(index uintptr, zero unsafe.Pointer) {
 	}
 }
 
-// Zero resets a block of storage in one buffer.
+// ZeroRange resets a block of storage in one buffer.
 func (c *column) ZeroRange(start, len uint32, zero unsafe.Pointer) {
 	size := uint32(c.itemSize)
 	if size == 0 {
