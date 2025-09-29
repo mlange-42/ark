@@ -25,5 +25,5 @@ func (q *UnsafeQuery) Entity() Entity {
 // ⚠️ Do not store the obtained pointer outside of the current context (i.e. the query loop)!
 func (q *UnsafeQuery) Get(comp ID) unsafe.Pointer {
 	q.cursor.checkQueryGet()
-	return q.table.Get(comp, uintptr(q.cursor.index))
+	return q.table.Get(comp, q.cursor.index)
 }
