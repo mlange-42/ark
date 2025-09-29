@@ -568,10 +568,13 @@ func TestQuery0Registered(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
+	builder := NewMap1[Position](&w)
+
 	for range n {
 		w.NewEntity()
 		w.NewEntity()
 	}
+	w.RemoveEntity(builder.NewEntity(&Position{}))
 
 	filter := NewFilter0(&w).Register()
 	query := filter.Query()
