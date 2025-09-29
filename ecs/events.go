@@ -70,7 +70,7 @@ type EventRegistry struct {
 // See [Event] and [World.Event] for using custom events.
 func (r *EventRegistry) NewEventType() EventType {
 	if r.nextID > customEvent {
-		panic("reached maximum number of custom event types")
+		panic(fmt.Sprintf("reached maximum number of %d custom event types", customEvent))
 	}
 	id := r.nextID
 	r.nextID++
