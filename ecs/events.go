@@ -12,7 +12,7 @@ const maxObserverID = math.MaxUint32
 // EventType is the type for event identifiers.
 // See below for predefined event types.
 //
-// Use [NewEventType] to create custom events types.
+// Use an [EventRegistry] to create custom events types.
 // See [Event] and [World.Event] for using custom events.
 //
 // See [Observer] for details on events and observers.
@@ -20,10 +20,11 @@ type EventType uint8
 
 // Predefined event types.
 const (
+	customEvent EventType = iota + 248
 
 	// OnCreateEntity event.
 	// Emitted after an entity is created.
-	OnCreateEntity EventType = iota
+	OnCreateEntity
 
 	// OnRemoveEntity event.
 	// Emitted before an entity is removed.
@@ -50,12 +51,16 @@ const (
 	// Emitted before relation targets are removed from an entity.
 	// Includes removing entities, removing components as well as setting relation targets.
 	OnRemoveRelations
-
-	// Marker for number of event types.
-	eventsEnd
 )
 
-var nextUserEvent = eventsEnd - 1
+// EventRegistry for creating new custom event types (see [EventType]).
+//
+// Your application should have a single, global EventRegistry.
+// Using event types from multiple registries in the same [World]
+// leads to conflicts.
+type EventRegistry struct {
+	nextID EventType
+}
 
 // NewEventType creates a new EventType for custom events.
 // Custom event types should be stored in global variables.
@@ -63,17 +68,19 @@ var nextUserEvent = eventsEnd - 1
 // The maximum number of event types is limited to 255, with 7 predefined and 248 potential custom types.
 //
 // See [Event] and [World.Event] for using custom events.
-func NewEventType() EventType {
-	if nextUserEvent == math.MaxUint8 {
-		panic("reached maximum number of custom event types")
+func (r *EventRegistry) NewEventType() EventType {
+	if r.nextID > customEvent {
+		panic(fmt.Sprintf("reached maximum number of %d custom event types", customEvent))
 	}
-	nextUserEvent++
-	return nextUserEvent
+	id := r.nextID
+	r.nextID++
+	return id
 }
 
 // Event is a custom event.
 //
 // Create events using [World.Event].
+// Create custom event types using an [EventRegistry].
 type Event struct {
 	world     *World
 	eventType EventType
@@ -109,13 +116,14 @@ type observerManager struct {
 }
 
 func newObserverManager() observerManager {
+	maxEvents := math.MaxUint8 + 1
 	return observerManager{
-		observers:    make([][]*Observer, math.MaxUint8),
-		hasObservers: make([]bool, math.MaxUint8),
-		anyNoComps:   make([]bool, math.MaxUint8),
-		anyNoWith:    make([]bool, math.MaxUint8),
-		allComps:     make([]bitMask, math.MaxUint8),
-		allWith:      make([]bitMask, math.MaxUint8),
+		observers:    make([][]*Observer, maxEvents),
+		hasObservers: make([]bool, maxEvents),
+		anyNoComps:   make([]bool, maxEvents),
+		anyNoWith:    make([]bool, maxEvents),
+		allComps:     make([]bitMask, maxEvents),
+		allWith:      make([]bitMask, maxEvents),
 		pool:         newIntPool[observerID](32),
 		indices:      map[observerID]int{},
 	}

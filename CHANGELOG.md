@@ -9,7 +9,7 @@
 
 ### Features
 
-- Adds an event system for ECS operations entity creation/removal, component addition/removal and relation target changes (#330, #331, #333, #342, #344, #352)
+- Adds an event system for ECS operations entity creation/removal, component addition/removal and relation target changes (#330, #331, #333, #342, #344, #352, #358)
 - Adds custom event support for the event system (#340, #348)
 - Adds method `World.Shrink` for freeing memory that exceeds current requirements (#323)
 

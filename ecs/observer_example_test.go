@@ -137,7 +137,8 @@ func ExampleObserver1_Exclusive() {
 
 func ExampleEvent() {
 	// Define a custom event type.
-	var OnTeleport = ecs.NewEventType()
+	var registry = ecs.EventRegistry{}
+	var OnTeleport = registry.NewEventType()
 
 	world := ecs.NewWorld()
 

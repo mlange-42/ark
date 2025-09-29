@@ -28,20 +28,20 @@ type Altitude struct {
 }
 
 func TestEventsBasic(t *testing.T) {
-	// Create an observer.
+	// Create an observer
 	ecs.Observe1[Position](ecs.OnCreateEntity).
 		Do(func(e ecs.Entity, pos *Position) {
 			fmt.Printf("%#v\n", pos)
 		}).
 		Register(&world)
 
-	// Create an entity that triggers the observer's callback.
+	// Create an entity that triggers the observer's callback
 	builder := ecs.NewMap1[Position](&world)
 	builder.NewEntity(&Position{X: 10, Y: 11})
 }
 
 func TestCombineObservers(t *testing.T) {
-	// Common callback.
+	// Common callback
 	fn := func(evt ecs.EventType, entity ecs.Entity, pos *Position) {
 		if evt == ecs.OnAddComponents {
 			// do something
@@ -51,12 +51,12 @@ func TestCombineObservers(t *testing.T) {
 		}
 	}
 
-	// Observer for adding components.
+	// Observer for adding components
 	ecs.Observe1[Position](ecs.OnAddComponents).
 		Do(func(e ecs.Entity, pos *Position) { fn(ecs.OnAddComponents, e, pos) }).
 		Register(&world)
 
-	// Observer for removing components.
+	// Observer for removing components
 	ecs.Observe1[Position](ecs.OnRemoveComponents).
 		Do(func(e ecs.Entity, pos *Position) { fn(ecs.OnRemoveComponents, e, pos) }).
 		Register(&world)
@@ -98,40 +98,53 @@ func TestObserveAddWith(t *testing.T) {
 }
 
 func TestNewEventType(t *testing.T) {
-	var OnSomethingHappened = ecs.NewEventType()
+	// Create an event registry
+	var registry = ecs.EventRegistry{}
 
-	_ = OnSomethingHappened
+	// Create event types
+	var OnCollisionDetected = registry.NewEventType()
+	var OnInputReceived = registry.NewEventType()
+	var OnLevelLoaded = registry.NewEventType()
+	var OnTimerElapsed = registry.NewEventType()
+
+	_, _, _, _ = OnCollisionDetected, OnInputReceived, OnLevelLoaded, OnTimerElapsed
 }
 
 func TestEventEmit(t *testing.T) {
-	// Define the event type.
-	var OnTeleport = ecs.NewEventType()
+	// Create an event registry
+	var registry = ecs.EventRegistry{}
+	// Define the event type
+	var OnTeleport = registry.NewEventType()
 
-	// Add an observer for the event type.
+	// Add an observer for the event type
 	ecs.Observe1[Position](OnTeleport).
 		Do(func(e ecs.Entity, p *Position) { /*...*/ }).
 		Register(&world)
 
-	// Define the event.
+	// Define the event
 	event := world.Event(OnTeleport).
 		For(ecs.C[Position]())
 
-	// Emit the event for an entity.
+	// Emit the event for an entity
 	event.Emit(entity)
 }
 
 func TestEventClick(t *testing.T) {
-	// Define the event type.
-	var OnClick = ecs.NewEventType()
+	// Create an event registry
+	var registry = ecs.EventRegistry{}
+	// Define the event type
+	var OnClick = registry.NewEventType()
 
-	// Emit a click event.
+	// Emit a click event
 	world.Event(OnClick).Emit(uiElement)
 }
 
 func TestEventZeroEntity(t *testing.T) {
-	// Define the event type.
-	var OnGameOver = ecs.NewEventType()
+	// Create an event registry
+	var registry = ecs.EventRegistry{}
+	// Define the event type
+	var OnGameOver = registry.NewEventType()
 
-	// Emit a game over event.
+	// Emit a game over event
 	world.Event(OnGameOver).Emit(ecs.Entity{})
 }

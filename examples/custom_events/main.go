@@ -13,8 +13,11 @@ type Position struct {
 	Y int
 }
 
+// Event registry for creating custom event types
+var registry = ecs.EventRegistry{}
+
 // OnTeleport is a custom event type.
-var OnTeleport = ecs.NewEventType()
+var OnTeleport = registry.NewEventType()
 
 func main() {
 	// Create a new World

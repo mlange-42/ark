@@ -2,6 +2,20 @@ package ecs_test
 
 import "github.com/mlange-42/ark/ecs"
 
+// Create an event registry
+var registry = ecs.EventRegistry{}
+
+// Create event types
+var OnCollisionDetected = registry.NewEventType()
+var OnInputReceived = registry.NewEventType()
+var OnLevelLoaded = registry.NewEventType()
+var OnTimerElapsed = registry.NewEventType()
+
+func ExampleEventRegistry() {
+	_, _, _, _ = OnCollisionDetected, OnInputReceived, OnLevelLoaded, OnTimerElapsed
+	// Output:
+}
+
 func ExampleEventType_onCreateEntity() {
 	world := ecs.NewWorld()
 
