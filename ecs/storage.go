@@ -275,7 +275,6 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 	targets := make([]Entity, len(archetype.components))
 
 	if uint8(len(relations)) < archetype.numRelations {
-		// TODO: is there way to trigger this?
 		panic("relation targets must be fully specified")
 	}
 	for _, rel := range relations {

@@ -161,6 +161,11 @@ func TestMap1Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -173,15 +178,18 @@ func TestMap1Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap1AddBatch(t *testing.T) {
@@ -487,6 +495,11 @@ func TestMap2Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -499,15 +512,18 @@ func TestMap2Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap2AddBatch(t *testing.T) {
@@ -817,6 +833,11 @@ func TestMap3Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -829,15 +850,18 @@ func TestMap3Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap3AddBatch(t *testing.T) {
@@ -1151,6 +1175,11 @@ func TestMap4Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -1163,15 +1192,18 @@ func TestMap4Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap4AddBatch(t *testing.T) {
@@ -1489,6 +1521,11 @@ func TestMap5Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -1501,15 +1538,18 @@ func TestMap5Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap5AddBatch(t *testing.T) {
@@ -1831,6 +1871,11 @@ func TestMap6Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -1843,15 +1888,18 @@ func TestMap6Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap6AddBatch(t *testing.T) {
@@ -2177,6 +2225,11 @@ func TestMap7Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -2189,15 +2242,18 @@ func TestMap7Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap7AddBatch(t *testing.T) {
@@ -2527,6 +2583,11 @@ func TestMap8Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -2539,15 +2600,18 @@ func TestMap8Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap8AddBatch(t *testing.T) {
@@ -2881,6 +2945,11 @@ func TestMap9Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -2893,15 +2962,18 @@ func TestMap9Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap9AddBatch(t *testing.T) {
@@ -3240,6 +3312,11 @@ func TestMap10Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -3252,15 +3329,18 @@ func TestMap10Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap10AddBatch(t *testing.T) {
@@ -3603,6 +3683,11 @@ func TestMap11Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -3615,15 +3700,18 @@ func TestMap11Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap11AddBatch(t *testing.T) {
@@ -3970,6 +4058,11 @@ func TestMap12Relations(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
+	expectPanicsWithValue(t, "relation targets must be fully specified",
+		func() {
+			mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{})
+		})
+
 	e := mapper.NewEntity(&ChildOf{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{}, &CompI{}, &CompJ{}, &CompK{}, &CompL{}, RelIdx(0, parent1))
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
@@ -3982,15 +4075,18 @@ func TestMap12Relations(t *testing.T) {
 	expectEqual(t, parent1, mapper.GetRelation(e, 0))
 	expectEqual(t, parent1, mapper.GetRelationUnchecked(e, 0))
 
-	expectPanics(t, func() {
-		mapper.SetRelations(Entity{}, RelIdx(0, parent2))
-	})
-	expectPanics(t, func() {
-		mapper.SetRelations(e)
-	})
-	expectPanics(t, func() {
-		mapper.GetRelation(Entity{}, 0)
-	})
+	expectPanicsWithValue(t, "can't set relation for a dead entity",
+		func() {
+			mapper.SetRelations(Entity{}, RelIdx(0, parent2))
+		})
+	expectPanicsWithValue(t, "no relations specified",
+		func() {
+			mapper.SetRelations(e)
+		})
+	expectPanicsWithValue(t, "can't get entity relation target for a dead entity",
+		func() {
+			mapper.GetRelation(Entity{}, 0)
+		})
 }
 
 func TestMap12AddBatch(t *testing.T) {
