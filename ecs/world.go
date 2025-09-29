@@ -195,7 +195,7 @@ func (w *World) Unsafe() Unsafe {
 //
 // See [Event] and [Observer] for details.
 func (w *World) Event(tp EventType) Event {
-	if tp < eventsEnd {
+	if tp > customEvent {
 		panic("only custom events can be emitted manually")
 	}
 	return Event{

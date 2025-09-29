@@ -3,7 +3,7 @@ package ecs_test
 import "github.com/mlange-42/ark/ecs"
 
 // Create an event registry
-var registry = ecs.NewEventRegistry()
+var registry = ecs.EventRegistry{}
 
 // Create event types
 var OnCollisionDetected = registry.NewEventType()

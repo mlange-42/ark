@@ -20,10 +20,11 @@ type EventType uint8
 
 // Predefined event types.
 const (
+	customEvent EventType = iota + 248
 
 	// OnCreateEntity event.
 	// Emitted after an entity is created.
-	OnCreateEntity EventType = iota
+	OnCreateEntity
 
 	// OnRemoveEntity event.
 	// Emitted before an entity is removed.
@@ -50,9 +51,6 @@ const (
 	// Emitted before relation targets are removed from an entity.
 	// Includes removing entities, removing components as well as setting relation targets.
 	OnRemoveRelations
-
-	// Marker for number of event types.
-	eventsEnd
 )
 
 // EventRegistry for creating new custom event types (see [EventType]).
@@ -60,23 +58,8 @@ const (
 // Your application should have a single, global EventRegistry.
 // Using event types from multiple registries in the same [World]
 // leads to conflicts.
-type EventRegistry interface {
-	// Creates a new event type.
-	NewEventType() EventType
-}
-
-type eventRegistry struct {
+type EventRegistry struct {
 	nextID EventType
-}
-
-// NewEventRegistry creates a new EventRegistry.
-//
-// This should be used only once, and can be stored in a global variable
-// to create new custom event types.
-func NewEventRegistry() EventRegistry {
-	return &eventRegistry{
-		nextID: eventsEnd - 1,
-	}
 }
 
 // NewEventType creates a new EventType for custom events.
@@ -85,12 +68,13 @@ func NewEventRegistry() EventRegistry {
 // The maximum number of event types is limited to 255, with 7 predefined and 248 potential custom types.
 //
 // See [Event] and [World.Event] for using custom events.
-func (r *eventRegistry) NewEventType() EventType {
-	if r.nextID == math.MaxUint8 {
+func (r *EventRegistry) NewEventType() EventType {
+	if r.nextID > customEvent {
 		panic("reached maximum number of custom event types")
 	}
+	id := r.nextID
 	r.nextID++
-	return r.nextID
+	return id
 }
 
 // Event is a custom event.
@@ -132,13 +116,14 @@ type observerManager struct {
 }
 
 func newObserverManager() observerManager {
+	maxEvents := math.MaxUint8 + 1
 	return observerManager{
-		observers:    make([][]*Observer, math.MaxUint8),
-		hasObservers: make([]bool, math.MaxUint8),
-		anyNoComps:   make([]bool, math.MaxUint8),
-		anyNoWith:    make([]bool, math.MaxUint8),
-		allComps:     make([]bitMask, math.MaxUint8),
-		allWith:      make([]bitMask, math.MaxUint8),
+		observers:    make([][]*Observer, maxEvents),
+		hasObservers: make([]bool, maxEvents),
+		anyNoComps:   make([]bool, maxEvents),
+		anyNoWith:    make([]bool, maxEvents),
+		allComps:     make([]bitMask, maxEvents),
+		allWith:      make([]bitMask, maxEvents),
 		pool:         newIntPool[observerID](32),
 		indices:      map[observerID]int{},
 	}

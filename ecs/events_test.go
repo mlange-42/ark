@@ -2,23 +2,22 @@ package ecs
 
 import (
 	"fmt"
-	"math"
 	"testing"
 )
 
-var reg = NewEventRegistry()
+var reg = EventRegistry{}
 var CustomEvent = reg.NewEventType()
 
 func TestNewEventType(t *testing.T) {
-	reg = NewEventRegistry()
+	reg = EventRegistry{}
 	e := reg.NewEventType()
-	expectEqual(t, eventsEnd, e)
+	expectEqual(t, 0, e)
 	e = reg.NewEventType()
-	expectEqual(t, eventsEnd+1, e)
+	expectEqual(t, 1, e)
 
 	for {
 		e = reg.NewEventType()
-		if e == math.MaxUint8 {
+		if e == customEvent {
 			break
 		}
 	}

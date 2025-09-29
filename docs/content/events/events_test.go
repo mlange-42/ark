@@ -99,7 +99,7 @@ func TestObserveAddWith(t *testing.T) {
 
 func TestNewEventType(t *testing.T) {
 	// Create an event registry
-	var registry = ecs.NewEventRegistry()
+	var registry = ecs.EventRegistry{}
 
 	// Create event types
 	var OnCollisionDetected = registry.NewEventType()
@@ -112,7 +112,7 @@ func TestNewEventType(t *testing.T) {
 
 func TestEventEmit(t *testing.T) {
 	// Create an event registry
-	var registry = ecs.NewEventRegistry()
+	var registry = ecs.EventRegistry{}
 	// Define the event type
 	var OnTeleport = registry.NewEventType()
 
@@ -131,7 +131,7 @@ func TestEventEmit(t *testing.T) {
 
 func TestEventClick(t *testing.T) {
 	// Create an event registry
-	var registry = ecs.NewEventRegistry()
+	var registry = ecs.EventRegistry{}
 	// Define the event type
 	var OnClick = registry.NewEventType()
 
@@ -141,7 +141,7 @@ func TestEventClick(t *testing.T) {
 
 func TestEventZeroEntity(t *testing.T) {
 	// Create an event registry
-	var registry = ecs.NewEventRegistry()
+	var registry = ecs.EventRegistry{}
 	// Define the event type
 	var OnGameOver = registry.NewEventType()
 
