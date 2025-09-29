@@ -23,7 +23,8 @@ type cacheEntry struct {
 // The relative slowdown increases with lower numbers of entities queried (noticeable below a few thousand entities).
 // Cached filters avoid this slowdown.
 //
-// The overhead of tracking cached filters internally is very low, as updates are required only when new archetypes are created.
+// The overhead of tracking cached filters internally is very low,
+// as updates are required only when new archetypes are created.
 type cache struct {
 	indices map[cacheID]int  // Mapping from filter IDs to indices in filters
 	filters []cacheEntry     // The cached filters, indexed by indices

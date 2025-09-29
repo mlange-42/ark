@@ -87,6 +87,7 @@ type batchTable struct {
 	len      uint32
 }
 
+//nolint:gocyclo
 func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	relations []relationID, fn func(table tableID, start, len uint32)) {
 	w.checkLocked()
@@ -129,7 +130,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			len := uintptr(batch.len)
 			earlyOut := true
 			for i := uintptr(0); i < len; i++ {
-				if !w.storage.observers.doFireRemove(OnRemoveComponents, table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
+				if !w.storage.observers.doFireRemove(OnRemoveComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
 					break
 				}
 				earlyOut = false
@@ -144,7 +145,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			len := uintptr(batch.len)
 			earlyOut := true
 			for i := uintptr(0); i < len; i++ {
-				if !w.storage.observers.doFireRemove(OnRemoveRelations, table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
+				if !w.storage.observers.doFireRemove(OnRemoveRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
 					break
 				}
 				earlyOut = false
@@ -159,8 +160,8 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 		if fn != nil {
 			fn(batch.newTable, start, len)
 		}
-		batch.start = uint32(start)
-		batch.len = uint32(len)
+		batch.start = start
+		batch.len = len
 	}
 
 	if len(add) > 0 && w.storage.observers.HasObservers(OnAddComponents) {
@@ -171,7 +172,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			len := uintptr(batch.start + batch.len)
 			earlyOut := true
 			for i := uintptr(batch.start); i < len; i++ {
-				if !w.storage.observers.doFireAdd(OnAddComponents, table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
+				if !w.storage.observers.doFireAdd(OnAddComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
 					break
 				}
 				earlyOut = false
@@ -186,7 +187,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			len := uintptr(batch.start + batch.len)
 			earlyOut := true
 			for i := uintptr(batch.start); i < len; i++ {
-				if !w.storage.observers.doFireAdd(OnAddRelations, table.GetEntity(uintptr(i)), oldMask, newMask, earlyOut) {
+				if !w.storage.observers.doFireAdd(OnAddRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
 					break
 				}
 				earlyOut = false
@@ -216,22 +217,22 @@ func (w *World) exchangeTable(oldTableID, newTableID tableID, relations []relati
 		entity := oldTable.GetEntity(uintptr(i))
 		index := &w.storage.entities[entity.id]
 		index.table = newTable.id
-		index.row = uint32(idx)
+		index.row = idx
 	}
 
-	newTable.AddAllEntities(oldTable, uint32(count))
+	newTable.AddAllEntities(oldTable, count)
 	for _, id := range oldIDs {
 		if mask.Get(id.id) {
 			oldCol := oldTable.GetColumn(id)
 			newCol := newTable.GetColumn(id)
-			newCol.CopyToEnd(oldCol, newTable.len, uint32(count))
+			newCol.CopyToEnd(oldCol, newTable.len, count)
 		}
 	}
 
 	oldTable.Reset()
 	w.storage.registerTargets(relations)
 
-	return uint32(startIdx), uint32(count)
+	return startIdx, count
 }
 
 // setRelations sets the target entities for an entity relations.
@@ -374,7 +375,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 		earlyOut := true
 		for i := range oldLen {
 			index := uintptr(startIdx + i)
-			if !w.storage.observers.doFireSetRelations(OnAddRelations, oldTable.GetEntity(uintptr(index)), &changeMask, newMask, earlyOut) {
+			if !w.storage.observers.doFireSetRelations(OnAddRelations, oldTable.GetEntity(index), &changeMask, newMask, earlyOut) {
 				break
 			}
 			earlyOut = false

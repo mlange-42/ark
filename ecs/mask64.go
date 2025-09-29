@@ -93,7 +93,7 @@ func (b *bitMask64) toTypes(reg *registry) []ID {
 		return []ID{}
 	}
 
-	count := int(b.TotalBitsSet())
+	count := b.TotalBitsSet()
 	types := make([]ID, count)
 	totalIDs := reg.Count()
 

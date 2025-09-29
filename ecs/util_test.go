@@ -23,7 +23,7 @@ func TestCopyPtr(t *testing.T) {
 	itemSize := typeOfItem.Size()
 	targetItemIndex := 6
 	totalItems := 10
-	data := reflect.New(reflect.ArrayOf(int(totalItems), typeOfItem)).Elem()
+	data := reflect.New(reflect.ArrayOf(totalItems, typeOfItem)).Elem()
 	dataPointer := data.Addr().UnsafePointer() // points to the start of data
 
 	getItem := func(index int) *itemType {

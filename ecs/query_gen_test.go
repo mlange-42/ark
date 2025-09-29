@@ -113,7 +113,7 @@ func TestQuery1EntityAt(t *testing.T) {
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -127,7 +127,7 @@ func TestQuery1EntityAt(t *testing.T) {
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -453,7 +453,7 @@ func TestQuery2EntityAt(t *testing.T) {
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -467,7 +467,7 @@ func TestQuery2EntityAt(t *testing.T) {
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -793,7 +793,7 @@ func TestQuery3EntityAt(t *testing.T) {
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -807,7 +807,7 @@ func TestQuery3EntityAt(t *testing.T) {
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -1133,7 +1133,7 @@ func TestQuery4EntityAt(t *testing.T) {
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -1147,7 +1147,7 @@ func TestQuery4EntityAt(t *testing.T) {
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -1473,7 +1473,7 @@ func TestQuery5EntityAt(t *testing.T) {
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -1487,7 +1487,7 @@ func TestQuery5EntityAt(t *testing.T) {
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -1813,7 +1813,7 @@ func TestQuery6EntityAt(t *testing.T) {
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -1827,7 +1827,7 @@ func TestQuery6EntityAt(t *testing.T) {
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -2153,7 +2153,7 @@ func TestQuery7EntityAt(t *testing.T) {
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -2167,7 +2167,7 @@ func TestQuery7EntityAt(t *testing.T) {
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -2493,7 +2493,7 @@ func TestQuery8EntityAt(t *testing.T) {
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -2507,7 +2507,7 @@ func TestQuery8EntityAt(t *testing.T) {
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -2813,7 +2813,7 @@ func TestQuery0EntityAt(t *testing.T) {
 	filter = filter.New(&w)
 	query := filter.Query()
 	count := query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)
@@ -2827,7 +2827,7 @@ func TestQuery0EntityAt(t *testing.T) {
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
-	expectEqual(t, 2*n, int(count))
+	expectEqual(t, 2*n, count)
 
 	for i := range count {
 		e := query.EntityAt(i)

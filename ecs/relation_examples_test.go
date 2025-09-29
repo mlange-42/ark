@@ -58,6 +58,7 @@ func ExampleRel() {
 
 	// Change the entity's relation target.
 	mapper.SetRelations(entity, ecs.Rel[ChildOf](parent2))
+	// Output:
 }
 
 func ExampleRelIdx() {
@@ -75,4 +76,5 @@ func ExampleRelIdx() {
 
 	// Change the entity's relation target.
 	mapper.SetRelations(entity, ecs.RelIdx(1, parent2))
+	// Output:
 }

@@ -68,7 +68,7 @@ func NewEventType() EventType {
 		panic("reached maximum number of custom event types")
 	}
 	nextUserEvent++
-	return EventType(nextUserEvent)
+	return nextUserEvent
 }
 
 // Event is a custom event.

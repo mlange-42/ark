@@ -15,6 +15,7 @@ func ExampleObserver() {
 
 	// Unregister later if required.
 	obs.Unregister(&world)
+	// Output:
 }
 
 func ExampleObserver_For() {
@@ -27,6 +28,7 @@ func ExampleObserver_For() {
 			// do something
 		}).
 		Register(&world)
+	// Output:
 }
 
 func ExampleObserver_With() {
@@ -39,6 +41,7 @@ func ExampleObserver_With() {
 			// do something
 		}).
 		Register(&world)
+	// Output:
 }
 
 func ExampleObserver_Without() {
@@ -50,6 +53,7 @@ func ExampleObserver_Without() {
 			// do something
 		}).
 		Register(&world)
+	// Output:
 }
 
 func ExampleObserver_Exclusive() {
@@ -63,6 +67,7 @@ func ExampleObserver_Exclusive() {
 			// do something
 		}).
 		Register(&world)
+	// Output:
 }
 
 func ExampleObserver1() {
@@ -76,6 +81,7 @@ func ExampleObserver1() {
 
 	// Unregister later if required.
 	obs.Unregister(&world)
+	// Output:
 }
 
 func ExampleObserver1_For() {
@@ -87,6 +93,7 @@ func ExampleObserver1_For() {
 			// do something
 		}).
 		Register(&world)
+	// Output:
 }
 
 func ExampleObserver1_With() {
@@ -99,6 +106,7 @@ func ExampleObserver1_With() {
 			// do something
 		}).
 		Register(&world)
+	// Output:
 }
 
 func ExampleObserver1_Without() {
@@ -110,6 +118,7 @@ func ExampleObserver1_Without() {
 			// do something
 		}).
 		Register(&world)
+	// Output:
 }
 
 func ExampleObserver1_Exclusive() {
@@ -123,6 +132,7 @@ func ExampleObserver1_Exclusive() {
 			// do something
 		}).
 		Register(&world)
+	// Output:
 }
 
 func ExampleEvent() {
@@ -141,4 +151,5 @@ func ExampleEvent() {
 
 	// Emit the event.
 	event.Emit(entity)
+	// Output:
 }

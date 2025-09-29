@@ -74,7 +74,7 @@ func (c *column) Zero(index uintptr, zero unsafe.Pointer) {
 	}
 	if c.isTrivial {
 		dst := unsafe.Add(c.pointer, index*c.itemSize)
-		copyPtr(zero, dst, uintptr(c.itemSize))
+		copyPtr(zero, dst, c.itemSize)
 	} else {
 		// TODO: Do we really need this?
 		// Tests indicate stuff get GC'd also with copyPtr.

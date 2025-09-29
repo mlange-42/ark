@@ -447,8 +447,8 @@ func TestWorldReset(t *testing.T) {
 
 	world.Reset()
 
-	expectEqual(t, 0, int(world.storage.tables[0].Len()))
-	expectEqual(t, 0, int(world.storage.tables[1].Len()))
+	expectEqual(t, 0, world.storage.tables[0].Len())
+	expectEqual(t, 0, world.storage.tables[1].Len())
 	expectEqual(t, 0, world.storage.entityPool.Len())
 	expectEqual(t, 2, len(world.storage.entities))
 	expectEqual(t, 2, len(world.storage.isTarget))
