@@ -531,7 +531,7 @@ func (s *storage) Shrink(stopAfter time.Duration) bool {
 			}
 		}
 
-		if anyFound && time.Since(start) >= stopAfter {
+		if anyFound && (stopAfter == 0 || time.Since(start) >= stopAfter) {
 			break
 		}
 	}

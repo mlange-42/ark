@@ -738,7 +738,7 @@ func TestWorldShrinkTime(t *testing.T) {
 	childFilter := NewFilter1[ChildOf](&w)
 
 	parents := []Entity{}
-	w.NewEntities(25000, func(entity Entity) {
+	w.NewEntities(100, func(entity Entity) {
 		parents = append(parents, entity)
 	})
 	for _, parent := range parents {
@@ -761,7 +761,7 @@ func TestWorldShrinkTime(t *testing.T) {
 	mem, memUsed := stats.Memory, stats.MemoryUsed
 
 	cnt := 0
-	for w.Shrink(time.Nanosecond) {
+	for w.Shrink(0) {
 		cnt++
 	}
 	expectGreater(t, cnt, 0)
