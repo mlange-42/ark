@@ -1,8 +1,12 @@
 version: "2"
 
 run:
-  timeout: 5m
   tests: true
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
 linters:
   enable:
     - govet
@@ -28,7 +32,3 @@ linters:
     gocritic:
       disabled-checks:
         - commentFormatting
-
-issues:
-  max-issues-per-linter: 0
-  max-same-issues: 0
