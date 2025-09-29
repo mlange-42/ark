@@ -23,6 +23,8 @@ func TestNewEventType(t *testing.T) {
 
 	expectPanicsWithValue(t, "reached maximum number of custom event types",
 		func() { NewEventType() })
+
+	nextUserEvent = eventsEnd
 }
 
 func TestCustomEvent(t *testing.T) {

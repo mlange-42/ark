@@ -105,15 +105,15 @@ func TestNewEventType(t *testing.T) {
 
 func TestEventEmit(t *testing.T) {
 	// Define the event type.
-	var OnSynchronize = ecs.NewEventType()
+	var OnTeleport = ecs.NewEventType()
 
 	// Add an observer for the event type.
-	ecs.Observe1[Position](OnSynchronize).
+	ecs.Observe1[Position](OnTeleport).
 		Do(func(e ecs.Entity, p *Position) { /*...*/ }).
 		Register(&world)
 
 	// Define the event.
-	event := world.Event(OnSynchronize).
+	event := world.Event(OnTeleport).
 		For(ecs.C[Position]())
 
 	// Emit the event for an entity.

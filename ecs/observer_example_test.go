@@ -137,12 +137,12 @@ func ExampleObserver1_Exclusive() {
 
 func ExampleEvent() {
 	// Define a custom event type.
-	var OnSynchronize = ecs.NewEventType()
+	var OnTeleport = ecs.NewEventType()
 
 	world := ecs.NewWorld()
 
 	// Create an event.
-	event := world.Event(OnSynchronize).
+	event := world.Event(OnTeleport).
 		For(ecs.C[Position]())
 
 	// Create an entity.

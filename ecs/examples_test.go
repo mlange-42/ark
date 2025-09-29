@@ -96,6 +96,10 @@ func ExampleQuery2_Count() {
 func ExampleQuery2_EntityAt() {
 	world := ecs.NewWorld()
 
+	// Create entities.
+	builder := ecs.NewMap2[Position, Velocity](&world)
+	builder.NewBatch(100, &Position{}, &Velocity{})
+
 	// Create a filter.
 	filter := ecs.NewFilter2[Position, Velocity](&world)
 
