@@ -118,7 +118,7 @@ enabling application-specific logic such as UI interactions, game state changes,
 or other domain-specific triggers.
 These events support the same filtering and observer mechanisms as built-in events.
 
-Define custom event types using {{< api ecs NewEventType >}}:
+Define custom event types using {{< api ecs EventRegistry.NewEventType >}}:
 
 {{< code-func events_test.go TestNewEventType >}}
 
