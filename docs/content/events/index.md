@@ -11,8 +11,17 @@ description = "Ark's event system and observers."
 Ark provides an event system with observers that allow an application to react on events,
 such as adding and removing components and entities.
 
-Observers can filter for the events they are interested in, in several ways.
+Observers can [filter](#filters) for the events they are interested in, in several ways.
 A callback function is executed for the affected entity whenever an observer's filter matches.
+
+In addition to built-in lifecycle events like `OnCreateEntity` or `OnAddComponents`,
+Ark supports [custom event types](#custom-events) that enable domain-specific triggers.
+These events can be emitted manually and observed with the same filtering and callback mechanisms,
+making them ideal for modeling interactions such as user input, synchronization, or game logic.
+
+Observers are lightweight, composable, and follow the same declarative patterns as Ark’s [query](../queries/) system.
+They provide fine-grained control over when and how logic is executed.
+This design encourages a declarative, data-driven approach while maintaining performance and flexibility.
 
 ## Example
 
@@ -48,7 +57,7 @@ The callback is set up to be able to distinguish between these event types (if n
 
 Observers filter for the components specified by their generic parameters.
 Additional components can be specified using {{< api ecs Observer.For >}},
-but they are not directly accessible in the callback.
+but these are not directly accessible in the callback.
 
 Observers only trigger when all specified components (in parameters and in `For`)
 are affected in a single operation.
@@ -106,7 +115,7 @@ in the same order as they were registered.
 
 Custom events in Ark allow developers to define and emit their own event types,
 enabling application-specific logic such as UI interactions, game state changes,
-or domain-specific triggers.
+or other domain-specific triggers.
 These events support the same filtering and observer mechanisms as built-in events.
 
 Define custom event types using {{< api ecs NewEventType >}}:
