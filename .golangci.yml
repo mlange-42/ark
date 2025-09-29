@@ -27,6 +27,8 @@ linters:
     gocritic:
       disabled-checks:
         - commentFormatting
+
+issues:
   severity:
     rules:
       - linters:
