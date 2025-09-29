@@ -12,7 +12,7 @@ const maxObserverID = math.MaxUint32
 // EventType is the type for event identifiers.
 // See below for predefined event types.
 //
-// Use [NewEventType] to create custom events types.
+// Use an [EventRegistry] to create custom events types.
 // See [Event] and [World.Event] for using custom events.
 //
 // See [Observer] for details on events and observers.
@@ -55,7 +55,29 @@ const (
 	eventsEnd
 )
 
-var nextUserEvent = eventsEnd - 1
+// EventRegistry for creating new custom event types (see [EventType]).
+//
+// Your application should have a single, global EventRegistry.
+// Using event types from multiple registries in the same [World]
+// leads to conflicts.
+type EventRegistry interface {
+	// Creates a new event type.
+	NewEventType() EventType
+}
+
+type eventRegistry struct {
+	nextID EventType
+}
+
+// NewEventRegistry creates a new EventRegistry.
+//
+// This should be used only once, and can be stored in a global variable
+// to create new custom event types.
+func NewEventRegistry() EventRegistry {
+	return &eventRegistry{
+		nextID: eventsEnd - 1,
+	}
+}
 
 // NewEventType creates a new EventType for custom events.
 // Custom event types should be stored in global variables.
@@ -63,17 +85,18 @@ var nextUserEvent = eventsEnd - 1
 // The maximum number of event types is limited to 255, with 7 predefined and 248 potential custom types.
 //
 // See [Event] and [World.Event] for using custom events.
-func NewEventType() EventType {
-	if nextUserEvent == math.MaxUint8 {
+func (r *eventRegistry) NewEventType() EventType {
+	if r.nextID == math.MaxUint8 {
 		panic("reached maximum number of custom event types")
 	}
-	nextUserEvent++
-	return nextUserEvent
+	r.nextID++
+	return r.nextID
 }
 
 // Event is a custom event.
 //
 // Create events using [World.Event].
+// Create custom event types using an [EventRegistry].
 type Event struct {
 	world     *World
 	eventType EventType

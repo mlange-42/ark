@@ -850,20 +850,20 @@ func TestObserverCustomEvents(t *testing.T) {
 	e1 := w.NewEntity()
 	e2 := builder.NewEntity(&Position{})
 
-	w.Event(customEvent).Emit(e1)
+	w.Event(CustomEvent).Emit(e1)
 
 	callCount := 0
 
-	obs := Observe(customEvent).With(comp[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
-	w.Event(customEvent).Emit(e1)
+	obs := Observe(CustomEvent).With(comp[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
+	w.Event(CustomEvent).Emit(e1)
 	obs.Unregister(&w)
 
-	Observe(customEvent).Do(func(e Entity) { callCount++ }).Register(&w)
-	Observe(customEvent).For(C[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
-	Observe(customEvent).With(C[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
-	Observe(customEvent).Without(C[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
-	w.Event(customEvent).Emit(e1)
-	w.Event(customEvent).Emit(e2)
+	Observe(CustomEvent).Do(func(e Entity) { callCount++ }).Register(&w)
+	Observe(CustomEvent).For(C[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
+	Observe(CustomEvent).With(C[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
+	Observe(CustomEvent).Without(C[Position]()).Do(func(e Entity) { callCount++ }).Register(&w)
+	w.Event(CustomEvent).Emit(e1)
+	w.Event(CustomEvent).Emit(e2)
 
 	expectEqual(t, 4, callCount)
 }
