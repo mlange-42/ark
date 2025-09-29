@@ -46,11 +46,12 @@ func main() {
 		}
 
 		var result bytes.Buffer
-		err = t.ExecuteTemplate(&result, "template", nil)
-		if err != nil {
+		if err = t.ExecuteTemplate(&result, "template", nil); err != nil {
 			panic(err)
 		}
-		os.WriteFile(file.Target, result.Bytes(), 0644)
+		if err = os.WriteFile(file.Target, result.Bytes(), 0644); err != nil {
+			panic(err)
+		}
 	}
 }
 

@@ -59,7 +59,7 @@ func (m *Map[T]) NewEntityFn(fn func(*T), target ...Entity) Entity {
 // If the mapped component is a relationship (see [RelationMarker]),
 // a relation target entity must be provided.
 func (m *Map[T]) NewBatch(count int, comp *T, target ...Entity) {
-	m.NewBatchFn(count, func(entity Entity, a *T) {
+	m.NewBatchFn(count, func(_ Entity, a *T) {
 		*a = *comp
 	}, target...)
 }

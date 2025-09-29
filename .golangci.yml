@@ -1,0 +1,21 @@
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  enable:
+    - govet
+    - staticcheck
+    - ineffassign
+    - errcheck
+    - revive
+    - unused
+    - gocyclo
+    - misspell
+  settings:
+    revive:
+      rules:
+        - name: unused-parameter
+          exclude: ["TEST"]

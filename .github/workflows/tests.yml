@@ -81,30 +81,27 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: '1.25.x'
-      - name: Install dependencies
-        run: |
-          go get .
-          go install honnef.co/go/tools/cmd/staticcheck@latest
-          go install github.com/gordonklaus/ineffassign@latest
       - name: Check format
         run: |
           if gofmt -e -l . >&1 | grep '^'; then
             exit 1
           fi
-      - name: Lint with vet
-        run: go vet ./...
-      - name: Lint with vet (tiny)
-        run: go vet -tags ark_tiny ./...
-      - name: Lint with vet (debug)
-        run: go vet -tags ark_debug ./...
-      - name: Lint with staticcheck
-        run: staticcheck ./...
-      - name: Lint with staticcheck (tiny)
-        run: staticcheck -tags ark_tiny ./...
-      - name: Lint with staticcheck (debug)
-        run: staticcheck -tags ark_debug ./...
-      - name: Lint with ineffassign
-        run: ineffassign ./...
+      - name: Run GolangCI-Lint
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: latest
+
+      - name: Run GolangCI-Lint (tiny)
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: latest
+          args: --build-tags=ark_tiny
+
+      - name: Run GolangCI-Lint (debug)
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: latest
+          args: --build-tags=ark_debug
 
 #  semver:
 #    name: Run SemVer check

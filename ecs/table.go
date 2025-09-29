@@ -272,7 +272,7 @@ func (t *table) Len() int {
 }
 
 // Stats generates statistics for a table.
-func (t *table) Stats(memPerEntity int, reg *componentRegistry) stats.Table {
+func (t *table) Stats(memPerEntity int) stats.Table {
 	cap := int(t.cap)
 
 	return stats.Table{
@@ -284,7 +284,7 @@ func (t *table) Stats(memPerEntity int, reg *componentRegistry) stats.Table {
 }
 
 // UpdateStats updates statistics for a table.
-func (t *table) UpdateStats(memPerEntity int, stats *stats.Table, reg *componentRegistry) {
+func (t *table) UpdateStats(memPerEntity int, stats *stats.Table) {
 	cap := int(t.cap)
 
 	stats.Size = int(t.Len())
