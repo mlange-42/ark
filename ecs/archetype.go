@@ -79,7 +79,7 @@ func newArchetype(id archetypeID, node nodeID, mask bitMask, components []ID, ta
 	}
 
 	sizes := make([]uint32, len(components))
-	var maxSize uintptr = entitySize
+	maxSize := entitySize
 	for i, id := range components {
 		componentsMap[id.id] = int16(i)
 		tp := reg.Types[id.id]
@@ -274,7 +274,7 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 	tableStats := make([]stats.Table, len(a.tables.tables))
 	for i, id := range a.tables.tables {
 		table := &storage.tables[id]
-		tableStats[i] = table.Stats(memPerEntity, &storage.registry)
+		tableStats[i] = table.Stats(memPerEntity)
 		stats := &tableStats[i]
 		cap += stats.Capacity
 		count += stats.Size
@@ -321,7 +321,7 @@ func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
 	for i := range cntOld {
 		tableStats := &stats.Tables[i]
 		table := &storage.tables[tables.tables[i]]
-		table.UpdateStats(stats.MemoryPerEntity, tableStats, &storage.registry)
+		table.UpdateStats(stats.MemoryPerEntity, tableStats)
 		cap += tableStats.Capacity
 		count += tableStats.Size
 		memory += tableStats.Memory
@@ -329,7 +329,7 @@ func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
 	}
 	for i = cntOld; i < cntNew; i++ {
 		table := &storage.tables[tables.tables[i]]
-		tableStats := table.Stats(stats.MemoryPerEntity, &storage.registry)
+		tableStats := table.Stats(stats.MemoryPerEntity)
 		stats.Tables = append(stats.Tables, tableStats)
 		cap += tableStats.Capacity
 		count += tableStats.Size

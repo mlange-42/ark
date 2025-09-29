@@ -2,4 +2,4 @@
 
 package ecs
 
-func (s *storage) checkHasComponent(entity Entity, comp ID) {}
+func (s *storage) checkHasComponent(_ Entity, _ ID) {}

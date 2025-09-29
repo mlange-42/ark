@@ -77,7 +77,7 @@ func isTrivial(tp reflect.Type) bool {
 
 	// If it's a struct, check its fields recursively
 	if tp.Kind() == reflect.Struct {
-		for i := 0; i < tp.NumField(); i++ {
+		for i := range tp.NumField() {
 			field := tp.Field(i).Type
 			if !isTrivial(field) {
 				return false

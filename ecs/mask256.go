@@ -98,7 +98,7 @@ func (b *bitMask256) Equals(other *bitMask256) bool {
 }
 
 func (b *bitMask256) toTypes(reg *registry) []ID {
-	count := int(b.TotalBitsSet())
+	count := b.TotalBitsSet()
 	types := make([]ID, count)
 
 	totalIDs := reg.Count()

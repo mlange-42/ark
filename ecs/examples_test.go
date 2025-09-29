@@ -51,6 +51,7 @@ func ExampleFilter2_New() {
 
 	// Construct the filter, avoiding repeated listing of generics.
 	filter = filter.New(&world)
+	// Output:
 }
 
 func ExampleQuery2() {
@@ -89,10 +90,15 @@ func ExampleQuery2_Count() {
 	query.Close()
 
 	_ = count
+	// Output:
 }
 
 func ExampleQuery2_EntityAt() {
 	world := ecs.NewWorld()
+
+	// Create entities.
+	builder := ecs.NewMap2[Position, Velocity](&world)
+	builder.NewBatch(100, &Position{}, &Velocity{})
 
 	// Create a filter.
 	filter := ecs.NewFilter2[Position, Velocity](&world)
@@ -113,6 +119,7 @@ func ExampleQuery2_EntityAt() {
 	query.Close()
 
 	_, _, _ = e1, e2, e3
+	// Output:
 }
 
 func ExampleMap() {
@@ -155,6 +162,7 @@ func ExampleMap2_New() {
 
 	// Construct the mapper, avoiding repeated listing of generics.
 	mapper = mapper.New(&world)
+	// Output:
 }
 
 func ExampleExchange2() {
@@ -193,4 +201,5 @@ func ExampleExchange2_New() {
 
 	// Construct the exchange helper, avoiding repeated listing of generics.
 	exchange = exchange.New(&world).Removes(ecs.C[Altitude]())
+	// Output:
 }

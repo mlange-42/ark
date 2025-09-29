@@ -180,7 +180,7 @@ func (t *table) Remove(index uint32) bool {
 		size := entitySize
 		src := unsafe.Add(t.entities.pointer, lastIndex*size)
 		dst := unsafe.Add(t.entities.pointer, uintptr(index)*size)
-		copyPtr(src, dst, uintptr(size))
+		copyPtr(src, dst, size)
 
 		for i := range t.columns {
 			column := &t.columns[i]
@@ -189,7 +189,7 @@ func (t *table) Remove(index uint32) bool {
 				size := column.itemSize
 				src := unsafe.Add(column.pointer, lastIndex*size)
 				dst := unsafe.Add(column.pointer, uintptr(index)*size)
-				copyPtr(src, dst, uintptr(size))
+				copyPtr(src, dst, size)
 				column.Zero(lastIndex, t.zeroPointer)
 				continue
 			}
@@ -272,11 +272,11 @@ func (t *table) Len() int {
 }
 
 // Stats generates statistics for a table.
-func (t *table) Stats(memPerEntity int, reg *componentRegistry) stats.Table {
+func (t *table) Stats(memPerEntity int) stats.Table {
 	cap := int(t.cap)
 
 	return stats.Table{
-		Size:       int(t.Len()),
+		Size:       t.Len(),
 		Capacity:   cap,
 		Memory:     cap * memPerEntity,
 		MemoryUsed: t.Len() * memPerEntity,
@@ -284,10 +284,10 @@ func (t *table) Stats(memPerEntity int, reg *componentRegistry) stats.Table {
 }
 
 // UpdateStats updates statistics for a table.
-func (t *table) UpdateStats(memPerEntity int, stats *stats.Table, reg *componentRegistry) {
+func (t *table) UpdateStats(memPerEntity int, stats *stats.Table) {
 	cap := int(t.cap)
 
-	stats.Size = int(t.Len())
+	stats.Size = t.Len()
 	stats.Capacity = cap
 	stats.Memory = cap * memPerEntity
 	stats.MemoryUsed = t.Len() * memPerEntity

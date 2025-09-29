@@ -12,7 +12,8 @@ import "reflect"
 // Note that type aliases are not considered separate component types.
 // Type re-definitions, however, are separate types.
 //
-// ⚠️ Warning: Using IDs that are outside of the range of registered IDs anywhere in [World] or other places will result in undefined behavior!
+// ⚠️ Warning: Using IDs that are outside of the range of registered IDs anywhere in [World]
+// or other places will result in undefined behavior!
 func ComponentID[T any](w *World) ID {
 	return w.componentID(reflect.TypeFor[T]())
 }

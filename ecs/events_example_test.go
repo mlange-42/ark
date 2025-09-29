@@ -22,6 +22,7 @@ func ExampleEventType_onCreateEntity() {
 		Without(ecs.C[Altitude]()).
 		Do(func(e ecs.Entity) { /* do something */ }).
 		Register(&world)
+	// Output:
 }
 
 func ExampleEventType_onRemoveEntity() {
@@ -44,6 +45,7 @@ func ExampleEventType_onRemoveEntity() {
 		Without(ecs.C[Altitude]()).
 		Do(func(e ecs.Entity) { /* do something */ }).
 		Register(&world)
+	// Output:
 }
 
 func ExampleEventType_onAddComponents() {
@@ -80,6 +82,7 @@ func ExampleEventType_onAddComponents() {
 		Without(ecs.C[Velocity]()).
 		Do(func(e ecs.Entity) { /* do something */ }).
 		Register(&world)
+	// Output:
 }
 
 func ExampleEventType_onRemoveComponents() {
@@ -116,6 +119,7 @@ func ExampleEventType_onRemoveComponents() {
 		Without(ecs.C[Velocity]()).
 		Do(func(e ecs.Entity) { /* do something */ }).
 		Register(&world)
+	// Output:
 }
 
 func ExampleEventType_onSetComponents() {
@@ -152,4 +156,5 @@ func ExampleEventType_onSetComponents() {
 		Without(ecs.C[Velocity]()).
 		Do(func(e ecs.Entity) { /* do something */ }).
 		Register(&world)
+	// Output:
 }

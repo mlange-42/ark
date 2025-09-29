@@ -1,0 +1,34 @@
+version: "2"
+
+run:
+  tests: true
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+linters:
+  enable:
+    - govet
+    - staticcheck
+    - ineffassign
+    - errcheck
+    - revive
+    - unused
+    - gocyclo
+    - misspell
+    - copyloopvar
+    - gocheckcompilerdirectives
+    - gocritic
+    - godoclint
+    - intrange
+    - testableexamples
+    - unconvert
+  settings:
+    revive:
+      rules:
+        - name: unused-parameter
+          exclude: ["TEST"]
+    gocritic:
+      disabled-checks:
+        - commentFormatting
