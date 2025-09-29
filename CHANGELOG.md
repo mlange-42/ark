@@ -42,6 +42,7 @@
 - World stats are now JSON (de)serializable (#311)
 - Improves error message on attempt to modify a locked world (#312)
 - Changes callback signatures for better IDE autocomplete (#343)
+- Finally, increases test coverage to 100% \o/ (#356)
 
 ## [[v0.5.2]](https://github.com/mlange-42/ark/compare/v0.5.1...v0.5.2)
 

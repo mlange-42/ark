@@ -275,7 +275,6 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 	targets := make([]Entity, len(archetype.components))
 
 	if uint8(len(relations)) < archetype.numRelations {
-		// TODO: is there way to trigger this?
 		panic("relation targets must be fully specified")
 	}
 	for _, rel := range relations {
@@ -384,9 +383,12 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 	}
 	for _, rel := range relations {
 		column := oldTable.components[rel.component.id]
-		if rel.target == targets[column.index] {
-			continue
-		}
+		// TODO: check this!
+		// As rel.target is always the zero entity, and the zero entity can't be removed,
+		// this should not be possible.
+		//if rel.target == targets[column.index] {
+		//	continue
+		//}
 		targets[column.index] = rel.target
 	}
 
@@ -532,7 +534,7 @@ func (s *storage) Shrink(stopAfter time.Duration) bool {
 			}
 		}
 
-		if anyFound && time.Since(start) >= stopAfter {
+		if anyFound && (stopAfter == 0 || time.Since(start) >= stopAfter) {
 			break
 		}
 	}

@@ -27,7 +27,7 @@ Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wik
 - Fast [batch operations](https://mlange-42.github.io/ark/batch/) for mass manipulation.
 - No systems. Just queries. Use your own structure (or the [Tools](https://github.com/mlange-42/ark#tools)).
 - World serialization and deserialization with [ark-serde](https://github.com/mlange-42/ark-serde).
-- Zero [dependencies](https://github.com/mlange-42/ark/blob/main/go.mod), &approx;100% [test coverage](https://app.codecov.io/github/mlange-42/ark).
+- Zero [dependencies](https://github.com/mlange-42/ark/blob/main/go.mod), 100% [test coverage](https://app.codecov.io/github/mlange-42/ark).
 
 ## Installation
 

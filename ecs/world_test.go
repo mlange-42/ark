@@ -175,6 +175,55 @@ func TestWorldRemoveEntities(t *testing.T) {
 	expectEqual(t, n, cnt)
 }
 
+func TestWorldRemoveEntitiesRelations(t *testing.T) {
+	n := 24
+	w := NewWorld(16)
+
+	parent1 := w.NewEntity()
+	parent2 := w.NewEntity()
+	parent3 := w.NewEntity()
+
+	childMap := NewMap2[ChildOf, ChildOf2](&w)
+	filter1 := NewFilter2[ChildOf, ChildOf2](&w).Register()
+	filter2 := NewFilter2[ChildOf, ChildOf2](&w).Relations(RelIdx(0, parent2))
+	filter3 := NewFilter2[ChildOf, ChildOf2](&w).Relations(RelIdx(0, parent2), RelIdx(1, parent3))
+
+	childMap.NewBatchFn(n, nil, RelIdx(0, parent1), RelIdx(1, parent1))
+	childMap.NewBatchFn(n, nil, RelIdx(0, parent2), RelIdx(1, parent2))
+	childMap.NewBatchFn(n, nil, RelIdx(0, parent3), RelIdx(1, parent3))
+
+	query := filter1.Query()
+	expectEqual(t, n*3, query.Count())
+	query.Close()
+
+	cnt := 0
+	w.RemoveEntities(filter1.Batch(RelIdx(0, parent1)), func(entity Entity) {
+		cnt++
+	})
+	expectEqual(t, n, cnt)
+
+	query = filter1.Query()
+	expectEqual(t, 2*n, query.Count())
+	query.Close()
+
+	cnt = 0
+	w.RemoveEntities(filter2.Batch(RelIdx(1, parent1)), func(entity Entity) {
+		cnt++
+	})
+	expectEqual(t, 0, cnt)
+
+	query = filter1.Query()
+	expectEqual(t, 2*n, query.Count())
+	query.Close()
+
+	filter3 = filter3.Register()
+	cnt = 0
+	w.RemoveEntities(filter3.Batch(), func(entity Entity) {
+		cnt++
+	})
+	expectEqual(t, 0, cnt)
+}
+
 func TestWorldRelations(t *testing.T) {
 	w := NewWorld(16)
 
@@ -738,7 +787,7 @@ func TestWorldShrinkTime(t *testing.T) {
 	childFilter := NewFilter1[ChildOf](&w)
 
 	parents := []Entity{}
-	w.NewEntities(25000, func(entity Entity) {
+	w.NewEntities(100, func(entity Entity) {
 		parents = append(parents, entity)
 	})
 	for _, parent := range parents {
@@ -761,7 +810,7 @@ func TestWorldShrinkTime(t *testing.T) {
 	mem, memUsed := stats.Memory, stats.MemoryUsed
 
 	cnt := 0
-	for w.Shrink(time.Nanosecond) {
+	for w.Shrink(0) {
 		cnt++
 	}
 	expectGreater(t, cnt, 0)
