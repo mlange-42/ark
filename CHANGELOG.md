@@ -12,7 +12,7 @@
 - Adds an event system for ECS operations entity creation/removal, component addition/removal and relation target changes (#330, #331, #333, #342, #344, #352, #358)
 - Adds custom event support for the event system (#340, #348)
 - Adds method `World.Shrink` for freeing memory that exceeds current requirements (#323)
-- World lock is concurrency-safe, allowing for concurrent query execution (#360)
+- World lock and filters are concurrency-safe, allowing for concurrent query execution (#360)
 
 ### Performance
 
