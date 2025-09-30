@@ -139,6 +139,9 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
 // Relation components must be in the filter's parameters or added via [Filter{{.}}.With] beforehand.
 //
+// ⚠️ The same filter should not be used for multiple concurrent queries.
+// Use a separate filter for each query that runs in parallel with other queries.
+//
 // ⚠️ The returned [Query{{.}}] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]

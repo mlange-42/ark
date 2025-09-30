@@ -121,6 +121,9 @@ func (f *Filter0) Unregister() {
 // Relation targets provided here are added to those specified with [Filter0.Relations].
 // Relation components must be in the filter's parameters or added via [Filter0.With] beforehand.
 //
+// ⚠️ The same filter should not be used for multiple concurrent queries.
+// Use a separate filter for each query that runs in parallel with other queries.
+//
 // ⚠️ The returned [Query0] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter0.Batch] or [Filter0.Query]
@@ -314,6 +317,9 @@ func (f *Filter1[A]) Unregister() {
 // Relation targets provided here are added to those specified with [Filter1.Relations].
 // Relation components must be in the filter's parameters or added via [Filter1.With] beforehand.
 //
+// ⚠️ The same filter should not be used for multiple concurrent queries.
+// Use a separate filter for each query that runs in parallel with other queries.
+//
 // ⚠️ The returned [Query1] should not be stored, but used immediately and re-generated
 // each time before query iteration.
 // Otherwise, changes to the origin filter or calls to [Filter1.Batch] or [Filter1.Query]
@@ -503,6 +509,9 @@ func (f *Filter2[A, B]) Unregister() {
 //
 // Relation targets provided here are added to those specified with [Filter2.Relations].
 // Relation components must be in the filter's parameters or added via [Filter2.With] beforehand.
+//
+// ⚠️ The same filter should not be used for multiple concurrent queries.
+// Use a separate filter for each query that runs in parallel with other queries.
 //
 // ⚠️ The returned [Query2] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -699,6 +708,9 @@ func (f *Filter3[A, B, C]) Unregister() {
 //
 // Relation targets provided here are added to those specified with [Filter3.Relations].
 // Relation components must be in the filter's parameters or added via [Filter3.With] beforehand.
+//
+// ⚠️ The same filter should not be used for multiple concurrent queries.
+// Use a separate filter for each query that runs in parallel with other queries.
 //
 // ⚠️ The returned [Query3] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -897,6 +909,9 @@ func (f *Filter4[A, B, C, D]) Unregister() {
 //
 // Relation targets provided here are added to those specified with [Filter4.Relations].
 // Relation components must be in the filter's parameters or added via [Filter4.With] beforehand.
+//
+// ⚠️ The same filter should not be used for multiple concurrent queries.
+// Use a separate filter for each query that runs in parallel with other queries.
 //
 // ⚠️ The returned [Query4] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -1097,6 +1112,9 @@ func (f *Filter5[A, B, C, D, E]) Unregister() {
 //
 // Relation targets provided here are added to those specified with [Filter5.Relations].
 // Relation components must be in the filter's parameters or added via [Filter5.With] beforehand.
+//
+// ⚠️ The same filter should not be used for multiple concurrent queries.
+// Use a separate filter for each query that runs in parallel with other queries.
 //
 // ⚠️ The returned [Query5] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -1299,6 +1317,9 @@ func (f *Filter6[A, B, C, D, E, F]) Unregister() {
 //
 // Relation targets provided here are added to those specified with [Filter6.Relations].
 // Relation components must be in the filter's parameters or added via [Filter6.With] beforehand.
+//
+// ⚠️ The same filter should not be used for multiple concurrent queries.
+// Use a separate filter for each query that runs in parallel with other queries.
 //
 // ⚠️ The returned [Query6] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -1503,6 +1524,9 @@ func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
 //
 // Relation targets provided here are added to those specified with [Filter7.Relations].
 // Relation components must be in the filter's parameters or added via [Filter7.With] beforehand.
+//
+// ⚠️ The same filter should not be used for multiple concurrent queries.
+// Use a separate filter for each query that runs in parallel with other queries.
 //
 // ⚠️ The returned [Query7] should not be stored, but used immediately and re-generated
 // each time before query iteration.
@@ -1709,6 +1733,9 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
 //
 // Relation targets provided here are added to those specified with [Filter8.Relations].
 // Relation components must be in the filter's parameters or added via [Filter8.With] beforehand.
+//
+// ⚠️ The same filter should not be used for multiple concurrent queries.
+// Use a separate filter for each query that runs in parallel with other queries.
 //
 // ⚠️ The returned [Query8] should not be stored, but used immediately and re-generated
 // each time before query iteration.
