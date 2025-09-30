@@ -107,7 +107,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Exclusive() *Filter{{.}}{{$genericsShort
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...Relation) *Filter{{.}}{{$genericsShort}} {
 	f.checkModify()
-	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
+	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -138,16 +138,8 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 //
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
 // Relation components must be in the filter's parameters or added via [Filter{{.}}.With] beforehand.
-//
-// ⚠️ The same filter should not be used for multiple concurrent queries.
-// Use a separate filter for each query that runs in parallel with other queries.
-//
-// ⚠️ The returned [Query{{.}}] should not be stored, but used immediately and re-generated
-// each time before query iteration.
-// Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
-// with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$genericsShort}} {
-	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
+	relations := relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], true)
 	if f.components == nil {
 		f.components = make([]*componentStorage, {{.}})
 		{{range $i, $v := $upper -}}
@@ -171,7 +163,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 	return Query{{.}}{{$genericsShort}}{
 		world:      f.world,
 		filter:     &f.filter,
-		relations:  f.relations[start:],
+		relations:  relations[start:],
 		cache:      cache,
 		lock:       f.world.lockSafe(),
 		components: f.components,
@@ -198,7 +190,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) *Batch {
-	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations])
+	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.cache != maxCacheID {
 		start = f.numRelations

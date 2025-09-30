@@ -39,11 +39,11 @@ func (f UnsafeFilter) Exclusive() UnsafeFilter {
 
 // Query returns a new query matching this filter and the given entity relation targets.
 func (f UnsafeFilter) Query(relations ...Relation) UnsafeQuery {
-	f.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(f.world, f.cachedRelations[:0])
+	rel := relationSlice(relations).toRelationIDsForUnsafe(f.world, nil)
 	return UnsafeQuery{
 		world:     f.world,
 		filter:    f.filter,
-		relations: f.cachedRelations,
+		relations: rel,
 		lock:      f.world.lockSafe(),
 		cursor: cursor{
 			archetype: -1,
