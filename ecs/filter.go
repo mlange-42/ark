@@ -6,8 +6,7 @@ package ecs
 // and should only be used when component types are not known at compile time.
 type UnsafeFilter struct {
 	filter
-	world           *World
-	cachedRelations []relationID
+	world *World
 }
 
 // NewUnsafeFilter creates a new [UnsafeFilter] matching the given components.

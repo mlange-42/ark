@@ -28,7 +28,7 @@ type InProcess struct {
 }
 
 // Total number of entities
-const numEntities = 1_000_000
+const numEntities = 100_000
 
 // Number of parallel CPU processes to use
 const numProc = 4
@@ -57,24 +57,9 @@ func main() {
 		processes = append(processes, procEntity)
 	}
 
-	// Create a filter
+	// Create a filter. The filter can be shared between queries
 	filter := ecs.NewFilter2[Position, Velocity](&world). // Filter for the usual components
 								With(ecs.C[InProcess]()) // Relation required, but not accessed
-
-	// The actual query iteration, executed numProc times in parallel
-	task := func(proc ecs.Entity, wg *sync.WaitGroup) {
-		// Defer signalling completion to the WaitGroup
-		defer wg.Done()
-
-		// Get a fresh query from the filter, using the process entity as relation target
-		query := filter.Query(ecs.Rel[InProcess](proc))
-		// Do the usual iteration
-		for query.Next() {
-			pos, vel := query.Get()
-			pos.X += vel.X
-			pos.Y += vel.Y
-		}
-	}
 
 	// Take starting time
 	start := time.Now()
@@ -89,7 +74,7 @@ func main() {
 		// Start a goroutine for each process, passing the resp. filter
 		for _, proc := range processes {
 			// Actual query iteration, see below
-			go task(proc, &wg)
+			go runQuery(filter, proc, &wg)
 		}
 
 		// Wait for the queries to complete
@@ -98,4 +83,19 @@ func main() {
 
 	// Print elapsed time
 	fmt.Printf("%s per iteration with %d entities", time.Since(start)/time.Duration(iterations), numEntities)
+}
+
+// The actual query iteration, executed numProc times in parallel
+func runQuery(filter *ecs.Filter2[Position, Velocity], proc ecs.Entity, wg *sync.WaitGroup) {
+	// Defer signalling completion to the WaitGroup
+	defer wg.Done()
+
+	// Get a fresh query from the filter, using the process entity as relation target
+	query := filter.Query(ecs.Rel[InProcess](proc))
+	// Do the usual iteration
+	for query.Next() {
+		pos, vel := query.Get()
+		pos.X += vel.X
+		pos.Y += vel.Y
+	}
 }
