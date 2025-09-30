@@ -6,7 +6,6 @@ package ecs
 type lock struct {
 	bitPool bitPool   // The bit pool for getting and recycling bits.
 	locks   bitMask64 // The actual locks.
-	flag    uint32
 }
 
 func newLock() lock {

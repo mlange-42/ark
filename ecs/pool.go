@@ -112,7 +112,7 @@ func newBitPool() bitPool {
 
 // Get returns an available bit (0) and marks it as in use (1).
 func (p *bitPool) Get() uint8 {
-	for i := uint8(0); i < 64; i++ {
+	for i := range uint8(64) {
 		mask := uint64(1) << i
 		if p.free&mask == 0 {
 			p.free |= mask
@@ -128,7 +128,7 @@ func (p *bitPool) Get() uint8 {
 func (p *bitPool) GetSafe() uint8 {
 	for {
 		old := atomic.LoadUint64(&p.free)
-		for i := uint8(0); i < 64; i++ {
+		for i := range uint8(64) {
 			mask := uint64(1) << i
 			if old&mask == 0 {
 				new := old | mask

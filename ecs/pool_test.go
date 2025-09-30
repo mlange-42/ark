@@ -111,7 +111,7 @@ func TestBitPoolGet(t *testing.T) {
 	p := newBitPool()
 
 	allocated := make([]uint8, 64)
-	for i := 0; i < 64; i++ {
+	for i := range 64 {
 		b := p.Get()
 		allocated[i] = b
 	}
@@ -147,7 +147,7 @@ func TestBitPoolSafe(t *testing.T) {
 	var count int32
 	seen := make([]bool, 64)
 
-	for i := 0; i < 64; i++ {
+	for range 64 {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -160,7 +160,7 @@ func TestBitPoolSafe(t *testing.T) {
 
 	expectEqual(t, 64, count)
 
-	for i := uint8(0); i < 64; i++ {
+	for i := range uint8(64) {
 		expectTrue(t, seen[i], "bit %d was not allocated", i)
 		wg.Add(1)
 		go func(i uint8) {
@@ -170,7 +170,7 @@ func TestBitPoolSafe(t *testing.T) {
 	}
 	wg.Wait()
 
-	for i := 0; i < 64; i++ {
+	for range 64 {
 		_ = p.GetSafe()
 	}
 }
