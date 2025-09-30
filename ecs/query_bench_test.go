@@ -81,9 +81,9 @@ func BenchmarkPosVelQuerySerial_100k(b *testing.B) {
 	}
 }
 
-func BenchmarkPosVelQueryParallel_100k(b *testing.B) {
+func BenchmarkPosVelQueryParallel4_100k(b *testing.B) {
 	n := 100_000
-	threads := 2
+	threads := 4
 	world := NewWorld(1024)
 
 	parents := make([]Entity, 0, threads)
