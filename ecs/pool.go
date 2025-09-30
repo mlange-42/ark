@@ -103,18 +103,19 @@ func (p *entityPool) Available() int {
 // and to recycle that bit for later use.
 // This implementation uses an implicit list.
 type bitPool struct {
-	free uint64 // 1 = available
+	free uint64 // 0 = available, 1 = in use
 }
 
 func newBitPool() bitPool {
-	return bitPool{free: ^uint64(0)} // all bits available
+	return bitPool{free: 0} // all bits available (0)
 }
 
+// Get returns an available bit (0) and marks it as in use (1).
 func (p *bitPool) Get() uint8 {
 	for i := uint8(0); i < 64; i++ {
 		mask := uint64(1) << i
-		if p.free&mask != 0 {
-			p.free &^= mask
+		if p.free&mask == 0 {
+			p.free |= mask
 			return i
 		}
 	}
@@ -123,13 +124,14 @@ func (p *bitPool) Get() uint8 {
 		"Make sure that all queries finish their iteration or are closed manually", mask64TotalBits))
 }
 
+// GetSafe is the thread-safe version of Get.
 func (p *bitPool) GetSafe() uint8 {
 	for {
 		old := atomic.LoadUint64(&p.free)
 		for i := uint8(0); i < 64; i++ {
 			mask := uint64(1) << i
-			if old&mask != 0 {
-				new := old &^ mask
+			if old&mask == 0 {
+				new := old | mask
 				if atomic.CompareAndSwapUint64(&p.free, old, new) {
 					return i
 				}
@@ -139,17 +141,20 @@ func (p *bitPool) GetSafe() uint8 {
 	}
 }
 
+// Recycle marks a bit as available (sets it to 0).
 func (p *bitPool) Recycle(i uint8) {
-	p.free |= 1 << i
+	p.free &^= 1 << i
 }
 
+// RecycleSafe is the thread-safe version of Recycle.
 func (p *bitPool) RecycleSafe(i uint8) {
-	atomic.OrUint64(&p.free, 1<<i)
+	mask := ^(uint64(1) << i)
+	atomic.AndUint64(&p.free, mask)
 }
 
 // Reset recycles all bits.
 func (p *bitPool) Reset() {
-	p.free = ^uint64(0)
+	p.free = 0
 }
 
 // entityPool is an implementation using implicit linked lists.

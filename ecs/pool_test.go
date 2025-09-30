@@ -127,7 +127,7 @@ func TestBitPoolGet(t *testing.T) {
 	})
 
 	p.Reset()
-	expectEqual(t, ^uint64(0), p.free)
+	expectEqual(t, 0, p.free)
 }
 
 func TestBitPoolRecycle(t *testing.T) {
