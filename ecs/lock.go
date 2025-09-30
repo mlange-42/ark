@@ -4,13 +4,14 @@ package ecs
 //
 // The number of simultaneous locks at a given time is limited to 64.
 type lock struct {
-	bitPool bitPool   // The bit pool for getting and recycling bits.
-	locks   bitMask64 // The actual locks.
+	bitPool lockBitPool // The bit pool for getting and recycling bits.
+	locks   bitMask64   // The actual locks.
+	flag    uint32
 }
 
 func newLock() lock {
 	return lock{
-		bitPool: newBitPool(),
+		bitPool: newLockBitPool(),
 	}
 }
 
@@ -38,5 +39,5 @@ func (m *lock) IsLocked() bool {
 // Reset the locks and the pool.
 func (m *lock) Reset() {
 	m.locks = bitMask64{}
-	m.bitPool.Reset()
+	m.bitPool = newLockBitPool()
 }

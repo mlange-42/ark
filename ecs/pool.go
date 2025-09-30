@@ -3,6 +3,8 @@ package ecs
 import (
 	"fmt"
 	"math"
+	"runtime"
+	"sync/atomic"
 	"unsafe"
 )
 
@@ -148,6 +150,34 @@ func (p *bitPool) Reset() {
 	p.next = 0
 	p.length = 0
 	p.available = 0
+}
+
+type lockBitPool struct {
+	free uint64 // 1 = available
+}
+
+func newLockBitPool() lockBitPool {
+	return lockBitPool{free: ^uint64(0)} // all bits available
+}
+
+func (p *lockBitPool) Get() uint8 {
+	for {
+		old := atomic.LoadUint64(&p.free)
+		for i := uint8(0); i < 64; i++ {
+			mask := uint64(1) << i
+			if old&mask != 0 {
+				new := old &^ mask
+				if atomic.CompareAndSwapUint64(&p.free, old, new) {
+					return i
+				}
+			}
+		}
+		runtime.Gosched() // yield if contention
+	}
+}
+
+func (p *lockBitPool) Recycle(i uint8) {
+	atomic.OrUint64(&p.free, 1<<i)
 }
 
 // entityPool is an implementation using implicit linked lists.
