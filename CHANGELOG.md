@@ -12,6 +12,7 @@
 - Adds an event system for ECS operations entity creation/removal, component addition/removal and relation target changes (#330, #331, #333, #342, #344, #352, #358)
 - Adds custom event support for the event system (#340, #348)
 - Adds method `World.Shrink` for freeing memory that exceeds current requirements (#323)
+- World lock is concurrency-safe, allowing for concurrent query execution (#360)
 
 ### Performance
 
@@ -21,7 +22,7 @@
 - Speeds up freeing tables when removing relation targets, by adding an index lookup (#314)
 - Optimizes dumping and loading entities for serialization by pre-allocating memory (#315)
 - Speeds up archetype switching by 20% by inlining the mask (#317)
-- Speeds up query creation by optimized world locking (#318)
+- Speeds up query creation by optimized world locking (#318, #360)
 - Optimizes bit mask methods by using less math and more bit-wise operations (#319)
 - Speeds up memory allocation for archetype tables and bulk copying by avoiding reflection (#321)
 
