@@ -52,6 +52,7 @@ func (m *lock) LockSafe() uint8 {
 func (m *lock) UnlockSafe(l uint8) {
 	m.mu.Lock()
 	if !m.locks.Get(l) {
+		m.mu.Unlock()
 		panic("unbalanced unlock. Did you close a query that was already iterated?")
 	}
 	m.locks.SetFalse(l)
