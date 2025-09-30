@@ -1,7 +1,6 @@
 package ecs
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -43,9 +42,6 @@ func (m *lock) Unlock(l uint8) {
 func (m *lock) LockSafe() uint8 {
 	m.mu.Lock()
 	lock := m.bitPool.Get()
-	if m.locks.Get(lock) {
-		panic(fmt.Sprintf("unbalanced lock %d.", lock))
-	}
 	m.locks.SetTrue(lock)
 	m.mu.Unlock()
 	return lock
@@ -56,7 +52,7 @@ func (m *lock) LockSafe() uint8 {
 func (m *lock) UnlockSafe(l uint8) {
 	m.mu.Lock()
 	if !m.locks.Get(l) {
-		panic(fmt.Sprintf("unbalanced unlock %d. Did you close a query that was already iterated?", l))
+		panic("unbalanced unlock. Did you close a query that was already iterated?")
 	}
 	m.locks.SetFalse(l)
 	m.bitPool.Recycle(l)
