@@ -103,64 +103,27 @@ func (p *entityPool) Available() int {
 // and to recycle that bit for later use.
 // This implementation uses an implicit list.
 type bitPool struct {
-	bits      []uint8
-	length    uint8
-	next      uint8
-	available uint8
-}
-
-func newBitPool() bitPool {
-	return bitPool{
-		bits: make([]uint8, mask64TotalBits),
-	}
-}
-
-// Get returns a fresh or recycled bit.
-func (p *bitPool) Get() uint8 {
-	if p.available == 0 {
-		return p.getNew()
-	}
-	curr := p.next
-	p.next, p.bits[p.next] = p.bits[p.next], p.next
-	p.available--
-	return p.bits[curr]
-}
-
-// Allocates and returns a new bit. For internal use.
-func (p *bitPool) getNew() uint8 {
-	if p.length >= mask64TotalBits {
-		panic(fmt.Sprintf("run out of the maximum of %d bits. "+
-			"This is likely caused by unclosed queries that lock the world. "+
-			"Make sure that all queries finish their iteration or are closed manually", mask64TotalBits))
-	}
-	b := p.length
-	p.bits[p.length] = b
-	p.length++
-	return b
-}
-
-// Recycle hands a bit back for recycling.
-func (p *bitPool) Recycle(b uint8) {
-	p.next, p.bits[b] = b, p.next
-	p.available++
-}
-
-// Reset recycles all bits.
-func (p *bitPool) Reset() {
-	p.next = 0
-	p.length = 0
-	p.available = 0
-}
-
-type lockBitPool struct {
 	free uint64 // 1 = available
 }
 
-func newLockBitPool() lockBitPool {
-	return lockBitPool{free: ^uint64(0)} // all bits available
+func newBitPool() bitPool {
+	return bitPool{free: ^uint64(0)} // all bits available
 }
 
-func (p *lockBitPool) Get() uint8 {
+func (p *bitPool) Get() uint8 {
+	for i := uint8(0); i < 64; i++ {
+		mask := uint64(1) << i
+		if p.free&mask != 0 {
+			p.free &^= mask
+			return i
+		}
+	}
+	panic(fmt.Sprintf("run out of the maximum of %d bits. "+
+		"This is likely caused by unclosed queries that lock the world. "+
+		"Make sure that all queries finish their iteration or are closed manually", mask64TotalBits))
+}
+
+func (p *bitPool) GetSafe() uint8 {
 	for {
 		old := atomic.LoadUint64(&p.free)
 		for i := uint8(0); i < 64; i++ {
@@ -176,8 +139,17 @@ func (p *lockBitPool) Get() uint8 {
 	}
 }
 
-func (p *lockBitPool) Recycle(i uint8) {
+func (p *bitPool) Recycle(i uint8) {
+	p.free |= 1 << i
+}
+
+func (p *bitPool) RecycleSafe(i uint8) {
 	atomic.OrUint64(&p.free, 1<<i)
+}
+
+// Reset recycles all bits.
+func (p *bitPool) Reset() {
+	p.free = 0
 }
 
 // entityPool is an implementation using implicit linked lists.

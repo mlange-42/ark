@@ -124,7 +124,7 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	{{- range $i, $v := $upper}}
 	q.column{{$v}} = nil
 	{{- end}}
-	q.world.unlock(q.lock)
+	q.world.unlockSafe(q.lock)
 }
 
 func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {

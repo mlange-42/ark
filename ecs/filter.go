@@ -44,7 +44,7 @@ func (f UnsafeFilter) Query(relations ...Relation) UnsafeQuery {
 		world:     f.world,
 		filter:    f.filter,
 		relations: f.cachedRelations,
-		lock:      f.world.lock(),
+		lock:      f.world.lockSafe(),
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,

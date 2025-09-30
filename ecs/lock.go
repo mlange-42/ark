@@ -4,31 +4,51 @@ package ecs
 //
 // The number of simultaneous locks at a given time is limited to 64.
 type lock struct {
-	bitPool lockBitPool // The bit pool for getting and recycling bits.
-	locks   bitMask64   // The actual locks.
+	bitPool bitPool   // The bit pool for getting and recycling bits.
+	locks   bitMask64 // The actual locks.
 	flag    uint32
 }
 
 func newLock() lock {
 	return lock{
-		bitPool: newLockBitPool(),
+		bitPool: newBitPool(),
 	}
 }
 
 // Lock the world and get the Lock bit for later unlocking.
+// This is not concurrency-safe.
 func (m *lock) Lock() uint8 {
 	lock := m.bitPool.Get()
 	m.locks.SetTrue(lock)
 	return lock
 }
 
+// LockSafe locks the world and get the Lock bit for later unlocking.
+// This is concurrency-safe.
+func (m *lock) LockSafe() uint8 {
+	lock := m.bitPool.GetSafe()
+	m.locks.SetTrue(lock)
+	return lock
+}
+
 // Unlock unlocks the given lock bit.
+// This is not concurrency-safe.
 func (m *lock) Unlock(l uint8) {
 	if !m.locks.Get(l) {
 		panic("unbalanced unlock. Did you close a query that was already iterated?")
 	}
 	m.locks.SetFalse(l)
 	m.bitPool.Recycle(l)
+}
+
+// UnlockSafe unlocks the given lock bit.
+// This is concurrency-safe.
+func (m *lock) UnlockSafe(l uint8) {
+	if !m.locks.Get(l) {
+		panic("unbalanced unlock. Did you close a query that was already iterated?")
+	}
+	m.locks.SetFalse(l)
+	m.bitPool.RecycleSafe(l)
 }
 
 // IsLocked returns whether the world is locked by any queries.
@@ -39,5 +59,5 @@ func (m *lock) IsLocked() bool {
 // Reset the locks and the pool.
 func (m *lock) Reset() {
 	m.locks = bitMask64{}
-	m.bitPool = newLockBitPool()
+	m.bitPool.Reset()
 }

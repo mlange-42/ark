@@ -170,7 +170,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 		filter:     &f.filter,
 		relations:  f.relations[start:],
 		cache:      cache,
-		lock:       f.world.lock(),
+		lock:       f.world.lockSafe(),
 		components: f.components,
 		cursor: cursor{
 			archetype: -1,

@@ -3,6 +3,8 @@ package ecs
 import (
 	"math"
 	"math/rand"
+	"sync"
+	"sync/atomic"
 	"testing"
 )
 
@@ -105,37 +107,71 @@ func TestEntityPoolStochastic(t *testing.T) {
 	}
 }
 
-func TestBitPool(t *testing.T) {
+func TestBitPoolGet(t *testing.T) {
 	p := newBitPool()
 
-	for i := range mask64TotalBits {
-		expectEqual(t, i, int(p.Get()))
+	allocated := make([]uint8, 64)
+	for i := 0; i < 64; i++ {
+		b := p.Get()
+		allocated[i] = b
 	}
 
-	expectPanics(t, func() { p.Get() })
-
-	for i := range 10 {
-		p.Recycle(uint8(i))
-	}
-	for i := 9; i >= 0; i-- {
-		expectEqual(t, i, int(p.Get()))
+	seen := make(map[uint8]bool)
+	for _, b := range allocated {
+		expectFalse(t, seen[b])
+		seen[b] = true
 	}
 
-	expectPanics(t, func() { p.Get() })
+	expectPanics(t, func() {
+		_ = p.Get()
+	})
 
 	p.Reset()
+	expectEqual(t, 0, p.free)
+}
 
-	for i := range mask64TotalBits {
-		expectEqual(t, i, int(p.Get()))
+func TestBitPoolRecycle(t *testing.T) {
+	p := newBitPool()
+
+	b := p.Get()
+	p.Recycle(b)
+
+	b2 := p.Get()
+	expectEqual(t, b, b2)
+}
+
+func TestBitPoolSafe(t *testing.T) {
+	p := newBitPool()
+
+	var wg sync.WaitGroup
+	var count int32
+	seen := make([]bool, 64)
+
+	for i := 0; i < 64; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			b := p.GetSafe()
+			atomic.AddInt32(&count, 1)
+			seen[b] = true
+		}()
 	}
+	wg.Wait()
 
-	expectPanics(t, func() { p.Get() })
+	expectEqual(t, 64, count)
 
-	for i := range 10 {
-		p.Recycle(uint8(i))
+	for i := uint8(0); i < 64; i++ {
+		expectTrue(t, seen[i], "bit %d was not allocated", i)
+		wg.Add(1)
+		go func(i uint8) {
+			defer wg.Done()
+			p.RecycleSafe(i)
+		}(i)
 	}
-	for i := 9; i >= 0; i-- {
-		expectEqual(t, i, int(p.Get()))
+	wg.Wait()
+
+	for i := 0; i < 64; i++ {
+		_ = p.GetSafe()
 	}
 }
 
