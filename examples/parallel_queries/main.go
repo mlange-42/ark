@@ -33,7 +33,7 @@ const numProc = 4
 
 func main() {
 	// Create a world
-	world := ecs.NewWorld(1024)
+	world := ecs.NewWorld()
 
 	// Create a builder for entities
 	// Entities have a relation InProcess to assign them to processes/queries
@@ -68,7 +68,7 @@ func main() {
 
 	// Time loop
 	for range 100 {
-		// Set up a WaitGroup to wait for queries to finish
+		// Set up a WaitGroup to wait for queries to complete
 		var wg sync.WaitGroup
 		wg.Add(numProc)
 

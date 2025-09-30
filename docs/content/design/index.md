@@ -72,3 +72,4 @@ Ark is **not thread-safe**. This design choice avoids internal locking mechanism
 **Concurrent query execution** is yet possible if the queries don't access the same entities concurrently.
 For example, [entity relationships](../relations/) can be used to split up entities
 of the same archetype to process them in parallel.
+See the [parallel queries](https://github.com/mlange-42/ark/blob/main/examples/parallel/main.go) example.
