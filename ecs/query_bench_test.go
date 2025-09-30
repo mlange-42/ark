@@ -123,46 +123,6 @@ func BenchmarkPosVelQueryParallel4_100k(b *testing.B) {
 	}
 }
 
-func TestQueryParallel(t *testing.T) {
-	n := 100_000
-	threads := 8
-	world := NewWorld(1024)
-
-	parents := make([]Entity, 0, threads)
-	filters := make([]*Filter2[Position, Velocity], 0, threads)
-	for range threads {
-		parent := world.NewEntity()
-		parents = append(parents, parent)
-		filters = append(filters,
-			NewFilter2[Position, Velocity](&world).
-				With(C[ChildOf]()).
-				Relations(RelIdx(2, parent)),
-		)
-	}
-
-	mapper := NewMap3[Position, Velocity, ChildOf](&world)
-	for _, p := range parents {
-		mapper.NewBatch(n/threads, &Position{}, &Velocity{X: 1, Y: 0}, &ChildOf{}, RelIdx(2, p))
-	}
-
-	task := func(f *Filter2[Position, Velocity], wg *sync.WaitGroup) {
-		defer wg.Done()
-		query := f.Query()
-		for query.Next() {
-			pos, vel := query.Get()
-			pos.X += vel.X
-			pos.Y += vel.Y
-		}
-	}
-
-	var wg sync.WaitGroup
-	wg.Add(threads)
-	for _, f := range filters {
-		go task(f, &wg)
-	}
-	wg.Wait()
-}
-
 func BenchmarkPosVelMap_1000(b *testing.B) {
 	n := 1000
 	world := NewWorld(1024)
