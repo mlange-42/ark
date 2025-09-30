@@ -1,5 +1,7 @@
 package ecs
 
+import "fmt"
+
 // Manages locks by mask bits.
 //
 // The number of simultaneous locks at a given time is limited to 64.
@@ -22,14 +24,6 @@ func (m *lock) Lock() uint8 {
 	return lock
 }
 
-// LockSafe locks the world and get the Lock bit for later unlocking.
-// This is concurrency-safe.
-func (m *lock) LockSafe() uint8 {
-	lock := m.bitPool.GetSafe()
-	m.locks.SetTrue(lock)
-	return lock
-}
-
 // Unlock unlocks the given lock bit.
 // This is not concurrency-safe.
 func (m *lock) Unlock(l uint8) {
@@ -40,13 +34,24 @@ func (m *lock) Unlock(l uint8) {
 	m.bitPool.Recycle(l)
 }
 
+// LockSafe locks the world and get the Lock bit for later unlocking.
+// This is concurrency-safe.
+func (m *lock) LockSafe() uint8 {
+	lock := m.bitPool.GetSafe()
+	if m.locks.Get(lock) {
+		panic(fmt.Sprintf("unbalanced lock %d.", lock))
+	}
+	m.locks.SetTrueSafe(lock)
+	return lock
+}
+
 // UnlockSafe unlocks the given lock bit.
 // This is concurrency-safe.
 func (m *lock) UnlockSafe(l uint8) {
 	if !m.locks.Get(l) {
-		panic("unbalanced unlock. Did you close a query that was already iterated?")
+		panic(fmt.Sprintf("unbalanced unlock %d. Did you close a query that was already iterated?", l))
 	}
-	m.locks.SetFalse(l)
+	m.locks.SetFalseSafe(l)
 	m.bitPool.RecycleSafe(l)
 }
 

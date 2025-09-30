@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"math/bits"
+	"sync/atomic"
 )
 
 // maskTotalBits is the size of a [bitMask] in bits.
@@ -44,6 +45,15 @@ func (b *bitMask64) SetTrue(bit uint8) {
 
 func (b *bitMask64) SetFalse(bit uint8) {
 	b.bits &= ^(1 << bit)
+}
+
+func (b *bitMask64) SetTrueSafe(bit uint8) {
+	atomic.OrUint64(&b.bits, 1<<bit)
+}
+
+func (b *bitMask64) SetFalseSafe(bit uint8) {
+	mask := ^(uint64(1) << bit)
+	atomic.AndUint64(&b.bits, mask)
 }
 
 // Not returns the inversion of this mask.
