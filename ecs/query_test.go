@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"sync"
 	"testing"
 )
 
@@ -225,4 +226,51 @@ func TestQueryCount(t *testing.T) {
 	}
 
 	expectEqual(t, count, counter, "Number of entities should match count")
+}
+
+func TestQueryParallel(t *testing.T) {
+	n := 10_000
+	threads := 4
+	perThread := n / threads
+	world := NewWorld(1024)
+
+	parents := make([]Entity, 0, threads)
+	for range threads {
+		parent := world.NewEntity()
+		parents = append(parents, parent)
+	}
+
+	mapper := NewMap3[Position, Velocity, ChildOf](&world)
+	for i, p := range parents {
+		cnt := 0
+		mapper.NewBatchFn(perThread, func(e Entity, p *Position, v *Velocity, co *ChildOf) {
+			p.X = float64(i*1_000_000 + cnt)
+			expectEqual(t, i*perThread+threads+cnt+2, int(e.id))
+			cnt++
+		}, RelIdx(2, p))
+	}
+	filter := NewFilter2[Position, Velocity](&world).
+		With(C[ChildOf]())
+
+	task := func(i int, par Entity, wg *sync.WaitGroup) {
+		defer wg.Done()
+		query := filter.Query(RelIdx(2, par))
+
+		cnt := 0
+		for query.Next() {
+			pos, _ := query.Get()
+			expectEqual(t, i*perThread+threads+cnt+2, int(query.Entity().id))
+			expectEqual(t, i*1_000_000+cnt, int(pos.X))
+			cnt++
+		}
+	}
+
+	for range 100 {
+		var wg sync.WaitGroup
+		wg.Add(threads)
+		for i, t := range parents {
+			go task(i, t, &wg)
+		}
+		wg.Wait()
+	}
 }
