@@ -149,7 +149,7 @@ func (p *bitPool) RecycleSafe(i uint8) {
 
 // Reset recycles all bits.
 func (p *bitPool) Reset() {
-	p.free = 0
+	p.free = ^uint64(0)
 }
 
 // entityPool is an implementation using implicit linked lists.
