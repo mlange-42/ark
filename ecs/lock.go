@@ -1,6 +1,9 @@
 package ecs
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 // Manages locks by mask bits.
 //
@@ -8,6 +11,7 @@ import "fmt"
 type lock struct {
 	bitPool bitPool   // The bit pool for getting and recycling bits.
 	locks   bitMask64 // The actual locks.
+	mu      sync.Mutex
 }
 
 func newLock() lock {
@@ -37,22 +41,26 @@ func (m *lock) Unlock(l uint8) {
 // LockSafe locks the world and get the Lock bit for later unlocking.
 // This is concurrency-safe.
 func (m *lock) LockSafe() uint8 {
-	lock := m.bitPool.GetSafe()
+	m.mu.Lock()
+	lock := m.bitPool.Get()
 	if m.locks.Get(lock) {
 		panic(fmt.Sprintf("unbalanced lock %d.", lock))
 	}
-	m.locks.SetTrueSafe(lock)
+	m.locks.SetTrue(lock)
+	m.mu.Unlock()
 	return lock
 }
 
 // UnlockSafe unlocks the given lock bit.
 // This is concurrency-safe.
 func (m *lock) UnlockSafe(l uint8) {
+	m.mu.Lock()
 	if !m.locks.Get(l) {
 		panic(fmt.Sprintf("unbalanced unlock %d. Did you close a query that was already iterated?", l))
 	}
-	m.locks.SetFalseSafe(l)
-	m.bitPool.RecycleSafe(l)
+	m.locks.SetFalse(l)
+	m.bitPool.Recycle(l)
+	m.mu.Unlock()
 }
 
 // IsLocked returns whether the world is locked by any queries.

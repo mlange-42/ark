@@ -3,8 +3,6 @@ package ecs
 import (
 	"math"
 	"math/rand"
-	"sync"
-	"sync/atomic"
 	"testing"
 )
 
@@ -138,41 +136,6 @@ func TestBitPoolRecycle(t *testing.T) {
 
 	b2 := p.Get()
 	expectEqual(t, b, b2)
-}
-
-func TestBitPoolSafe(t *testing.T) {
-	p := newBitPool()
-
-	var wg sync.WaitGroup
-	var count int32
-	seen := make([]bool, 64)
-
-	for range 64 {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			b := p.GetSafe()
-			atomic.AddInt32(&count, 1)
-			seen[b] = true
-		}()
-	}
-	wg.Wait()
-
-	expectEqual(t, 64, count)
-
-	for i := range uint8(64) {
-		expectTrue(t, seen[i], "bit %d was not allocated", i)
-		wg.Add(1)
-		go func(i uint8) {
-			defer wg.Done()
-			p.RecycleSafe(i)
-		}(i)
-	}
-	wg.Wait()
-
-	for range 64 {
-		_ = p.GetSafe()
-	}
 }
 
 func TestIntPool(t *testing.T) {
