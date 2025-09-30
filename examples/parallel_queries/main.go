@@ -71,7 +71,7 @@ func main() {
 		var wg sync.WaitGroup
 		wg.Add(numProc)
 
-		// Start a goroutine for each process, passing the resp. filter
+		// Start a goroutine for each process, passing the resp. process entity
 		for _, proc := range processes {
 			// Actual query iteration, see below
 			go runQuery(filter, proc, &wg)
