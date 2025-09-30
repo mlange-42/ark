@@ -2,7 +2,9 @@
 package main
 
 import (
+	"fmt"
 	"sync"
+	"time"
 
 	"github.com/mlange-42/ark/ecs"
 )
@@ -26,7 +28,7 @@ type InProcess struct {
 }
 
 // Total number of entities
-const numEntities = 100_000
+const numEntities = 1_000_000
 
 // Number of parallel CPU processes to use
 const numProc = 4
@@ -66,8 +68,12 @@ func main() {
 		)
 	}
 
+	// Take starting time
+	start := time.Now()
+
 	// Time loop
-	for range 100 {
+	iterations := 1000
+	for range iterations {
 		// Set up a WaitGroup to wait for queries to complete
 		var wg sync.WaitGroup
 		wg.Add(numProc)
@@ -81,6 +87,9 @@ func main() {
 		// Wait for the queries to complete
 		wg.Wait()
 	}
+
+	// Print elapsed time
+	fmt.Printf("%s per iteration with %d entities", time.Since(start)/time.Duration(iterations), numEntities)
 }
 
 // The actual query iteration, executed numProc times in parallel
