@@ -57,15 +57,23 @@ func main() {
 		processes = append(processes, procEntity)
 	}
 
-	// Create a separate filter for each process
-	// Each one filters for a particular "parent" process entity
-	filters := []*ecs.Filter2[Position, Velocity]{}
-	for _, procEntity := range processes {
-		filters = append(filters,
-			ecs.NewFilter2[Position, Velocity](&world). // Filter for the usual components
-									With(ecs.C[InProcess]()).                  // Relation required, but not accessed
-									Relations(ecs.Rel[InProcess](procEntity)), // Relation target
-		)
+	// Create a filter
+	filter := ecs.NewFilter2[Position, Velocity](&world). // Filter for the usual components
+								With(ecs.C[InProcess]()) // Relation required, but not accessed
+
+	// The actual query iteration, executed numProc times in parallel
+	task := func(proc ecs.Entity, wg *sync.WaitGroup) {
+		// Defer signalling completion to the WaitGroup
+		defer wg.Done()
+
+		// Get a fresh query from the filter, using the process entity as relation target
+		query := filter.Query(ecs.Rel[InProcess](proc))
+		// Do the usual iteration
+		for query.Next() {
+			pos, vel := query.Get()
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
 	}
 
 	// Take starting time
@@ -79,9 +87,9 @@ func main() {
 		wg.Add(numProc)
 
 		// Start a goroutine for each process, passing the resp. filter
-		for _, f := range filters {
+		for _, proc := range processes {
 			// Actual query iteration, see below
-			go runQuery(f, &wg)
+			go task(proc, &wg)
 		}
 
 		// Wait for the queries to complete
@@ -90,19 +98,4 @@ func main() {
 
 	// Print elapsed time
 	fmt.Printf("%s per iteration with %d entities", time.Since(start)/time.Duration(iterations), numEntities)
-}
-
-// The actual query iteration, executed numProc times in parallel
-func runQuery(f *ecs.Filter2[Position, Velocity], wg *sync.WaitGroup) {
-	// Defer signalling completion to the WaitGroup
-	defer wg.Done()
-
-	// Get a fresh query from the filter
-	query := f.Query()
-	// Do the usual iteration
-	for query.Next() {
-		pos, vel := query.Get()
-		pos.X += vel.X
-		pos.Y += vel.Y
-	}
 }
