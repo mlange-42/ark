@@ -25,6 +25,8 @@ type World struct {
 	MemoryUsed int
 	// Number of cached filters.
 	CachedFilters int
+	// Number of registered observers.
+	Observers int
 	// Locked state of the world.
 	Locked bool
 }
