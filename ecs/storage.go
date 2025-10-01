@@ -80,10 +80,9 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 	}
 
 	relationRemoved := false
-	var allRelations []relationID
+	allRelations := s.pools.relations.Get()
 	if len(remove) > 0 {
 		// filter out removed relations
-		allRelations = make([]relationID, 0, len(oldTable.relationIDs)+len(relations))
 		for _, rel := range oldTable.relationIDs {
 			if arch.mask.Get(rel.component.id) {
 				allRelations = append(allRelations, rel)
@@ -94,15 +93,19 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		allRelations = append(allRelations, relations...)
 	} else {
 		if len(relations) > 0 {
-			allRelations = copyAppend(oldTable.relationIDs, relations...)
+			allRelations = append(allRelations, oldTable.relationIDs...)
+			allRelations = append(allRelations, relations...)
 		} else {
-			allRelations = oldTable.relationIDs
+			allRelations = append(allRelations, oldTable.relationIDs...)
 		}
 	}
 	table, ok := arch.GetTable(s, allRelations)
 	if !ok {
-		table = s.createTable(arch, allRelations)
+		relations := copyAppend(allRelations)
+		table = s.createTable(arch, relations)
 	}
+
+	s.pools.relations.Recycle(allRelations)
 	return table, relationRemoved
 }
 
