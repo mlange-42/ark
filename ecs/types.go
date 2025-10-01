@@ -63,7 +63,6 @@ func (id ResID) Index() uint8 {
 type Batch struct {
 	filter    *filter
 	relations []relationID
-	cache     cacheID
 }
 
 // EntityDump is a dump of the entire entity data of the world.

@@ -176,7 +176,6 @@ func (f *Filter0) Batch(rel ...Relation) *Batch {
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.filter.cache,
 	}
 }
 
@@ -363,7 +362,6 @@ func (f *Filter1[A]) Batch(rel ...Relation) *Batch {
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.filter.cache,
 	}
 }
 
@@ -548,7 +546,6 @@ func (f *Filter2[A, B]) Batch(rel ...Relation) *Batch {
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.filter.cache,
 	}
 }
 
@@ -739,7 +736,6 @@ func (f *Filter3[A, B, C]) Batch(rel ...Relation) *Batch {
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.filter.cache,
 	}
 }
 
@@ -932,7 +928,6 @@ func (f *Filter4[A, B, C, D]) Batch(rel ...Relation) *Batch {
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.filter.cache,
 	}
 }
 
@@ -1127,7 +1122,6 @@ func (f *Filter5[A, B, C, D, E]) Batch(rel ...Relation) *Batch {
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.filter.cache,
 	}
 }
 
@@ -1324,7 +1318,6 @@ func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...Relation) *Batch {
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.filter.cache,
 	}
 }
 
@@ -1523,7 +1516,6 @@ func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...Relation) *Batch {
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.filter.cache,
 	}
 }
 
@@ -1724,7 +1716,6 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...Relation) *Batch {
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.filter.cache,
 	}
 }
 

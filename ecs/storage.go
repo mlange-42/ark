@@ -471,8 +471,8 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, ma
 func (s *storage) getTables(batch *Batch) []tableID {
 	tables := s.slices.tables
 
-	if batch.cache != maxCacheID {
-		cache := s.getRegisteredFilter(batch.cache)
+	if batch.filter.cache != maxCacheID {
+		cache := s.getRegisteredFilter(batch.filter.cache)
 		for _, tableID := range cache.tables.tables {
 			table := &s.tables[tableID]
 			if table.Len() == 0 {

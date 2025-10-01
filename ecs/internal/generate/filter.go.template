@@ -200,7 +200,6 @@ func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) *Batch {
 	return &Batch {
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.filter.cache,
 	}
 }
 
