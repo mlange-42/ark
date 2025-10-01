@@ -215,11 +215,11 @@ type slicePools struct {
 
 func newSlicePools() slicePools {
 	return slicePools{
-		relations: newSlicePool[relationID](8, 8),
-		entities:  newSlicePool[Entity](8, 8),
-		batches:   newSlicePool[batchTable](4, 128),
-		tables:    newSlicePool[tableID](4, 128),
-		ints:      newSlicePool[uint32](4, 128),
+		relations: newSlicePool[relationID](2, 8),
+		entities:  newSlicePool[Entity](2, 8),
+		batches:   newSlicePool[batchTable](2, 128),
+		tables:    newSlicePool[tableID](2, 128),
+		ints:      newSlicePool[uint32](2, 128),
 	}
 }
 
