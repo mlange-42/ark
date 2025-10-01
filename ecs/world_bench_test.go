@@ -42,6 +42,35 @@ func BenchmarkCreateEntitiesAlloc(b *testing.B) {
 	}
 }
 
+func BenchmarkAddRemove(b *testing.B) {
+	w := NewWorld()
+	builder1 := NewMap1[Position](&w)
+	builder2 := NewMap1[Velocity](&w)
+
+	e := builder1.NewEntityFn(nil)
+	builder2.AddFn(e, nil)
+
+	for b.Loop() {
+		builder2.Remove(e)
+		builder2.AddFn(e, nil)
+	}
+}
+
+func BenchmarkAddRemoveBatch(b *testing.B) {
+	w := NewWorld()
+	builder1 := NewMap1[Position](&w)
+	builder2 := NewMap1[Velocity](&w)
+	filter := NewFilter0(&w)
+
+	builder1.NewBatchFn(1, nil)
+	builder2.AddBatchFn(filter.Batch(), nil)
+
+	for b.Loop() {
+		builder2.RemoveBatch(filter.Batch(), nil)
+		builder2.AddBatchFn(filter.Batch(), nil)
+	}
+}
+
 func BenchmarkWorldLockUnlock(b *testing.B) {
 	w := NewWorld()
 
