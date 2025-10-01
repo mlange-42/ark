@@ -112,7 +112,13 @@ type observerManager struct {
 	anyNoComps   []bool
 	anyNoWith    []bool
 	pool         intPool[observerID]
-	indices      map[observerID]int
+	indices      map[observerID]observerIndex
+	totalCount   uint32
+}
+
+type observerIndex struct {
+	idx   uint32
+	event EventType
 }
 
 func newObserverManager() observerManager {
@@ -125,7 +131,7 @@ func newObserverManager() observerManager {
 		allComps:     make([]bitMask, maxEvents),
 		allWith:      make([]bitMask, maxEvents),
 		pool:         newIntPool[observerID](32),
-		indices:      map[observerID]int{},
+		indices:      map[observerID]observerIndex{},
 	}
 }
 
@@ -181,9 +187,10 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 		}
 	}
 
+	m.indices[o.id] = observerIndex{idx: uint32(len(m.observers[o.event])), event: o.event}
 	m.observers[o.event] = append(m.observers[o.event], o)
-	m.indices[o.id] = len(m.observers[o.event]) - 1
 	m.hasObservers[o.event] = true
+	m.totalCount++
 
 	if o.hasWith {
 		m.allWith[o.event].OrI(&o.withMask)
@@ -214,16 +221,17 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 	delete(m.indices, o.id)
 
 	observers := m.observers[o.event]
-	observers[idx].id = maxObserverID
+	observers[idx.idx].id = maxObserverID
 
-	last := len(observers) - 1
-	if idx != last {
-		observers[idx], observers[last] = observers[last], observers[idx]
-		m.indices[observers[idx].id] = idx
+	last := uint32(len(observers) - 1)
+	if idx.idx != last {
+		observers[idx.idx], observers[last] = observers[last], observers[idx.idx]
+		m.indices[observers[idx.idx].id] = idx
 	}
 	observers[last] = nil
 	m.observers[o.event] = observers[:last]
 	m.hasObservers[o.event] = last > 0
+	m.totalCount--
 
 	var allWith bitMask
 	m.anyNoWith[o.event] = false
@@ -500,5 +508,24 @@ func (m *observerManager) doFireCustom(evt EventType, e Entity, mask, entityMask
 			continue
 		}
 		o.callback(e)
+	}
+}
+
+func (m *observerManager) Reset() {
+	for id, idx := range m.indices {
+		m.observers[idx.event][idx.idx].id = maxObserverID
+		delete(m.indices, id)
+	}
+	m.pool = newIntPool[observerID](32)
+	m.totalCount = 0
+
+	maxEvents := math.MaxUint8 + 1
+	for i := range maxEvents {
+		m.observers[i] = m.observers[i][:0]
+		m.hasObservers[i] = false
+		m.allComps[i].Reset()
+		m.allWith[i].Reset()
+		m.anyNoComps[i] = false
+		m.anyNoWith[i] = false
 	}
 }

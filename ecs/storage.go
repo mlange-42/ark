@@ -182,6 +182,7 @@ func (s *storage) Reset() {
 	s.isTarget = s.isTarget[:reservedEntities]
 	s.cache.Reset()
 	s.locks.Reset()
+	s.observers.Reset()
 
 	for i := range s.archetypes {
 		s.archetypes[i].Reset(s)
@@ -231,12 +232,12 @@ func (s *storage) registerTargets(relations []relationID) {
 	}
 }
 
-func (s *storage) registerFilter(filter *filter, relations []relationID) cacheID {
-	return s.cache.register(s, filter, relations)
+func (s *storage) registerFilter(filter *filter, relations []relationID) {
+	s.cache.register(s, filter, relations)
 }
 
-func (s *storage) unregisterFilter(entry cacheID) {
-	s.cache.unregister(entry)
+func (s *storage) unregisterFilter(filter *filter) {
+	s.cache.unregister(filter)
 }
 
 func (s *storage) getRegisteredFilter(id cacheID) *cacheEntry {

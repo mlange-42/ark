@@ -29,7 +29,6 @@ type Filter{{.}}{{$generics}} struct {
 	components    []*componentStorage
 	filter        filter
 	mutex         sync.Mutex
-	cache         cacheID
 	generation    uint32
 	rareComp      uint8
 	numRelations  uint8
@@ -63,7 +62,6 @@ func NewFilter{{.}}{{$generics}}(world *World) *Filter{{.}}{{$genericsShort}} {
 		world:      world,
 		ids:        ids,
 		filter:     newFilter(ids...),
-		cache:      maxCacheID,
 		components: components,
 	}
 }
@@ -125,20 +123,19 @@ func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...Relation) *Filter{{.}}{
 // Registering filters is optional.
 // It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter{{.}}{{$genericsShort}}) Register() *Filter{{.}}{{$genericsShort}} {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
+	f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
-	if f.cache == maxCacheID {
+	if f.filter.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
-	f.world.storage.unregisterFilter(f.cache)
-	f.cache = maxCacheID
+	f.world.storage.unregisterFilter(&f.filter)
 }
 
 // Query creates a [Query{{.}}] from this filter.
@@ -151,9 +148,9 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 
 	var start uint8
 	var cache *cacheEntry
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
-		cache = f.world.storage.getRegisteredFilter(f.cache)
+		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
 		reg := &f.world.storage.registry
 		gen := reg.getGeneration()
@@ -197,18 +194,18 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) *Batch {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
 	return &Batch {
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.cache,
+		cache:     f.filter.cache,
 	}
 }
 
 func (f *Filter{{.}}{{$genericsShort}}) checkModify() {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 	if f.generation != 0 {

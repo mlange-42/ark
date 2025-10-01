@@ -17,8 +17,8 @@ func TestFilterCache(t *testing.T) {
 	filter2 := NewFilter2[Position, Velocity](&world).Register()
 	filter3 := NewFilter3[Position, Velocity, Heading](&world).Register()
 
-	expectEqual(t, 0, int(filter2.cache))
-	expectEqual(t, 1, int(filter3.cache))
+	expectEqual(t, 0, int(filter2.filter.cache))
+	expectEqual(t, 1, int(filter3.filter.cache))
 
 	expectEqual(t, 2, len(world.storage.getTableIDs(&filter2.filter, filter2.relations)))
 	expectEqual(t, 1, len(world.storage.getTableIDs(&filter3.filter, filter3.relations)))
@@ -29,7 +29,7 @@ func TestFilterCache(t *testing.T) {
 	filter3.Unregister()
 
 	expectPanicsWithValue(t, "filter is not registered, can't unregister", func() { filter2.Unregister() })
-	expectPanicsWithValue(t, "no filter for id found to unregister", func() { world.storage.unregisterFilter(100) })
+	expectPanicsWithValue(t, "no filter for id found to unregister", func() { world.storage.unregisterFilter(&filter{cache: 100}) })
 }
 
 func TestFilterCacheRelation(t *testing.T) {
@@ -49,9 +49,9 @@ func TestFilterCacheRelation(t *testing.T) {
 	f2 := NewFilter1[ChildOf](&world).Relations(RelIdx(0, target1)).Register()
 	f3 := NewFilter1[ChildOf](&world).Relations(RelIdx(0, target2)).Register()
 
-	c1 := world.storage.getRegisteredFilter(f1.cache)
-	c2 := world.storage.getRegisteredFilter(f2.cache)
-	c3 := world.storage.getRegisteredFilter(f3.cache)
+	c1 := world.storage.getRegisteredFilter(f1.filter.cache)
+	c2 := world.storage.getRegisteredFilter(f2.filter.cache)
+	c3 := world.storage.getRegisteredFilter(f3.filter.cache)
 
 	posMap.NewBatch(10, &Position{})
 

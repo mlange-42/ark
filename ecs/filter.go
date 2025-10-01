@@ -56,12 +56,14 @@ func (f UnsafeFilter) Query(relations ...Relation) UnsafeQuery {
 type filter struct {
 	mask       bitMask
 	without    bitMask
+	cache      cacheID
 	hasWithout bool
 }
 
 func newFilter(ids ...ID) filter {
 	return filter{
-		mask: newMask(ids...),
+		mask:  newMask(ids...),
+		cache: maxCacheID,
 	}
 }
 

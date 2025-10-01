@@ -45,9 +45,10 @@ func (c *cache) getEntry(id cacheID) *cacheEntry {
 }
 
 // Register a filter.
-func (c *cache) register(storage *storage, filter *filter, relations []relationID) cacheID {
+func (c *cache) register(storage *storage, filter *filter, relations []relationID) {
 	// TODO: prevent duplicate registration
 	id := c.intPool.Get()
+	filter.cache = id
 	index := len(c.filters)
 	tables := newTableIDs(storage.getTableIDs(filter, relations)...)
 	c.filters = append(c.filters,
@@ -58,15 +59,16 @@ func (c *cache) register(storage *storage, filter *filter, relations []relationI
 			tables:    tables,
 		})
 	c.indices[id] = index
-	return id
 }
 
-func (c *cache) unregister(id cacheID) {
-	idx, ok := c.indices[id]
+func (c *cache) unregister(filter *filter) {
+	idx, ok := c.indices[filter.cache]
 	if !ok {
 		panic("no filter for id found to unregister")
 	}
-	delete(c.indices, id)
+	delete(c.indices, filter.cache)
+
+	filter.cache = maxCacheID
 
 	last := len(c.filters) - 1
 	if idx != last {
