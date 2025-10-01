@@ -426,6 +426,7 @@ func TestWorldReset(t *testing.T) {
 	u := world.Unsafe()
 
 	AddResource(&world, &Heading{100})
+	o := Observe(OnCreateEntity).Do(func(e Entity) {}).Register(&world)
 
 	posID := ComponentID[Position](&world)
 	velID := ComponentID[Velocity](&world)
@@ -468,6 +469,15 @@ func TestWorldReset(t *testing.T) {
 	query = NewUnsafeFilter(&world).Query()
 	expectEqual(t, 4, query.Count())
 	query.Close()
+
+	obs := &world.storage.observers
+	expectEqual(t, maxObserverID, o.id)
+	expectTrue(t, obs.allComps[OnCreateEntity].IsZero())
+	expectTrue(t, obs.allWith[OnCreateEntity].IsZero())
+	expectFalse(t, obs.anyNoComps[OnCreateEntity])
+	expectFalse(t, obs.anyNoWith[OnCreateEntity])
+	expectEqual(t, 0, len(obs.observers[OnCreateEntity]))
+	expectEqual(t, 0, len(obs.indices))
 }
 
 func TestWorldLock(t *testing.T) {

@@ -17,7 +17,6 @@ type Filter0 struct {
 	components   []*componentStorage
 	filter       filter
 	mutex        sync.Mutex
-	cache        cacheID
 	generation   uint32
 	rareComp     uint8
 	numRelations uint8
@@ -41,7 +40,6 @@ func NewFilter0(world *World) *Filter0 {
 		world:      world,
 		ids:        ids,
 		filter:     newFilter(ids...),
-		cache:      maxCacheID,
 		components: components,
 	}
 }
@@ -103,20 +101,19 @@ func (f *Filter0) Relations(rel ...Relation) *Filter0 {
 // Registering filters is optional.
 // It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter0) Register() *Filter0 {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
+	f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter0) Unregister() {
-	if f.cache == maxCacheID {
+	if f.filter.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
-	f.world.storage.unregisterFilter(f.cache)
-	f.cache = maxCacheID
+	f.world.storage.unregisterFilter(&f.filter)
 }
 
 // Query creates a [Query0] from this filter.
@@ -129,9 +126,9 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 
 	var start uint8
 	var cache *cacheEntry
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
-		cache = f.world.storage.getRegisteredFilter(f.cache)
+		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
 		reg := &f.world.storage.registry
 		gen := reg.getGeneration()
@@ -173,18 +170,17 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 func (f *Filter0) Batch(rel ...Relation) *Batch {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.cache,
 	}
 }
 
 func (f *Filter0) checkModify() {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 	if f.generation != 0 {
@@ -205,7 +201,6 @@ type Filter1[A any] struct {
 	components   []*componentStorage
 	filter       filter
 	mutex        sync.Mutex
-	cache        cacheID
 	generation   uint32
 	rareComp     uint8
 	numRelations uint8
@@ -232,7 +227,6 @@ func NewFilter1[A any](world *World) *Filter1[A] {
 		world:      world,
 		ids:        ids,
 		filter:     newFilter(ids...),
-		cache:      maxCacheID,
 		components: components,
 	}
 }
@@ -294,20 +288,19 @@ func (f *Filter1[A]) Relations(rel ...Relation) *Filter1[A] {
 // Registering filters is optional.
 // It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter1[A]) Register() *Filter1[A] {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
+	f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter1[A]) Unregister() {
-	if f.cache == maxCacheID {
+	if f.filter.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
-	f.world.storage.unregisterFilter(f.cache)
-	f.cache = maxCacheID
+	f.world.storage.unregisterFilter(&f.filter)
 }
 
 // Query creates a [Query1] from this filter.
@@ -320,9 +313,9 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 
 	var start uint8
 	var cache *cacheEntry
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
-		cache = f.world.storage.getRegisteredFilter(f.cache)
+		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
 		reg := &f.world.storage.registry
 		gen := reg.getGeneration()
@@ -363,18 +356,17 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 func (f *Filter1[A]) Batch(rel ...Relation) *Batch {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.cache,
 	}
 }
 
 func (f *Filter1[A]) checkModify() {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 	if f.generation != 0 {
@@ -393,7 +385,6 @@ type Filter2[A any, B any] struct {
 	components   []*componentStorage
 	filter       filter
 	mutex        sync.Mutex
-	cache        cacheID
 	generation   uint32
 	rareComp     uint8
 	numRelations uint8
@@ -420,7 +411,6 @@ func NewFilter2[A any, B any](world *World) *Filter2[A, B] {
 		world:      world,
 		ids:        ids,
 		filter:     newFilter(ids...),
-		cache:      maxCacheID,
 		components: components,
 	}
 }
@@ -482,20 +472,19 @@ func (f *Filter2[A, B]) Relations(rel ...Relation) *Filter2[A, B] {
 // Registering filters is optional.
 // It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter2[A, B]) Register() *Filter2[A, B] {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
+	f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter2[A, B]) Unregister() {
-	if f.cache == maxCacheID {
+	if f.filter.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
-	f.world.storage.unregisterFilter(f.cache)
-	f.cache = maxCacheID
+	f.world.storage.unregisterFilter(&f.filter)
 }
 
 // Query creates a [Query2] from this filter.
@@ -508,9 +497,9 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 
 	var start uint8
 	var cache *cacheEntry
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
-		cache = f.world.storage.getRegisteredFilter(f.cache)
+		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
 		reg := &f.world.storage.registry
 		gen := reg.getGeneration()
@@ -551,18 +540,17 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 func (f *Filter2[A, B]) Batch(rel ...Relation) *Batch {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.cache,
 	}
 }
 
 func (f *Filter2[A, B]) checkModify() {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 	if f.generation != 0 {
@@ -583,7 +571,6 @@ type Filter3[A any, B any, C any] struct {
 	components   []*componentStorage
 	filter       filter
 	mutex        sync.Mutex
-	cache        cacheID
 	generation   uint32
 	rareComp     uint8
 	numRelations uint8
@@ -614,7 +601,6 @@ func NewFilter3[A any, B any, C any](world *World) *Filter3[A, B, C] {
 		world:      world,
 		ids:        ids,
 		filter:     newFilter(ids...),
-		cache:      maxCacheID,
 		components: components,
 	}
 }
@@ -676,20 +662,19 @@ func (f *Filter3[A, B, C]) Relations(rel ...Relation) *Filter3[A, B, C] {
 // Registering filters is optional.
 // It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter3[A, B, C]) Register() *Filter3[A, B, C] {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
+	f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter3[A, B, C]) Unregister() {
-	if f.cache == maxCacheID {
+	if f.filter.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
-	f.world.storage.unregisterFilter(f.cache)
-	f.cache = maxCacheID
+	f.world.storage.unregisterFilter(&f.filter)
 }
 
 // Query creates a [Query3] from this filter.
@@ -702,9 +687,9 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 
 	var start uint8
 	var cache *cacheEntry
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
-		cache = f.world.storage.getRegisteredFilter(f.cache)
+		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
 		reg := &f.world.storage.registry
 		gen := reg.getGeneration()
@@ -745,18 +730,17 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 func (f *Filter3[A, B, C]) Batch(rel ...Relation) *Batch {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.cache,
 	}
 }
 
 func (f *Filter3[A, B, C]) checkModify() {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 	if f.generation != 0 {
@@ -777,7 +761,6 @@ type Filter4[A any, B any, C any, D any] struct {
 	components   []*componentStorage
 	filter       filter
 	mutex        sync.Mutex
-	cache        cacheID
 	generation   uint32
 	rareComp     uint8
 	numRelations uint8
@@ -810,7 +793,6 @@ func NewFilter4[A any, B any, C any, D any](world *World) *Filter4[A, B, C, D] {
 		world:      world,
 		ids:        ids,
 		filter:     newFilter(ids...),
-		cache:      maxCacheID,
 		components: components,
 	}
 }
@@ -872,20 +854,19 @@ func (f *Filter4[A, B, C, D]) Relations(rel ...Relation) *Filter4[A, B, C, D] {
 // Registering filters is optional.
 // It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter4[A, B, C, D]) Register() *Filter4[A, B, C, D] {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
+	f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter4[A, B, C, D]) Unregister() {
-	if f.cache == maxCacheID {
+	if f.filter.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
-	f.world.storage.unregisterFilter(f.cache)
-	f.cache = maxCacheID
+	f.world.storage.unregisterFilter(&f.filter)
 }
 
 // Query creates a [Query4] from this filter.
@@ -898,9 +879,9 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 
 	var start uint8
 	var cache *cacheEntry
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
-		cache = f.world.storage.getRegisteredFilter(f.cache)
+		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
 		reg := &f.world.storage.registry
 		gen := reg.getGeneration()
@@ -941,18 +922,17 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 func (f *Filter4[A, B, C, D]) Batch(rel ...Relation) *Batch {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.cache,
 	}
 }
 
 func (f *Filter4[A, B, C, D]) checkModify() {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 	if f.generation != 0 {
@@ -973,7 +953,6 @@ type Filter5[A any, B any, C any, D any, E any] struct {
 	components   []*componentStorage
 	filter       filter
 	mutex        sync.Mutex
-	cache        cacheID
 	generation   uint32
 	rareComp     uint8
 	numRelations uint8
@@ -1008,7 +987,6 @@ func NewFilter5[A any, B any, C any, D any, E any](world *World) *Filter5[A, B, 
 		world:      world,
 		ids:        ids,
 		filter:     newFilter(ids...),
-		cache:      maxCacheID,
 		components: components,
 	}
 }
@@ -1070,20 +1048,19 @@ func (f *Filter5[A, B, C, D, E]) Relations(rel ...Relation) *Filter5[A, B, C, D,
 // Registering filters is optional.
 // It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter5[A, B, C, D, E]) Register() *Filter5[A, B, C, D, E] {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
+	f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter5[A, B, C, D, E]) Unregister() {
-	if f.cache == maxCacheID {
+	if f.filter.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
-	f.world.storage.unregisterFilter(f.cache)
-	f.cache = maxCacheID
+	f.world.storage.unregisterFilter(&f.filter)
 }
 
 // Query creates a [Query5] from this filter.
@@ -1096,9 +1073,9 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 
 	var start uint8
 	var cache *cacheEntry
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
-		cache = f.world.storage.getRegisteredFilter(f.cache)
+		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
 		reg := &f.world.storage.registry
 		gen := reg.getGeneration()
@@ -1139,18 +1116,17 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 func (f *Filter5[A, B, C, D, E]) Batch(rel ...Relation) *Batch {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.cache,
 	}
 }
 
 func (f *Filter5[A, B, C, D, E]) checkModify() {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 	if f.generation != 0 {
@@ -1171,7 +1147,6 @@ type Filter6[A any, B any, C any, D any, E any, F any] struct {
 	components   []*componentStorage
 	filter       filter
 	mutex        sync.Mutex
-	cache        cacheID
 	generation   uint32
 	rareComp     uint8
 	numRelations uint8
@@ -1208,7 +1183,6 @@ func NewFilter6[A any, B any, C any, D any, E any, F any](world *World) *Filter6
 		world:      world,
 		ids:        ids,
 		filter:     newFilter(ids...),
-		cache:      maxCacheID,
 		components: components,
 	}
 }
@@ -1270,20 +1244,19 @@ func (f *Filter6[A, B, C, D, E, F]) Relations(rel ...Relation) *Filter6[A, B, C,
 // Registering filters is optional.
 // It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter6[A, B, C, D, E, F]) Register() *Filter6[A, B, C, D, E, F] {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
+	f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter6[A, B, C, D, E, F]) Unregister() {
-	if f.cache == maxCacheID {
+	if f.filter.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
-	f.world.storage.unregisterFilter(f.cache)
-	f.cache = maxCacheID
+	f.world.storage.unregisterFilter(&f.filter)
 }
 
 // Query creates a [Query6] from this filter.
@@ -1296,9 +1269,9 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 
 	var start uint8
 	var cache *cacheEntry
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
-		cache = f.world.storage.getRegisteredFilter(f.cache)
+		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
 		reg := &f.world.storage.registry
 		gen := reg.getGeneration()
@@ -1339,18 +1312,17 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...Relation) *Batch {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.cache,
 	}
 }
 
 func (f *Filter6[A, B, C, D, E, F]) checkModify() {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 	if f.generation != 0 {
@@ -1371,7 +1343,6 @@ type Filter7[A any, B any, C any, D any, E any, F any, G any] struct {
 	components   []*componentStorage
 	filter       filter
 	mutex        sync.Mutex
-	cache        cacheID
 	generation   uint32
 	rareComp     uint8
 	numRelations uint8
@@ -1410,7 +1381,6 @@ func NewFilter7[A any, B any, C any, D any, E any, F any, G any](world *World) *
 		world:      world,
 		ids:        ids,
 		filter:     newFilter(ids...),
-		cache:      maxCacheID,
 		components: components,
 	}
 }
@@ -1472,20 +1442,19 @@ func (f *Filter7[A, B, C, D, E, F, G]) Relations(rel ...Relation) *Filter7[A, B,
 // Registering filters is optional.
 // It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter7[A, B, C, D, E, F, G]) Register() *Filter7[A, B, C, D, E, F, G] {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
+	f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
-	if f.cache == maxCacheID {
+	if f.filter.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
-	f.world.storage.unregisterFilter(f.cache)
-	f.cache = maxCacheID
+	f.world.storage.unregisterFilter(&f.filter)
 }
 
 // Query creates a [Query7] from this filter.
@@ -1498,9 +1467,9 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 
 	var start uint8
 	var cache *cacheEntry
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
-		cache = f.world.storage.getRegisteredFilter(f.cache)
+		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
 		reg := &f.world.storage.registry
 		gen := reg.getGeneration()
@@ -1541,18 +1510,17 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...Relation) *Batch {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.cache,
 	}
 }
 
 func (f *Filter7[A, B, C, D, E, F, G]) checkModify() {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 	if f.generation != 0 {
@@ -1573,7 +1541,6 @@ type Filter8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	components   []*componentStorage
 	filter       filter
 	mutex        sync.Mutex
-	cache        cacheID
 	generation   uint32
 	rareComp     uint8
 	numRelations uint8
@@ -1614,7 +1581,6 @@ func NewFilter8[A any, B any, C any, D any, E any, F any, G any, H any](world *W
 		world:      world,
 		ids:        ids,
 		filter:     newFilter(ids...),
-		cache:      maxCacheID,
 		components: components,
 	}
 }
@@ -1676,20 +1642,19 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Relations(rel ...Relation) *Filter8[A,
 // Registering filters is optional.
 // It avoids a potential slowdown that may be caused by a very high number of archetypes, like hundreds or thousands.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Register() *Filter8[A, B, C, D, E, F, G, H] {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("filter is already registered, can't register")
 	}
-	f.cache = f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
+	f.world.storage.registerFilter(&f.filter, f.relations[:f.numRelations])
 	return f
 }
 
 // Unregister this filter from the world's filter cache.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
-	if f.cache == maxCacheID {
+	if f.filter.cache == maxCacheID {
 		panic("filter is not registered, can't unregister")
 	}
-	f.world.storage.unregisterFilter(f.cache)
-	f.cache = maxCacheID
+	f.world.storage.unregisterFilter(&f.filter)
 }
 
 // Query creates a [Query8] from this filter.
@@ -1702,9 +1667,9 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 
 	var start uint8
 	var cache *cacheEntry
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
-		cache = f.world.storage.getRegisteredFilter(f.cache)
+		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
 		reg := &f.world.storage.registry
 		gen := reg.getGeneration()
@@ -1745,18 +1710,17 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...Relation) *Batch {
 	f.relations = relationSlice(rel).toRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
 	return &Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
-		cache:     f.cache,
 	}
 }
 
 func (f *Filter8[A, B, C, D, E, F, G, H]) checkModify() {
-	if f.cache != maxCacheID {
+	if f.filter.cache != maxCacheID {
 		panic("can't modify a cached filter")
 	}
 	if f.generation != 0 {

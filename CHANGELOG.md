@@ -9,7 +9,7 @@
 
 ### Features
 
-- Adds an event system for ECS operations entity creation/removal, component addition/removal and relation target changes (#330, #331, #333, #342, #344, #352, #358)
+- Adds an event system for ECS operations entity creation/removal, component addition/removal and relation target changes (#330, #331, #333, #342, #344, #352, #358, #364)
 - Adds custom event support for the event system (#340, #348)
 - Adds method `World.Shrink` for freeing memory that exceeds current requirements (#323)
 - World lock and filters are concurrency-safe, allowing for concurrent query execution (#360)
@@ -38,6 +38,7 @@
 ### Bugfixes
 
 - Zeroes memory of non-trivial component types using reflection to inform GC about invalidated pointers (#324)
+- Filters are un-registered when removed from cache by `World.Reset` (#364)
 
 ### Other
 
