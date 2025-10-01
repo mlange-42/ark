@@ -26,6 +26,7 @@
 - Optimizes bit mask methods by using less math and more bit-wise operations (#319)
 - Speeds up memory allocation for archetype tables and bulk copying by avoiding reflection (#321)
 - Reuses internal slice to avoid allocations (#362, #363)
+- Optimize `World.Reset` by skipping where possible (#366)
 
 ### Documentation
 
@@ -38,7 +39,7 @@
 ### Bugfixes
 
 - Zeroes memory of non-trivial component types using reflection to inform GC about invalidated pointers (#324)
-- Filters are un-registered when removed from cache by `World.Reset` (#364)
+- Filters are un-registered when removed from cache by `World.Reset` (#366)
 
 ### Other
 
