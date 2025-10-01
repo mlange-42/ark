@@ -80,6 +80,7 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 	}
 
 	relationRemoved := false
+	// TODO: this could also use pooling
 	var allRelations []relationID
 	if len(remove) > 0 {
 		// filter out removed relations
