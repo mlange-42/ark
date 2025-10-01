@@ -102,7 +102,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 
 	relRemoved := false
 	tables := w.storage.getTables(batch)
-	batchTables := w.storage.pools.batches.Get()
+	batchTables := w.storage.slices.batches
 	for _, tableID := range tables {
 		table := &w.storage.tables[tableID]
 
@@ -121,7 +121,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			len:      uint32(table.Len()),
 		})
 	}
-	w.storage.pools.tables.Recycle(tables)
+	w.storage.slices.tables = tables[:0]
 
 	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
 		for _, batch := range batchTables {
@@ -195,7 +195,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			}
 		}
 	}
-	w.storage.pools.batches.Recycle(batchTables)
+	w.storage.slices.batches = batchTables[:0]
 	w.unlock(lock)
 }
 
@@ -309,7 +309,7 @@ func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(
 	hasObserver := w.storage.observers.HasObservers(OnAddRelations) || w.storage.observers.HasObservers(OnRemoveRelations)
 
 	tables := w.storage.getTables(batch)
-	lengths := w.storage.pools.ints.Get()
+	lengths := w.storage.slices.ints
 	var totalEntities uint32 = 0
 	for _, tableID := range tables {
 		table := &w.storage.tables[tableID]
@@ -326,8 +326,9 @@ func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(
 		w.setRelationsTable(table, int(tableLen), relations, fn, hasObserver)
 	}
 
-	w.storage.pools.ints.Recycle(lengths)
-	w.storage.pools.tables.Recycle(tables)
+	w.storage.slices.ints = lengths[:0]
+	w.storage.slices.tables = tables[:0]
+
 	w.storage.registerTargets(relations)
 
 	w.unlock(lock)
