@@ -25,7 +25,7 @@
 - Speeds up query creation by optimized world locking (#318, #360)
 - Optimizes bit mask methods by using less math and more bit-wise operations (#319)
 - Speeds up memory allocation for archetype tables and bulk copying by avoiding reflection (#321)
-- Uses pooling to avoid slice allocations (#361)
+- Uses pooling to avoid slice allocations (#362)
 
 ### Documentation
 
