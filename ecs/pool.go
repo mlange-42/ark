@@ -251,28 +251,14 @@ func (p *slicePool[E]) Get() []E {
 	return v
 }
 
+func (p *slicePool[E]) Has(size int) bool {
+	if len(p.free) == 0 {
+		return false
+	}
+	return cap(p.free[len(p.free)-1]) >= size
+}
+
 func (p *slicePool[E]) Recycle(s []E) {
 	s = s[:0]
 	p.free = append(p.free, s)
 }
-
-/*
-func (p *slicePool[E]) GetSafe() []E {
-	p.mu.Lock()
-	if len(p.free) == 0 {
-		return make([]E, 0, p.sliceCap)
-	}
-	idx := len(p.free) - 1
-	v := p.free[idx]
-	p.free = p.free[:idx]
-	p.mu.Unlock()
-	return v
-}
-
-func (p *slicePool[E]) RecycleSafe(s []E) {
-	p.mu.Lock()
-	s = s[:0]
-	p.free = append(p.free, s)
-	p.mu.Unlock()
-}
-*/

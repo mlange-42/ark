@@ -248,7 +248,7 @@ func BenchmarkToRelations2(b *testing.B) {
 	}
 }
 
-func BenchmarkToRelations2Cops(b *testing.B) {
+func BenchmarkToRelations2Copy(b *testing.B) {
 	world := NewWorld()
 	parent := world.NewEntity()
 

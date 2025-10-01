@@ -378,10 +378,9 @@ func (s *storage) moveEntities(src, dst *table, count uint32) {
 }
 
 func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relationID) []relationID {
-	// TODO: maybe use a pool of slices?
-	targets := make([]Entity, len(oldTable.columns))
+	targets := s.pools.entities.Get()
 	for i := range oldTable.columns {
-		targets[i] = oldTable.columns[i].target
+		targets = append(targets, oldTable.columns[i].target)
 	}
 	for _, rel := range relations {
 		column := oldTable.components[rel.component.id]
@@ -402,16 +401,15 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 		id := oldTable.ids[i]
 		result = append(result, relationID{component: id, target: e})
 	}
-
+	s.pools.entities.Recycle(targets)
 	return result
 }
 
 func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, mask *bitMask) ([]relationID, bool) {
 	changed := false
-	// TODO: maybe use a pool of slices?
-	targets := make([]Entity, len(oldTable.columns))
+	targets := s.pools.entities.Get()
 	for i := range oldTable.columns {
-		targets[i] = oldTable.columns[i].target
+		targets = append(targets, oldTable.columns[i].target)
 	}
 	for _, rel := range relations {
 		// Validity of the target is checked when creating a new table.
@@ -441,10 +439,11 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, ma
 		id := oldTable.ids[i]
 		result = append(result, relationID{component: id, target: e})
 	}
-
+	s.pools.entities.Recycle(targets)
 	return result, true
 }
 
+// the returned slice comes from the pool and should be recycled.
 func (s *storage) getTables(batch *Batch) []tableID {
 	tables := s.pools.tables.Get()
 
