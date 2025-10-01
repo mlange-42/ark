@@ -217,9 +217,9 @@ func newSlicePools() slicePools {
 	return slicePools{
 		relations: newSlicePool[relationID](2, 8),
 		entities:  newSlicePool[Entity](2, 8),
-		batches:   newSlicePool[batchTable](2, 128),
-		tables:    newSlicePool[tableID](2, 128),
-		ints:      newSlicePool[uint32](2, 128),
+		batches:   newSlicePool[batchTable](2, 32),
+		tables:    newSlicePool[tableID](2, 32),
+		ints:      newSlicePool[uint32](2, 32),
 	}
 }
 

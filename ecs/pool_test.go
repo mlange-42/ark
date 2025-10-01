@@ -188,6 +188,12 @@ func TestSlicePool(t *testing.T) {
 	}
 }
 
+func BenchmarkNewSlicesPool(b *testing.B) {
+	for b.Loop() {
+		_ = newSlicePools()
+	}
+}
+
 func BenchmarkPoolAlive(b *testing.B) {
 	pool := newEntityPool(1024, reservedEntities)
 
