@@ -86,8 +86,8 @@ type Table struct {
 func (w *World) String() string {
 	b := strings.Builder{}
 	fmt.Fprintf(
-		&b, "World     -- Components: %d, Archetypes: %d, Filters: %d, Memory: %.1f kB, Locked: %t\n",
-		len(w.ComponentTypeNames), len(w.Archetypes), w.CachedFilters, float64(w.Memory)/1024.0, w.Locked,
+		&b, "World     -- Components: %d, Archetypes: %d, Filters: %d, Observers: %d, Memory: %.1f/%.1f kB, Locked: %t\n",
+		len(w.ComponentTypeNames), len(w.Archetypes), w.CachedFilters, w.Observers, float64(w.MemoryUsed)/1024.0, float64(w.Memory)/1024.0, w.Locked,
 	)
 
 	fmt.Fprintf(&b, "             Components: %s\n", strings.Join(w.ComponentTypeNames, ", "))
