@@ -208,7 +208,7 @@ func (w *World) Event(tp EventType) Event {
 }
 
 // Reset removes all entities and resources from the world,
-// clears the filter cache and un-registers all observers.
+// and un-registers all cached filters and observers.
 //
 // Does NOT free reserved memory, remove archetypes, or clear the registry.
 // However, it removes archetypes with a relation component.
