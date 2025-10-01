@@ -10,6 +10,7 @@ type storage struct {
 	entities           []entityIndex      // Entity positions in archetypes, indexed by entity ID
 	isTarget           []bool             // Whether each entity is a target of a relationship
 	graph              graph              // Graph for fast archetype traversal
+	pools              slicePools         // Pools for reusing slices
 	archetypes         []archetype        // All archetypes
 	allArchetypes      []archetypeID      // list of all archetype IDs to simplify usage of componentIndex
 	componentIndex     [][]archetypeID    // Archetypes indexed by components IDs; each archetype appears under all its component IDs
@@ -44,9 +45,9 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 
 	archetypes := make([]archetype, 0, numArchetypes)
-	archetypes = append(archetypes, newArchetype(0, 0, bitMask{}, []ID{}, []tableID{0}, &reg))
+	archetypes = append(archetypes, newArchetype(0, 0, bitMask{}, nil, []tableID{0}, &reg))
 	tables := make([]table, 0, numArchetypes)
-	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, []Entity{}, []relationID{}))
+	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, nil, nil))
 	return storage{
 		config:         config,
 		registry:       reg,
@@ -57,6 +58,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 		isTarget:       isTarget,
 		entityPool:     newEntityPool(uint32(config.initialCapacity), reservedEntities),
 		graph:          newGraph(),
+		pools:          newSlicePools(),
 		archetypes:     archetypes,
 		allArchetypes:  []archetypeID{0},
 		componentIndex: make([][]archetypeID, 0, maskTotalBits),
@@ -78,6 +80,7 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 	}
 
 	relationRemoved := false
+	// TODO: this could also use pooling
 	var allRelations []relationID
 	if len(remove) > 0 {
 		// filter out removed relations
@@ -324,7 +327,7 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 
 // Removes empty archetypes that have a target relation to the given entity.
 func (s *storage) cleanupArchetypes(target Entity) {
-	newRelations := []relationID{}
+	newRelations := s.pools.relations.Get()
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
 		len := len(archetype.tables.tables)
@@ -359,6 +362,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 		}
 		archetype.RemoveTarget(target)
 	}
+	s.pools.relations.Recycle(newRelations)
 }
 
 // moveEntities moves all entities from src to dst.
@@ -376,10 +380,9 @@ func (s *storage) moveEntities(src, dst *table, count uint32) {
 }
 
 func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relationID) []relationID {
-	// TODO: maybe use a pool of slices?
-	targets := make([]Entity, len(oldTable.columns))
+	targets := s.pools.entities.Get()
 	for i := range oldTable.columns {
-		targets[i] = oldTable.columns[i].target
+		targets = append(targets, oldTable.columns[i].target)
 	}
 	for _, rel := range relations {
 		column := oldTable.components[rel.component.id]
@@ -400,16 +403,15 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 		id := oldTable.ids[i]
 		result = append(result, relationID{component: id, target: e})
 	}
-
+	s.pools.entities.Recycle(targets)
 	return result
 }
 
 func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, mask *bitMask) ([]relationID, bool) {
 	changed := false
-	// TODO: maybe use a pool of slices?
-	targets := make([]Entity, len(oldTable.columns))
+	targets := s.pools.entities.Get()
 	for i := range oldTable.columns {
-		targets[i] = oldTable.columns[i].target
+		targets = append(targets, oldTable.columns[i].target)
 	}
 	for _, rel := range relations {
 		// Validity of the target is checked when creating a new table.
@@ -439,12 +441,13 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, ma
 		id := oldTable.ids[i]
 		result = append(result, relationID{component: id, target: e})
 	}
-
+	s.pools.entities.Recycle(targets)
 	return result, true
 }
 
+// the returned slice comes from the pool and should be recycled.
 func (s *storage) getTables(batch *Batch) []tableID {
-	tables := []tableID{}
+	tables := s.pools.tables.Get()
 
 	if batch.cache != maxCacheID {
 		cache := s.getRegisteredFilter(batch.cache)

@@ -204,3 +204,52 @@ func (p *intPool[T]) Reset() {
 	p.next = 0
 	p.available = 0
 }
+
+type slicePools struct {
+	relations slicePool[relationID]
+	entities  slicePool[Entity]
+	batches   slicePool[batchTable]
+	tables    slicePool[tableID]
+	ints      slicePool[uint32]
+}
+
+func newSlicePools() slicePools {
+	return slicePools{
+		relations: newSlicePool[relationID](2, 8),
+		entities:  newSlicePool[Entity](2, 8),
+		batches:   newSlicePool[batchTable](2, 32),
+		tables:    newSlicePool[tableID](2, 32),
+		ints:      newSlicePool[uint32](2, 32),
+	}
+}
+
+type slicePool[E any] struct {
+	free     [][]E
+	sliceCap int
+}
+
+func newSlicePool[E any](size, sliceCap int) slicePool[E] {
+	free := make([][]E, 0, size)
+	for range size {
+		free = append(free, make([]E, 0, sliceCap))
+	}
+	return slicePool[E]{
+		free:     free,
+		sliceCap: sliceCap,
+	}
+}
+
+func (p *slicePool[E]) Get() []E {
+	if len(p.free) == 0 {
+		return make([]E, 0, p.sliceCap)
+	}
+	idx := len(p.free) - 1
+	v := p.free[idx]
+	p.free = p.free[:idx]
+	return v
+}
+
+func (p *slicePool[E]) Recycle(s []E) {
+	s = s[:0]
+	p.free = append(p.free, s)
+}
