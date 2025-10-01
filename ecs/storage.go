@@ -326,7 +326,7 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 
 // Removes empty archetypes that have a target relation to the given entity.
 func (s *storage) cleanupArchetypes(target Entity) {
-	newRelations := []relationID{}
+	newRelations := s.pools.relations.Get()
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
 		len := len(archetype.tables.tables)
@@ -361,6 +361,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 		}
 		archetype.RemoveTarget(target)
 	}
+	s.pools.relations.Recycle(newRelations)
 }
 
 // moveEntities moves all entities from src to dst.

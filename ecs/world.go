@@ -145,7 +145,7 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 		w.unlock(l)
 	}
 
-	cleanup := []Entity{}
+	cleanup := w.storage.pools.entities.Get()
 	for _, tableID := range tables {
 		table := &w.storage.tables[tableID]
 		len := uintptr(table.Len())
@@ -167,6 +167,7 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 		w.storage.cleanupArchetypes(entity)
 		w.storage.isTarget[entity.id] = false
 	}
+	w.storage.pools.entities.Recycle(cleanup)
 }
 
 // IsLocked returns whether the world is locked by any queries.
