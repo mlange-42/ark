@@ -67,4 +67,13 @@ The **number of component types** per World is capped at 256, a deliberate perfo
 
 The **number of entities** alive at any one time is limited to just under 5 billion (`uint32` ID).
 
-Ark is **not thread-safe**. Any concurrent access to a World must be externally synchronized by the user. This design choice avoids internal locking mechanisms, which would introduce overhead and complexity. In scientific modeling, where large numbers of simulations are often executed in parallel, this approach is more efficient and scalable.
+Ark is **not thread-safe**. This design choice avoids internal locking mechanisms, which would introduce overhead and complexity. In scientific modeling, where large numbers of simulations are often executed in parallel, this approach is more efficient and scalable.
+
+> [!NOTE]
+> The following feature is not yet released and is planned for Ark v0.6.0.
+> You can try it out on the `main` branch.
+
+**Concurrent query execution** is yet possible if the queries don't access the same entities concurrently.
+For example, [entity relationships](../relations/) can be used to split up entities
+of the same archetype to process them in parallel.
+See the [parallel queries](https://github.com/mlange-42/ark/blob/main/examples/parallel/main.go) example.

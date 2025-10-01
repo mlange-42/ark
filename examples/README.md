@@ -9,7 +9,8 @@ This folder contains examples for the [Ark](https://github.com/mlange-42/ark) En
 - [world_lock](./world_lock/main.go): Demonstrates how to manipulate entities despite the world being locked during query iteration.
 - [systems](./systems/main.go): Demonstrates how to implement systems and a scheduler.
 - [ebitengine](./ebitengine/): Demonstrates how to use Ark with the [Ebiten](https://ebitengine.org/) game engine.
-- [parallel](./parallel/main.go): Demonstrates how to run multiple simulations in parallel.
+- [parallel_queries](./parallel_queries/main.go): Demonstrates how to run queries in parallel.
+- [parallel_runs](./parallel_runs/main.go): Demonstrates how to run multiple simulations in parallel.
 - [entity_grid](./entity_grid/main.go): Demonstrates that ECS can be mixed with non-ECS data structures, using a grid of entities.
 - [kdtree](./kdtree/main.go): Demonstrates that ECS can be mixed with non-ECS data structures, using a kdtree.
 

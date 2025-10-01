@@ -80,7 +80,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...Relation) Entit
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$fn_args}}), rel ...Relation) Entity {
-	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
+	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	entity, mask := m.world.newEntity(m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -120,7 +120,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...Relat
 func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn_args}}), rel ...Relation) {
 	m.world.checkLocked()
 	lock := m.world.lock()
-	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
+	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	tableID, start := m.world.newEntities(count, m.ids, m.relations)
 
 	if fn != nil {
@@ -242,7 +242,7 @@ func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...Relati
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_args}}), rel ...Relation) {
-	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
+	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
@@ -308,7 +308,7 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...Re
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(Entity, {{$fn_args}}), rel ...Relation) {
-	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
+	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
@@ -361,13 +361,13 @@ func (m *Map{{.}}{{$genericsShort}}) GetRelationUnchecked(entity Entity, index i
 // SetRelations sets relation targets for the given entity.
 func (m *Map{{.}}{{$genericsShort}}) SetRelations(entity Entity, rel ...Relation) {
 	// alive check is done in World.setRelations
-	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
+	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
 func (m *Map{{.}}{{$genericsShort}}) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
-	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0])
+	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
 

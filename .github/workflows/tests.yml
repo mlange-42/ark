@@ -140,7 +140,8 @@ jobs:
           go run ./entity_grid
           go run ./events
           go run ./kdtree
-          go run ./parallel
+          go run ./parallel_queries
+          go run ./parallel_runs
           go run ./readme
           go run ./relations
           go run ./systems

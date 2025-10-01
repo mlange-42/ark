@@ -418,6 +418,16 @@ func (w *World) unlock(l uint8) {
 	w.storage.locks.Unlock(l)
 }
 
+// lockSafe locks the world and get the lock bit for later unlocking.
+func (w *World) lockSafe() uint8 {
+	return w.storage.locks.LockSafe()
+}
+
+// unlockSafe unlocks the given lock bit.
+func (w *World) unlockSafe(l uint8) {
+	w.storage.locks.UnlockSafe(l)
+}
+
 // checkLocked checks if the world is locked, and panics if so.
 func (w *World) checkLocked() {
 	if w.IsLocked() {

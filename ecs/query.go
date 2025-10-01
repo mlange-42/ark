@@ -55,7 +55,7 @@ func (q *UnsafeQuery) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
-	q.world.unlock(q.lock)
+	q.world.unlockSafe(q.lock)
 }
 
 func (q *UnsafeQuery) nextTableOrArchetype() bool {
