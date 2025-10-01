@@ -114,6 +114,7 @@ type observerManager struct {
 	pool         intPool[observerID]
 	indices      map[observerID]observerIndex
 	totalCount   uint32
+	maxEventType EventType
 }
 
 type observerIndex struct {
@@ -190,6 +191,9 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 	m.indices[o.id] = observerIndex{idx: uint32(len(m.observers[o.event])), event: o.event}
 	m.observers[o.event] = append(m.observers[o.event], o)
 	m.hasObservers[o.event] = true
+	if o.event > m.maxEventType {
+		m.maxEventType = o.event
+	}
 	m.totalCount++
 
 	if o.hasWith {
@@ -512,15 +516,16 @@ func (m *observerManager) doFireCustom(evt EventType, e Entity, mask, entityMask
 }
 
 func (m *observerManager) Reset() {
-	for id, idx := range m.indices {
-		m.observers[idx.event][idx.idx].id = maxObserverID
-		delete(m.indices, id)
+	if len(m.indices) == 0 {
+		m.maxEventType = 0
+		return
 	}
-	m.pool = newIntPool[observerID](32)
-	m.totalCount = 0
 
-	maxEvents := math.MaxUint8 + 1
-	for i := range maxEvents {
+	for _, idx := range m.indices {
+		m.observers[idx.event][idx.idx].id = maxObserverID
+	}
+
+	for i := range m.maxEventType + 1 {
 		m.observers[i] = m.observers[i][:0]
 		m.hasObservers[i] = false
 		m.allComps[i].Reset()
@@ -528,4 +533,9 @@ func (m *observerManager) Reset() {
 		m.anyNoComps[i] = false
 		m.anyNoWith[i] = false
 	}
+
+	m.indices = map[observerID]observerIndex{}
+	m.pool.Reset()
+	m.totalCount = 0
+	m.maxEventType = 0
 }

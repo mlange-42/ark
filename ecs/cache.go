@@ -123,8 +123,12 @@ func (c *cache) removeTable(table *table) {
 }
 
 func (c *cache) Reset() {
+	if len(c.indices) == 0 {
+		return
+	}
 	for i := range c.filters {
-		c.filters[i].tables.Clear()
+		f := &c.filters[i]
+		f.filter.cache = maxCacheID
 	}
 	c.indices = map[cacheID]int{}
 	c.filters = c.filters[:0]

@@ -71,6 +71,14 @@ func BenchmarkAddRemoveBatch(b *testing.B) {
 	}
 }
 
+func BenchmarkWorldReset(b *testing.B) {
+	w := NewWorld()
+
+	for b.Loop() {
+		w.Reset()
+	}
+}
+
 func BenchmarkWorldLockUnlock(b *testing.B) {
 	w := NewWorld()
 

@@ -478,6 +478,8 @@ func TestWorldReset(t *testing.T) {
 	expectFalse(t, obs.anyNoWith[OnCreateEntity])
 	expectEqual(t, 0, len(obs.observers[OnCreateEntity]))
 	expectEqual(t, 0, len(obs.indices))
+
+	world.Reset()
 }
 
 func TestWorldLock(t *testing.T) {
