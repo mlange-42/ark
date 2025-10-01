@@ -10,6 +10,7 @@ type storage struct {
 	entities           []entityIndex      // Entity positions in archetypes, indexed by entity ID
 	isTarget           []bool             // Whether each entity is a target of a relationship
 	graph              graph              // Graph for fast archetype traversal
+	pools              slicePools         // Pools for reusing slices
 	archetypes         []archetype        // All archetypes
 	allArchetypes      []archetypeID      // list of all archetype IDs to simplify usage of componentIndex
 	componentIndex     [][]archetypeID    // Archetypes indexed by components IDs; each archetype appears under all its component IDs
@@ -44,9 +45,9 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 
 	archetypes := make([]archetype, 0, numArchetypes)
-	archetypes = append(archetypes, newArchetype(0, 0, bitMask{}, []ID{}, []tableID{0}, &reg))
+	archetypes = append(archetypes, newArchetype(0, 0, bitMask{}, nil, []tableID{0}, &reg))
 	tables := make([]table, 0, numArchetypes)
-	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, []Entity{}, []relationID{}))
+	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, nil, nil))
 	return storage{
 		config:         config,
 		registry:       reg,
@@ -57,6 +58,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 		isTarget:       isTarget,
 		entityPool:     newEntityPool(uint32(config.initialCapacity), reservedEntities),
 		graph:          newGraph(),
+		pools:          newSlicePools(),
 		archetypes:     archetypes,
 		allArchetypes:  []archetypeID{0},
 		componentIndex: make([][]archetypeID, 0, maskTotalBits),
@@ -444,7 +446,7 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, ma
 }
 
 func (s *storage) getTables(batch *Batch) []tableID {
-	tables := []tableID{}
+	tables := s.pools.tables.Get()
 
 	if batch.cache != maxCacheID {
 		cache := s.getRegisteredFilter(batch.cache)

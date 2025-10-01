@@ -102,7 +102,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 
 	relRemoved := false
 	tables := w.storage.getTables(batch)
-	batchTables := make([]batchTable, 0, len(tables))
+	batchTables := w.storage.pools.batches.Get()
 	for _, tableID := range tables {
 		table := &w.storage.tables[tableID]
 
@@ -121,6 +121,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			len:      uint32(table.Len()),
 		})
 	}
+	w.storage.pools.tables.Recycle(tables)
 
 	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
 		for _, batch := range batchTables {
@@ -194,6 +195,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 			}
 		}
 	}
+	w.storage.pools.batches.Recycle(batchTables)
 	w.unlock(lock)
 }
 
@@ -324,6 +326,7 @@ func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(
 		w.setRelationsTable(table, int(tableLen), relations, fn, hasObserver)
 	}
 
+	w.storage.pools.tables.Recycle(tables)
 	w.storage.registerTargets(relations)
 
 	w.unlock(lock)

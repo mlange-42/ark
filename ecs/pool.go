@@ -3,6 +3,7 @@ package ecs
 import (
 	"fmt"
 	"math"
+	"sync"
 	"unsafe"
 )
 
@@ -204,3 +205,74 @@ func (p *intPool[T]) Reset() {
 	p.next = 0
 	p.available = 0
 }
+
+type slicePools struct {
+	relations slicePool[relationID]
+	entities  slicePool[Entity]
+	batches   slicePool[batchTable]
+	tables    slicePool[tableID]
+	ints      slicePool[uint32]
+}
+
+func newSlicePools() slicePools {
+	return slicePools{
+		relations: newSlicePool[relationID](8, 8),
+		entities:  newSlicePool[Entity](8, 8),
+		batches:   newSlicePool[batchTable](4, 128),
+		tables:    newSlicePool[tableID](4, 128),
+		ints:      newSlicePool[uint32](4, 128),
+	}
+}
+
+type slicePool[E any] struct {
+	free     [][]E
+	sliceCap int
+	mu       sync.Mutex
+}
+
+func newSlicePool[E any](size, sliceCap int) slicePool[E] {
+	free := make([][]E, 0, size)
+	for range size {
+		free = append(free, make([]E, 0, sliceCap))
+	}
+	return slicePool[E]{
+		free:     free,
+		sliceCap: sliceCap,
+	}
+}
+
+func (p *slicePool[E]) Get() []E {
+	if len(p.free) == 0 {
+		return make([]E, 0, p.sliceCap)
+	}
+	idx := len(p.free) - 1
+	v := p.free[idx]
+	p.free = p.free[:idx]
+	return v
+}
+
+func (p *slicePool[E]) Recycle(s []E) {
+	s = s[:0]
+	p.free = append(p.free, s)
+}
+
+/*
+func (p *slicePool[E]) GetSafe() []E {
+	p.mu.Lock()
+	if len(p.free) == 0 {
+		return make([]E, 0, p.sliceCap)
+	}
+	idx := len(p.free) - 1
+	v := p.free[idx]
+	p.free = p.free[:idx]
+	p.mu.Unlock()
+	return v
+}
+
+func (p *slicePool[E]) RecycleSafe(s []E) {
+	p.mu.Lock()
+	s = s[:0]
+	p.free = append(p.free, s)
+	p.mu.Unlock()
+}
+*/

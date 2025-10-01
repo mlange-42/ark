@@ -161,6 +161,8 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 		table.Reset()
 	}
 
+	w.storage.pools.tables.Recycle(tables)
+
 	for _, entity := range cleanup {
 		w.storage.cleanupArchetypes(entity)
 		w.storage.isTarget[entity.id] = false

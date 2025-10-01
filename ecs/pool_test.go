@@ -158,6 +158,36 @@ func TestIntPool(t *testing.T) {
 	}
 }
 
+func TestSlicePool(t *testing.T) {
+	p := newSlicePool[int](4, 8)
+
+	slices := [][]int{}
+	for i := range 4 {
+		sl := p.Get()
+		expectEqual(t, 8, cap(sl))
+		expectEqual(t, 0, len(sl))
+		expectEqual(t, 3-i, len(p.free))
+		slices = append(slices, sl)
+	}
+
+	sl := p.Get()
+	expectEqual(t, 8, cap(sl))
+	expectEqual(t, 0, len(sl))
+	expectEqual(t, 0, len(p.free))
+	slices = append(slices, sl)
+
+	for i, sl := range slices {
+		p.Recycle(sl)
+		expectEqual(t, i+1, len(p.free))
+	}
+
+	for range 5 {
+		sl := p.Get()
+		expectEqual(t, 8, cap(sl))
+		expectEqual(t, 0, len(sl))
+	}
+}
+
 func BenchmarkPoolAlive(b *testing.B) {
 	pool := newEntityPool(1024, reservedEntities)
 

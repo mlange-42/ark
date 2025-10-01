@@ -90,7 +90,7 @@ func (b *bitMask64) Equals(other *bitMask64) bool {
 
 func (b *bitMask64) toTypes(reg *registry) []ID {
 	if b.bits == 0 {
-		return []ID{}
+		return nil
 	}
 
 	count := b.TotalBitsSet()
