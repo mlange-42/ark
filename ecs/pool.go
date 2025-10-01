@@ -3,7 +3,6 @@ package ecs
 import (
 	"fmt"
 	"math"
-	"sync"
 	"unsafe"
 )
 
@@ -227,7 +226,6 @@ func newSlicePools() slicePools {
 type slicePool[E any] struct {
 	free     [][]E
 	sliceCap int
-	mu       sync.Mutex
 }
 
 func newSlicePool[E any](size, sliceCap int) slicePool[E] {
@@ -249,13 +247,6 @@ func (p *slicePool[E]) Get() []E {
 	v := p.free[idx]
 	p.free = p.free[:idx]
 	return v
-}
-
-func (p *slicePool[E]) Has(size int) bool {
-	if len(p.free) == 0 {
-		return false
-	}
-	return cap(p.free[len(p.free)-1]) >= size
 }
 
 func (p *slicePool[E]) Recycle(s []E) {
