@@ -271,6 +271,7 @@ func (w *World) Stats() *stats.World {
 	w.stats.Memory = memory
 	w.stats.MemoryUsed = memoryUsed
 	w.stats.CachedFilters = len(w.storage.cache.filters)
+	w.stats.Observers = int(w.storage.observers.totalCount)
 
 	return w.stats
 }
