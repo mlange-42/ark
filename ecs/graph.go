@@ -5,7 +5,7 @@ import "fmt"
 type nodeID uint32
 
 type node struct {
-	neighbors idMap[*node]
+	neighbors idMap[nodeID]
 	mask      bitMask
 	id        nodeID
 	archetype archetypeID
@@ -16,7 +16,7 @@ func newNode(id nodeID, archetype archetypeID, mask *bitMask) node {
 		id:        id,
 		archetype: archetype,
 		mask:      *mask,
-		neighbors: newIDMap[*node](),
+		neighbors: newIDMap[nodeID](),
 	}
 }
 
@@ -26,12 +26,12 @@ func (n *node) GetArchetype() (archetypeID, bool) {
 
 // Archetype graph for faster lookup of transitions.
 type graph struct {
-	nodes pagedSlice[node]
+	nodes []node
 }
 
 func newGraph() graph {
-	nodes := pagedSlice[node]{}
-	nodes.Add(newNode(0, 0, &bitMask{}))
+	nodes := make([]node, 0, 128)
+	nodes = append(nodes, newNode(0, 0, &bitMask{}))
 
 	return graph{
 		nodes: nodes,
@@ -39,7 +39,7 @@ func newGraph() graph {
 }
 
 func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *node {
-	startNode := g.nodes.Get(int32(start))
+	startNode := &g.nodes[start]
 	curr := startNode
 
 	for _, id := range remove {
@@ -48,11 +48,12 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 		}
 		outMask.Set(id.id, false)
 		if next, ok := curr.neighbors.Get(id.id); ok {
-			curr = next
+			curr = &g.nodes[next]
 		} else {
 			next := g.findOrCreate(outMask)
-			next.neighbors.Set(id.id, curr)
-			curr.neighbors.Set(id.id, next)
+			next.neighbors.Set(id.id, curr.id)
+			curr = &g.nodes[curr.id]
+			curr.neighbors.Set(id.id, next.id)
 			curr = next
 		}
 	}
@@ -67,11 +68,12 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 
 		outMask.Set(id.id, true)
 		if next, ok := curr.neighbors.Get(id.id); ok {
-			curr = next
+			curr = &g.nodes[next]
 		} else {
 			next := g.findOrCreate(outMask)
-			next.neighbors.Set(id.id, curr)
-			curr.neighbors.Set(id.id, next)
+			next.neighbors.Set(id.id, curr.id)
+			curr = &g.nodes[curr.id]
+			curr.neighbors.Set(id.id, next.id)
 			curr = next
 		}
 	}
@@ -79,13 +81,13 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 }
 
 func (g *graph) findOrCreate(mask *bitMask) *node {
-	len := g.nodes.Len()
+	len := len(g.nodes)
 	for i := range len {
-		node := g.nodes.Get(i)
+		node := &g.nodes[i]
 		if node.mask.Equals(mask) {
 			return node
 		}
 	}
-	g.nodes.Add(newNode(nodeID(len), maxArchetypeID, mask))
-	return g.nodes.Get(len)
+	g.nodes = append(g.nodes, newNode(nodeID(len), maxArchetypeID, mask))
+	return &g.nodes[len]
 }
