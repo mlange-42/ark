@@ -71,6 +71,42 @@ func BenchmarkAddRemoveBatch(b *testing.B) {
 	}
 }
 
+func BenchmarkAddRemove_1000(b *testing.B) {
+	w := NewWorld()
+	builder1 := NewMap1[Position](&w)
+	builder2 := NewMap1[Velocity](&w)
+
+	entities := make([]Entity, 0, 1000)
+	builder1.NewBatchFn(1000, func(e Entity, p *Position) {
+		entities = append(entities, e)
+	})
+	for _, e := range entities {
+		builder2.AddFn(e, nil)
+	}
+
+	for b.Loop() {
+		for _, e := range entities {
+			builder2.Remove(e)
+			builder2.AddFn(e, nil)
+		}
+	}
+}
+
+func BenchmarkAddRemoveBatch_1000(b *testing.B) {
+	w := NewWorld()
+	builder1 := NewMap1[Position](&w)
+	builder2 := NewMap1[Velocity](&w)
+	filter := NewFilter0(&w)
+
+	builder1.NewBatchFn(1000, nil)
+	builder2.AddBatchFn(filter.Batch(), nil)
+
+	for b.Loop() {
+		builder2.RemoveBatch(filter.Batch(), nil)
+		builder2.AddBatchFn(filter.Batch(), nil)
+	}
+}
+
 func BenchmarkWorldReset(b *testing.B) {
 	w := NewWorld()
 
