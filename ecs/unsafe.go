@@ -91,7 +91,7 @@ func (u Unsafe) Add(entity Entity, comp ...ID) {
 	if len(comp) == 0 {
 		panic("at least one component required to add")
 	}
-	oldMask, newMask := u.world.exchange(entity, comp, nil, nil)
+	oldMask, newMask := u.world.add(entity, comp, nil)
 	u.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
 }
 
@@ -104,7 +104,7 @@ func (u Unsafe) AddRel(entity Entity, comps []ID, relations ...Relation) {
 		panic("at least one component required to add")
 	}
 	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
-	oldMask, newMask := u.world.exchange(entity, comps, nil, u.cachedRelations)
+	oldMask, newMask := u.world.add(entity, comps, u.cachedRelations)
 	u.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
 	if len(relations) > 0 {
 		u.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
@@ -119,7 +119,7 @@ func (u Unsafe) Remove(entity Entity, comp ...ID) {
 	if len(comp) == 0 {
 		panic("at least one component required to remove")
 	}
-	u.world.exchange(entity, nil, comp, nil)
+	u.world.remove(entity, comp)
 }
 
 // Exchange the given components on entity.

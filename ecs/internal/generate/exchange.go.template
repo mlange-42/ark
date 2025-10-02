@@ -86,7 +86,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_args}}), rel ...Relation) {
 	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
-	oldMask, newMask := ex.world.exchange(entity, ex.ids, nil, ex.relations)
+	oldMask, newMask := ex.world.add(entity, ex.ids, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -98,7 +98,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_ar
 
 // Remove the components previously specified with [Exchange{{.}}.Removes] from the given entity.
 func (ex *Exchange{{.}}{{$genericsShort}}) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil)
+	ex.world.remove(entity, ex.remove)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components

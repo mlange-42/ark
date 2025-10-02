@@ -23,6 +23,104 @@ func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableI
 	return newTable.id, startIdx
 }
 
+func (w *World) add(entity Entity, add []ID, relations []relationID) (*bitMask, *bitMask) {
+	w.checkLocked()
+
+	if !w.Alive(entity) {
+		panic("can't add components to a dead entity")
+	}
+	if len(add) == 0 {
+		if len(relations) > 0 {
+			panic("exchange operation has no effect, but relations were specified. Use SetRelation(s) instead")
+		}
+		return nil, nil
+	}
+
+	index := w.storage.entities[entity.id]
+	oldTable := &w.storage.tables[index.table]
+	oldArchetype := &w.storage.archetypes[oldTable.archetype]
+
+	mask := oldArchetype.mask
+	newTable, _ := w.storage.findOrCreateTable(oldTable, add, nil, relations, &mask)
+	newIndex := newTable.Add(entity)
+
+	// Get the old table and archetype again, as the pointer may have changed.
+	oldTable = &w.storage.tables[oldTable.id]
+	oldArchetype = &w.storage.archetypes[oldTable.archetype]
+
+	for _, id := range oldArchetype.components {
+		if mask.Get(id.id) {
+			newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
+		}
+	}
+
+	swapped := oldTable.Remove(index.row)
+
+	if swapped {
+		swapEntity := oldTable.GetEntity(uintptr(index.row))
+		w.storage.entities[swapEntity.id].row = index.row
+	}
+	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+
+	w.storage.registerTargets(relations)
+
+	return &oldArchetype.mask, &w.storage.archetypes[newTable.archetype].mask
+}
+
+func (w *World) remove(entity Entity, rem []ID) (*bitMask, *bitMask) {
+	w.checkLocked()
+
+	if !w.Alive(entity) {
+		panic("can't exchange components on a dead entity")
+	}
+	if len(rem) == 0 {
+		return nil, nil
+	}
+
+	index := w.storage.entities[entity.id]
+	oldTable := &w.storage.tables[index.table]
+	oldArchetype := &w.storage.archetypes[oldTable.archetype]
+
+	mask := oldArchetype.mask
+	newTable, relRemoved := w.storage.findOrCreateTable(oldTable, nil, rem, nil, &mask)
+	newIndex := newTable.Add(entity)
+
+	if len(rem) > 0 {
+		hasCompObs := w.storage.observers.HasObservers(OnRemoveComponents)
+		hasRelObs := relRemoved && w.storage.observers.HasObservers(OnRemoveRelations)
+		if hasCompObs || hasRelObs {
+			l := w.lock()
+			if hasCompObs {
+				w.storage.observers.doFireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
+			}
+			if hasRelObs {
+				w.storage.observers.doFireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
+			}
+			w.unlock(l)
+		}
+	}
+
+	// Get the old table and archetype again, as the pointer may have changed.
+	oldTable = &w.storage.tables[oldTable.id]
+	oldArchetype = &w.storage.archetypes[oldTable.archetype]
+
+	for _, id := range oldArchetype.components {
+		if mask.Get(id.id) {
+			newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
+		}
+	}
+
+	swapped := oldTable.Remove(index.row)
+
+	if swapped {
+		swapEntity := oldTable.GetEntity(uintptr(index.row))
+		w.storage.entities[swapEntity.id].row = index.row
+	}
+	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+
+	return &oldArchetype.mask, &w.storage.archetypes[newTable.archetype].mask
+}
+
 func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relationID) (*bitMask, *bitMask) {
 	w.checkLocked()
 

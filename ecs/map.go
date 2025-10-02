@@ -189,7 +189,7 @@ func (m *Map[T]) AddFn(entity Entity, fn func(*T), target ...Entity) {
 		panic("can't add a component to a dead entity")
 	}
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
-	oldMask, newMask := m.world.exchange(entity, m.ids[:], nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids[:], m.relations)
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}
@@ -266,7 +266,7 @@ func (m *Map[T]) Remove(entity Entity) {
 	if !m.world.Alive(entity) {
 		panic("can't remove a component from a dead entity")
 	}
-	m.world.exchange(entity, nil, m.ids[:], nil)
+	m.world.remove(entity, m.ids[:])
 }
 
 // RemoveBatch removes the mapped component from all entities matching the given batch filter,
