@@ -6,9 +6,6 @@ import (
 	"unsafe"
 )
 
-// Page size of pagedSlice type
-const pageSize = 32
-
 func capPow2(required uint32) uint32 {
 	if required == 0 {
 		return 1
