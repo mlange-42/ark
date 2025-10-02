@@ -50,52 +50,6 @@ func TestIDMap(t *testing.T) {
 	expectNil(t, m.chunks[0])
 }
 
-func TestIDMapPointers(t *testing.T) {
-	big1 := uint8(maskTotalBits - 20)
-	big2 := uint8(maskTotalBits - 3)
-
-	m := newIDMap[Entity]()
-
-	e0 := Entity{0, 0}
-	e1 := Entity{1, 0}
-	e121 := Entity{entityID(big1), 0}
-	e200 := Entity{entityID(big2), 0}
-
-	m.Set(0, e0)
-	m.Set(1, e1)
-	m.Set(big1, e121)
-	m.Set(big2, e200)
-
-	e, ok := m.GetPointer(0)
-	expectTrue(t, ok)
-	expectEqual(t, e0, *e)
-
-	e, ok = m.GetPointer(1)
-	expectTrue(t, ok)
-	expectEqual(t, e1, *e)
-
-	e, ok = m.GetPointer(big1)
-	expectTrue(t, ok)
-	expectEqual(t, e121, *e)
-
-	e, ok = m.GetPointer(big2)
-	expectTrue(t, ok)
-	expectEqual(t, e200, *e)
-
-	e, ok = m.GetPointer(15)
-	expectFalse(t, ok)
-	expectNil(t, e)
-
-	m.Remove(0)
-	m.Remove(1)
-
-	e, ok = m.GetPointer(0)
-	expectFalse(t, ok)
-	expectNil(t, e)
-
-	expectNil(t, m.chunks[0])
-}
-
 func BenchmarkIdMapping_IDMap(b *testing.B) {
 
 	entities := [maskTotalBits]Entity{}

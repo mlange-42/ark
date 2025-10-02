@@ -243,7 +243,7 @@ func (m *Map{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...Relati
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -334,7 +334,7 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(Entity, {{
 
 // Remove the mapped components from the given entity.
 func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,

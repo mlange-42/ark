@@ -202,7 +202,7 @@ func (m *Map1[A]) Add(entity Entity, a *A, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) AddFn(entity Entity, fn func(*A), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -280,7 +280,7 @@ func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(Entity, *A), rel ...Relation)
 
 // Remove the mapped components from the given entity.
 func (m *Map1[A]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -533,7 +533,7 @@ func (m *Map2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) AddFn(entity Entity, fn func(*A, *B), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -617,7 +617,7 @@ func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B), rel ...Re
 
 // Remove the mapped components from the given entity.
 func (m *Map2[A, B]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -894,7 +894,7 @@ func (m *Map3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(*A, *B, *C), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -984,7 +984,7 @@ func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C), re
 
 // Remove the mapped components from the given entity.
 func (m *Map3[A, B, C]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -1281,7 +1281,7 @@ func (m *Map4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel ...Rel
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(*A, *B, *C, *D), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1377,7 +1377,7 @@ func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, 
 
 // Remove the mapped components from the given entity.
 func (m *Map4[A, B, C, D]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -1694,7 +1694,7 @@ func (m *Map5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E, r
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -1796,7 +1796,7 @@ func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *
 
 // Remove the mapped components from the given entity.
 func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -2133,7 +2133,7 @@ func (m *Map6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D, e *E
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2241,7 +2241,7 @@ func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B
 
 // Remove the mapped components from the given entity.
 func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -2598,7 +2598,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -2712,7 +2712,7 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(Entity, *A,
 
 // Remove the mapped components from the given entity.
 func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -3089,7 +3089,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C, d *D
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -3209,7 +3209,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(Entity, 
 
 // Remove the mapped components from the given entity.
 func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -3606,7 +3606,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Add(entity Entity, a *A, b *B, c *C, d
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -3732,7 +3732,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(Entit
 
 // Remove the mapped components from the given entity.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -4149,7 +4149,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Add(entity Entity, a *A, b *B, c *
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I, *J), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -4281,7 +4281,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(E
 
 // Remove the mapped components from the given entity.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -4718,7 +4718,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Add(entity Entity, a *A, b *B, 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -4856,7 +4856,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn fun
 
 // Remove the mapped components from the given entity.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
@@ -5313,7 +5313,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Add(entity Entity, a *A, b *
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L), rel ...Relation) {
 	m.relations = relationSlice(rel).toRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	oldMask, newMask := m.world.exchange(entity, m.ids, nil, m.relations)
+	oldMask, newMask := m.world.add(entity, m.ids, m.relations)
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -5457,7 +5457,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn 
 
 // Remove the mapped components from the given entity.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Remove(entity Entity) {
-	m.world.exchange(entity, nil, m.ids, nil)
+	m.world.remove(entity, m.ids)
 }
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,

@@ -65,7 +65,7 @@ func (ex *Exchange1[A]) Add(entity Entity, a *A, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) AddFn(entity Entity, fn func(*A), rel ...Relation) {
 	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
-	oldMask, newMask := ex.world.exchange(entity, ex.ids, nil, ex.relations)
+	oldMask, newMask := ex.world.add(entity, ex.ids, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -77,7 +77,7 @@ func (ex *Exchange1[A]) AddFn(entity Entity, fn func(*A), rel ...Relation) {
 
 // Remove the components previously specified with [Exchange1.Removes] from the given entity.
 func (ex *Exchange1[A]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil)
+	ex.world.remove(entity, ex.remove)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -257,7 +257,7 @@ func (ex *Exchange2[A, B]) Add(entity Entity, a *A, b *B, rel ...Relation) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) AddFn(entity Entity, fn func(*A, *B), rel ...Relation) {
 	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
-	oldMask, newMask := ex.world.exchange(entity, ex.ids, nil, ex.relations)
+	oldMask, newMask := ex.world.add(entity, ex.ids, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -269,7 +269,7 @@ func (ex *Exchange2[A, B]) AddFn(entity Entity, fn func(*A, *B), rel ...Relation
 
 // Remove the components previously specified with [Exchange2.Removes] from the given entity.
 func (ex *Exchange2[A, B]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil)
+	ex.world.remove(entity, ex.remove)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -461,7 +461,7 @@ func (ex *Exchange3[A, B, C]) Add(entity Entity, a *A, b *B, c *C, rel ...Relati
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) AddFn(entity Entity, fn func(*A, *B, *C), rel ...Relation) {
 	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
-	oldMask, newMask := ex.world.exchange(entity, ex.ids, nil, ex.relations)
+	oldMask, newMask := ex.world.add(entity, ex.ids, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -473,7 +473,7 @@ func (ex *Exchange3[A, B, C]) AddFn(entity Entity, fn func(*A, *B, *C), rel ...R
 
 // Remove the components previously specified with [Exchange3.Removes] from the given entity.
 func (ex *Exchange3[A, B, C]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil)
+	ex.world.remove(entity, ex.remove)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -673,7 +673,7 @@ func (ex *Exchange4[A, B, C, D]) Add(entity Entity, a *A, b *B, c *C, d *D, rel 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) AddFn(entity Entity, fn func(*A, *B, *C, *D), rel ...Relation) {
 	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
-	oldMask, newMask := ex.world.exchange(entity, ex.ids, nil, ex.relations)
+	oldMask, newMask := ex.world.add(entity, ex.ids, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -685,7 +685,7 @@ func (ex *Exchange4[A, B, C, D]) AddFn(entity Entity, fn func(*A, *B, *C, *D), r
 
 // Remove the components previously specified with [Exchange4.Removes] from the given entity.
 func (ex *Exchange4[A, B, C, D]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil)
+	ex.world.remove(entity, ex.remove)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -893,7 +893,7 @@ func (ex *Exchange5[A, B, C, D, E]) Add(entity Entity, a *A, b *B, c *C, d *D, e
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E), rel ...Relation) {
 	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
-	oldMask, newMask := ex.world.exchange(entity, ex.ids, nil, ex.relations)
+	oldMask, newMask := ex.world.add(entity, ex.ids, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -905,7 +905,7 @@ func (ex *Exchange5[A, B, C, D, E]) AddFn(entity Entity, fn func(*A, *B, *C, *D,
 
 // Remove the components previously specified with [Exchange5.Removes] from the given entity.
 func (ex *Exchange5[A, B, C, D, E]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil)
+	ex.world.remove(entity, ex.remove)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -1121,7 +1121,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) Add(entity Entity, a *A, b *B, c *C, d *D
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F), rel ...Relation) {
 	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
-	oldMask, newMask := ex.world.exchange(entity, ex.ids, nil, ex.relations)
+	oldMask, newMask := ex.world.add(entity, ex.ids, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -1133,7 +1133,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(*A, *B, *C, 
 
 // Remove the components previously specified with [Exchange6.Removes] from the given entity.
 func (ex *Exchange6[A, B, C, D, E, F]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil)
+	ex.world.remove(entity, ex.remove)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -1357,7 +1357,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) Add(entity Entity, a *A, b *B, c *C, d
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
 	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
-	oldMask, newMask := ex.world.exchange(entity, ex.ids, nil, ex.relations)
+	oldMask, newMask := ex.world.add(entity, ex.ids, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -1369,7 +1369,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(*A, *B, *
 
 // Remove the components previously specified with [Exchange7.Removes] from the given entity.
 func (ex *Exchange7[A, B, C, D, E, F, G]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil)
+	ex.world.remove(entity, ex.remove)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components
@@ -1601,7 +1601,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) Add(entity Entity, a *A, b *B, c *C
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
 	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
-	oldMask, newMask := ex.world.exchange(entity, ex.ids, nil, ex.relations)
+	oldMask, newMask := ex.world.add(entity, ex.ids, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
@@ -1613,7 +1613,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(*A, *B
 
 // Remove the components previously specified with [Exchange8.Removes] from the given entity.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
-	ex.world.exchange(entity, nil, ex.remove, nil)
+	ex.world.remove(entity, ex.remove)
 }
 
 // Exchange performs the exchange on the given entity, adding the provided components

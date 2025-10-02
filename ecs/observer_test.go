@@ -218,6 +218,8 @@ func TestObserverOnAddRemove(t *testing.T) {
 	builder1 := NewMap1[Position](&w)
 	builder2 := NewMap1[Velocity](&w)
 	builder3 := NewMap1[Heading](&w)
+	ex := NewExchange1[Velocity](&w).Removes(C[Position]())
+
 	filter1 := NewFilter1[Position](&w)
 	filter2 := NewFilter1[Velocity](&w)
 
@@ -264,6 +266,14 @@ func TestObserverOnAddRemove(t *testing.T) {
 
 	builder1.RemoveBatch(filter1.Batch(), nil)
 	expectEqual(t, 11, callRemove)
+
+	e = builder1.NewEntity(&Position{})
+	expectEqual(t, 11, callAdd)
+	expectEqual(t, 11, callRemove)
+
+	ex.Exchange(e, &Velocity{})
+	expectEqual(t, 11, callAdd)
+	expectEqual(t, 12, callRemove)
 }
 
 func TestObserverOnSet(t *testing.T) {
@@ -299,6 +309,7 @@ func TestObserverRelations(t *testing.T) {
 
 	builder1 := NewMap1[ChildOf](&w)
 	builder2 := NewMap1[ChildOf2](&w)
+	ex := NewExchange1[ChildOf2](&w).Removes(C[ChildOf]())
 
 	callAdd := 0
 	callRemove := 0
@@ -355,6 +366,14 @@ func TestObserverRelations(t *testing.T) {
 	builder1.Remove(e1)
 	expectEqual(t, 3, callAdd)
 	expectEqual(t, 3, callRemove)
+
+	e1 = builder1.NewEntity(&ChildOf{}, RelIdx(0, parent1))
+	expectEqual(t, 4, callAdd)
+	expectEqual(t, 3, callRemove)
+
+	ex.Exchange(e1, &ChildOf2{}, RelIdx(0, parent1))
+	expectEqual(t, 4, callAdd)
+	expectEqual(t, 4, callRemove)
 }
 
 func TestObserverRelationsBatch(t *testing.T) {
