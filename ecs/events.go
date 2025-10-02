@@ -94,7 +94,7 @@ type Event struct {
 func (e Event) For(comps ...Comp) Event {
 	for i := range comps {
 		id := TypeID(e.world, comps[i].tp)
-		e.mask.Set(id.id, true)
+		e.mask.Set(id.id)
 	}
 	return e
 }
@@ -155,26 +155,26 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 			if !w.storage.registry.IsRelation[id.id] {
 				panic(fmt.Sprintf("non-relation component %d in relation observer", id.id))
 			}
-			o.compsMask.Set(id.id, true)
+			o.compsMask.Set(id.id)
 			o.hasComps = true
 		}
 	case OnCreateEntity, OnRemoveEntity:
 		for _, c := range o.comps {
 			id := TypeID(w, c.tp)
-			o.withMask.Set(id.id, true)
+			o.withMask.Set(id.id)
 			o.hasWith = true
 		}
 	default:
 		for _, c := range o.comps {
 			id := TypeID(w, c.tp)
-			o.compsMask.Set(id.id, true)
+			o.compsMask.Set(id.id)
 			o.hasComps = true
 		}
 	}
 
 	for _, c := range o.with {
 		id := TypeID(w, c.tp)
-		o.withMask.Set(id.id, true)
+		o.withMask.Set(id.id)
 		o.hasWith = true
 	}
 	if o.exclusive {
@@ -183,7 +183,7 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 	} else {
 		for _, c := range o.without {
 			id := TypeID(w, c.tp)
-			o.withoutMask.Set(id.id, true)
+			o.withoutMask.Set(id.id)
 			o.hasWithout = true
 		}
 	}

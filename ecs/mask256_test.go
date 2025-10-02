@@ -27,8 +27,8 @@ func TestMask256(t *testing.T) {
 	expectFalse(t, mask.Get(big-1))
 	expectFalse(t, mask.Get(big+1))
 
-	mask.Set(0, true)
-	mask.Set(1, false)
+	mask.Set(0)
+	mask.Clear(1)
 
 	expectTrue(t, mask.Get(0))
 	expectFalse(t, mask.Get(1))
@@ -84,8 +84,8 @@ func TestBitMask256Copy(t *testing.T) {
 	mask2 := mask
 	mask3 := &mask
 
-	mask2.Set(1, false)
-	mask3.Set(2, false)
+	mask2.Clear(1)
+	mask3.Clear(2)
 
 	expectTrue(t, mask.Get(1))
 	expectFalse(t, mask2.Get(1))
@@ -105,7 +105,7 @@ func TestBitMask256(t *testing.T) {
 	expectEqual(t, 0, mask.TotalBitsSet())
 
 	for i := range mask256TotalBits {
-		mask.Set(uint8(i), true)
+		mask.Set(uint8(i))
 		expectEqual(t, i+1, mask.TotalBitsSet())
 		expectTrue(t, mask.Get(uint8(i)))
 	}
@@ -124,9 +124,9 @@ func TestBitMask256(t *testing.T) {
 	for i := range 256 {
 		id := ID{uint8(i)}
 		expectFalse(t, mask.Get(id.id))
-		mask.Set(id.id, true)
+		mask.Set(id.id)
 		expectTrue(t, mask.Get(id.id))
-		mask.Set(id.id, false)
+		mask.Clear(id.id)
 		expectFalse(t, mask.Get(id.id))
 	}
 }
@@ -150,7 +150,7 @@ func BenchmarkMask256Get(b *testing.B) {
 	mask := newMask256()
 	for i := range mask256TotalBits {
 		if rand.Float64() < 0.5 {
-			mask.Set(uint8(i), true)
+			mask.Set(uint8(i))
 		}
 	}
 	idx := id(rand.Intn(mask256TotalBits))
@@ -166,7 +166,7 @@ func BenchmarkMask256Contains(b *testing.B) {
 	mask := newMask256()
 	for i := range mask256TotalBits {
 		if rand.Float64() < 0.5 {
-			mask.Set(uint8(i), true)
+			mask.Set(uint8(i))
 		}
 	}
 	filter := newMask256(id(rand.Intn(mask256TotalBits)))
@@ -182,7 +182,7 @@ func BenchmarkMask256ContainsAny(b *testing.B) {
 	mask := newMask256()
 	for i := range mask256TotalBits {
 		if rand.Float64() < 0.5 {
-			mask.Set(uint8(i), true)
+			mask.Set(uint8(i))
 		}
 	}
 	filter := newMask256(id(rand.Intn(mask256TotalBits)))

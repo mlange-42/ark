@@ -73,7 +73,7 @@ func (f *Filter{{.}}{{$genericsShort}}) With(comps ...Comp) *Filter{{.}}{{$gener
 	for _, c := range comps {
 		id := f.world.componentID(c.tp)
 		f.ids = append(f.ids, id)
-		f.filter.mask.Set(id.id, true)
+		f.filter.mask.Set(id.id)
 	}
 	return f
 }
@@ -87,7 +87,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Without(comps ...Comp) *Filter{{.}}{{$ge
 	}
 	for _,c := range comps {
 		id := f.world.componentID(c.tp)
-		f.filter.without.Set(id.id, true)
+		f.filter.without.Set(id.id)
 		f.filter.hasWithout = true
 	}
 	return f

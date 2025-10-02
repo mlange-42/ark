@@ -56,7 +56,7 @@ func (m *idMap[T]) Set(index uint8, value T) {
 		m.chunks[chunk] = make([]T, idMapChunkSize)
 	}
 	m.chunks[chunk][offset] = value
-	m.used.Set(index, true)
+	m.used.Set(index)
 	m.chunkUsed[chunk]++
 }
 
@@ -64,7 +64,7 @@ func (m *idMap[T]) Set(index uint8, value T) {
 // It de-allocates empty chunks.
 func (m *idMap[T]) Remove(index uint8) {
 	chunk := index >> idMapChunkShift
-	m.used.Set(index, false)
+	m.used.Clear(index)
 	m.chunkUsed[chunk]--
 	if m.chunkUsed[chunk] == 0 {
 		m.chunks[chunk] = nil

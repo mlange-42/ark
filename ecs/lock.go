@@ -23,7 +23,7 @@ func newLock() lock {
 // This is not concurrency-safe.
 func (m *lock) Lock() uint8 {
 	lock := m.bitPool.Get()
-	m.locks.SetTrue(lock)
+	m.locks.Set(lock)
 	return lock
 }
 
@@ -33,7 +33,7 @@ func (m *lock) Unlock(l uint8) {
 	if !m.locks.Get(l) {
 		panic("unbalanced unlock. Did you close a query that was already iterated?")
 	}
-	m.locks.SetFalse(l)
+	m.locks.Clear(l)
 	m.bitPool.Recycle(l)
 }
 
@@ -42,7 +42,7 @@ func (m *lock) Unlock(l uint8) {
 func (m *lock) LockSafe() uint8 {
 	m.mu.Lock()
 	lock := m.bitPool.Get()
-	m.locks.SetTrue(lock)
+	m.locks.Set(lock)
 	m.mu.Unlock()
 	return lock
 }
@@ -55,7 +55,7 @@ func (m *lock) UnlockSafe(l uint8) {
 		m.mu.Unlock()
 		panic("unbalanced unlock. Did you close a query that was already iterated?")
 	}
-	m.locks.SetFalse(l)
+	m.locks.Clear(l)
 	m.bitPool.Recycle(l)
 	m.mu.Unlock()
 }
