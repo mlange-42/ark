@@ -18,7 +18,7 @@ type bitMask64 struct {
 func newMask64(ids ...ID) bitMask64 {
 	var mask bitMask64
 	for _, id := range ids {
-		mask.Set(id.id, true)
+		mask.Set(id.id)
 	}
 	return mask
 }
@@ -30,19 +30,12 @@ func (b *bitMask64) Get(bit uint8) bool {
 }
 
 // Set sets the state of the bit at the given index.
-func (b *bitMask64) Set(bit uint8, value bool) {
-	if value {
-		b.bits |= (1 << bit)
-	} else {
-		b.bits &^= (1 << bit)
-	}
-}
-
-func (b *bitMask64) SetTrue(bit uint8) {
+func (b *bitMask64) Set(bit uint8) {
 	b.bits |= (1 << bit)
 }
 
-func (b *bitMask64) SetFalse(bit uint8) {
+// Clear sets the state of the bit at the given index.
+func (b *bitMask64) Clear(bit uint8) {
 	b.bits &= ^(1 << bit)
 }
 

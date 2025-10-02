@@ -446,7 +446,7 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, ma
 		if rel.target == targets[column.index] {
 			continue
 		} else if mask != nil {
-			mask.Set(rel.component.id, true)
+			mask.Set(rel.component.id)
 		}
 		targets[column.index] = rel.target
 		changed = true

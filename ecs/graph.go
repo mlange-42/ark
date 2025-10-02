@@ -46,7 +46,7 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 		if !outMask.Get(id.id) {
 			panic(fmt.Sprintf("entity does not have component with ID %d", id.id))
 		}
-		outMask.Set(id.id, false)
+		outMask.Clear(id.id)
 		if next, ok := curr.neighbors.Get(id.id); ok {
 			curr = &g.nodes[next]
 		} else {
@@ -66,7 +66,7 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 			panic(fmt.Sprintf("component with ID %d added and removed in the same exchange operation", id.id))
 		}
 
-		outMask.Set(id.id, true)
+		outMask.Set(id.id)
 		if next, ok := curr.neighbors.Get(id.id); ok {
 			curr = &g.nodes[next]
 		} else {

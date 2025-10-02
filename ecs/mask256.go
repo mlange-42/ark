@@ -19,7 +19,7 @@ type bitMask256 struct {
 func newMask256(ids ...ID) bitMask256 {
 	var mask bitMask256
 	for _, id := range ids {
-		mask.Set(id.id, true)
+		mask.Set(id.id)
 	}
 	return mask
 }
@@ -32,14 +32,17 @@ func (b *bitMask256) Get(bit uint8) bool {
 }
 
 // Set sets the state of the bit at the given index.
-func (b *bitMask256) Set(bit uint8, value bool) {
+func (b *bitMask256) Set(bit uint8) {
 	idx := bit >> 6
 	mask := uint64(1) << (bit & 63)
-	if value {
-		b.bits[idx] |= mask
-	} else {
-		b.bits[idx] &^= mask // faster than b.bits[idx] &= ^mask
-	}
+	b.bits[idx] |= mask
+}
+
+// Clear sets the state of the bit at the given index.
+func (b *bitMask256) Clear(bit uint8) {
+	idx := bit >> 6
+	mask := uint64(1) << (bit & 63)
+	b.bits[idx] &^= mask
 }
 
 // Not returns the inversion of this mask.
