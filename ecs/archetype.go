@@ -132,6 +132,10 @@ func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, 
 	if !a.HasRelations() {
 		return &storage.tables[a.tables.tables[0]], true
 	}
+	return a.getTableSlowPath(storage, relations)
+}
+
+func (a *archetype) getTableSlowPath(storage *storage, relations []relationID) (*table, bool) {
 	if uint8(len(relations)) < a.numRelations {
 		panic("relation targets must be fully specified")
 	}
