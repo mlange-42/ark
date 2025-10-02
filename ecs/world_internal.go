@@ -82,19 +82,17 @@ func (w *World) remove(entity Entity, rem []ID) (*bitMask, *bitMask) {
 	newTable, relRemoved := w.storage.findOrCreateTable(oldTable, nil, rem, nil, &mask)
 	newIndex := newTable.Add(entity)
 
-	if len(rem) > 0 {
-		hasCompObs := w.storage.observers.HasObservers(OnRemoveComponents)
-		hasRelObs := relRemoved && w.storage.observers.HasObservers(OnRemoveRelations)
-		if hasCompObs || hasRelObs {
-			l := w.lock()
-			if hasCompObs {
-				w.storage.observers.doFireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
-			}
-			if hasRelObs {
-				w.storage.observers.doFireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
-			}
-			w.unlock(l)
+	hasCompObs := w.storage.observers.HasObservers(OnRemoveComponents)
+	hasRelObs := relRemoved && w.storage.observers.HasObservers(OnRemoveRelations)
+	if hasCompObs || hasRelObs {
+		l := w.lock()
+		if hasCompObs {
+			w.storage.observers.doFireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
 		}
+		if hasRelObs {
+			w.storage.observers.doFireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
+		}
+		w.unlock(l)
 	}
 
 	// Get the old table and archetype again, as the pointer may have changed.
