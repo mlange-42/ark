@@ -64,7 +64,7 @@ func (w *World) add(entity Entity, add []ID, relations []relationID) (*bitMask, 
 	return &oldArchetype.mask, &w.storage.archetypes[newTable.archetype].mask
 }
 
-func (w *World) remove(entity Entity, rem []ID) (*bitMask, *bitMask) {
+func (w *World) remove(entity Entity, rem []ID) {
 	w.checkLocked()
 
 	if !w.Alive(entity) {
@@ -112,8 +112,6 @@ func (w *World) remove(entity Entity, rem []ID) (*bitMask, *bitMask) {
 		w.storage.entities[swapEntity.id].row = index.row
 	}
 	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
-
-	return &oldArchetype.mask, &w.storage.archetypes[newTable.archetype].mask
 }
 
 func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relationID) (*bitMask, *bitMask) {
