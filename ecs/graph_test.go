@@ -52,3 +52,20 @@ func TestGraphNodePointers(t *testing.T) {
 
 	expectEqual(t, unsafe.Pointer(ptr), unsafe.Pointer(g.nodes.Get(0)))
 }
+
+func BenchmarkGraphFind(b *testing.B) {
+	g := newGraph()
+
+	id1 := ID{0}
+	id2 := ID{1}
+
+	add := []ID{id2}
+
+	mask1 := newMask()
+	node := g.Find(0, []ID{id1}, nil, &mask1)
+
+	for b.Loop() {
+		n := g.Find(node.id, add, nil, &mask1)
+		g.Find(n.id, nil, add, &mask1)
+	}
+}
