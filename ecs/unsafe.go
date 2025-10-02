@@ -88,9 +88,6 @@ func (u Unsafe) Add(entity Entity, comp ...ID) {
 	if !u.world.Alive(entity) {
 		panic("can't add components to a dead entity")
 	}
-	if len(comp) == 0 {
-		panic("at least one component required to add")
-	}
 	oldMask, newMask := u.world.add(entity, comp, nil)
 	u.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
 }
@@ -99,9 +96,6 @@ func (u Unsafe) Add(entity Entity, comp ...ID) {
 func (u Unsafe) AddRel(entity Entity, comps []ID, relations ...Relation) {
 	if !u.world.Alive(entity) {
 		panic("can't add components to a dead entity")
-	}
-	if len(comps) == 0 {
-		panic("at least one component required to add")
 	}
 	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	oldMask, newMask := u.world.add(entity, comps, u.cachedRelations)
@@ -116,9 +110,6 @@ func (u Unsafe) Remove(entity Entity, comp ...ID) {
 	if !u.world.Alive(entity) {
 		panic("can't remove components from a dead entity")
 	}
-	if len(comp) == 0 {
-		panic("at least one component required to remove")
-	}
 	u.world.remove(entity, comp)
 }
 
@@ -126,9 +117,6 @@ func (u Unsafe) Remove(entity Entity, comp ...ID) {
 func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Relation) {
 	if !u.world.Alive(entity) {
 		panic("can't exchange components on a dead entity")
-	}
-	if len(add) == 0 && len(remove) == 0 {
-		panic("at least one component required to add or remove")
 	}
 	u.cachedRelations = relationSlice(relations).toRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	oldMask, newMask := u.world.exchange(entity, add, remove, u.cachedRelations)

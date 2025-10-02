@@ -47,13 +47,6 @@ func (r *Relation) relationIDForUnsafe(world *World) relationID {
 	}
 }
 
-func relID(id ID, target Entity) relationID {
-	return relationID{
-		target:    target,
-		component: id,
-	}
-}
-
 // id returns the component ID of this RelationID.
 func (r *Relation) id(ids []ID, world *World) ID {
 	if r.index < 255 {

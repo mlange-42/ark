@@ -584,25 +584,32 @@ func TestWorldPanics(t *testing.T) {
 	w := NewWorld(128, 32)
 	_ = ComponentID[Position](&w)
 	_ = ComponentID[Velocity](&w)
-	childID := ComponentID[ChildOf](&w)
 
-	e := w.NewEntity()
-	w.exchange(e, nil, nil, nil)
-	w.RemoveEntity(e)
-
-	expectPanicsWithValue(t, "exchange operation has no effect, but relations were specified. Use SetRelation(s) instead", func() {
+	expectPanicsWithValue(t, "at least one component required to add", func() {
 		e := w.NewEntity()
-		w.exchange(e, nil, nil, []relationID{relID(childID, e)})
+		w.add(e, nil, nil)
 		w.RemoveEntity(e)
 	})
 
-	e = w.NewEntity()
-	w.exchangeBatch(nil, nil, nil, nil, nil)
-	w.RemoveEntity(e)
-
-	expectPanicsWithValue(t, "exchange operation has no effect, but relations were specified. Use SetRelationBatch instead", func() {
+	expectPanicsWithValue(t, "at least one component required to remove", func() {
 		e := w.NewEntity()
-		w.exchangeBatch(nil, nil, nil, []relationID{relID(childID, e)}, nil)
+		w.remove(e, nil)
+		w.RemoveEntity(e)
+	})
+
+	expectPanicsWithValue(t, "at least one component required to add or remove", func() {
+		e := w.NewEntity()
+		w.exchange(e, nil, nil, nil)
+		w.RemoveEntity(e)
+	})
+
+	expectPanicsWithValue(t, "can't exchange components on a dead entity", func() {
+		w.exchange(Entity{}, nil, nil, nil)
+	})
+
+	expectPanicsWithValue(t, "at least one component required to add or remove", func() {
+		e := w.NewEntity()
+		w.exchangeBatch(nil, nil, nil, nil, nil)
 		w.RemoveEntity(e)
 	})
 }

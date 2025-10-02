@@ -30,10 +30,7 @@ func (w *World) add(entity Entity, add []ID, relations []relationID) (*bitMask, 
 		panic("can't add components to a dead entity")
 	}
 	if len(add) == 0 {
-		if len(relations) > 0 {
-			panic("exchange operation has no effect, but relations were specified. Use SetRelation(s) instead")
-		}
-		return nil, nil
+		panic("at least one component required to add")
 	}
 
 	index := w.storage.entities[entity.id]
@@ -71,10 +68,10 @@ func (w *World) remove(entity Entity, rem []ID) (*bitMask, *bitMask) {
 	w.checkLocked()
 
 	if !w.Alive(entity) {
-		panic("can't exchange components on a dead entity")
+		panic("can't remove components from a dead entity")
 	}
 	if len(rem) == 0 {
-		return nil, nil
+		panic("at least one component required to remove")
 	}
 
 	index := w.storage.entities[entity.id]
@@ -128,10 +125,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 		panic("can't exchange components on a dead entity")
 	}
 	if len(add) == 0 && len(rem) == 0 {
-		if len(relations) > 0 {
-			panic("exchange operation has no effect, but relations were specified. Use SetRelation(s) instead")
-		}
-		return nil, nil
+		panic("at least one component required to add or remove")
 	}
 
 	index := w.storage.entities[entity.id]
@@ -193,10 +187,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	w.checkLocked()
 
 	if len(add) == 0 && len(rem) == 0 {
-		if len(relations) > 0 {
-			panic("exchange operation has no effect, but relations were specified. Use SetRelationBatch instead")
-		}
-		return
+		panic("at least one component required to add or remove")
 	}
 	lock := w.lock()
 
