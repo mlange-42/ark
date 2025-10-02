@@ -83,11 +83,16 @@ func BenchmarkAddRemove_1000(b *testing.B) {
 	for _, e := range entities {
 		builder2.AddFn(e, nil)
 	}
+	for _, e := range entities {
+		builder2.Remove(e)
+	}
 
 	for b.Loop() {
 		for _, e := range entities {
-			builder2.Remove(e)
 			builder2.AddFn(e, nil)
+		}
+		for _, e := range entities {
+			builder2.Remove(e)
 		}
 	}
 }
