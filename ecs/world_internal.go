@@ -44,17 +44,19 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 	newTable, relRemoved := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
 	newIndex := newTable.Add(entity)
 
-	hasCompObs := len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents)
-	hasRelObs := len(rem) > 0 && relRemoved && w.storage.observers.HasObservers(OnRemoveRelations)
-	if hasCompObs || hasRelObs {
-		l := w.lock()
-		if hasCompObs {
-			w.storage.observers.doFireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
+	if len(rem) > 0 {
+		hasCompObs := w.storage.observers.HasObservers(OnRemoveComponents)
+		hasRelObs := relRemoved && w.storage.observers.HasObservers(OnRemoveRelations)
+		if hasCompObs || hasRelObs {
+			l := w.lock()
+			if hasCompObs {
+				w.storage.observers.doFireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
+			}
+			if hasRelObs {
+				w.storage.observers.doFireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
+			}
+			w.unlock(l)
 		}
-		if hasRelObs {
-			w.storage.observers.doFireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
-		}
-		w.unlock(l)
 	}
 
 	// Get the old table and archetype again, as the pointer may have changed.
