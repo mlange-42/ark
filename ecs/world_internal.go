@@ -223,33 +223,35 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	}
 	w.storage.slices.tables = tables[:0]
 
-	if len(rem) > 0 && w.storage.observers.HasObservers(OnRemoveComponents) {
-		for _, batch := range batchTables {
-			table := &w.storage.tables[batch.oldTable]
-			oldMask := &w.storage.archetypes[table.archetype].mask
-			newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].archetype].mask
-			len := uintptr(batch.len)
-			earlyOut := true
-			for i := uintptr(0); i < len; i++ {
-				if !w.storage.observers.doFireRemove(OnRemoveComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
-					break
+	if len(rem) > 0 {
+		if w.storage.observers.HasObservers(OnRemoveComponents) {
+			for _, batch := range batchTables {
+				table := &w.storage.tables[batch.oldTable]
+				oldMask := &w.storage.archetypes[table.archetype].mask
+				newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].archetype].mask
+				len := uintptr(batch.len)
+				earlyOut := true
+				for i := uintptr(0); i < len; i++ {
+					if !w.storage.observers.doFireRemove(OnRemoveComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
+						break
+					}
+					earlyOut = false
 				}
-				earlyOut = false
 			}
 		}
-	}
-	if len(rem) > 0 && relRemoved && w.storage.observers.HasObservers(OnRemoveRelations) {
-		for _, batch := range batchTables {
-			table := &w.storage.tables[batch.oldTable]
-			oldMask := &w.storage.archetypes[table.archetype].mask
-			newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].archetype].mask
-			len := uintptr(batch.len)
-			earlyOut := true
-			for i := uintptr(0); i < len; i++ {
-				if !w.storage.observers.doFireRemove(OnRemoveRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
-					break
+		if relRemoved && w.storage.observers.HasObservers(OnRemoveRelations) {
+			for _, batch := range batchTables {
+				table := &w.storage.tables[batch.oldTable]
+				oldMask := &w.storage.archetypes[table.archetype].mask
+				newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].archetype].mask
+				len := uintptr(batch.len)
+				earlyOut := true
+				for i := uintptr(0); i < len; i++ {
+					if !w.storage.observers.doFireRemove(OnRemoveRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
+						break
+					}
+					earlyOut = false
 				}
-				earlyOut = false
 			}
 		}
 	}
@@ -265,33 +267,35 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 		batch.len = len
 	}
 
-	if len(add) > 0 && w.storage.observers.HasObservers(OnAddComponents) {
-		for _, batch := range batchTables {
-			table := &w.storage.tables[batch.newTable]
-			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].archetype].mask
-			newMask := &w.storage.archetypes[table.archetype].mask
-			len := uintptr(batch.start + batch.len)
-			earlyOut := true
-			for i := uintptr(batch.start); i < len; i++ {
-				if !w.storage.observers.doFireAdd(OnAddComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
-					break
+	if len(add) > 0 {
+		if w.storage.observers.HasObservers(OnAddComponents) {
+			for _, batch := range batchTables {
+				table := &w.storage.tables[batch.newTable]
+				oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].archetype].mask
+				newMask := &w.storage.archetypes[table.archetype].mask
+				len := uintptr(batch.start + batch.len)
+				earlyOut := true
+				for i := uintptr(batch.start); i < len; i++ {
+					if !w.storage.observers.doFireAdd(OnAddComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
+						break
+					}
+					earlyOut = false
 				}
-				earlyOut = false
 			}
 		}
-	}
-	if len(add) > 0 && len(relations) > 0 && w.storage.observers.HasObservers(OnAddRelations) {
-		for _, batch := range batchTables {
-			table := &w.storage.tables[batch.newTable]
-			oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].archetype].mask
-			newMask := &w.storage.archetypes[table.archetype].mask
-			len := uintptr(batch.start + batch.len)
-			earlyOut := true
-			for i := uintptr(batch.start); i < len; i++ {
-				if !w.storage.observers.doFireAdd(OnAddRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
-					break
+		if len(relations) > 0 && w.storage.observers.HasObservers(OnAddRelations) {
+			for _, batch := range batchTables {
+				table := &w.storage.tables[batch.newTable]
+				oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].archetype].mask
+				newMask := &w.storage.archetypes[table.archetype].mask
+				len := uintptr(batch.start + batch.len)
+				earlyOut := true
+				for i := uintptr(batch.start); i < len; i++ {
+					if !w.storage.observers.doFireAdd(OnAddRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
+						break
+					}
+					earlyOut = false
 				}
-				earlyOut = false
 			}
 		}
 	}
