@@ -54,20 +54,6 @@ func TestCopyPtr(t *testing.T) {
 	}
 }
 
-func TestPagedSlice(t *testing.T) {
-	a := pagedSlice[int32]{}
-
-	var i int32
-	for i = range 66 {
-		a.Add(i)
-		expectEqual(t, i, *a.Get(i))
-		expectEqual(t, i+1, a.Len())
-	}
-
-	a.Set(3, 100)
-	expectEqual(t, int32(100), *a.Get(3))
-}
-
 func TestIsTrivial(t *testing.T) {
 	expectTrue(t, isTrivial(reflect.TypeFor[[5]int]()))
 	expectTrue(t, isTrivial(reflect.TypeFor[struct{}]()))

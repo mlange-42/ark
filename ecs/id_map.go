@@ -1,9 +1,17 @@
 package ecs
 
+import "math/bits"
+
 const (
 	idMapChunkSize = 16
 	idMapChunks    = maskTotalBits / idMapChunkSize
+
+	// idMapChunkMask is idMapChunkSize - 1
+	idMapChunkMask = idMapChunkSize - 1
 )
+
+// idMapChunkShift is log2(idMapChunkSize)
+var idMapChunkShift = bits.TrailingZeros(uint(idMapChunkSize))
 
 // idMap maps component IDs to values.
 //
@@ -34,24 +42,20 @@ func (m *idMap[T]) Get(index uint8) (T, bool) {
 	if !m.used.Get(index) {
 		return m.zeroValue, false
 	}
-	return m.chunks[index/idMapChunkSize][index%idMapChunkSize], true
-}
-
-// GetPointer returns a pointer to the value at the given key and whether the key is present.
-func (m *idMap[T]) GetPointer(index uint8) (*T, bool) {
-	if !m.used.Get(index) {
-		return nil, false
-	}
-	return &m.chunks[index/idMapChunkSize][index%idMapChunkSize], true
+	chunk := index >> idMapChunkShift
+	offset := index & idMapChunkMask
+	return m.chunks[chunk][offset], true
 }
 
 // Set sets the value at the given key.
 func (m *idMap[T]) Set(index uint8, value T) {
-	chunk := index / idMapChunkSize
+	chunk := index >> idMapChunkShift
+	offset := index & idMapChunkMask
+
 	if m.chunks[chunk] == nil {
 		m.chunks[chunk] = make([]T, idMapChunkSize)
 	}
-	m.chunks[chunk][index%idMapChunkSize] = value
+	m.chunks[chunk][offset] = value
 	m.used.Set(index, true)
 	m.chunkUsed[chunk]++
 }
@@ -59,7 +63,7 @@ func (m *idMap[T]) Set(index uint8, value T) {
 // Remove removes the value at the given key.
 // It de-allocates empty chunks.
 func (m *idMap[T]) Remove(index uint8) {
-	chunk := index / idMapChunkSize
+	chunk := index >> idMapChunkShift
 	m.used.Set(index, false)
 	m.chunkUsed[chunk]--
 	if m.chunkUsed[chunk] == 0 {
