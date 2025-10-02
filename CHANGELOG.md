@@ -9,7 +9,7 @@
 
 ### Features
 
-- Adds an event system for ECS operations entity creation/removal, component addition/removal and relation target changes (#330, #331, #333, #342, #344, #352, #358, #364)
+- Adds an event system for ECS operations like entity creation/removal, component addition/removal and relation target changes (#330, #331, #333, #342, #344, #352, #358, #364)
 - Adds custom event support for the event system (#340, #348)
 - Adds method `World.Shrink` for freeing memory that exceeds current requirements (#323)
 - World lock and filters are concurrency-safe, allowing for concurrent query execution (#360)
@@ -25,8 +25,8 @@
 - Speeds up query creation by optimized world locking (#318, #360)
 - Optimizes bit mask methods by using less math and more bit-wise operations (#319)
 - Speeds up memory allocation for archetype tables and bulk copying by avoiding reflection (#321)
-- Reuses internal slice to avoid allocations (#362, #363)
-- Optimize `World.Reset` by skipping where possible (#366)
+- Reuses internal slices to avoid allocations (#362, #363)
+- Optimizes `World.Reset` by skipping where possible (#366)
 
 ### Documentation
 
@@ -34,7 +34,7 @@
 - Adds a stand-alone example for using Ark with the [Ebiten](https://ebitengine.org/) game engine (#329)
 - Adds a user guide chapter on the new event system (#334, #345, #346, #347, #353, #355)
 - Adds stand-alone examples for built-in and custom events (#354)
-- Adds a stand-alone example for parallel query execution (#360) 
+- Adds a stand-alone example for running queries concurrently (#360) 
 
 ### Bugfixes
 
@@ -45,10 +45,10 @@
 
 - Adds benchmarks for `World.Stats` (#310)
 - World stats are now JSON (de)serializable (#311)
-- Improves error message on attempt to modify a locked world (#312)
+- Improves the error message on attempt to modify a locked world (#312)
 - Changes callback signatures for better IDE autocomplete (#343)
 - Finally, increases test coverage to 100% \o/ (#356)
-- Number of registered observers is included in World statistics (#365)
+- Includes the total number of registered observers in World statistics (#365)
 
 ## [[v0.5.2]](https://github.com/mlange-42/ark/compare/v0.5.1...v0.5.2)
 
