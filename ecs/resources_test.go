@@ -71,3 +71,13 @@ func TestResourcesReset(t *testing.T) {
 	expectTrue(t, ok)
 	expectEqual(t, Heading{50}, *rot)
 }
+
+func TestResourceGeneric(t *testing.T) {
+	w := NewWorld()
+
+	res := NewResource[Position](&w)
+	expectNil(t, res.Get())
+
+	res.Add(&Position{1, 2})
+	expectEqual(t, Position{1, 2}, *res.Get())
+}
