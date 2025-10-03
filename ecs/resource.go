@@ -39,7 +39,11 @@ func (g *Resource[T]) Remove() {
 //
 // Returns nil if there is no such resource.
 func (g *Resource[T]) Get() *T {
-	return g.world.Resources().Get(g.id).(*T)
+	res := g.world.Resources().Get(g.id)
+	if res == nil {
+		return nil
+	}
+	return res.(*T)
 }
 
 // Has returns whether the world has the resource type.

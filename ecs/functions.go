@@ -110,7 +110,11 @@ func ResourceType(w *World, id ResID) (reflect.Type, bool) {
 //
 // See also [AddResource].
 func GetResource[T any](w *World) *T {
-	return w.resources.Get(ResourceID[T](w)).(*T)
+	res := w.resources.Get(ResourceID[T](w))
+	if res == nil {
+		return nil
+	}
+	return res.(*T)
 }
 
 // AddResource adds a resource to the world.

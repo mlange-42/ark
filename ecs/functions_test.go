@@ -93,6 +93,9 @@ func TestResourceShortcuts(t *testing.T) {
 
 	res2 := GetResource[Position](&w)
 	expectEqual(t, res, *res2)
+
+	res3 := GetResource[Velocity](&w)
+	expectNil(t, res3)
 }
 
 func BenchmarkComponentID(b *testing.B) {
