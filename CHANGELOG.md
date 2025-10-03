@@ -6,7 +6,7 @@
 
 - Converts interface `Relation` to a concrete struct type (#306)
 - Removes `RelationID`, use `Relation` instead (#306)
-- `FilterX.Batch` returns a value instead of a pointer, and all using methods change accordingly (#377)
+- `FilterX.Batch` returns a value instead of a pointer, and all using methods change accordingly (#378)
 
 ### Features
 
