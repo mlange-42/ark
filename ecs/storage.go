@@ -46,7 +46,7 @@ func newSlices() slices {
 		tables:    make([]tableID, 0, 32),
 		ints:      make([]uint32, 0, 32),
 
-		entities:        make([]Entity, 0, 8),
+		entities:        make([]Entity, 0, 16),
 		entitiesCleanup: make([]Entity, 0, 256),
 	}
 }
@@ -67,7 +67,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 
 	archetypes := make([]archetype, 0, numArchetypes)
-	archetypes = append(archetypes, newArchetype(0, 0, bitMask{}, nil, []tableID{0}, &reg))
+	archetypes = append(archetypes, newArchetype(0, 0, &bitMask{}, nil, []tableID{0}, &reg))
 	tables := make([]table, 0, numArchetypes)
 	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, nil, nil))
 	return storage{
@@ -281,7 +281,7 @@ func (s *storage) createEntities(table *table, count int) {
 func (s *storage) createArchetype(node *node) *archetype {
 	comps := node.mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
-	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, node.mask, comps, nil, &s.registry))
+	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, &s.registry))
 	archetype := &s.archetypes[index]
 
 	s.allArchetypes = append(s.allArchetypes, archetype.id)

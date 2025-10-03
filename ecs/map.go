@@ -73,9 +73,16 @@ func (m *Map[T]) NewBatch(count int, comp *T, target ...Entity) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 	m.world.checkLocked()
-	lock := m.world.lock()
 	m.relations = relationEntities(target).toRelation(m.world, m.id, m.relations)
 	tableID, start := m.world.newEntities(count, m.ids[:], m.relations)
+
+	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
+	hasRelObs := len(target) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
+	shouldLock := hasCreateObs || hasRelObs || fn != nil
+	var lock uint8
+	if shouldLock {
+		lock = m.world.lock()
+	}
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
@@ -89,7 +96,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 		}
 	}
 
-	if m.world.storage.observers.HasObservers(OnCreateEntity) {
+	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
@@ -101,7 +108,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 		}
 	}
 
-	if len(target) > 0 && m.world.storage.observers.HasObservers(OnAddRelations) {
+	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
@@ -112,7 +119,10 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 			earlyOut = false
 		}
 	}
-	m.world.unlock(lock)
+
+	if shouldLock {
+		m.world.unlock(lock)
+	}
 }
 
 // Get returns the mapped component for the given entity.

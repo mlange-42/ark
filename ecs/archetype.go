@@ -72,7 +72,7 @@ func (t *tableIDs) Clear() {
 	t.indices = map[tableID]uint32{}
 }
 
-func newArchetype(id archetypeID, node nodeID, mask bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
+func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
 	componentsMap := make([]int16, maskTotalBits)
 	for i := range maskTotalBits {
 		componentsMap[i] = -1
@@ -109,7 +109,7 @@ func newArchetype(id archetypeID, node nodeID, mask bitMask, components []ID, ta
 	return archetype{
 		id:             id,
 		node:           node,
-		mask:           mask,
+		mask:           *mask,
 		components:     components,
 		itemSizes:      sizes,
 		componentsMap:  componentsMap,
