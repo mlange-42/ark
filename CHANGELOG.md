@@ -42,7 +42,7 @@
 
 - Zeroes memory of non-trivial component types using reflection to inform GC about invalidated pointers (#324)
 - Filters are un-registered when removed from cache by `World.Reset` (#366)
-- Fixes panic when trying to get a resource that does not exist (#373)
+- Fixes panic when trying to get a resource that does not exist (#374)
 
 ### Other
 
