@@ -106,10 +106,14 @@ func RelIdx(index int, target Entity) Relation {
 // Helper for converting relationSlice
 type relationSlice []Relation
 
-func (r relationSlice) toRelations(world *World, mask *bitMask, ids []ID, out []relationID, copy bool) []relationID {
+func (r relationSlice) ToRelations(world *World, mask *bitMask, ids []ID, out []relationID, copy bool) []relationID {
 	if len(r) == 0 {
 		return out
 	}
+	return r.toRelationsSlowPath(world, mask, ids, out, copy)
+}
+
+func (r relationSlice) toRelationsSlowPath(world *World, mask *bitMask, ids []ID, out []relationID, copy bool) []relationID {
 	if copy {
 		temp := make([]relationID, 0, len(r)+len(out))
 		temp = append(temp, out...)
@@ -139,7 +143,7 @@ func (r relationSlice) toRelations(world *World, mask *bitMask, ids []ID, out []
 	return out
 }
 
-func (r relationSlice) toRelationIDsForUnsafe(world *World, out []relationID) []relationID {
+func (r relationSlice) ToRelationIDsForUnsafe(world *World, out []relationID) []relationID {
 	for _, rel := range r {
 		out = append(out, rel.relationIDForUnsafe(world))
 	}
@@ -157,7 +161,7 @@ func (e Entity) toRelation(world *World, id ID, out []relationID) []relationID {
 // Helper for converting relations
 type relationEntities []Entity
 
-func (r relationEntities) toRelation(world *World, id ID, out []relationID) []relationID {
+func (r relationEntities) ToRelation(world *World, id ID, out []relationID) []relationID {
 	out = out[:0]
 	if len(r) == 0 {
 		return out
