@@ -167,13 +167,13 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter0.Batch] or [Filter0.Query]
 // with different relationship targets may modify stored instances.
-func (f *Filter0) Batch(rel ...Relation) *Batch {
+func (f *Filter0) Batch(rel ...Relation) Batch {
 	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
-	return &Batch{
+	return Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
 	}
@@ -353,13 +353,13 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter1.Batch] or [Filter1.Query]
 // with different relationship targets may modify stored instances.
-func (f *Filter1[A]) Batch(rel ...Relation) *Batch {
+func (f *Filter1[A]) Batch(rel ...Relation) Batch {
 	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
-	return &Batch{
+	return Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
 	}
@@ -537,13 +537,13 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter2.Batch] or [Filter2.Query]
 // with different relationship targets may modify stored instances.
-func (f *Filter2[A, B]) Batch(rel ...Relation) *Batch {
+func (f *Filter2[A, B]) Batch(rel ...Relation) Batch {
 	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
-	return &Batch{
+	return Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
 	}
@@ -727,13 +727,13 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter3.Batch] or [Filter3.Query]
 // with different relationship targets may modify stored instances.
-func (f *Filter3[A, B, C]) Batch(rel ...Relation) *Batch {
+func (f *Filter3[A, B, C]) Batch(rel ...Relation) Batch {
 	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
-	return &Batch{
+	return Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
 	}
@@ -919,13 +919,13 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter4.Batch] or [Filter4.Query]
 // with different relationship targets may modify stored instances.
-func (f *Filter4[A, B, C, D]) Batch(rel ...Relation) *Batch {
+func (f *Filter4[A, B, C, D]) Batch(rel ...Relation) Batch {
 	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
-	return &Batch{
+	return Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
 	}
@@ -1113,13 +1113,13 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter5.Batch] or [Filter5.Query]
 // with different relationship targets may modify stored instances.
-func (f *Filter5[A, B, C, D, E]) Batch(rel ...Relation) *Batch {
+func (f *Filter5[A, B, C, D, E]) Batch(rel ...Relation) Batch {
 	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
-	return &Batch{
+	return Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
 	}
@@ -1309,13 +1309,13 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter6.Batch] or [Filter6.Query]
 // with different relationship targets may modify stored instances.
-func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...Relation) *Batch {
+func (f *Filter6[A, B, C, D, E, F]) Batch(rel ...Relation) Batch {
 	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
-	return &Batch{
+	return Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
 	}
@@ -1507,13 +1507,13 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter7.Batch] or [Filter7.Query]
 // with different relationship targets may modify stored instances.
-func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...Relation) *Batch {
+func (f *Filter7[A, B, C, D, E, F, G]) Batch(rel ...Relation) Batch {
 	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
-	return &Batch{
+	return Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
 	}
@@ -1707,13 +1707,13 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter8.Batch] or [Filter8.Query]
 // with different relationship targets may modify stored instances.
-func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...Relation) *Batch {
+func (f *Filter8[A, B, C, D, E, F, G, H]) Batch(rel ...Relation) Batch {
 	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
-	return &Batch{
+	return Batch{
 		filter:    &f.filter,
 		relations: f.relations[start:],
 	}

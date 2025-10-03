@@ -117,7 +117,7 @@ func (ex *Exchange1[A]) ExchangeFn(entity Entity, fn func(*A), rel ...Relation) 
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
+func (ex *Exchange1[A]) AddBatch(batch Batch, a *A, rel ...Relation) {
 	ex.AddBatchFn(batch, func(_ Entity, pa *A) {
 		*pa = *a
 	}, rel...)
@@ -130,22 +130,22 @@ func (ex *Exchange1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange1[A]) AddBatchFn(batch *Batch, fn func(Entity, *A), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+func (ex *Exchange1[A]) AddBatchFn(batch Batch, fn func(Entity, *A), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange1.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (ex *Exchange1[A]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+func (ex *Exchange1[A]) RemoveBatch(batch Batch, fn func(entity Entity)) {
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange1[A]) ExchangeBatch(batch *Batch, a *A, rel ...Relation) {
+func (ex *Exchange1[A]) ExchangeBatch(batch Batch, a *A, rel ...Relation) {
 	ex.ExchangeBatchFn(batch, func(_ Entity, pa *A) {
 		*pa = *a
 	}, rel...)
@@ -158,8 +158,8 @@ func (ex *Exchange1[A]) ExchangeBatch(batch *Batch, a *A, rel ...Relation) {
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange1[A]) ExchangeBatchFn(batch *Batch, fn func(Entity, *A), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+func (ex *Exchange1[A]) ExchangeBatchFn(batch Batch, fn func(Entity, *A), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
 func (ex *Exchange1[A]) exchangeBatchFn(batch *Batch, fn func(Entity, *A), remove bool, rel ...Relation) {
@@ -310,7 +310,7 @@ func (ex *Exchange2[A, B]) ExchangeFn(entity Entity, fn func(*A, *B), rel ...Rel
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
+func (ex *Exchange2[A, B]) AddBatch(batch Batch, a *A, b *B, rel ...Relation) {
 	ex.AddBatchFn(batch, func(_ Entity, pa *A, pb *B) {
 		*pa = *a
 		*pb = *b
@@ -324,22 +324,22 @@ func (ex *Exchange2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange2[A, B]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+func (ex *Exchange2[A, B]) AddBatchFn(batch Batch, fn func(Entity, *A, *B), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange2.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (ex *Exchange2[A, B]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+func (ex *Exchange2[A, B]) RemoveBatch(batch Batch, fn func(entity Entity)) {
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange2[A, B]) ExchangeBatch(batch *Batch, a *A, b *B, rel ...Relation) {
+func (ex *Exchange2[A, B]) ExchangeBatch(batch Batch, a *A, b *B, rel ...Relation) {
 	ex.ExchangeBatchFn(batch, func(_ Entity, pa *A, pb *B) {
 		*pa = *a
 		*pb = *b
@@ -353,8 +353,8 @@ func (ex *Exchange2[A, B]) ExchangeBatch(batch *Batch, a *A, b *B, rel ...Relati
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange2[A, B]) ExchangeBatchFn(batch *Batch, fn func(Entity, *A, *B), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+func (ex *Exchange2[A, B]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
 func (ex *Exchange2[A, B]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B), remove bool, rel ...Relation) {
@@ -515,7 +515,7 @@ func (ex *Exchange3[A, B, C]) ExchangeFn(entity Entity, fn func(*A, *B, *C), rel
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation) {
+func (ex *Exchange3[A, B, C]) AddBatch(batch Batch, a *A, b *B, c *C, rel ...Relation) {
 	ex.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C) {
 		*pa = *a
 		*pb = *b
@@ -530,22 +530,22 @@ func (ex *Exchange3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Re
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange3[A, B, C]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+func (ex *Exchange3[A, B, C]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange3.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (ex *Exchange3[A, B, C]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+func (ex *Exchange3[A, B, C]) RemoveBatch(batch Batch, fn func(entity Entity)) {
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange3[A, B, C]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation) {
+func (ex *Exchange3[A, B, C]) ExchangeBatch(batch Batch, a *A, b *B, c *C, rel ...Relation) {
 	ex.ExchangeBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C) {
 		*pa = *a
 		*pb = *b
@@ -560,8 +560,8 @@ func (ex *Exchange3[A, B, C]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, rel 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange3[A, B, C]) ExchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+func (ex *Exchange3[A, B, C]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
 func (ex *Exchange3[A, B, C]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C), remove bool, rel ...Relation) {
@@ -728,7 +728,7 @@ func (ex *Exchange4[A, B, C, D]) ExchangeFn(entity Entity, fn func(*A, *B, *C, *
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...Relation) {
+func (ex *Exchange4[A, B, C, D]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, rel ...Relation) {
 	ex.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D) {
 		*pa = *a
 		*pb = *b
@@ -744,22 +744,22 @@ func (ex *Exchange4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+func (ex *Exchange4[A, B, C, D]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange4.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (ex *Exchange4[A, B, C, D]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+func (ex *Exchange4[A, B, C, D]) RemoveBatch(batch Batch, fn func(entity Entity)) {
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange4[A, B, C, D]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...Relation) {
+func (ex *Exchange4[A, B, C, D]) ExchangeBatch(batch Batch, a *A, b *B, c *C, d *D, rel ...Relation) {
 	ex.ExchangeBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D) {
 		*pa = *a
 		*pb = *b
@@ -775,8 +775,8 @@ func (ex *Exchange4[A, B, C, D]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange4[A, B, C, D]) ExchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+func (ex *Exchange4[A, B, C, D]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
 func (ex *Exchange4[A, B, C, D]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D), remove bool, rel ...Relation) {
@@ -949,7 +949,7 @@ func (ex *Exchange5[A, B, C, D, E]) ExchangeFn(entity Entity, fn func(*A, *B, *C
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
+func (ex *Exchange5[A, B, C, D, E]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
 	ex.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E) {
 		*pa = *a
 		*pb = *b
@@ -966,22 +966,22 @@ func (ex *Exchange5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+func (ex *Exchange5[A, B, C, D, E]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange5.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (ex *Exchange5[A, B, C, D, E]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+func (ex *Exchange5[A, B, C, D, E]) RemoveBatch(batch Batch, fn func(entity Entity)) {
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange5[A, B, C, D, E]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
+func (ex *Exchange5[A, B, C, D, E]) ExchangeBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
 	ex.ExchangeBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E) {
 		*pa = *a
 		*pb = *b
@@ -998,8 +998,8 @@ func (ex *Exchange5[A, B, C, D, E]) ExchangeBatch(batch *Batch, a *A, b *B, c *C
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange5[A, B, C, D, E]) ExchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+func (ex *Exchange5[A, B, C, D, E]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
 func (ex *Exchange5[A, B, C, D, E]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E), remove bool, rel ...Relation) {
@@ -1178,7 +1178,7 @@ func (ex *Exchange6[A, B, C, D, E, F]) ExchangeFn(entity Entity, fn func(*A, *B,
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
+func (ex *Exchange6[A, B, C, D, E, F]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
 	ex.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F) {
 		*pa = *a
 		*pb = *b
@@ -1196,22 +1196,22 @@ func (ex *Exchange6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+func (ex *Exchange6[A, B, C, D, E, F]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange6.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (ex *Exchange6[A, B, C, D, E, F]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+func (ex *Exchange6[A, B, C, D, E, F]) RemoveBatch(batch Batch, fn func(entity Entity)) {
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
+func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
 	ex.ExchangeBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F) {
 		*pa = *a
 		*pb = *b
@@ -1229,8 +1229,8 @@ func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatch(batch *Batch, a *A, b *B, c
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
 func (ex *Exchange6[A, B, C, D, E, F]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), remove bool, rel ...Relation) {
@@ -1415,7 +1415,7 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeFn(entity Entity, fn func(*A, 
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
+func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
 	ex.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G) {
 		*pa = *a
 		*pb = *b
@@ -1434,22 +1434,22 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange7.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (ex *Exchange7[A, B, C, D, E, F, G]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+func (ex *Exchange7[A, B, C, D, E, F, G]) RemoveBatch(batch Batch, fn func(entity Entity)) {
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
+func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
 	ex.ExchangeBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G) {
 		*pa = *a
 		*pb = *b
@@ -1468,8 +1468,8 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatch(batch *Batch, a *A, b *B
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
 func (ex *Exchange7[A, B, C, D, E, F, G]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), remove bool, rel ...Relation) {
@@ -1660,7 +1660,7 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeFn(entity Entity, fn func(*
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
 	ex.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H) {
 		*pa = *a
 		*pb = *b
@@ -1680,22 +1680,22 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, 
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange8.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (ex *Exchange8[A, B, C, D, E, F, G, H]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) RemoveBatch(batch Batch, fn func(entity Entity)) {
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
 	ex.ExchangeBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H) {
 		*pa = *a
 		*pb = *b
@@ -1715,8 +1715,8 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatch(batch *Batch, a *A, b
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), remove bool, rel ...Relation) {

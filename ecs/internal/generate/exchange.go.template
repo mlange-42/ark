@@ -140,7 +140,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeFn(entity Entity, fn func({{$
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...Relation) {
+func (ex *Exchange{{.}}{{$genericsShort}}) AddBatch(batch Batch, {{$args}}, rel ...Relation) {
 	ex.AddBatchFn(batch, func(_ Entity, {{$args2}}) {
 		{{- range $lower}}
 		*p{{.}} = *{{.}}
@@ -155,22 +155,22 @@ func (ex *Exchange{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(Entity, {{$fn_args}}), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+func (ex *Exchange{{.}}{{$genericsShort}}) AddBatchFn(batch Batch, fn func(Entity, {{$fn_args}}), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange{{.}}.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (ex *Exchange{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+func (ex *Exchange{{.}}{{$genericsShort}}) RemoveBatch(batch Batch, fn func(entity Entity)) {
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided via the variadic arguments.
-func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatch(batch *Batch, {{$args}}, rel ...Relation) {
+func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatch(batch Batch, {{$args}}, rel ...Relation) {
 	ex.ExchangeBatchFn(batch, func(_ Entity, {{$args2}}) {
 		{{- range $lower}}
 		*p{{.}} = *{{.}}
@@ -185,8 +185,8 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatch(batch *Batch, {{$args}}
 // a relation target entity must be provided via the variadic arguments.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatchFn(batch *Batch, fn func(Entity, {{$fn_args}}), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatchFn(batch Batch, fn func(Entity, {{$fn_args}}), rel ...Relation) {
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
 
