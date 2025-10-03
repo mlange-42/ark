@@ -28,7 +28,7 @@
 - Reuses internal slices to avoid allocations (#362, #363)
 - Optimizes `World.Reset` by skipping where possible (#366)
 - Optimizes adding/removing components by improved archetype graph indexing (#369)
-- Optimizes adding/removing components by improved method inlining (#369)
+- Optimizes adding/removing components by improved method inlining (#369, #376)
 
 ### Documentation
 
