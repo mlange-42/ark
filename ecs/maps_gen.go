@@ -63,9 +63,9 @@ func (m *Map1[A]) NewEntityFn(fn func(*A), rel ...Relation) Entity {
 			(*A)(m.storageA.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -117,7 +117,7 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(Entity, *A), rel ...Relation) {
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -128,7 +128,7 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(Entity, *A), rel ...Relation) {
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -220,9 +220,9 @@ func (m *Map1[A]) AddFn(entity Entity, fn func(*A), rel ...Relation) {
 			(*A)(m.storageA.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -246,7 +246,7 @@ func (m *Map1[A]) Set(entity Entity, a *A) {
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -389,9 +389,9 @@ func (m *Map2[A, B]) NewEntityFn(fn func(*A, *B), rel ...Relation) Entity {
 			(*B)(m.storageB.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -446,7 +446,7 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(Entity, *A, *B), rel ...Relat
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -457,7 +457,7 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(Entity, *A, *B), rel ...Relat
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -562,9 +562,9 @@ func (m *Map2[A, B]) AddFn(entity Entity, fn func(*A, *B), rel ...Relation) {
 			(*B)(m.storageB.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -590,7 +590,7 @@ func (m *Map2[A, B]) Set(entity Entity, a *A, b *B) {
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -745,9 +745,9 @@ func (m *Map3[A, B, C]) NewEntityFn(fn func(*A, *B, *C), rel ...Relation) Entity
 			(*C)(m.storageC.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -805,7 +805,7 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(Entity, *A, *B, *C), rel .
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -816,7 +816,7 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(Entity, *A, *B, *C), rel .
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -934,9 +934,9 @@ func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(*A, *B, *C), rel ...Relatio
 			(*C)(m.storageC.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -964,7 +964,7 @@ func (m *Map3[A, B, C]) Set(entity Entity, a *A, b *B, c *C) {
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -1127,9 +1127,9 @@ func (m *Map4[A, B, C, D]) NewEntityFn(fn func(*A, *B, *C, *D), rel ...Relation)
 			(*D)(m.storageD.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -1190,7 +1190,7 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D)
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -1201,7 +1201,7 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D)
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -1332,9 +1332,9 @@ func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(*A, *B, *C, *D), rel ...
 			(*D)(m.storageD.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -1364,7 +1364,7 @@ func (m *Map4[A, B, C, D]) Set(entity Entity, a *A, b *B, c *C, d *D) {
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -1535,9 +1535,9 @@ func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(*A, *B, *C, *D, *E), rel ...Re
 			(*E)(m.storageE.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -1601,7 +1601,7 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, 
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -1612,7 +1612,7 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, 
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -1756,9 +1756,9 @@ func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E), 
 			(*E)(m.storageE.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -1790,7 +1790,7 @@ func (m *Map5[A, B, C, D, E]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E) {
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -1969,9 +1969,9 @@ func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F), re
 			(*F)(m.storageF.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -2038,7 +2038,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(Entity, *A, *B, *
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -2049,7 +2049,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(Entity, *A, *B, *
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -2206,9 +2206,9 @@ func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E
 			(*F)(m.storageF.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -2242,7 +2242,7 @@ func (m *Map6[A, B, C, D, E, F]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -2429,9 +2429,9 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F, 
 			(*G)(m.storageG.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -2501,7 +2501,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(Entity, *A, *B
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -2512,7 +2512,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(Entity, *A, *B
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -2682,9 +2682,9 @@ func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(*A, *B, *C, *D,
 			(*G)(m.storageG.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -2720,7 +2720,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Set(entity Entity, a *A, b *B, c *C, d *D, e
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -2915,9 +2915,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *
 			(*H)(m.storageH.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -2990,7 +2990,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(Entity, *A,
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -3001,7 +3001,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(Entity, *A,
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -3184,9 +3184,9 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(*A, *B, *C, 
 			(*H)(m.storageH.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -3224,7 +3224,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Set(entity Entity, a *A, b *B, c *C, d *D
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -3427,9 +3427,9 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(*A, *B, *C, *D, *E
 			(*I)(m.storageI.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -3505,7 +3505,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(Entity, 
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -3516,7 +3516,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(Entity, 
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -3712,9 +3712,9 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(*A, *B, *
 			(*I)(m.storageI.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -3754,7 +3754,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Set(entity Entity, a *A, b *B, c *C, d
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -3965,9 +3965,9 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(*A, *B, *C, *D
 			(*J)(m.storageJ.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -4046,7 +4046,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(Enti
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -4057,7 +4057,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(Enti
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -4266,9 +4266,9 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(*A, *
 			(*J)(m.storageJ.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -4310,7 +4310,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Set(entity Entity, a *A, b *B, c *
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -4529,9 +4529,9 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(*A, *B, *C,
 			(*K)(m.storageK.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -4613,7 +4613,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(E
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -4624,7 +4624,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(E
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -4846,9 +4846,9 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(*A
 			(*K)(m.storageK.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -4892,7 +4892,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Set(entity Entity, a *A, b *B, 
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
@@ -5119,9 +5119,9 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(*A, *B, 
 			(*L)(m.storageL.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -5206,7 +5206,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn fun
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -5217,7 +5217,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn fun
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -5452,9 +5452,9 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func
 			(*L)(m.storageL.columns[index.table].Get(row)),
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -5500,7 +5500,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Set(entity Entity, a *A, b *
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 

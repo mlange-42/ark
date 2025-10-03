@@ -151,11 +151,11 @@ func (s *storage) RemoveEntity(entity Entity) {
 		l := s.lock()
 		if hasEntityObs {
 			mask := &s.archetypes[table.archetype].mask
-			s.observers.doFireRemoveEntity(entity, mask, true)
+			s.observers.FireRemoveEntity(entity, mask, true)
 		}
 		if hasRelationObs {
 			mask := &s.archetypes[table.archetype].mask
-			s.observers.doFireRemoveEntityRel(entity, mask, true)
+			s.observers.FireRemoveEntityRel(entity, mask, true)
 		}
 		s.unlock(l)
 	}

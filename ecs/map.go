@@ -47,9 +47,9 @@ func (m *Map[T]) NewEntityFn(fn func(*T), target ...Entity) Entity {
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(target) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -101,7 +101,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -113,7 +113,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -204,9 +204,9 @@ func (m *Map[T]) AddFn(entity Entity, fn func(*T), target ...Entity) {
 		fn(m.GetUnchecked(entity))
 	}
 
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(target) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -229,7 +229,7 @@ func (m *Map[T]) Set(entity Entity, comp *T) {
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 

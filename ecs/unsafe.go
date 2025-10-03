@@ -15,7 +15,7 @@ type Unsafe struct {
 // NewEntity creates a new entity with the given components.
 func (u Unsafe) NewEntity(ids ...ID) Entity {
 	entity, mask := u.world.newEntity(ids, nil)
-	u.world.storage.observers.FireCreateEntity(entity, mask)
+	u.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	return entity
 }
 
@@ -23,9 +23,9 @@ func (u Unsafe) NewEntity(ids ...ID) Entity {
 func (u Unsafe) NewEntityRel(ids []ID, relations ...Relation) Entity {
 	u.cachedRelations = relationSlice(relations).ToRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	entity, mask := u.world.newEntity(ids, u.cachedRelations)
-	u.world.storage.observers.FireCreateEntity(entity, mask)
+	u.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(relations) > 0 {
-		u.world.storage.observers.FireCreateEntityRel(entity, mask)
+		u.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -89,7 +89,7 @@ func (u Unsafe) Add(entity Entity, comp ...ID) {
 		panic("can't add components to a dead entity")
 	}
 	oldMask, newMask := u.world.add(entity, comp, nil)
-	u.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	u.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 }
 
 // AddRel adds the given components and relation targets to an entity.
@@ -99,9 +99,9 @@ func (u Unsafe) AddRel(entity Entity, comps []ID, relations ...Relation) {
 	}
 	u.cachedRelations = relationSlice(relations).ToRelationIDsForUnsafe(u.world, u.cachedRelations[:0])
 	oldMask, newMask := u.world.add(entity, comps, u.cachedRelations)
-	u.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	u.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(relations) > 0 {
-		u.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		u.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -122,9 +122,9 @@ func (u Unsafe) Exchange(entity Entity, add []ID, remove []ID, relations ...Rela
 	oldMask, newMask := u.world.exchange(entity, add, remove, u.cachedRelations)
 
 	if len(add) > 0 {
-		u.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+		u.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 		if len(relations) > 0 {
-			u.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+			u.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 		}
 	}
 }

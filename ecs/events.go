@@ -268,14 +268,14 @@ func (m *observerManager) HasObservers(evt EventType) bool {
 	return m.hasObservers[evt]
 }
 
-func (m *observerManager) FireCreateEntity(e Entity, mask *bitMask) {
+func (m *observerManager) FireCreateEntityIfHas(e Entity, mask *bitMask) {
 	if !m.hasObservers[OnCreateEntity] {
 		return
 	}
-	m.doFireCreateEntity(e, mask, true)
+	m.FireCreateEntity(e, mask, true)
 }
 
-func (m *observerManager) doFireCreateEntity(e Entity, mask *bitMask, earlyOut bool) bool {
+func (m *observerManager) FireCreateEntity(e Entity, mask *bitMask, earlyOut bool) bool {
 	if earlyOut && !m.anyNoWith[OnCreateEntity] && !m.allWith[OnCreateEntity].ContainsAny(mask) {
 		return false
 	}
@@ -294,14 +294,14 @@ func (m *observerManager) doFireCreateEntity(e Entity, mask *bitMask, earlyOut b
 	return found
 }
 
-func (m *observerManager) FireCreateEntityRel(e Entity, mask *bitMask) {
+func (m *observerManager) FireCreateEntityRelIfHas(e Entity, mask *bitMask) {
 	if !m.hasObservers[OnAddRelations] {
 		return
 	}
-	m.doFireCreateEntityRel(e, mask, true)
+	m.FireCreateEntityRel(e, mask, true)
 }
 
-func (m *observerManager) doFireCreateEntityRel(e Entity, mask *bitMask, earlyOut bool) bool {
+func (m *observerManager) FireCreateEntityRel(e Entity, mask *bitMask, earlyOut bool) bool {
 	if earlyOut {
 		if !m.anyNoComps[OnAddRelations] && !m.allComps[OnAddRelations].ContainsAny(mask) {
 			return false
@@ -328,7 +328,7 @@ func (m *observerManager) doFireCreateEntityRel(e Entity, mask *bitMask, earlyOu
 	return found
 }
 
-func (m *observerManager) doFireRemoveEntity(e Entity, mask *bitMask, earlyOut bool) bool {
+func (m *observerManager) FireRemoveEntity(e Entity, mask *bitMask, earlyOut bool) bool {
 	if earlyOut && !m.anyNoWith[OnRemoveEntity] && !m.allWith[OnRemoveEntity].ContainsAny(mask) {
 		return false
 	}
@@ -347,7 +347,7 @@ func (m *observerManager) doFireRemoveEntity(e Entity, mask *bitMask, earlyOut b
 	return found
 }
 
-func (m *observerManager) doFireRemoveEntityRel(e Entity, mask *bitMask, earlyOut bool) bool {
+func (m *observerManager) FireRemoveEntityRel(e Entity, mask *bitMask, earlyOut bool) bool {
 	if earlyOut {
 		if !m.anyNoComps[OnRemoveRelations] && !m.allComps[OnRemoveRelations].ContainsAny(mask) {
 			return false
@@ -374,14 +374,14 @@ func (m *observerManager) doFireRemoveEntityRel(e Entity, mask *bitMask, earlyOu
 	return found
 }
 
-func (m *observerManager) FireAdd(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask) {
+func (m *observerManager) FireAddIfHas(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask) {
 	if !m.hasObservers[evt] {
 		return
 	}
-	m.doFireAdd(evt, e, oldMask, newMask, true)
+	m.FireAdd(evt, e, oldMask, newMask, true)
 }
 
-func (m *observerManager) doFireAdd(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
+func (m *observerManager) FireAdd(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
 	if earlyOut {
 		if !m.anyNoComps[evt] &&
 			(!m.allComps[evt].ContainsAny(newMask) || oldMask.Contains(&m.allComps[evt])) {
@@ -409,7 +409,7 @@ func (m *observerManager) doFireAdd(evt EventType, e Entity, oldMask *bitMask, n
 	return found
 }
 
-func (m *observerManager) doFireRemove(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
+func (m *observerManager) FireRemove(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
 	if earlyOut {
 		if !m.anyNoComps[evt] &&
 			(!m.allComps[evt].ContainsAny(oldMask) || newMask.Contains(&m.allComps[evt])) {
@@ -437,7 +437,7 @@ func (m *observerManager) doFireRemove(evt EventType, e Entity, oldMask *bitMask
 	return found
 }
 
-func (m *observerManager) doFireSet(e Entity, mask *bitMask, newMask *bitMask) {
+func (m *observerManager) FireSet(e Entity, mask *bitMask, newMask *bitMask) {
 	if !m.anyNoComps[OnSetComponents] && !m.allComps[OnSetComponents].ContainsAny(mask) {
 		return
 	}
@@ -459,7 +459,7 @@ func (m *observerManager) doFireSet(e Entity, mask *bitMask, newMask *bitMask) {
 	}
 }
 
-func (m *observerManager) doFireSetRelations(evt EventType, e Entity, mask *bitMask, newMask *bitMask, earlyOut bool) bool {
+func (m *observerManager) FireSetRelations(evt EventType, e Entity, mask *bitMask, newMask *bitMask, earlyOut bool) bool {
 	if earlyOut {
 		if !m.anyNoComps[evt] && !m.allComps[evt].ContainsAny(mask) {
 			return false
