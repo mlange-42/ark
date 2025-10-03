@@ -131,14 +131,14 @@ func (ex *Exchange1[A]) AddBatch(batch Batch, a *A, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) AddBatchFn(batch Batch, fn func(Entity, *A), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange1.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange1[A]) RemoveBatch(batch Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -159,10 +159,10 @@ func (ex *Exchange1[A]) ExchangeBatch(batch Batch, a *A, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange1[A]) ExchangeBatchFn(batch Batch, fn func(Entity, *A), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
-func (ex *Exchange1[A]) exchangeBatchFn(batch Batch, fn func(Entity, *A), remove bool, rel ...Relation) {
+func (ex *Exchange1[A]) exchangeBatchFn(batch *Batch, fn func(Entity, *A), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -325,14 +325,14 @@ func (ex *Exchange2[A, B]) AddBatch(batch Batch, a *A, b *B, rel ...Relation) {
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) AddBatchFn(batch Batch, fn func(Entity, *A, *B), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange2.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange2[A, B]) RemoveBatch(batch Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -354,10 +354,10 @@ func (ex *Exchange2[A, B]) ExchangeBatch(batch Batch, a *A, b *B, rel ...Relatio
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange2[A, B]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
-func (ex *Exchange2[A, B]) exchangeBatchFn(batch Batch, fn func(Entity, *A, *B), remove bool, rel ...Relation) {
+func (ex *Exchange2[A, B]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -531,14 +531,14 @@ func (ex *Exchange3[A, B, C]) AddBatch(batch Batch, a *A, b *B, c *C, rel ...Rel
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange3.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange3[A, B, C]) RemoveBatch(batch Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -561,10 +561,10 @@ func (ex *Exchange3[A, B, C]) ExchangeBatch(batch Batch, a *A, b *B, c *C, rel .
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange3[A, B, C]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
-func (ex *Exchange3[A, B, C]) exchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C), remove bool, rel ...Relation) {
+func (ex *Exchange3[A, B, C]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -745,14 +745,14 @@ func (ex *Exchange4[A, B, C, D]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, r
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange4.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange4[A, B, C, D]) RemoveBatch(batch Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -776,10 +776,10 @@ func (ex *Exchange4[A, B, C, D]) ExchangeBatch(batch Batch, a *A, b *B, c *C, d 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange4[A, B, C, D]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
-func (ex *Exchange4[A, B, C, D]) exchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D), remove bool, rel ...Relation) {
+func (ex *Exchange4[A, B, C, D]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -967,14 +967,14 @@ func (ex *Exchange5[A, B, C, D, E]) AddBatch(batch Batch, a *A, b *B, c *C, d *D
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange5.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange5[A, B, C, D, E]) RemoveBatch(batch Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -999,10 +999,10 @@ func (ex *Exchange5[A, B, C, D, E]) ExchangeBatch(batch Batch, a *A, b *B, c *C,
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange5[A, B, C, D, E]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
-func (ex *Exchange5[A, B, C, D, E]) exchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E), remove bool, rel ...Relation) {
+func (ex *Exchange5[A, B, C, D, E]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -1197,14 +1197,14 @@ func (ex *Exchange6[A, B, C, D, E, F]) AddBatch(batch Batch, a *A, b *B, c *C, d
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange6.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange6[A, B, C, D, E, F]) RemoveBatch(batch Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -1230,10 +1230,10 @@ func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatch(batch Batch, a *A, b *B, c 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
-func (ex *Exchange6[A, B, C, D, E, F]) exchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), remove bool, rel ...Relation) {
+func (ex *Exchange6[A, B, C, D, E, F]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -1435,14 +1435,14 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatch(batch Batch, a *A, b *B, c *C
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange7.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange7[A, B, C, D, E, F, G]) RemoveBatch(batch Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -1469,10 +1469,10 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatch(batch Batch, a *A, b *B,
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
-func (ex *Exchange7[A, B, C, D, E, F, G]) exchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), remove bool, rel ...Relation) {
+func (ex *Exchange7[A, B, C, D, E, F, G]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -1681,14 +1681,14 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatch(batch Batch, a *A, b *B, c
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, false, rel...)
+	ex.exchangeBatchFn(&batch, fn, false, rel...)
 }
 
 // RemoveBatch removes the components previously specified with [Exchange8.Removes]
 // from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) RemoveBatch(batch Batch, fn func(entity Entity)) {
-	removeBatch(ex.world, batch, ex.remove, fn)
+	removeBatch(ex.world, &batch, ex.remove, fn)
 }
 
 // ExchangeBatch performs the exchange on all entities matching the given batch filter.
@@ -1716,10 +1716,10 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatch(batch Batch, a *A, b 
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
-	ex.exchangeBatchFn(batch, fn, true, rel...)
+	ex.exchangeBatchFn(&batch, fn, true, rel...)
 }
 
-func (ex *Exchange8[A, B, C, D, E, F, G, H]) exchangeBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), remove bool, rel ...Relation) {
+func (ex *Exchange8[A, B, C, D, E, F, G, H]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)

@@ -268,7 +268,7 @@ func (m *Map[T]) AddBatchFn(batch Batch, fn func(Entity, *T), target ...Entity) 
 			}
 		}
 	}
-	m.world.exchangeBatch(batch, m.ids[:], nil, m.relations, process)
+	m.world.exchangeBatch(&batch, m.ids[:], nil, m.relations, process)
 }
 
 // Remove the mapped component from the given entity.
@@ -282,7 +282,7 @@ func (m *Map[T]) Remove(entity Entity) {
 // RemoveBatch removes the mapped component from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
 func (m *Map[T]) RemoveBatch(batch Batch, fn func(entity Entity)) {
-	removeBatch(m.world, batch, m.ids[:], fn)
+	removeBatch(m.world, &batch, m.ids[:], fn)
 }
 
 // GetRelation returns the relation target for the entity and the mapped component.
@@ -306,5 +306,5 @@ func (m *Map[T]) SetRelation(entity Entity, target Entity) {
 // SetRelationBatch sets the relation target for all entities matching the given batch filter.
 func (m *Map[T]) SetRelationBatch(batch Batch, target Entity, fn func(entity Entity)) {
 	m.relations = target.toRelation(m.world, m.id, m.relations)
-	setRelationsBatch(m.world, batch, fn, m.relations)
+	setRelationsBatch(m.world, &batch, fn, m.relations)
 }
