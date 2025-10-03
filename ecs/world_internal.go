@@ -91,10 +91,10 @@ func (w *World) remove(entity Entity, rem []ID) {
 	if hasCompObs || hasRelObs {
 		l := w.lock()
 		if hasCompObs {
-			w.storage.observers.doFireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
+			w.storage.observers.FireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
 		}
 		if hasRelObs {
-			w.storage.observers.doFireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
+			w.storage.observers.FireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
 		}
 		w.unlock(l)
 	}
@@ -142,10 +142,10 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 		if hasCompObs || hasRelObs {
 			l := w.lock()
 			if hasCompObs {
-				w.storage.observers.doFireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
+				w.storage.observers.FireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
 			}
 			if hasRelObs {
-				w.storage.observers.doFireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
+				w.storage.observers.FireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
 			}
 			w.unlock(l)
 		}
@@ -219,7 +219,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 				len := uintptr(batch.len)
 				earlyOut := true
 				for i := uintptr(0); i < len; i++ {
-					if !w.storage.observers.doFireRemove(OnRemoveComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
+					if !w.storage.observers.FireRemove(OnRemoveComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
 						break
 					}
 					earlyOut = false
@@ -234,7 +234,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 				len := uintptr(batch.len)
 				earlyOut := true
 				for i := uintptr(0); i < len; i++ {
-					if !w.storage.observers.doFireRemove(OnRemoveRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
+					if !w.storage.observers.FireRemove(OnRemoveRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
 						break
 					}
 					earlyOut = false
@@ -263,7 +263,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 				len := uintptr(batch.start + batch.len)
 				earlyOut := true
 				for i := uintptr(batch.start); i < len; i++ {
-					if !w.storage.observers.doFireAdd(OnAddComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
+					if !w.storage.observers.FireAdd(OnAddComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
 						break
 					}
 					earlyOut = false
@@ -278,7 +278,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 				len := uintptr(batch.start + batch.len)
 				earlyOut := true
 				for i := uintptr(batch.start); i < len; i++ {
-					if !w.storage.observers.doFireAdd(OnAddRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
+					if !w.storage.observers.FireAdd(OnAddRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
 						break
 					}
 					earlyOut = false
@@ -364,7 +364,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	if w.storage.observers.HasObservers(OnRemoveRelations) {
 		lock := w.lock()
 		newMask := &w.storage.archetypes[newTable.archetype].mask
-		w.storage.observers.doFireSetRelations(OnRemoveRelations, entity, &changeMask, newMask, true)
+		w.storage.observers.FireSetRelations(OnRemoveRelations, entity, &changeMask, newMask, true)
 		w.unlock(lock)
 	}
 
@@ -386,7 +386,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 
 	if w.storage.observers.HasObservers(OnAddRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
-		w.storage.observers.doFireSetRelations(OnAddRelations, entity, &changeMask, newMask, true)
+		w.storage.observers.FireSetRelations(OnAddRelations, entity, &changeMask, newMask, true)
 	}
 }
 
@@ -451,7 +451,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 		len := uintptr(oldTable.len)
 		earlyOut := true
 		for i := uintptr(0); i < len; i++ {
-			if !w.storage.observers.doFireSetRelations(OnRemoveRelations, oldTable.GetEntity(i), &changeMask, newMask, earlyOut) {
+			if !w.storage.observers.FireSetRelations(OnRemoveRelations, oldTable.GetEntity(i), &changeMask, newMask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -471,7 +471,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 		earlyOut := true
 		for i := range oldLen {
 			index := uintptr(startIdx + i)
-			if !w.storage.observers.doFireSetRelations(OnAddRelations, oldTable.GetEntity(index), &changeMask, newMask, earlyOut) {
+			if !w.storage.observers.FireSetRelations(OnAddRelations, oldTable.GetEntity(index), &changeMask, newMask, earlyOut) {
 				break
 			}
 			earlyOut = false

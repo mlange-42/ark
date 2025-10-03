@@ -69,9 +69,9 @@ func (ex *Exchange1[A]) AddFn(entity Entity, fn func(*A), rel ...Relation) {
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -107,9 +107,9 @@ func (ex *Exchange1[A]) ExchangeFn(entity Entity, fn func(*A), rel ...Relation) 
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -261,9 +261,9 @@ func (ex *Exchange2[A, B]) AddFn(entity Entity, fn func(*A, *B), rel ...Relation
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -300,9 +300,9 @@ func (ex *Exchange2[A, B]) ExchangeFn(entity Entity, fn func(*A, *B), rel ...Rel
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -465,9 +465,9 @@ func (ex *Exchange3[A, B, C]) AddFn(entity Entity, fn func(*A, *B, *C), rel ...R
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -505,9 +505,9 @@ func (ex *Exchange3[A, B, C]) ExchangeFn(entity Entity, fn func(*A, *B, *C), rel
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -677,9 +677,9 @@ func (ex *Exchange4[A, B, C, D]) AddFn(entity Entity, fn func(*A, *B, *C, *D), r
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -718,9 +718,9 @@ func (ex *Exchange4[A, B, C, D]) ExchangeFn(entity Entity, fn func(*A, *B, *C, *
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -897,9 +897,9 @@ func (ex *Exchange5[A, B, C, D, E]) AddFn(entity Entity, fn func(*A, *B, *C, *D,
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -939,9 +939,9 @@ func (ex *Exchange5[A, B, C, D, E]) ExchangeFn(entity Entity, fn func(*A, *B, *C
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -1125,9 +1125,9 @@ func (ex *Exchange6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(*A, *B, *C, 
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -1168,9 +1168,9 @@ func (ex *Exchange6[A, B, C, D, E, F]) ExchangeFn(entity Entity, fn func(*A, *B,
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -1361,9 +1361,9 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(*A, *B, *
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -1405,9 +1405,9 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeFn(entity Entity, fn func(*A, 
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -1605,9 +1605,9 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(*A, *B
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -1650,9 +1650,9 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeFn(entity Entity, fn func(*
 	if fn != nil {
 		ex.runCallback(entity, fn)
 	}
-	ex.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	ex.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		ex.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		ex.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
