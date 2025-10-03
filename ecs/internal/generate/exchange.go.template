@@ -85,7 +85,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Add(entity Entity, {{$args}}, rel ...
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_args}}), rel ...Relation) {
-	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
+	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 	oldMask, newMask := ex.world.add(entity, ex.ids, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -125,7 +125,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) Exchange(entity Entity, {{$args}}, re
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeFn(entity Entity, fn func({{$fn_args}}), rel ...Relation) {
-	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
+	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 	oldMask, newMask := ex.world.exchange(entity, ex.ids, ex.remove, ex.relations)
 	if fn != nil {
 		ex.runCallback(entity, fn)
@@ -191,7 +191,7 @@ func (ex *Exchange{{.}}{{$genericsShort}}) ExchangeBatchFn(batch *Batch, fn func
 
 
 func (ex *Exchange{{.}}{{$genericsShort}}) exchangeBatchFn(batch *Batch, fn func(Entity, {{$fn_args}}), remove bool, rel ...Relation) {
-	ex.relations = relationSlice(rel).toRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
+	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
