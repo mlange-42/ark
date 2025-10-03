@@ -21,7 +21,7 @@
 - Resets archetype tables in bulk, avoiding table ID lookup (#313)
 - Speeds up freeing tables when removing relation targets, by adding an index lookup (#314)
 - Optimizes dumping and loading entities for serialization by pre-allocating memory (#315)
-- Speeds up archetype switching by 20% by inlining the mask (#317)
+- Speeds up archetype switching by 20% by inlining the mask (#317, #375)
 - Speeds up query creation by optimized world locking (#318, #360)
 - Optimizes bit mask methods by using less math and more bit-wise operations (#319, #372)
 - Speeds up memory allocation for archetype tables and bulk copying by avoiding reflection (#321)

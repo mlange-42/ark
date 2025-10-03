@@ -42,8 +42,14 @@ func (w *World) NewEntity() Entity {
 // The callback function can be nil.
 func (w *World) NewEntities(count int, fn func(entity Entity)) {
 	w.checkLocked()
-	lock := w.lock()
 	tableID, start := w.newEntities(count, nil, nil)
+
+	hasObs := w.storage.observers.HasObservers(OnCreateEntity)
+	shouldLock := hasObs || fn != nil
+	var lock uint8
+	if shouldLock {
+		lock = w.lock()
+	}
 
 	if fn != nil {
 		table := &w.storage.tables[tableID]
@@ -55,7 +61,7 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 		}
 	}
 
-	if w.storage.observers.HasObservers(OnCreateEntity) {
+	if hasObs {
 		table := &w.storage.tables[tableID]
 		mask := &w.storage.archetypes[table.archetype].mask
 		earlyOut := true
@@ -67,7 +73,9 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 			earlyOut = false
 		}
 	}
-	w.unlock(lock)
+	if shouldLock {
+		w.unlock(lock)
+	}
 }
 
 // Alive return whether the given entity is alive.
@@ -90,10 +98,17 @@ func (w *World) RemoveEntity(entity Entity) {
 func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 	w.checkLocked()
 
+	hasEntityObs := w.storage.observers.HasObservers(OnRemoveEntity)
+	hasRelationObs := w.storage.observers.HasObservers(OnRemoveRelations)
+	shouldLock := hasEntityObs || hasRelationObs || fn != nil
+	var lock uint8
+	if shouldLock {
+		lock = w.lock()
+	}
+
 	tables := w.storage.getTables(batch)
 
 	if fn != nil {
-		l := w.lock()
 		for _, tableID := range tables {
 			table := &w.storage.tables[tableID]
 			len := uintptr(table.Len())
@@ -102,13 +117,9 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 				fn(table.GetEntity(i))
 			}
 		}
-		w.unlock(l)
 	}
 
-	hasEntityObs := w.storage.observers.HasObservers(OnRemoveEntity)
-	hasRelationObs := w.storage.observers.HasObservers(OnRemoveRelations)
 	if hasEntityObs || hasRelationObs {
-		l := w.lock()
 		if hasEntityObs {
 			for _, tableID := range tables {
 				table := &w.storage.tables[tableID]
@@ -142,7 +153,6 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 				}
 			}
 		}
-		w.unlock(l)
 	}
 
 	cleanup := w.storage.slices.entitiesCleanup
@@ -168,6 +178,10 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 		w.storage.isTarget[entity.id] = false
 	}
 	w.storage.slices.entitiesCleanup = cleanup[:0]
+
+	if shouldLock {
+		w.unlock(lock)
+	}
 }
 
 // IsLocked returns whether the world is locked by any queries.
