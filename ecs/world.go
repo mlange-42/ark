@@ -95,7 +95,7 @@ func (w *World) RemoveEntity(entity Entity) {
 
 // RemoveEntities removes all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
+func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 	w.checkLocked()
 
 	hasEntityObs := w.storage.observers.HasObservers(OnRemoveEntity)
@@ -106,7 +106,7 @@ func (w *World) RemoveEntities(batch *Batch, fn func(entity Entity)) {
 		lock = w.lock()
 	}
 
-	tables := w.storage.getTables(batch)
+	tables := w.storage.getTables(&batch)
 
 	if fn != nil {
 		for _, tableID := range tables {

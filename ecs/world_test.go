@@ -609,7 +609,7 @@ func TestWorldPanics(t *testing.T) {
 
 	expectPanicsWithValue(t, "at least one component required to add or remove", func() {
 		e := w.NewEntity()
-		w.exchangeBatch(nil, nil, nil, nil, nil)
+		w.exchangeBatch(Batch{}, nil, nil, nil, nil)
 		w.RemoveEntity(e)
 	})
 }

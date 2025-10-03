@@ -302,7 +302,7 @@ func (m *Map{{.}}{{$genericsShort}}) Set(entity Entity, {{$args}}) {
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...Relation) {
+func (m *Map{{.}}{{$genericsShort}}) AddBatch(batch Batch, {{$args}}, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, {{$args2}}) {
 		{{- range $lower}}
 		*p{{.}} = *{{.}}
@@ -317,7 +317,7 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatch(batch *Batch, {{$args}}, rel ...Re
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch *Batch, fn func(Entity, {{$fn_args}}), rel ...Relation) {
+func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch Batch, fn func(Entity, {{$fn_args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -349,7 +349,7 @@ func (m *Map{{.}}{{$genericsShort}}) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map{{.}}{{$genericsShort}}) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map{{.}}{{$genericsShort}}) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -376,7 +376,7 @@ func (m *Map{{.}}{{$genericsShort}}) SetRelations(entity Entity, rel ...Relation
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map{{.}}{{$genericsShort}}) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map{{.}}{{$genericsShort}}) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }

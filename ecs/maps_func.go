@@ -1,6 +1,6 @@
 package ecs
 
-func removeBatch(world *World, batch *Batch, ids []ID, fn func(entity Entity)) {
+func removeBatch(world *World, batch Batch, ids []ID, fn func(entity Entity)) {
 	var process func(tableID tableID, start, len uint32)
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
@@ -15,7 +15,7 @@ func removeBatch(world *World, batch *Batch, ids []ID, fn func(entity Entity)) {
 	world.exchangeBatch(batch, nil, ids, nil, process)
 }
 
-func setRelationsBatch(world *World, batch *Batch, fn func(entity Entity), relations []relationID) {
+func setRelationsBatch(world *World, batch Batch, fn func(entity Entity), relations []relationID) {
 	var process func(tableID tableID, start, len int)
 	if fn != nil {
 		process = func(tableID tableID, start, len int) {

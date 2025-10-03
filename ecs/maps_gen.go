@@ -254,7 +254,7 @@ func (m *Map1[A]) Set(entity Entity, a *A) {
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
+func (m *Map1[A]) AddBatch(batch Batch, a *A, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A) {
 		*pa = *a
 	}, rel...)
@@ -267,7 +267,7 @@ func (m *Map1[A]) AddBatch(batch *Batch, a *A, rel ...Relation) {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map1[A]) AddBatchFn(batch *Batch, fn func(Entity, *A), rel ...Relation) {
+func (m *Map1[A]) AddBatchFn(batch Batch, fn func(Entity, *A), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -295,7 +295,7 @@ func (m *Map1[A]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map1[A]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map1[A]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -322,7 +322,7 @@ func (m *Map1[A]) SetRelations(entity Entity, rel ...Relation) {
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map1[A]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map1[A]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -598,7 +598,7 @@ func (m *Map2[A, B]) Set(entity Entity, a *A, b *B) {
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
+func (m *Map2[A, B]) AddBatch(batch Batch, a *A, b *B, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B) {
 		*pa = *a
 		*pb = *b
@@ -612,7 +612,7 @@ func (m *Map2[A, B]) AddBatch(batch *Batch, a *A, b *B, rel ...Relation) {
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map2[A, B]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B), rel ...Relation) {
+func (m *Map2[A, B]) AddBatchFn(batch Batch, fn func(Entity, *A, *B), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -642,7 +642,7 @@ func (m *Map2[A, B]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map2[A, B]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map2[A, B]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -669,7 +669,7 @@ func (m *Map2[A, B]) SetRelations(entity Entity, rel ...Relation) {
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map2[A, B]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map2[A, B]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -972,7 +972,7 @@ func (m *Map3[A, B, C]) Set(entity Entity, a *A, b *B, c *C) {
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation) {
+func (m *Map3[A, B, C]) AddBatch(batch Batch, a *A, b *B, c *C, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C) {
 		*pa = *a
 		*pb = *b
@@ -987,7 +987,7 @@ func (m *Map3[A, B, C]) AddBatch(batch *Batch, a *A, b *B, c *C, rel ...Relation
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map3[A, B, C]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C), rel ...Relation) {
+func (m *Map3[A, B, C]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -1019,7 +1019,7 @@ func (m *Map3[A, B, C]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map3[A, B, C]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map3[A, B, C]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -1046,7 +1046,7 @@ func (m *Map3[A, B, C]) SetRelations(entity Entity, rel ...Relation) {
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map3[A, B, C]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map3[A, B, C]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -1372,7 +1372,7 @@ func (m *Map4[A, B, C, D]) Set(entity Entity, a *A, b *B, c *C, d *D) {
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ...Relation) {
+func (m *Map4[A, B, C, D]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D) {
 		*pa = *a
 		*pb = *b
@@ -1388,7 +1388,7 @@ func (m *Map4[A, B, C, D]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, rel ..
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map4[A, B, C, D]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
+func (m *Map4[A, B, C, D]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -1422,7 +1422,7 @@ func (m *Map4[A, B, C, D]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map4[A, B, C, D]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map4[A, B, C, D]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -1449,7 +1449,7 @@ func (m *Map4[A, B, C, D]) SetRelations(entity Entity, rel ...Relation) {
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map4[A, B, C, D]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map4[A, B, C, D]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -1798,7 +1798,7 @@ func (m *Map5[A, B, C, D, E]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E) {
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
+func (m *Map5[A, B, C, D, E]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E) {
 		*pa = *a
 		*pb = *b
@@ -1815,7 +1815,7 @@ func (m *Map5[A, B, C, D, E]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map5[A, B, C, D, E]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
+func (m *Map5[A, B, C, D, E]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -1851,7 +1851,7 @@ func (m *Map5[A, B, C, D, E]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map5[A, B, C, D, E]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map5[A, B, C, D, E]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -1878,7 +1878,7 @@ func (m *Map5[A, B, C, D, E]) SetRelations(entity Entity, rel ...Relation) {
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map5[A, B, C, D, E]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map5[A, B, C, D, E]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -2250,7 +2250,7 @@ func (m *Map6[A, B, C, D, E, F]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
+func (m *Map6[A, B, C, D, E, F]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F) {
 		*pa = *a
 		*pb = *b
@@ -2268,7 +2268,7 @@ func (m *Map6[A, B, C, D, E, F]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, 
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
+func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -2306,7 +2306,7 @@ func (m *Map6[A, B, C, D, E, F]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map6[A, B, C, D, E, F]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map6[A, B, C, D, E, F]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -2333,7 +2333,7 @@ func (m *Map6[A, B, C, D, E, F]) SetRelations(entity Entity, rel ...Relation) {
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map6[A, B, C, D, E, F]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map6[A, B, C, D, E, F]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -2728,7 +2728,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Set(entity Entity, a *A, b *B, c *C, d *D, e
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
+func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G) {
 		*pa = *a
 		*pb = *b
@@ -2747,7 +2747,7 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch *Batch, a *A, b *B, c *C, d *
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
+func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -2787,7 +2787,7 @@ func (m *Map7[A, B, C, D, E, F, G]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map7[A, B, C, D, E, F, G]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map7[A, B, C, D, E, F, G]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -2814,7 +2814,7 @@ func (m *Map7[A, B, C, D, E, F, G]) SetRelations(entity Entity, rel ...Relation)
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map7[A, B, C, D, E, F, G]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map7[A, B, C, D, E, F, G]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -3232,7 +3232,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Set(entity Entity, a *A, b *B, c *C, d *D
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
+func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H) {
 		*pa = *a
 		*pb = *b
@@ -3252,7 +3252,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch *Batch, a *A, b *B, c *C, 
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
+func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -3294,7 +3294,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map8[A, B, C, D, E, F, G, H]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map8[A, B, C, D, E, F, G, H]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -3321,7 +3321,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) SetRelations(entity Entity, rel ...Relati
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map8[A, B, C, D, E, F, G, H]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map8[A, B, C, D, E, F, G, H]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -3762,7 +3762,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Set(entity Entity, a *A, b *B, c *C, d
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
+func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I) {
 		*pa = *a
 		*pb = *b
@@ -3783,7 +3783,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatch(batch *Batch, a *A, b *B, c *
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I), rel ...Relation) {
+func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -3827,7 +3827,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map9[A, B, C, D, E, F, G, H, I]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map9[A, B, C, D, E, F, G, H, I]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -3854,7 +3854,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) SetRelations(entity Entity, rel ...Rel
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map9[A, B, C, D, E, F, G, H, I]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map9[A, B, C, D, E, F, G, H, I]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -4318,7 +4318,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Set(entity Entity, a *A, b *B, c *
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J) {
 		*pa = *a
 		*pb = *b
@@ -4340,7 +4340,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatch(batch *Batch, a *A, b *B,
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J), rel ...Relation) {
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -4386,7 +4386,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map10[A, B, C, D, E, F, G, H, I, J]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -4413,7 +4413,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) SetRelations(entity Entity, rel ..
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map10[A, B, C, D, E, F, G, H, I, J]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -4900,7 +4900,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Set(entity Entity, a *A, b *B, 
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K) {
 		*pa = *a
 		*pb = *b
@@ -4923,7 +4923,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatch(batch *Batch, a *A, b 
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K), rel ...Relation) {
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -4971,7 +4971,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -4998,7 +4998,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) SetRelations(entity Entity, rel
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }
@@ -5508,7 +5508,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Set(entity Entity, a *A, b *
 //
 // For each mapped component that is a relationships (see [RelationMarker]),
 // a relation target entity must be provided.
-func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatch(batch *Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H, i *I, j *J, k *K, l *L, rel ...Relation) {
 	m.AddBatchFn(batch, func(_ Entity, pa *A, pb *B, pc *C, pd *D, pe *E, pf *F, pg *G, ph *H, pi *I, pj *J, pk *K, pl *L) {
 		*pa = *a
 		*pb = *b
@@ -5532,7 +5532,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatch(batch *Batch, a *A,
 // a relation target entity must be provided.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
-func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L), rel ...Relation) {
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 
 	var process func(tableID tableID, start, len uint32)
@@ -5582,7 +5582,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Remove(entity Entity) {
 
 // RemoveBatch removes the mapped components from all entities matching the given batch filter,
 // running the given function on each. The function can be nil.
-func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) RemoveBatch(batch *Batch, fn func(entity Entity)) {
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) RemoveBatch(batch Batch, fn func(entity Entity)) {
 	removeBatch(m.world, batch, m.ids, fn)
 }
 
@@ -5609,7 +5609,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) SetRelations(entity Entity, 
 }
 
 // SetRelationsBatch sets relation targets for all entities matching the given batch filter.
-func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) SetRelationsBatch(batch *Batch, fn func(entity Entity), rel ...Relation) {
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) SetRelationsBatch(batch Batch, fn func(entity Entity), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
 	setRelationsBatch(m.world, batch, fn, m.relations)
 }

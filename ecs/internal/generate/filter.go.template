@@ -191,13 +191,13 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 // each time a batch operation is called.
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
-func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) *Batch {
+func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) Batch {
 	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 	}
-	return &Batch {
+	return Batch {
 		filter:    &f.filter,
 		relations: f.relations[start:],
 	}
