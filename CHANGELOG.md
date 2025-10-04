@@ -7,6 +7,7 @@
 - Converts interface `Relation` to a concrete struct type (#306)
 - Removes `RelationID`, use `Relation` instead (#306)
 - `FilterX.Batch` returns a value instead of a pointer, and all using methods change accordingly (#378)
+- Map methods `Get` and `GetUnchecked` panic on missing entity, use `GetOrNil` for the old behavior (#381)
 
 ### Features
 
@@ -30,6 +31,7 @@
 - Optimizes `World.Reset` by skipping where possible (#366)
 - Optimizes adding/removing components by improved archetype graph indexing (#369)
 - Optimizes adding/removing components by improved method inlining (#369, #376)
+- Speeds up map's `Get` and `GetUnchecked` by skipping nil check, see also the breaking changes (#381)
 
 ### Documentation
 

@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"runtime"
 	"testing"
 )
 
@@ -36,10 +37,18 @@ func TestMap(t *testing.T) {
 	posMap.Remove(e1)
 	expectFalse(t, posMap.Has(e1))
 
-	pos = posMap.Get(e1)
+	pos = posMap.GetOrNil(e1)
 	expectNil(t, pos)
-	pos = posMap.GetUnchecked(e1)
-	expectNil(t, pos)
+
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { posMap.Get(e1) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { posMap.GetUnchecked(e1) })
+	} else {
+		expectPanics(t, func() { posMap.Get(e1) })
+		expectPanics(t, func() { posMap.GetUnchecked(e1) })
+	}
 
 	e2 := posMap.NewEntityFn(func(a *Position) {
 		a.X = 100
@@ -52,24 +61,34 @@ func TestMap(t *testing.T) {
 	})
 	expectEqual(t, 200.0, posMap.Get(e2).X)
 
-	expectPanics(t, func() {
-		posMap.Get(Entity{})
-	})
-	expectPanics(t, func() {
-		posMap.Has(Entity{})
-	})
-	expectPanics(t, func() {
-		posMap.Add(Entity{}, &Position{})
-	})
-	expectPanics(t, func() {
-		posMap.Set(Entity{}, &Position{})
-	})
-	expectPanics(t, func() {
-		posMap.AddFn(Entity{}, func(a *Position) {})
-	})
-	expectPanics(t, func() {
-		posMap.Remove(Entity{})
-	})
+	expectPanicsWithValue(t, "can't get a component of a dead entity",
+		func() {
+			posMap.Get(Entity{})
+		})
+	expectPanicsWithValue(t, "can't get a component of a dead entity",
+		func() {
+			posMap.GetOrNil(Entity{})
+		})
+	expectPanicsWithValue(t, "can't check a component of a dead entity",
+		func() {
+			posMap.Has(Entity{})
+		})
+	expectPanicsWithValue(t, "can't add a component to a dead entity",
+		func() {
+			posMap.Add(Entity{}, &Position{})
+		})
+	expectPanicsWithValue(t, "can't set component of a dead entity",
+		func() {
+			posMap.Set(Entity{}, &Position{})
+		})
+	expectPanicsWithValue(t, "can't add a component to a dead entity",
+		func() {
+			posMap.AddFn(Entity{}, func(a *Position) {})
+		})
+	expectPanicsWithValue(t, "can't remove a component from a dead entity",
+		func() {
+			posMap.Remove(Entity{})
+		})
 }
 
 func TestMapNewEntity(t *testing.T) {
@@ -381,4 +400,83 @@ func TestMapAddRelationBatch(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, n, cnt)
+}
+
+func BenchmarkMap1Get_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap1[Position](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, p *Position) {
+		entities = append(entities, e)
+	})
+
+	var pos *Position
+	for b.Loop() {
+		for _, e := range entities {
+			pos = mapper.Get(e)
+		}
+	}
+	runtime.KeepAlive(pos)
+}
+
+func BenchmarkMap1GetUnchecked_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap1[Position](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, p *Position) {
+		entities = append(entities, e)
+	})
+
+	var pos *Position
+	for b.Loop() {
+		for _, e := range entities {
+			pos = mapper.GetUnchecked(e)
+		}
+	}
+	runtime.KeepAlive(pos)
+}
+func BenchmarkMap2Get_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap2[CompA, CompB](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, ca *CompA, cb *CompB) {
+		entities = append(entities, e)
+	})
+
+	var ca *CompA
+	var cb *CompB
+	for b.Loop() {
+		for _, e := range entities {
+			ca, cb = mapper.Get(e)
+		}
+	}
+	runtime.KeepAlive(ca)
+	runtime.KeepAlive(cb)
+}
+
+func BenchmarkMap4Get_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, ca *CompA, cb *CompB, cc *CompC, cd *CompD) {
+		entities = append(entities, e)
+	})
+
+	var ca *CompA
+	var cb *CompB
+	var cc *CompC
+	var cd *CompD
+	for b.Loop() {
+		for _, e := range entities {
+			ca, cb, cc, cd = mapper.Get(e)
+		}
+	}
+	runtime.KeepAlive(ca)
+	runtime.KeepAlive(cb)
+	runtime.KeepAlive(cc)
+	runtime.KeepAlive(cd)
 }

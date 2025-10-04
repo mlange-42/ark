@@ -35,11 +35,6 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 	}
 }
 
-// Get returns a pointer to the component at the given index.
-func (c *column) Get(index uintptr) unsafe.Pointer {
-	return unsafe.Add(c.pointer, index*c.itemSize)
-}
-
 // CopyToEnd copies from the given column to the end of this column.
 // Column length must be increased before.
 func (c *column) CopyToEnd(from *column, ownLen uint32, count uint32) {
