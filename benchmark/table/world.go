@@ -36,6 +36,8 @@ func worldGet1000(b *testing.B) {
 	rand.Shuffle(len(entities), func(i, j int) { entities[i], entities[j] = entities[j], entities[i] })
 
 	var comp *comp1
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		for _, e := range entities {
 			comp = mapper.Get(e)
@@ -61,6 +63,8 @@ func worldGetUnchecked1000(b *testing.B) {
 	rand.Shuffle(len(entities), func(i, j int) { entities[i], entities[j] = entities[j], entities[i] })
 
 	var comp *comp1
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		for _, e := range entities {
 			comp = mapper.GetUnchecked(e)
@@ -85,6 +89,8 @@ func worldHas1000(b *testing.B) {
 	rand.Shuffle(len(entities), func(i, j int) { entities[i], entities[j] = entities[j], entities[i] })
 
 	var has bool
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		for _, e := range entities {
 			has = mapper.Has(e)
@@ -109,6 +115,8 @@ func worldHasUnchecked1000(b *testing.B) {
 	rand.Shuffle(len(entities), func(i, j int) { entities[i], entities[j] = entities[j], entities[i] })
 
 	var has bool
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		for _, e := range entities {
 			has = mapper.HasUnchecked(e)
@@ -136,6 +144,8 @@ func worldGet5_1000(b *testing.B) {
 	var comp3 *comp3
 	var comp4 *comp4
 	var comp5 *comp5
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		for _, e := range entities {
 			comp1, comp2, comp3, comp4, comp5 = mapper.Get(e)
@@ -163,6 +173,8 @@ func worldHasAll5_1000(b *testing.B) {
 	rand.Shuffle(len(entities), func(i, j int) { entities[i], entities[j] = entities[j], entities[i] })
 
 	var has bool
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		for _, e := range entities {
 			has = mapper.HasAll(e)
@@ -186,6 +198,8 @@ func worldAlive1000(b *testing.B) {
 	rand.Shuffle(len(entities), func(i, j int) { entities[i], entities[j] = entities[j], entities[i] })
 
 	var has bool
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		for _, e := range entities {
 			has = w.Alive(e)
@@ -211,6 +225,8 @@ func worldRelation1000(b *testing.B) {
 	rand.Shuffle(len(entities), func(i, j int) { entities[i], entities[j] = entities[j], entities[i] })
 
 	var par ecs.Entity
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		for _, e := range entities {
 			par = mapper.GetRelation(e)
@@ -236,6 +252,8 @@ func worldRelationUnchecked1000(b *testing.B) {
 	rand.Shuffle(len(entities), func(i, j int) { entities[i], entities[j] = entities[j], entities[i] })
 
 	var par ecs.Entity
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		for _, e := range entities {
 			par = mapper.GetRelationUnchecked(e)

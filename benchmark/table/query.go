@@ -30,6 +30,7 @@ func queryIter100k(b *testing.B) {
 	w.NewEntities(100_000, nil)
 	filter := ecs.NewFilter0(&w)
 
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		query := filter.Query()
 		for query.Next() {
@@ -51,6 +52,7 @@ func queryIterGet1Comp100k(b *testing.B) {
 
 	var c1 *comp1
 
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		query := filter.Query()
 		for query.Next() {
@@ -75,6 +77,7 @@ func queryIterGet2Comp100k(b *testing.B) {
 	var c1 *comp1
 	var c2 *comp2
 
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		query := filter.Query()
 		for query.Next() {
@@ -103,6 +106,7 @@ func queryIterGet5Comp100k(b *testing.B) {
 	var c4 *comp4
 	var c5 *comp5
 
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		query := filter.Query()
 		for query.Next() {
@@ -129,6 +133,8 @@ func queryIterEntity100k(b *testing.B) {
 	filter := ecs.NewFilter1[comp1](&w)
 
 	var e ecs.Entity
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		query := filter.Query()
 		for query.Next() {
@@ -151,6 +157,8 @@ func queryRelation100k(b *testing.B) {
 	filter := ecs.NewFilter1[relComp1](&w)
 
 	var par ecs.Entity
+
+	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		query := filter.Query()
 		for query.Next() {
