@@ -157,6 +157,7 @@ func entitiesRemove1000(b *testing.B) {
 		}
 		b.StopTimer()
 		entities = entities[:0]
+		b.StartTimer()
 	}
 }
 
@@ -176,6 +177,7 @@ func entitiesRemove1Comp1000(b *testing.B) {
 		}
 		b.StopTimer()
 		entities = entities[:0]
+		b.StartTimer()
 	}
 }
 
@@ -195,5 +197,6 @@ func entitiesRemove5Comp1000(b *testing.B) {
 		}
 		b.StopTimer()
 		entities = entities[:0]
+		b.StartTimer()
 	}
 }

@@ -62,10 +62,10 @@ func entitiesBatchRemove1000(b *testing.B) {
 	filter := ecs.NewFilter0(&w)
 
 	for b.Loop() {
+		b.StopTimer()
 		w.NewEntities(1000, nil)
 		b.StartTimer()
 		w.RemoveEntities(filter.Batch(), nil)
-		b.StopTimer()
 	}
 }
 
@@ -75,10 +75,10 @@ func entitiesBatchRemove1Comp1000(b *testing.B) {
 	filter := ecs.NewFilter0(&w)
 
 	for b.Loop() {
+		b.StopTimer()
 		builder.NewBatchFn(1000, nil)
 		b.StartTimer()
 		w.RemoveEntities(filter.Batch(), nil)
-		b.StopTimer()
 	}
 }
 
@@ -88,9 +88,9 @@ func entitiesBatchRemove5Comp1000(b *testing.B) {
 	filter := ecs.NewFilter0(&w)
 
 	for b.Loop() {
+		b.StopTimer()
 		builder.NewBatchFn(1000, nil)
 		b.StartTimer()
 		w.RemoveEntities(filter.Batch(), nil)
-		b.StopTimer()
 	}
 }
