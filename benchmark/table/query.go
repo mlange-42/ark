@@ -1,6 +1,7 @@
 package main
 
 import (
+	"runtime"
 	"testing"
 
 	"github.com/mlange-42/ark/benchmark"
@@ -29,10 +30,14 @@ func queryIter100k(b *testing.B) {
 	w.NewEntities(100_000, nil)
 	filter := ecs.NewFilter0(&w)
 
-	for b.Loop() {
+	loop := func() {
 		query := filter.Query()
 		for query.Next() {
 		}
+	}
+
+	for b.Loop() {
+		loop()
 	}
 }
 
@@ -46,13 +51,17 @@ func queryIterGet1Comp100k(b *testing.B) {
 
 	var c1 *comp1
 
-	for b.Loop() {
+	loop := func() {
 		query := filter.Query()
 		for query.Next() {
 			c1 = query.Get()
 		}
 	}
-	_ = c1
+
+	for b.Loop() {
+		loop()
+	}
+	runtime.KeepAlive(c1)
 }
 
 func queryIterGet2Comp100k(b *testing.B) {
@@ -66,13 +75,18 @@ func queryIterGet2Comp100k(b *testing.B) {
 	var c1 *comp1
 	var c2 *comp2
 
-	for b.Loop() {
+	loop := func() {
 		query := filter.Query()
 		for query.Next() {
 			c1, c2 = query.Get()
 		}
 	}
-	_, _ = c1, c2
+
+	for b.Loop() {
+		loop()
+	}
+	runtime.KeepAlive(c1)
+	runtime.KeepAlive(c2)
 }
 
 func queryIterGet5Comp100k(b *testing.B) {
@@ -89,14 +103,22 @@ func queryIterGet5Comp100k(b *testing.B) {
 	var c4 *comp4
 	var c5 *comp5
 
-	for b.Loop() {
+	loop := func() {
 		query := filter.Query()
 		for query.Next() {
 			c1, c2, c3, c4, c5 = query.Get()
 		}
 	}
-	sum := c1.V + c2.V + c3.V + c4.V + c5.V
-	_ = sum
+
+	for b.Loop() {
+		loop()
+	}
+
+	runtime.KeepAlive(c1)
+	runtime.KeepAlive(c2)
+	runtime.KeepAlive(c3)
+	runtime.KeepAlive(c4)
+	runtime.KeepAlive(c5)
 }
 
 func queryIterEntity100k(b *testing.B) {
@@ -107,15 +129,17 @@ func queryIterEntity100k(b *testing.B) {
 	filter := ecs.NewFilter1[comp1](&w)
 
 	var e ecs.Entity
-
-	b.ResetTimer()
-	for b.Loop() {
+	loop := func() {
 		query := filter.Query()
 		for query.Next() {
 			e = query.Entity()
 		}
 	}
-	_ = e
+
+	for b.Loop() {
+		loop()
+	}
+	runtime.KeepAlive(e)
 }
 
 func queryRelation100k(b *testing.B) {
@@ -127,13 +151,17 @@ func queryRelation100k(b *testing.B) {
 	filter := ecs.NewFilter1[relComp1](&w)
 
 	var par ecs.Entity
-	for b.Loop() {
+	loop := func() {
 		query := filter.Query()
 		for query.Next() {
 			par = query.GetRelation(0)
 		}
 	}
-	_ = par
+
+	for b.Loop() {
+		loop()
+	}
+	runtime.KeepAlive(par)
 }
 
 func queryCreate(b *testing.B) {
