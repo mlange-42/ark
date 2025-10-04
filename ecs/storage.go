@@ -249,8 +249,7 @@ func (s *storage) createEntity(table tableID) (Entity, uint32) {
 	entity := s.entityPool.Get()
 
 	idx := s.tables[table].Add(entity)
-	len := len(s.entities)
-	if int(entity.id) == len {
+	if int(entity.id) == len(s.entities) {
 		s.entities = append(s.entities, entityIndex{table: table, row: idx})
 		s.isTarget = append(s.isTarget, false)
 	} else {
