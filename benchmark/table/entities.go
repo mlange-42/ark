@@ -64,8 +64,6 @@ func entitiesCreate1000(b *testing.B) {
 }
 
 func entitiesCreateFn1Comp1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap1[comp1](&w)
 	filter := ecs.NewFilter0(&w)
@@ -73,19 +71,17 @@ func entitiesCreateFn1Comp1000(b *testing.B) {
 	builder.NewBatchFn(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		for j := 0; j < 1000; j++ {
 			_ = builder.NewEntityFn(nil)
 		}
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func entitiesCreate1Comp1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap1[comp1](&w)
 	filter := ecs.NewFilter0(&w)
@@ -94,19 +90,17 @@ func entitiesCreate1Comp1000(b *testing.B) {
 	w.RemoveEntities(filter.Batch(), nil)
 
 	c1 := comp1{}
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		for j := 0; j < 1000; j++ {
 			_ = builder.NewEntity(&c1)
 		}
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func entitiesCreateFn5Comp1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
 	filter := ecs.NewFilter0(&w)
@@ -114,19 +108,17 @@ func entitiesCreateFn5Comp1000(b *testing.B) {
 	builder.NewBatchFn(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		for j := 0; j < 1000; j++ {
 			_ = builder.NewEntityFn(nil)
 		}
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func entitiesCreate5Comp1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
 	filter := ecs.NewFilter0(&w)
@@ -140,24 +132,22 @@ func entitiesCreate5Comp1000(b *testing.B) {
 	builder.NewBatchFn(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		for j := 0; j < 1000; j++ {
 			_ = builder.NewEntity(&c1, &c2, &c3, &c4, &c5)
 		}
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func entitiesRemove1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 
 	entities := make([]ecs.Entity, 0, 1000)
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		w.NewEntities(1000, func(entity ecs.Entity) {
 			entities = append(entities, entity)
 		})
@@ -167,18 +157,17 @@ func entitiesRemove1000(b *testing.B) {
 		}
 		b.StopTimer()
 		entities = entities[:0]
+		b.StartTimer()
 	}
 }
 
 func entitiesRemove1Comp1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap1[comp1](&w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
 			entities = append(entities, entity)
 		})
@@ -188,18 +177,17 @@ func entitiesRemove1Comp1000(b *testing.B) {
 		}
 		b.StopTimer()
 		entities = entities[:0]
+		b.StartTimer()
 	}
 }
 
 func entitiesRemove5Comp1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1, b *comp2, c *comp3, d *comp4, e *comp5) {
 			entities = append(entities, entity)
 		})
@@ -209,5 +197,6 @@ func entitiesRemove5Comp1000(b *testing.B) {
 		}
 		b.StopTimer()
 		entities = entities[:0]
+		b.StartTimer()
 	}
 }

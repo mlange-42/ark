@@ -20,89 +20,77 @@ func benchesEntitiesBatch() []benchmark.Benchmark {
 }
 
 func entitiesBatchCreate1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	filter := ecs.NewFilter0(&w)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		w.NewEntities(1000, nil)
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func entitiesBatchCreate1Comp1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap1[comp1](&w)
 	filter := ecs.NewFilter0(&w)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		builder.NewBatchFn(1000, nil)
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func entitiesBatchCreate5Comp1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
 	filter := ecs.NewFilter0(&w)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		builder.NewBatchFn(1000, nil)
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func entitiesBatchRemove1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	filter := ecs.NewFilter0(&w)
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
+		b.StopTimer()
 		w.NewEntities(1000, nil)
 		b.StartTimer()
 		w.RemoveEntities(filter.Batch(), nil)
-		b.StopTimer()
 	}
 }
 
 func entitiesBatchRemove1Comp1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap1[comp1](&w)
 	filter := ecs.NewFilter0(&w)
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
+		b.StopTimer()
 		builder.NewBatchFn(1000, nil)
 		b.StartTimer()
 		w.RemoveEntities(filter.Batch(), nil)
-		b.StopTimer()
 	}
 }
 
 func entitiesBatchRemove5Comp1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
 	filter := ecs.NewFilter0(&w)
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
+		b.StopTimer()
 		builder.NewBatchFn(1000, nil)
 		b.StartTimer()
 		w.RemoveEntities(filter.Batch(), nil)
-		b.StopTimer()
 	}
 }
