@@ -5,6 +5,27 @@ import (
 	"testing"
 )
 
+func BenchmarkCreateEntity0Comp_1000(b *testing.B) {
+	w := NewWorld()
+	filter := NewFilter0(&w)
+
+	w.NewEntities(1000, nil)
+	w.RemoveEntities(filter.Batch(), nil)
+
+	loop := func() {
+		for range 1000 {
+			_ = w.NewEntity()
+		}
+	}
+
+	for b.Loop() {
+		loop()
+		b.StopTimer()
+		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
+	}
+}
+
 func BenchmarkCreateEntity1Comp_1000(b *testing.B) {
 	w := NewWorld()
 	builder := NewMap1[Position](&w)
@@ -13,10 +34,14 @@ func BenchmarkCreateEntity1Comp_1000(b *testing.B) {
 	builder.NewBatchFn(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
 
-	for b.Loop() {
+	loop := func() {
 		for range 1000 {
 			_ = builder.NewEntityFn(nil)
 		}
+	}
+
+	for b.Loop() {
+		loop()
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
 		b.StartTimer()
