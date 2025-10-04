@@ -135,7 +135,8 @@ func (m *Map[T]) Get(entity Entity) *T {
 		panic("can't get a component of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[T](m.storage, index)
+	row := uintptr(index.row)
+	return (*T)(m.storage.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped component for the given entity.
@@ -147,7 +148,8 @@ func (m *Map[T]) Get(entity Entity) *T {
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) GetUnchecked(entity Entity) *T {
 	index := &m.world.storage.entities[entity.id]
-	return get[T](m.storage, index)
+	row := uintptr(index.row)
+	return (*T)(m.storage.columns[index.table].Get(row))
 }
 
 // Has return whether the given entity has the mapped component.

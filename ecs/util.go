@@ -19,13 +19,15 @@ func capPow2(required uint32) uint32 {
 	return required + 1
 }
 
+/*
 func get[T any](storage *componentStorage, index *entityIndex) *T {
 	col := storage.columns[index.table]
-	//if col == nil {
-	//	return nil
-	//}
+	if col == nil {
+		return nil
+	}
 	return (*T)(col.Get(uintptr(index.row)))
 }
+*/
 
 // copyPtr copies from one pointer to another.
 func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
