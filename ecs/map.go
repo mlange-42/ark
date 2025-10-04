@@ -150,7 +150,7 @@ func (m *Map[T]) Get(entity Entity) *T {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map[T]) GetOrNil(entity Entity) *T {
 	if !m.world.Alive(entity) {
-		panic("can't get components of a dead entity")
+		panic("can't get a component of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
 	return get[T](m.storage, index)
@@ -178,7 +178,7 @@ func (m *Map[T]) GetUnchecked(entity Entity) *T {
 // than calling [Map.Has] and [Map.Get] subsequently.
 func (m *Map[T]) Has(entity Entity) bool {
 	if !m.world.Alive(entity) {
-		panic("can't get a component of a dead entity")
+		panic("can't check a component of a dead entity")
 	}
 	return m.HasUnchecked(entity)
 }

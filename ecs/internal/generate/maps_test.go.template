@@ -77,24 +77,34 @@ func TestMap{{.}}(t *testing.T) {
 		expectFalse(t, mapper.HasAll(e))
 	}
 
-	expectPanics(t, func(){
-		mapper.Get(Entity{})
-	})
-	expectPanics(t, func(){
-		mapper.HasAll(Entity{})
-	})
-	expectPanics(t, func(){
-		mapper.Add(Entity{}, {{$mapArgs}})
-	})
-	expectPanics(t, func(){
-		mapper.Set(Entity{}, {{$mapArgs}})
-	})
-	expectPanics(t, func(){
-		mapper.AddFn(Entity{}, func({{$args}}){})
-	})
-	expectPanics(t, func(){
-		mapper.Remove(Entity{})
-	})
+	expectPanicsWithValue(t, "can't get components of a dead entity",
+		func() {
+			mapper.Get(Entity{})
+		})
+	expectPanicsWithValue(t, "can't get components of a dead entity",
+		func() {
+			mapper.GetOrNil(Entity{})
+		})
+	expectPanicsWithValue(t, "can't check components of a dead entity",
+		func() {
+			mapper.HasAll(Entity{})
+		})
+	expectPanicsWithValue(t, "can't add components to a dead entity",
+		func() {
+			mapper.Add(Entity{}, {{$mapArgs}})
+		})
+	expectPanicsWithValue(t, "can't set components of a dead entity",
+		func() {
+			mapper.Set(Entity{}, {{$mapArgs}})
+		})
+	expectPanicsWithValue(t, "can't add components to a dead entity",
+		func() {
+			mapper.AddFn(Entity{}, func({{$args}}) {})
+		})
+	expectPanicsWithValue(t, "can't remove components from a dead entity",
+		func() {
+			mapper.Remove(Entity{})
+		})
 }
 
 func TestMap{{.}}Nil(t *testing.T) {

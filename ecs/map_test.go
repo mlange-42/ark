@@ -61,24 +61,34 @@ func TestMap(t *testing.T) {
 	})
 	expectEqual(t, 200.0, posMap.Get(e2).X)
 
-	expectPanics(t, func() {
-		posMap.Get(Entity{})
-	})
-	expectPanics(t, func() {
-		posMap.Has(Entity{})
-	})
-	expectPanics(t, func() {
-		posMap.Add(Entity{}, &Position{})
-	})
-	expectPanics(t, func() {
-		posMap.Set(Entity{}, &Position{})
-	})
-	expectPanics(t, func() {
-		posMap.AddFn(Entity{}, func(a *Position) {})
-	})
-	expectPanics(t, func() {
-		posMap.Remove(Entity{})
-	})
+	expectPanicsWithValue(t, "can't get a component of a dead entity",
+		func() {
+			posMap.Get(Entity{})
+		})
+	expectPanicsWithValue(t, "can't get a component of a dead entity",
+		func() {
+			posMap.GetOrNil(Entity{})
+		})
+	expectPanicsWithValue(t, "can't check a component of a dead entity",
+		func() {
+			posMap.Has(Entity{})
+		})
+	expectPanicsWithValue(t, "can't add a component to a dead entity",
+		func() {
+			posMap.Add(Entity{}, &Position{})
+		})
+	expectPanicsWithValue(t, "can't set component of a dead entity",
+		func() {
+			posMap.Set(Entity{}, &Position{})
+		})
+	expectPanicsWithValue(t, "can't add a component to a dead entity",
+		func() {
+			posMap.AddFn(Entity{}, func(a *Position) {})
+		})
+	expectPanicsWithValue(t, "can't remove a component from a dead entity",
+		func() {
+			posMap.Remove(Entity{})
+		})
 }
 
 func TestMapNewEntity(t *testing.T) {
