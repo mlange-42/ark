@@ -78,11 +78,18 @@ func TestMap1Nil(t *testing.T) {
 	mapper := NewMap1[CompA](&w)
 	entity := w.NewEntity()
 
-	a := mapper.Get(entity)
+	a := mapper.GetOrNil(entity)
 	expectNil(t, a)
 
-	a = mapper.GetUnchecked(entity)
-	expectNil(t, a)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap1NewBatch(t *testing.T) {
@@ -410,13 +417,19 @@ func TestMap2Nil(t *testing.T) {
 	mapper := NewMap2[CompA, CompB](&w)
 	entity := w.NewEntity()
 
-	a, b := mapper.Get(entity)
+	a, b := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 
-	a, b = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap2NewBatch(t *testing.T) {
@@ -746,15 +759,20 @@ func TestMap3Nil(t *testing.T) {
 	mapper := NewMap3[CompA, CompB, CompC](&w)
 	entity := w.NewEntity()
 
-	a, b, c := mapper.Get(entity)
+	a, b, c := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 	expectNil(t, c)
 
-	a, b, c = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
-	expectNil(t, c)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap3NewBatch(t *testing.T) {
@@ -1086,17 +1104,21 @@ func TestMap4Nil(t *testing.T) {
 	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
 	entity := w.NewEntity()
 
-	a, b, c, d := mapper.Get(entity)
+	a, b, c, d := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 	expectNil(t, c)
 	expectNil(t, d)
 
-	a, b, c, d = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
-	expectNil(t, c)
-	expectNil(t, d)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap4NewBatch(t *testing.T) {
@@ -1430,19 +1452,22 @@ func TestMap5Nil(t *testing.T) {
 	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
 	entity := w.NewEntity()
 
-	a, b, c, d, e := mapper.Get(entity)
+	a, b, c, d, e := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 	expectNil(t, c)
 	expectNil(t, d)
 	expectNil(t, e)
 
-	a, b, c, d, e = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
-	expectNil(t, c)
-	expectNil(t, d)
-	expectNil(t, e)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap5NewBatch(t *testing.T) {
@@ -1778,7 +1803,7 @@ func TestMap6Nil(t *testing.T) {
 	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
 	entity := w.NewEntity()
 
-	a, b, c, d, e, f := mapper.Get(entity)
+	a, b, c, d, e, f := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 	expectNil(t, c)
@@ -1786,13 +1811,15 @@ func TestMap6Nil(t *testing.T) {
 	expectNil(t, e)
 	expectNil(t, f)
 
-	a, b, c, d, e, f = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
-	expectNil(t, c)
-	expectNil(t, d)
-	expectNil(t, e)
-	expectNil(t, f)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap6NewBatch(t *testing.T) {
@@ -2130,7 +2157,7 @@ func TestMap7Nil(t *testing.T) {
 	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
 	entity := w.NewEntity()
 
-	a, b, c, d, e, f, g := mapper.Get(entity)
+	a, b, c, d, e, f, g := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 	expectNil(t, c)
@@ -2139,14 +2166,15 @@ func TestMap7Nil(t *testing.T) {
 	expectNil(t, f)
 	expectNil(t, g)
 
-	a, b, c, d, e, f, g = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
-	expectNil(t, c)
-	expectNil(t, d)
-	expectNil(t, e)
-	expectNil(t, f)
-	expectNil(t, g)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap7NewBatch(t *testing.T) {
@@ -2486,7 +2514,7 @@ func TestMap8Nil(t *testing.T) {
 	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
 	entity := w.NewEntity()
 
-	a, b, c, d, e, f, g, h := mapper.Get(entity)
+	a, b, c, d, e, f, g, h := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 	expectNil(t, c)
@@ -2496,15 +2524,15 @@ func TestMap8Nil(t *testing.T) {
 	expectNil(t, g)
 	expectNil(t, h)
 
-	a, b, c, d, e, f, g, h = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
-	expectNil(t, c)
-	expectNil(t, d)
-	expectNil(t, e)
-	expectNil(t, f)
-	expectNil(t, g)
-	expectNil(t, h)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap8NewBatch(t *testing.T) {
@@ -2846,7 +2874,7 @@ func TestMap9Nil(t *testing.T) {
 	mapper := NewMap9[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI](&w)
 	entity := w.NewEntity()
 
-	a, b, c, d, e, f, g, h, i := mapper.Get(entity)
+	a, b, c, d, e, f, g, h, i := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 	expectNil(t, c)
@@ -2857,16 +2885,15 @@ func TestMap9Nil(t *testing.T) {
 	expectNil(t, h)
 	expectNil(t, i)
 
-	a, b, c, d, e, f, g, h, i = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
-	expectNil(t, c)
-	expectNil(t, d)
-	expectNil(t, e)
-	expectNil(t, f)
-	expectNil(t, g)
-	expectNil(t, h)
-	expectNil(t, i)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap9NewBatch(t *testing.T) {
@@ -3211,7 +3238,7 @@ func TestMap10Nil(t *testing.T) {
 	mapper := NewMap10[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ](&w)
 	entity := w.NewEntity()
 
-	a, b, c, d, e, f, g, h, i, j := mapper.Get(entity)
+	a, b, c, d, e, f, g, h, i, j := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 	expectNil(t, c)
@@ -3223,17 +3250,15 @@ func TestMap10Nil(t *testing.T) {
 	expectNil(t, i)
 	expectNil(t, j)
 
-	a, b, c, d, e, f, g, h, i, j = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
-	expectNil(t, c)
-	expectNil(t, d)
-	expectNil(t, e)
-	expectNil(t, f)
-	expectNil(t, g)
-	expectNil(t, h)
-	expectNil(t, i)
-	expectNil(t, j)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap10NewBatch(t *testing.T) {
@@ -3580,7 +3605,7 @@ func TestMap11Nil(t *testing.T) {
 	mapper := NewMap11[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK](&w)
 	entity := w.NewEntity()
 
-	a, b, c, d, e, f, g, h, i, j, k := mapper.Get(entity)
+	a, b, c, d, e, f, g, h, i, j, k := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 	expectNil(t, c)
@@ -3593,18 +3618,15 @@ func TestMap11Nil(t *testing.T) {
 	expectNil(t, j)
 	expectNil(t, k)
 
-	a, b, c, d, e, f, g, h, i, j, k = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
-	expectNil(t, c)
-	expectNil(t, d)
-	expectNil(t, e)
-	expectNil(t, f)
-	expectNil(t, g)
-	expectNil(t, h)
-	expectNil(t, i)
-	expectNil(t, j)
-	expectNil(t, k)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap11NewBatch(t *testing.T) {
@@ -3953,7 +3975,7 @@ func TestMap12Nil(t *testing.T) {
 	mapper := NewMap12[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH, CompI, CompJ, CompK, CompL](&w)
 	entity := w.NewEntity()
 
-	a, b, c, d, e, f, g, h, i, j, k, l := mapper.Get(entity)
+	a, b, c, d, e, f, g, h, i, j, k, l := mapper.GetOrNil(entity)
 	expectNil(t, a)
 	expectNil(t, b)
 	expectNil(t, c)
@@ -3967,19 +3989,15 @@ func TestMap12Nil(t *testing.T) {
 	expectNil(t, k)
 	expectNil(t, l)
 
-	a, b, c, d, e, f, g, h, i, j, k, l = mapper.GetUnchecked(entity)
-	expectNil(t, a)
-	expectNil(t, b)
-	expectNil(t, c)
-	expectNil(t, d)
-	expectNil(t, e)
-	expectNil(t, f)
-	expectNil(t, g)
-	expectNil(t, h)
-	expectNil(t, i)
-	expectNil(t, j)
-	expectNil(t, k)
-	expectNil(t, l)
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap12NewBatch(t *testing.T) {

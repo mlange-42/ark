@@ -103,15 +103,20 @@ func TestMap{{.}}Nil(t *testing.T) {
 	mapper := NewMap{{.}}{{$generics}}(&w)
 	entity := w.NewEntity()
 
-	{{$values}} := mapper.Get(entity)
+	{{$values}} := mapper.GetOrNil(entity)
 	{{- range $lower}}
 	expectNil(t, {{.}})
 	{{- end}}
 	
-	{{$values}} = mapper.GetUnchecked(entity)
-	{{- range $lower}}
-	expectNil(t, {{.}})
-	{{- end}}
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.Get(entity) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { mapper.GetUnchecked(entity) })
+	} else {
+		expectPanics(t, func() { mapper.Get(entity) })
+		expectPanics(t, func() { mapper.GetUnchecked(entity) })
+	}
 }
 
 func TestMap{{.}}NewBatch(t *testing.T) {

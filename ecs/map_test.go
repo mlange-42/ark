@@ -37,10 +37,18 @@ func TestMap(t *testing.T) {
 	posMap.Remove(e1)
 	expectFalse(t, posMap.Has(e1))
 
-	pos = posMap.Get(e1)
+	pos = posMap.GetOrNil(e1)
 	expectNil(t, pos)
-	pos = posMap.GetUnchecked(e1)
-	expectNil(t, pos)
+
+	if isDebug {
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { posMap.Get(e1) })
+		expectPanicsWithValue(t, "entity does not have component the requested component type",
+			func() { posMap.GetUnchecked(e1) })
+	} else {
+		expectPanics(t, func() { posMap.Get(e1) })
+		expectPanics(t, func() { posMap.GetUnchecked(e1) })
+	}
 
 	e2 := posMap.NewEntityFn(func(a *Position) {
 		a.X = 100
