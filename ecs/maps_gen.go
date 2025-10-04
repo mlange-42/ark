@@ -142,7 +142,10 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(Entity, *A), rel ...Relation) {
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map1.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) Get(entity Entity) *A {
@@ -154,11 +157,28 @@ func (m *Map1[A]) Get(entity Entity) *A {
 	return (*A)(m.storageA.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map1.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map1[A]) GetOrNil(entity Entity) *A {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map1.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map1.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
@@ -169,7 +189,7 @@ func (m *Map1[A]) GetUnchecked(entity Entity) *A {
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map1.Get] and checking for nil pointer may be faster
+// Using [Map1.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map1.HasAll] and [Map1.Get] subsequently.
 func (m *Map1[A]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -457,7 +477,10 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(Entity, *A, *B), rel ...Relat
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map2.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
@@ -470,11 +493,28 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 		(*B)(m.storageB.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map2.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map2[A, B]) GetOrNil(entity Entity) (*A, *B) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map2.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map2.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
@@ -486,7 +526,7 @@ func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map2.Get] and checking for nil pointer may be faster
+// Using [Map2.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map2.HasAll] and [Map2.Get] subsequently.
 func (m *Map2[A, B]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -794,7 +834,10 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(Entity, *A, *B, *C), rel .
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map3.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
@@ -808,11 +851,28 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 		(*C)(m.storageC.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map3.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map3[A, B, C]) GetOrNil(entity Entity) (*A, *B, *C) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map3.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map3.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
@@ -825,7 +885,7 @@ func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map3.Get] and checking for nil pointer may be faster
+// Using [Map3.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map3.HasAll] and [Map3.Get] subsequently.
 func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -1149,7 +1209,10 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D)
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map4.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
@@ -1164,11 +1227,28 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 		(*D)(m.storageD.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map4.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map4[A, B, C, D]) GetOrNil(entity Entity) (*A, *B, *C, *D) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map4.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map4.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
@@ -1182,7 +1262,7 @@ func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map4.Get] and checking for nil pointer may be faster
+// Using [Map4.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map4.HasAll] and [Map4.Get] subsequently.
 func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -1522,7 +1602,10 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, 
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map5.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
@@ -1538,11 +1621,28 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 		(*E)(m.storageE.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map5.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map5[A, B, C, D, E]) GetOrNil(entity Entity) (*A, *B, *C, *D, *E) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map5.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map5.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
@@ -1557,7 +1657,7 @@ func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map5.Get] and checking for nil pointer may be faster
+// Using [Map5.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map5.HasAll] and [Map5.Get] subsequently.
 func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -1913,7 +2013,10 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(Entity, *A, *B, *
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map6.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
@@ -1930,11 +2033,28 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 		(*F)(m.storageF.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map6.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map6[A, B, C, D, E, F]) GetOrNil(entity Entity) (*A, *B, *C, *D, *E, *F) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map6.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map6.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
@@ -1950,7 +2070,7 @@ func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map6.Get] and checking for nil pointer may be faster
+// Using [Map6.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map6.HasAll] and [Map6.Get] subsequently.
 func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -2322,7 +2442,10 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(Entity, *A, *B
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map7.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
@@ -2340,11 +2463,28 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 		(*G)(m.storageG.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map7.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map7[A, B, C, D, E, F, G]) GetOrNil(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map7.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map7.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
@@ -2361,7 +2501,7 @@ func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D,
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map7.Get] and checking for nil pointer may be faster
+// Using [Map7.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map7.HasAll] and [Map7.Get] subsequently.
 func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -2749,7 +2889,10 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(Entity, *A,
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map8.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
@@ -2768,11 +2911,28 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 		(*H)(m.storageH.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map8.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map8[A, B, C, D, E, F, G, H]) GetOrNil(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map8.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map8.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
@@ -2790,7 +2950,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, 
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map8.Get] and checking for nil pointer may be faster
+// Using [Map8.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map8.HasAll] and [Map8.Get] subsequently.
 func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -3194,7 +3354,10 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(Entity, 
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map9.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I) {
@@ -3214,11 +3377,28 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Get(entity Entity) (*A, *B, *C, *D, *E
 		(*I)(m.storageI.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map9.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map9[A, B, C, D, E, F, G, H, I]) GetOrNil(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map9.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map9.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I) {
@@ -3237,7 +3417,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) GetUnchecked(entity Entity) (*A, *B, *
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map9.Get] and checking for nil pointer may be faster
+// Using [Map9.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map9.HasAll] and [Map9.Get] subsequently.
 func (m *Map9[A, B, C, D, E, F, G, H, I]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -3657,7 +3837,10 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(Enti
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map10.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J) {
@@ -3678,11 +3861,28 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Get(entity Entity) (*A, *B, *C, *D
 		(*J)(m.storageJ.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map10.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map10[A, B, C, D, E, F, G, H, I, J]) GetOrNil(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index), get[J](m.storageJ, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map10.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map10.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J) {
@@ -3702,7 +3902,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) GetUnchecked(entity Entity) (*A, *
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map10.Get] and checking for nil pointer may be faster
+// Using [Map10.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map10.HasAll] and [Map10.Get] subsequently.
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -4138,7 +4338,10 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(E
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map11.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K) {
@@ -4160,11 +4363,28 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Get(entity Entity) (*A, *B, *C,
 		(*K)(m.storageK.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map11.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) GetOrNil(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index), get[J](m.storageJ, index), get[K](m.storageK, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map11.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map11.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K) {
@@ -4185,7 +4405,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) GetUnchecked(entity Entity) (*A
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map11.Get] and checking for nil pointer may be faster
+// Using [Map11.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map11.HasAll] and [Map11.Get] subsequently.
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
@@ -4637,7 +4857,10 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn fun
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map12.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L) {
@@ -4660,11 +4883,28 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Get(entity Entity) (*A, *B, 
 		(*L)(m.storageL.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map12.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) GetOrNil(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L) {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index), get[J](m.storageJ, index), get[K](m.storageK, index), get[L](m.storageL, index)
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map12.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map12.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L) {
@@ -4686,7 +4926,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) GetUnchecked(entity Entity) 
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map12.Get] and checking for nil pointer may be faster
+// Using [Map12.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map12.HasAll] and [Map12.Get] subsequently.
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {

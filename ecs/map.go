@@ -127,7 +127,10 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 
 // Get returns the mapped component for the given entity.
 //
-// Returns nil if the entity does not have the mapped component.
+// Panics if the component is missing for the entity.
+// Alternatively, use the slower [Map.GetOrNil]
+// to get nil for missing component.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) Get(entity Entity) *T {
@@ -139,11 +142,28 @@ func (m *Map[T]) Get(entity Entity) *T {
 	return (*T)(m.storage.columns[index.table].Get(row))
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil if the entity does not have the component.
+// Alternatively, use the faster [Map.Get], which panics on missing component.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map[T]) GetOrNil(entity Entity) *T {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return get[T](m.storage, index)
+}
+
 // GetUnchecked returns the mapped component for the given entity.
 // In contrast to [Map.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Returns nil if the entity does not have the mapped component.
+// Panics if the component is missing for the entity.
+// Alternatively, use the slower [Map.GetOrNil]
+// to get nil for missing component.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) GetUnchecked(entity Entity) *T {
@@ -154,7 +174,7 @@ func (m *Map[T]) GetUnchecked(entity Entity) *T {
 
 // Has return whether the given entity has the mapped component.
 //
-// Using [Map.Get] and checking for nil pointer may be faster
+// Using [Map.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map.Has] and [Map.Get] subsequently.
 func (m *Map[T]) Has(entity Entity) bool {
 	if !m.world.Alive(entity) {

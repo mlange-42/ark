@@ -176,7 +176,10 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 
 // Get returns the mapped components for the given entity.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map{{.}}.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$returnTypes}} {
@@ -190,11 +193,29 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$returnTypes}} {
 	{{- end}}
 }
 
+// GetOrNil returns the mapped components for the given entity.
+//
+// Return nil for components the entity is missing.
+// Alternatively, use the faster [Map{{.}}.Get], which panics on missing components.
+//
+// ⚠️ Do not store the obtained pointers outside of the current context!
+func (m *Map{{.}}{{$genericsShort}}) GetOrNil(entity Entity) {{$returnTypes}} {
+	if !m.world.Alive(entity) {
+		panic("can't get components of a dead entity")
+	}
+	index := &m.world.storage.entities[entity.id]
+	return {{range $i, $v := $upper}}{{if $i}}, {{end}}get[{{$v}}](m.storage{{$v}}, index)
+	{{- end}}
+}
+
 // GetUnchecked returns the mapped components for the given entity.
 // In contrast to [Map{{.}}.Get], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 //
-// Return nil for components the entity is missing.
+// Panics if any of the components is missing for the entity.
+// Alternatively, use the slower [Map{{.}}.GetOrNil]
+// to get nil for missing components.
+// Build with -tags=ark_debug for more informative error messages.
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$returnTypes}} {
@@ -207,7 +228,7 @@ func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$returnTypes}
 
 // HasAll return whether the given entity has all mapped components.
 //
-// Using [Map{{.}}.Get] and checking for nil pointer may be faster
+// Using [Map{{.}}.GetOrNil] and checking for nil pointer may be faster
 // than calling [Map{{.}}.HasAll] and [Map{{.}}.Get] subsequently.
 func (m *Map{{.}}{{$genericsShort}}) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
