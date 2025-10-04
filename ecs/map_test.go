@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"runtime"
 	"testing"
 )
 
@@ -381,4 +382,83 @@ func TestMapAddRelationBatch(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, n, cnt)
+}
+
+func BenchmarkMap1Get_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap1[Position](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, p *Position) {
+		entities = append(entities, e)
+	})
+
+	var pos *Position
+	for b.Loop() {
+		for _, e := range entities {
+			pos = mapper.Get(e)
+		}
+	}
+	runtime.KeepAlive(pos)
+}
+
+func BenchmarkMap1GetUnchecked_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap1[Position](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, p *Position) {
+		entities = append(entities, e)
+	})
+
+	var pos *Position
+	for b.Loop() {
+		for _, e := range entities {
+			pos = mapper.GetUnchecked(e)
+		}
+	}
+	runtime.KeepAlive(pos)
+}
+func BenchmarkMap2Get_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap2[CompA, CompB](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, ca *CompA, cb *CompB) {
+		entities = append(entities, e)
+	})
+
+	var ca *CompA
+	var cb *CompB
+	for b.Loop() {
+		for _, e := range entities {
+			ca, cb = mapper.Get(e)
+		}
+	}
+	runtime.KeepAlive(ca)
+	runtime.KeepAlive(cb)
+}
+
+func BenchmarkMap4Get_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, ca *CompA, cb *CompB, cc *CompC, cd *CompD) {
+		entities = append(entities, e)
+	})
+
+	var ca *CompA
+	var cb *CompB
+	var cc *CompC
+	var cd *CompD
+	for b.Loop() {
+		for _, e := range entities {
+			ca, cb, cc, cd = mapper.Get(e)
+		}
+	}
+	runtime.KeepAlive(ca)
+	runtime.KeepAlive(cb)
+	runtime.KeepAlive(cc)
+	runtime.KeepAlive(cd)
 }
