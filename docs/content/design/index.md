@@ -69,10 +69,6 @@ The **number of entities** alive at any one time is limited to just under 5 bill
 
 Ark is **not thread-safe**. This design choice avoids internal locking mechanisms, which would introduce overhead and complexity. In scientific modeling, where large numbers of simulations are often executed in parallel, this approach is more efficient and scalable.
 
-> [!NOTE]
-> The following feature is not yet released and is planned for Ark v0.6.0.
-> You can try it out on the `main` branch.
-
 **Concurrent query execution** is yet possible if the queries don't access the same entities concurrently.
 For example, [entity relationships](../relations/) can be used to split up entities
 of the same archetype to process them in parallel.
