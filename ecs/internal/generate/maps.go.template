@@ -91,9 +91,9 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$fn_args}}), rel ...R
 			{{- end}}
 		)
 	}
-	m.world.storage.observers.FireCreateEntity(entity, mask)
+	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireCreateEntityRel(entity, mask)
+		m.world.storage.observers.FireCreateEntityRelIfHas(entity, mask)
 	}
 	return entity
 }
@@ -151,7 +151,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -162,7 +162,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
-			if !m.world.storage.observers.doFireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
+			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
 				break
 			}
 			earlyOut = false
@@ -184,17 +184,8 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$returnTypes}} {
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	{{range $i, $v := $upper}}
-	var {{index $lower $i}} *{{$v}}
+	return {{range $i, $v := $upper}}{{if $i}}, {{end}}get[{{$v}}](m.storage{{$v}}, index)
 	{{- end}}
-	{{range $i, $v := $upper}}
-	column{{$v}} := m.storage{{$v}}.columns[index.table]
-	if column{{$v}} != nil {
-		{{index $lower $i}} = (*{{$v}})(column{{$v}}.Get(row))
-	}
-	{{- end}}
-	return {{$return}}
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -206,17 +197,8 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$returnTypes}} {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$returnTypes}} {
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	{{range $i, $v := $upper}}
-	var {{index $lower $i}} *{{$v}}
+	return {{range $i, $v := $upper}}{{if $i}}, {{end}}get[{{$v}}](m.storage{{$v}}, index)
 	{{- end}}
-	{{range $i, $v := $upper}}
-	column{{$v}} := m.storage{{$v}}.columns[index.table]
-	if column{{$v}} != nil {
-		{{index $lower $i}} = (*{{$v}})(column{{$v}}.Get(row))
-	}
-	{{- end}}
-	return {{$return}}
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -263,9 +245,9 @@ func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_args}}),
 			{{- end}}
 		)
 	}
-	m.world.storage.observers.FireAdd(OnAddComponents, entity, oldMask, newMask)
+	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
 	if len(rel) > 0 {
-		m.world.storage.observers.FireAdd(OnAddRelations, entity, oldMask, newMask)
+		m.world.storage.observers.FireAddIfHas(OnAddRelations, entity, oldMask, newMask)
 	}
 }
 
@@ -294,7 +276,7 @@ func (m *Map{{.}}{{$genericsShort}}) Set(entity Entity, {{$args}}) {
 	
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
-		m.world.storage.observers.doFireSet(entity, &m.mask, newMask)
+		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
 
