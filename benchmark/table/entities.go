@@ -1,6 +1,7 @@
 package main
 
 import (
+	"runtime"
 	"testing"
 
 	"github.com/mlange-42/ark/benchmark"
@@ -9,7 +10,7 @@ import (
 
 func benchesEntities() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
-		{Name: "Entity.IsZero", Desc: "", F: entitiesIsZero2, N: 2},
+		{Name: "Entity.IsZero", Desc: "", F: entitiesIsZero2, N: 2000},
 
 		{Name: "World.NewEntity", Desc: "memory already alloc.", F: entitiesCreate1000, N: 1000},
 
@@ -32,30 +33,33 @@ func entitiesIsZero2(b *testing.B) {
 	var zero1 bool
 	var zero2 bool
 
-	for b.Loop() {
-		zero1 = e.IsZero()
-		zero2 = z.IsZero()
+	loop := func() {
+		for range 1000 {
+			zero1 = e.IsZero()
+			zero2 = z.IsZero()
+		}
 	}
-	s := zero1 || zero2
-	_ = s
+	for b.Loop() {
+		loop()
+	}
+	runtime.KeepAlive(zero1)
+	runtime.KeepAlive(zero2)
 }
 
 func entitiesCreate1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	filter := ecs.NewFilter0(&w)
 
 	w.NewEntities(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		for j := 0; j < 1000; j++ {
 			_ = w.NewEntity()
 		}
 		b.StopTimer()
 		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
