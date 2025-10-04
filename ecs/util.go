@@ -21,9 +21,9 @@ func capPow2(required uint32) uint32 {
 
 func get[T any](storage *componentStorage, index *entityIndex) *T {
 	col := storage.columns[index.table]
-	if col == nil {
-		return nil
-	}
+	//if col == nil {
+	//	return nil
+	//}
 	return (*T)(col.Get(uintptr(index.row)))
 }
 
