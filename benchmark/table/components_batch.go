@@ -23,8 +23,6 @@ func benchesComponentsBatch() []benchmark.Benchmark {
 }
 
 func componentsBatchAdd1_1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	mapper := ecs.NewMap1[comp1](&w)
 	filter1 := ecs.NewFilter0(&w)
@@ -39,17 +37,15 @@ func componentsBatchAdd1_1000(b *testing.B) {
 	mapper.AddBatchFn(filter1.Batch(), nil)
 	mapper.RemoveBatch(filter2.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		mapper.AddBatchFn(filter1.Batch(), nil)
 		b.StopTimer()
 		mapper.RemoveBatch(filter2.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func componentsBatchAdd5_1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
 	filter1 := ecs.NewFilter0(&w)
@@ -64,17 +60,15 @@ func componentsBatchAdd5_1000(b *testing.B) {
 	mapper.AddBatchFn(filter1.Batch(), nil)
 	mapper.RemoveBatch(filter2.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		mapper.AddBatchFn(filter1.Batch(), nil)
 		b.StopTimer()
 		mapper.RemoveBatch(filter2.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func componentsBatchAdd1to5_1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap5[comp2, comp3, comp4, comp5, comp6](&w)
 	mapper := ecs.NewMap1[comp1](&w)
@@ -90,17 +84,15 @@ func componentsBatchAdd1to5_1000(b *testing.B) {
 	mapper.AddBatchFn(filter1.Batch(), nil)
 	mapper.RemoveBatch(filter2.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		mapper.AddBatchFn(filter1.Batch(), nil)
 		b.StopTimer()
 		mapper.RemoveBatch(filter2.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func componentsBatchRemove1_1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	mapper := ecs.NewMap1[comp1](&w)
 	filter1 := ecs.NewFilter1[comp1](&w)
@@ -115,17 +107,15 @@ func componentsBatchRemove1_1000(b *testing.B) {
 	mapper.RemoveBatch(filter1.Batch(), nil)
 	mapper.AddBatchFn(filter2.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		mapper.RemoveBatch(filter1.Batch(), nil)
 		b.StopTimer()
 		mapper.AddBatchFn(filter2.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func componentsBatchRemove5_1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
 	filter1 := ecs.NewFilter5[comp1, comp2, comp3, comp4, comp5](&w)
@@ -140,17 +130,15 @@ func componentsBatchRemove5_1000(b *testing.B) {
 	mapper.RemoveBatch(filter1.Batch(), nil)
 	mapper.AddBatchFn(filter2.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		mapper.RemoveBatch(filter1.Batch(), nil)
 		b.StopTimer()
 		mapper.AddBatchFn(filter2.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func componentsBatchRemove1of5_1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
 	mapper := ecs.NewMap1[comp1](&w)
@@ -166,17 +154,15 @@ func componentsBatchRemove1of5_1000(b *testing.B) {
 	mapper.RemoveBatch(filter1.Batch(), nil)
 	mapper.AddBatchFn(filter2.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		mapper.RemoveBatch(filter1.Batch(), nil)
 		b.StopTimer()
 		mapper.AddBatchFn(filter2.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func componentsBatchExchange1_1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	ex1 := ecs.NewExchange1[comp1](&w).Removes(ecs.C[comp2]())
 	ex2 := ecs.NewExchange1[comp2](&w).Removes(ecs.C[comp1]())
@@ -193,17 +179,15 @@ func componentsBatchExchange1_1000(b *testing.B) {
 	ex2.ExchangeBatchFn(filter1.Batch(), nil)
 	ex1.ExchangeBatchFn(filter2.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		ex2.ExchangeBatchFn(filter1.Batch(), nil)
 		b.StopTimer()
 		ex1.ExchangeBatchFn(filter2.Batch(), nil)
+		b.StartTimer()
 	}
 }
 
 func componentsBatchExchange1of5_1000(b *testing.B) {
-	b.StopTimer()
-
 	w := ecs.NewWorld()
 	ex1 := ecs.NewExchange1[comp1](&w).Removes(ecs.C[comp2]())
 	ex2 := ecs.NewExchange1[comp2](&w).Removes(ecs.C[comp1]())
@@ -220,10 +204,10 @@ func componentsBatchExchange1of5_1000(b *testing.B) {
 	ex2.ExchangeBatchFn(filter1.Batch(), nil)
 	ex1.ExchangeBatchFn(filter2.Batch(), nil)
 
-	for i := 0; i < b.N; i++ {
-		b.StartTimer()
+	for b.Loop() {
 		ex2.ExchangeBatchFn(filter1.Batch(), nil)
 		b.StopTimer()
 		ex1.ExchangeBatchFn(filter2.Batch(), nil)
+		b.StartTimer()
 	}
 }
