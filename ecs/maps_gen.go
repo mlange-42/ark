@@ -150,7 +150,8 @@ func (m *Map1[A]) Get(entity Entity) *A {
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -162,7 +163,8 @@ func (m *Map1[A]) Get(entity Entity) *A {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map1[A]) GetUnchecked(entity Entity) *A {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -463,7 +465,9 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -475,7 +479,9 @@ func (m *Map2[A, B]) Get(entity Entity) (*A, *B) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map2[A, B]) GetUnchecked(entity Entity) (*A, *B) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -796,7 +802,10 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -808,7 +817,10 @@ func (m *Map3[A, B, C]) Get(entity Entity) (*A, *B, *C) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map3[A, B, C]) GetUnchecked(entity Entity) (*A, *B, *C) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -1145,7 +1157,11 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -1157,7 +1173,11 @@ func (m *Map4[A, B, C, D]) Get(entity Entity) (*A, *B, *C, *D) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map4[A, B, C, D]) GetUnchecked(entity Entity) (*A, *B, *C, *D) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -1510,7 +1530,12 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -1522,7 +1547,12 @@ func (m *Map5[A, B, C, D, E]) Get(entity Entity) (*A, *B, *C, *D, *E) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map5[A, B, C, D, E]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -1891,7 +1921,13 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -1903,7 +1939,13 @@ func (m *Map6[A, B, C, D, E, F]) Get(entity Entity) (*A, *B, *C, *D, *E, *F) {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map6[A, B, C, D, E, F]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -2288,7 +2330,14 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -2300,7 +2349,14 @@ func (m *Map7[A, B, C, D, E, F, G]) Get(entity Entity) (*A, *B, *C, *D, *E, *F, 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map7[A, B, C, D, E, F, G]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -2701,7 +2757,15 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -2713,7 +2777,15 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Get(entity Entity) (*A, *B, *C, *D, *E, *
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map8[A, B, C, D, E, F, G, H]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -3130,7 +3202,16 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Get(entity Entity) (*A, *B, *C, *D, *E
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -3142,7 +3223,16 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Get(entity Entity) (*A, *B, *C, *D, *E
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map9[A, B, C, D, E, F, G, H, I]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -3575,7 +3665,17 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Get(entity Entity) (*A, *B, *C, *D
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index), get[J](m.storageJ, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row)),
+		(*J)(m.storageJ.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -3587,7 +3687,17 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Get(entity Entity) (*A, *B, *C, *D
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index), get[J](m.storageJ, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row)),
+		(*J)(m.storageJ.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -4036,7 +4146,18 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Get(entity Entity) (*A, *B, *C,
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index), get[J](m.storageJ, index), get[K](m.storageK, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row)),
+		(*J)(m.storageJ.columns[index.table].Get(row)),
+		(*K)(m.storageK.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -4048,7 +4169,18 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Get(entity Entity) (*A, *B, *C,
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index), get[J](m.storageJ, index), get[K](m.storageK, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row)),
+		(*J)(m.storageJ.columns[index.table].Get(row)),
+		(*K)(m.storageK.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.
@@ -4513,7 +4645,19 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Get(entity Entity) (*A, *B, 
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index), get[J](m.storageJ, index), get[K](m.storageK, index), get[L](m.storageL, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row)),
+		(*J)(m.storageJ.columns[index.table].Get(row)),
+		(*K)(m.storageK.columns[index.table].Get(row)),
+		(*L)(m.storageL.columns[index.table].Get(row))
 }
 
 // GetUnchecked returns the mapped components for the given entity.
@@ -4525,7 +4669,19 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Get(entity Entity) (*A, *B, 
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) GetUnchecked(entity Entity) (*A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L) {
 	index := &m.world.storage.entities[entity.id]
-	return get[A](m.storageA, index), get[B](m.storageB, index), get[C](m.storageC, index), get[D](m.storageD, index), get[E](m.storageE, index), get[F](m.storageF, index), get[G](m.storageG, index), get[H](m.storageH, index), get[I](m.storageI, index), get[J](m.storageJ, index), get[K](m.storageK, index), get[L](m.storageL, index)
+	row := uintptr(index.row)
+	return (*A)(m.storageA.columns[index.table].Get(row)),
+		(*B)(m.storageB.columns[index.table].Get(row)),
+		(*C)(m.storageC.columns[index.table].Get(row)),
+		(*D)(m.storageD.columns[index.table].Get(row)),
+		(*E)(m.storageE.columns[index.table].Get(row)),
+		(*F)(m.storageF.columns[index.table].Get(row)),
+		(*G)(m.storageG.columns[index.table].Get(row)),
+		(*H)(m.storageH.columns[index.table].Get(row)),
+		(*I)(m.storageI.columns[index.table].Get(row)),
+		(*J)(m.storageJ.columns[index.table].Get(row)),
+		(*K)(m.storageK.columns[index.table].Get(row)),
+		(*L)(m.storageL.columns[index.table].Get(row))
 }
 
 // HasAll return whether the given entity has all mapped components.

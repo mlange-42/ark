@@ -184,7 +184,9 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$returnTypes}} {
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
-	return {{range $i, $v := $upper}}{{if $i}}, {{end}}get[{{$v}}](m.storage{{$v}}, index)
+	row := uintptr(index.row)
+	return {{range $i, $v := $upper}}{{if $i}},
+	{{end}}(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row))
 	{{- end}}
 }
 
@@ -197,7 +199,9 @@ func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$returnTypes}} {
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) GetUnchecked(entity Entity) {{$returnTypes}} {
 	index := &m.world.storage.entities[entity.id]
-	return {{range $i, $v := $upper}}{{if $i}}, {{end}}get[{{$v}}](m.storage{{$v}}, index)
+	row := uintptr(index.row)
+	return {{range $i, $v := $upper}}{{if $i}},
+	{{end}}(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row))
 	{{- end}}
 }
 
