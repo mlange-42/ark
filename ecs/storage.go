@@ -30,10 +30,12 @@ type componentStorage struct {
 }
 
 type slices struct {
-	relations []relationID
-	batches   []batchTable
-	tables    []tableID
-	ints      []uint32
+	batches []batchTable
+	tables  []tableID
+	ints    []uint32
+
+	relations        []relationID
+	relationsCleanup []relationID
 
 	entities        []Entity
 	entitiesCleanup []Entity
@@ -41,10 +43,12 @@ type slices struct {
 
 func newSlices() slices {
 	return slices{
-		relations: make([]relationID, 0, 8),
-		batches:   make([]batchTable, 0, 32),
-		tables:    make([]tableID, 0, 32),
-		ints:      make([]uint32, 0, 32),
+		batches: make([]batchTable, 0, 32),
+		tables:  make([]tableID, 0, 32),
+		ints:    make([]uint32, 0, 32),
+
+		relations:        make([]relationID, 0, 8),
+		relationsCleanup: make([]relationID, 0, 8),
 
 		entities:        make([]Entity, 0, 16),
 		entitiesCleanup: make([]Entity, 0, 256),
@@ -102,11 +106,10 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 	}
 
 	relationRemoved := false
-	// TODO: this could also use pooling
-	var allRelations []relationID
+	allRelations := s.slices.relations
+	shouldRelease := true
 	if len(remove) > 0 {
 		// filter out removed relations
-		allRelations = make([]relationID, 0, len(oldTable.relationIDs)+len(relations))
 		for _, rel := range oldTable.relationIDs {
 			if arch.mask.Get(rel.component.id) {
 				allRelations = append(allRelations, rel)
@@ -117,14 +120,21 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		allRelations = append(allRelations, relations...)
 	} else {
 		if len(relations) > 0 {
-			allRelations = copyAppend(oldTable.relationIDs, relations...)
+			allRelations = append(allRelations, oldTable.relationIDs...)
+			allRelations = append(allRelations, relations...)
 		} else {
 			allRelations = oldTable.relationIDs
+			shouldRelease = false
 		}
 	}
 	table, ok := arch.GetTable(s, allRelations)
 	if !ok {
-		table = s.createTable(arch, allRelations)
+		tableRelations := make([]relationID, len(allRelations))
+		copy(tableRelations, allRelations)
+		table = s.createTable(arch, tableRelations)
+	}
+	if shouldRelease {
+		s.slices.relations = allRelations[:0]
 	}
 	return table, arch, relationRemoved
 }
@@ -141,17 +151,24 @@ func (s *storage) findOrCreateTableAdd(oldTable *table, add []ID, relations []re
 		node.archetype = arch.id
 	}
 
-	// TODO: this could also use pooling
-	var allRelations []relationID
+	allRelations := s.slices.relations
+	shouldRelease := true
 	if len(relations) > 0 {
-		allRelations = copyAppend(oldTable.relationIDs, relations...)
+		allRelations = append(allRelations, oldTable.relationIDs...)
+		allRelations = append(allRelations, relations...)
 	} else {
 		allRelations = oldTable.relationIDs
+		shouldRelease = false
 	}
 
 	table, ok := arch.GetTable(s, allRelations)
 	if !ok {
-		table = s.createTable(arch, allRelations)
+		tableRelations := make([]relationID, len(allRelations))
+		copy(tableRelations, allRelations)
+		table = s.createTable(arch, tableRelations)
+	}
+	if shouldRelease {
+		s.slices.relations = allRelations[:0]
 	}
 	return table, arch
 }
@@ -169,8 +186,7 @@ func (s *storage) findOrCreateTableRemove(oldTable *table, remove []ID, outMask 
 	}
 
 	relationRemoved := false
-	// TODO: this could also use pooling
-	allRelations := make([]relationID, 0, len(oldTable.relationIDs))
+	allRelations := s.slices.relations
 	for _, rel := range oldTable.relationIDs {
 		if arch.mask.Get(rel.component.id) {
 			allRelations = append(allRelations, rel)
@@ -180,8 +196,11 @@ func (s *storage) findOrCreateTableRemove(oldTable *table, remove []ID, outMask 
 	}
 	table, ok := arch.GetTable(s, allRelations)
 	if !ok {
-		table = s.createTable(arch, allRelations)
+		tableRelations := make([]relationID, len(allRelations))
+		copy(tableRelations, allRelations)
+		table = s.createTable(arch, tableRelations)
 	}
+	s.slices.relations = allRelations[:0]
 	return table, arch, relationRemoved
 }
 
@@ -405,7 +424,7 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 
 // Removes empty archetypes that have a target relation to the given entity.
 func (s *storage) cleanupArchetypes(target Entity) {
-	newRelations := s.slices.relations
+	newRelations := s.slices.relationsCleanup
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
 		len := len(archetype.tables.tables)
@@ -440,7 +459,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 		}
 		archetype.RemoveTarget(target)
 	}
-	s.slices.relations = newRelations[:0]
+	s.slices.relationsCleanup = newRelations[:0]
 }
 
 // moveEntities moves all entities from src to dst.
