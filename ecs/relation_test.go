@@ -171,6 +171,22 @@ func TestRelationChecks(t *testing.T) {
 	query.Close()
 }
 
+func TestRelationExchange(t *testing.T) {
+	w := NewWorld()
+
+	parent := w.NewEntity()
+
+	builder := NewMap2[ChildOf, Position](&w)
+	mapper := NewMap1[ChildOf](&w)
+	ex := NewExchange1[Velocity](&w).Removes(C[Position]())
+
+	child := builder.NewEntityFn(nil, RelIdx(0, parent))
+	expectEqual(t, parent, mapper.GetRelation(child, 0))
+
+	ex.ExchangeFn(child, nil)
+	expectEqual(t, parent, mapper.GetRelation(child, 0))
+}
+
 func BenchmarkCreateRelationQuery(b *testing.B) {
 	world := NewWorld()
 	parent := world.NewEntity()
