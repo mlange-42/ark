@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestGraph(t *testing.T) {
+func TestGraphFind(t *testing.T) {
 	g := newGraph()
 
 	mask := newMask()
@@ -38,6 +38,51 @@ func TestGraph(t *testing.T) {
 	expectPanicsWithValue(t,
 		"component with ID 0 added and removed in the same exchange operation",
 		func() { g.Find(node.id, []ID{id(0)}, []ID{id(0)}, &mask) })
+}
+
+func TestGraphFindAdd(t *testing.T) {
+	g := newGraph()
+
+	mask := newMask()
+	node := g.FindAdd(0, []ID{id(0), id(1)}, &mask)
+	expectEqual(t, 3, len(g.nodes))
+	expectEqual(t, 2, node.id)
+	expectEqual(t, newMask(id(0), id(1)), node.mask)
+
+	mask = node.mask
+	expectPanicsWithValue(t,
+		"entity already has component with ID 0, or it was added twice",
+		func() { g.FindAdd(node.id, []ID{id(0)}, &mask) })
+}
+
+func TestGraphRemove(t *testing.T) {
+	g := newGraph()
+
+	mask := newMask()
+	node := g.FindAdd(0, []ID{id(0), id(1)}, &mask)
+	expectEqual(t, 3, len(g.nodes))
+	expectEqual(t, 2, node.id)
+	expectEqual(t, newMask(id(0), id(1)), node.mask)
+
+	mask = node.mask
+	node = g.FindRemove(node.id, []ID{id(1)}, &mask)
+	expectEqual(t, 1, node.id)
+	expectEqual(t, newMask(id(0)), node.mask)
+
+	mask = node.mask
+	node = g.Find(node.id, []ID{id(2), id(3)}, []ID{id(0)}, &mask)
+	expectEqual(t, 4, node.id)
+	expectEqual(t, newMask(id(2), id(3)), node.mask)
+
+	mask = node.mask
+	node = g.Find(node.id, []ID{id(0)}, []ID{id(2), id(3)}, &mask)
+	expectEqual(t, 1, node.id)
+	expectEqual(t, newMask(id(0)), node.mask)
+
+	mask = node.mask
+	expectPanicsWithValue(t,
+		"entity does not have component with ID 3",
+		func() { g.FindRemove(node.id, []ID{id(3)}, &mask) })
 }
 
 func BenchmarkGraphFind1(b *testing.B) {
