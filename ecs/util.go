@@ -49,14 +49,6 @@ func zeroValueAt(v reflect.Value, index int) {
 	elem.SetZero()
 }
 
-// appends to a slice, but guaranties to return a new one and not alter the original.
-func copyAppend[T any](sl []T, elems ...T) []T {
-	sl2 := make([]T, len(sl), len(sl)+len(elems))
-	copy(sl2, sl)
-	sl2 = append(sl2, elems...)
-	return sl2
-}
-
 // isRelation determines whether a type is a relation component.
 func isRelation(tp reflect.Type) bool {
 	if tp.Kind() != reflect.Struct || tp.NumField() == 0 {
