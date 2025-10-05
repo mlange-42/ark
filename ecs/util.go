@@ -6,6 +6,8 @@ import (
 	"unsafe"
 )
 
+var pointerSize = unsafe.Sizeof((*int)(nil))
+
 func capPow2(required uint32) uint32 {
 	if required == 0 {
 		return 1
@@ -20,11 +22,11 @@ func capPow2(required uint32) uint32 {
 }
 
 func get[T any](storage *componentStorage, index *entityIndex) *T {
-	col := storage.columns[index.table]
+	col := (*column)(unsafe.Add(storage.pointer, uintptr(index.table)*pointerSize))
 	if col == nil {
 		return nil
 	}
-	return (*T)(col.Get(uintptr(index.row)))
+	return (*T)(unsafe.Add(col.pointer, uintptr(index.row)*col.itemSize))
 }
 
 // copyPtr copies from one pointer to another.

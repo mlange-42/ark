@@ -26,7 +26,17 @@ type storage struct {
 }
 
 type componentStorage struct {
+	pointer unsafe.Pointer
 	columns []*column
+}
+
+func (s *componentStorage) Add(col *column) {
+	s.columns = append(s.columns, col)
+	s.pointer = unsafe.Pointer(&s.columns[0])
+}
+
+func (s *componentStorage) Get(index uintptr) *column {
+	return (*column)(unsafe.Add(s.pointer, index*pointerSize))
 }
 
 type slices struct {
@@ -220,6 +230,7 @@ func (s *storage) AddComponent(id uint8) {
 		panic("components can only be added to a storage sequentially")
 	}
 	s.components = append(s.components, componentStorage{columns: make([]*column, len(s.tables))})
+	s.components[len(s.components)-1].pointer = unsafe.Pointer(&s.components[len(s.components)-1].columns[0])
 	s.componentIndex = append(s.componentIndex, []archetypeID{})
 }
 
@@ -422,9 +433,9 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 			id := ID{id: uint8(i)}
 			comps := &s.components[i]
 			if archetype.mask.Get(id.id) {
-				comps.columns = append(comps.columns, table.GetColumn(id))
+				comps.Add(table.GetColumn(id))
 			} else {
-				comps.columns = append(comps.columns, nil)
+				comps.Add(nil)
 			}
 		}
 	}
