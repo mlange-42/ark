@@ -460,3 +460,26 @@ func BenchmarkMap4Get_1000(b *testing.B) {
 	runtime.KeepAlive(cc)
 	runtime.KeepAlive(cd)
 }
+
+func BenchmarkMap1Has_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap1[Position](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, p *Position) {
+		entities = append(entities, e)
+	})
+
+	var has bool
+
+	loop := func() {
+		for _, e := range entities {
+			has = mapper.HasAll(e)
+		}
+	}
+	for b.Loop() {
+		loop()
+	}
+
+	runtime.KeepAlive(has)
+}
