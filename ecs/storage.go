@@ -129,6 +129,64 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 	return table, arch, relationRemoved
 }
 
+func (s *storage) findOrCreateTableAdd(oldTable *table, add []ID, relations []relationID, outMask *bitMask) (*table, *archetype) {
+	startNode := s.archetypes[oldTable.archetype].node
+
+	node := s.graph.FindAdd(startNode, add, outMask)
+	var arch *archetype
+	if archID, ok := node.GetArchetype(); ok {
+		arch = &s.archetypes[archID]
+	} else {
+		arch = s.createArchetype(node)
+		node.archetype = arch.id
+	}
+
+	// TODO: this could also use pooling
+	var allRelations []relationID
+	if len(relations) > 0 {
+		allRelations = copyAppend(oldTable.relationIDs, relations...)
+	} else {
+		allRelations = oldTable.relationIDs
+	}
+
+	table, ok := arch.GetTable(s, allRelations)
+	if !ok {
+		table = s.createTable(arch, allRelations)
+	}
+	return table, arch
+}
+
+func (s *storage) findOrCreateTableRemove(oldTable *table, remove []ID, outMask *bitMask) (*table, *archetype, bool) {
+	startNode := s.archetypes[oldTable.archetype].node
+
+	node := s.graph.FindRemove(startNode, remove, outMask)
+	var arch *archetype
+	if archID, ok := node.GetArchetype(); ok {
+		arch = &s.archetypes[archID]
+	} else {
+		arch = s.createArchetype(node)
+		node.archetype = arch.id
+	}
+
+	relationRemoved := false
+	// TODO: this could also use pooling
+	var allRelations []relationID
+	// filter out removed relations
+	allRelations = make([]relationID, 0, len(oldTable.relationIDs))
+	for _, rel := range oldTable.relationIDs {
+		if arch.mask.Get(rel.component.id) {
+			allRelations = append(allRelations, rel)
+		} else {
+			relationRemoved = true
+		}
+	}
+	table, ok := arch.GetTable(s, allRelations)
+	if !ok {
+		table = s.createTable(arch, allRelations)
+	}
+	return table, arch, relationRemoved
+}
+
 func (s *storage) AddComponent(id uint8) {
 	if len(s.components) != int(id) {
 		panic("components can only be added to a storage sequentially")

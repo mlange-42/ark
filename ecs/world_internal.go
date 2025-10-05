@@ -7,7 +7,7 @@ import (
 func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 	w.checkLocked()
 	mask := bitMask{}
-	newTable, newArch, _ := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
+	newTable, newArch := w.storage.findOrCreateTableAdd(&w.storage.tables[0], ids, relations, &mask)
 	entity, _ := w.storage.createEntity(newTable.id)
 	w.storage.registerTargets(relations)
 
@@ -16,7 +16,7 @@ func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 
 func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableID, int) {
 	mask := bitMask{}
-	newTable, _, _ := w.storage.findOrCreateTable(&w.storage.tables[0], ids, nil, relations, &mask)
+	newTable, _ := w.storage.findOrCreateTableAdd(&w.storage.tables[0], ids, relations, &mask)
 	startIdx := newTable.Len()
 	w.storage.createEntities(newTable, count)
 	w.storage.registerTargets(relations)
@@ -38,7 +38,7 @@ func (w *World) add(entity Entity, add []ID, relations []relationID) (*bitMask, 
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
 	mask := oldArchetype.mask
-	newTable, newArch, _ := w.storage.findOrCreateTable(oldTable, add, nil, relations, &mask)
+	newTable, newArch := w.storage.findOrCreateTableAdd(oldTable, add, relations, &mask)
 	newIndex := newTable.Add(entity)
 
 	// Get the old table and archetype again, as the pointer may have changed.
@@ -79,7 +79,7 @@ func (w *World) remove(entity Entity, rem []ID) {
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
 	mask := oldArchetype.mask
-	newTable, _, relRemoved := w.storage.findOrCreateTable(oldTable, nil, rem, nil, &mask)
+	newTable, _, relRemoved := w.storage.findOrCreateTableRemove(oldTable, rem, &mask)
 	newIndex := newTable.Add(entity)
 
 	// Get the old table and archetype again, as the pointer may have changed.
