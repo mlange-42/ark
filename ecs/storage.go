@@ -438,8 +438,8 @@ func (s *storage) cleanupArchetypes(target Entity) {
 	newRelations := s.slices.relationsCleanup
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
-		len := len(archetype.tables.tables)
-		for i := len - 1; i >= 0; i-- {
+		ln := len(archetype.tables.tables)
+		for i := ln - 1; i >= 0; i-- {
 			table := &s.tables[archetype.tables.tables[i]]
 
 			foundTarget := false
@@ -457,10 +457,14 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				allRelations := s.getExchangeTargetsUnchecked(table, newRelations)
 				newTable, ok := archetype.GetTable(s, allRelations)
 				if !ok {
-					newTable = s.createTable(archetype, allRelations)
+					// Copy the slice, as it comes from the slice pool
+					tableRelations := make([]relationID, len(allRelations))
+					copy(tableRelations, allRelations)
+					newTable = s.createTable(archetype, tableRelations)
 					// Get the old table again, as pointers may have changed.
 					table = &s.tables[table.id]
 				}
+				s.slices.relations = allRelations[:0]
 				s.moveEntities(table, newTable, uint32(table.Len()))
 			}
 			archetype.FreeTable(table)
@@ -487,6 +491,7 @@ func (s *storage) moveEntities(src, dst *table, count uint32) {
 	src.Reset()
 }
 
+// the result should be recycled!
 func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relationID) []relationID {
 	targets := s.slices.entities
 	for i := range oldTable.columns {
@@ -503,7 +508,7 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 		targets[column.index] = rel.target
 	}
 
-	result := make([]relationID, 0, len(oldTable.relationIDs))
+	result := s.slices.relations
 	for i, e := range targets {
 		if !oldTable.columns[i].isRelation {
 			continue
