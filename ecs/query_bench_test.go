@@ -5,6 +5,27 @@ import (
 	"testing"
 )
 
+func BenchmarkPosVelQueryInlined_1000(b *testing.B) {
+	n := 1000
+	world := NewWorld(1024)
+
+	mapper := NewMap2[Position, Velocity](&world)
+	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
+
+	filter := NewFilter2[Position, Velocity](&world)
+	loop := func() {
+		query := filter.Query()
+		for query.Next() {
+			pos, vel := query.Get()
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
+	}
+	for b.Loop() {
+		loop()
+	}
+}
+
 func BenchmarkPosVelQuery_1000(b *testing.B) {
 	n := 1000
 	world := NewWorld(1024)
