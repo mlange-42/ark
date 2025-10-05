@@ -30,6 +30,7 @@
 - Optimizes `World.Reset` by skipping where possible (#366)
 - Optimizes adding/removing components by improved archetype graph indexing (#369)
 - Optimizes adding/removing components by improved method inlining (#369, #376)
+- Optimizes the archetype graph by removing indirections in neighbors mapping (#386)
 
 ### Documentation
 
