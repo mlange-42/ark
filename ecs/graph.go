@@ -65,7 +65,6 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 		if startNode.mask.Get(id.id) {
 			panic(fmt.Sprintf("component with ID %d added and removed in the same exchange operation", id.id))
 		}
-
 		outMask.Set(id.id)
 		if curr.neighbors.used.Get(id.id) {
 			curr = &g.nodes[curr.neighbors.data[id.id]]
@@ -89,7 +88,6 @@ func (g *graph) FindAdd(start nodeID, add []ID, outMask *bitMask) *node {
 		if outMask.Get(id.id) {
 			panic(fmt.Sprintf("entity already has component with ID %d, or it was added twice", id.id))
 		}
-
 		outMask.Set(id.id)
 		if curr.neighbors.used.Get(id.id) {
 			curr = &g.nodes[curr.neighbors.data[id.id]]

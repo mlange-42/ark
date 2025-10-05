@@ -170,9 +170,7 @@ func (s *storage) findOrCreateTableRemove(oldTable *table, remove []ID, outMask 
 
 	relationRemoved := false
 	// TODO: this could also use pooling
-	var allRelations []relationID
-	// filter out removed relations
-	allRelations = make([]relationID, 0, len(oldTable.relationIDs))
+	allRelations := make([]relationID, 0, len(oldTable.relationIDs))
 	for _, rel := range oldTable.relationIDs {
 		if arch.mask.Get(rel.component.id) {
 			allRelations = append(allRelations, rel)
