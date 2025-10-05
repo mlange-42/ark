@@ -36,7 +36,7 @@ func (s *componentStorage) Add(col *column) {
 }
 
 func (s *componentStorage) Get(index uintptr) *column {
-	return (*column)(unsafe.Add(s.pointer, index*pointerSize))
+	return *(**column)(unsafe.Add(s.pointer, index*pointerSize))
 }
 
 type slices struct {

@@ -161,7 +161,7 @@ func (m *Map[T]) Has(entity Entity) bool {
 		panic("can't get a component of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storage.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storage.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // HasUnchecked return whether the given entity has the mapped component.
@@ -169,7 +169,7 @@ func (m *Map[T]) Has(entity Entity) bool {
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) HasUnchecked(entity Entity) bool {
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storage.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storage.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped component to the given entity.

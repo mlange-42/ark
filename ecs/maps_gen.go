@@ -176,7 +176,7 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -489,8 +489,8 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -822,9 +822,9 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1171,10 +1171,10 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1536,11 +1536,11 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1917,12 +1917,12 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -2314,13 +2314,13 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -2727,14 +2727,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageH.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageH.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -3156,15 +3156,15 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageH.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageI.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageH.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageI.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -3601,16 +3601,16 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageH.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageI.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageJ.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageH.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageI.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageJ.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -4062,17 +4062,17 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageH.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageI.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageJ.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageK.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageH.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageI.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageJ.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageK.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.
@@ -4539,18 +4539,18 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return (*column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageH.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageI.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageJ.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageK.pointer, uintptr(index.table)*pointerSize)) != nil &&
-		(*column)(unsafe.Add(m.storageL.pointer, uintptr(index.table)*pointerSize)) != nil
+	return *(**column)(unsafe.Add(m.storageA.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageB.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageC.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageD.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageE.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageF.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageG.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageH.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageI.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageJ.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageK.pointer, uintptr(index.table)*pointerSize)) != nil &&
+		*(**column)(unsafe.Add(m.storageL.pointer, uintptr(index.table)*pointerSize)) != nil
 }
 
 // Add the mapped components to the given entity.

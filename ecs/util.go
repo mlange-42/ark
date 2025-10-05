@@ -22,7 +22,7 @@ func capPow2(required uint32) uint32 {
 }
 
 func get[T any](storage *componentStorage, index *entityIndex) *T {
-	col := (*column)(unsafe.Add(storage.pointer, uintptr(index.table)*pointerSize))
+	col := *(**column)(unsafe.Add(storage.pointer, uintptr(index.table)*pointerSize))
 	if col == nil {
 		return nil
 	}

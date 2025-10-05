@@ -213,7 +213,7 @@ func (m *Map{{.}}{{$genericsShort}}) HasAll(entity Entity) bool {
 	}
 	index := m.world.storage.entities[entity.id]
 	return {{range $i, $v := $upper}}{{if $i}} &&
-		{{end}}(*column)(unsafe.Add(m.storage{{$v}}.pointer, uintptr(index.table)*pointerSize)) != nil{{end}}
+		{{end}}*(**column)(unsafe.Add(m.storage{{$v}}.pointer, uintptr(index.table)*pointerSize)) != nil{{end}}
 }
 
 // Add the mapped components to the given entity.
