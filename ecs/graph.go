@@ -5,7 +5,7 @@ import "fmt"
 type nodeID uint32
 
 type node struct {
-	neighbors idMap[nodeID]
+	neighbors idMap
 	mask      bitMask
 	id        nodeID
 	archetype archetypeID
@@ -16,7 +16,7 @@ func newNode(id nodeID, archetype archetypeID, mask *bitMask) node {
 		id:        id,
 		archetype: archetype,
 		mask:      *mask,
-		neighbors: newIDMap[nodeID](),
+		neighbors: newIDMap(),
 	}
 }
 
