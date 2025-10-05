@@ -129,9 +129,14 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 	}
 	table, ok := arch.GetTable(s, allRelations)
 	if !ok {
-		tableRelations := make([]relationID, len(allRelations))
-		copy(tableRelations, allRelations)
-		table = s.createTable(arch, tableRelations)
+		if shouldRelease {
+			// Copy the slice, as it comes from the slice pool
+			tableRelations := make([]relationID, len(allRelations))
+			copy(tableRelations, allRelations)
+			table = s.createTable(arch, tableRelations)
+		} else {
+			table = s.createTable(arch, allRelations)
+		}
 	}
 	if shouldRelease {
 		s.slices.relations = allRelations[:0]
@@ -163,9 +168,14 @@ func (s *storage) findOrCreateTableAdd(oldTable *table, add []ID, relations []re
 
 	table, ok := arch.GetTable(s, allRelations)
 	if !ok {
-		tableRelations := make([]relationID, len(allRelations))
-		copy(tableRelations, allRelations)
-		table = s.createTable(arch, tableRelations)
+		if shouldRelease {
+			// Copy the slice, as it comes from the slice pool
+			tableRelations := make([]relationID, len(allRelations))
+			copy(tableRelations, allRelations)
+			table = s.createTable(arch, tableRelations)
+		} else {
+			table = s.createTable(arch, allRelations)
+		}
 	}
 	if shouldRelease {
 		s.slices.relations = allRelations[:0]
@@ -196,6 +206,7 @@ func (s *storage) findOrCreateTableRemove(oldTable *table, remove []ID, outMask 
 	}
 	table, ok := arch.GetTable(s, allRelations)
 	if !ok {
+		// Copy the slice, as it comes from the slice pool
 		tableRelations := make([]relationID, len(allRelations))
 		copy(tableRelations, allRelations)
 		table = s.createTable(arch, tableRelations)
