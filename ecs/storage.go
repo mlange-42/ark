@@ -26,8 +26,8 @@ type storage struct {
 }
 
 type componentStorage struct {
-	pointer unsafe.Pointer
 	columns []*column
+	pointer unsafe.Pointer
 }
 
 func (s *componentStorage) Add(col *column) {
@@ -229,8 +229,10 @@ func (s *storage) AddComponent(id uint8) {
 	if len(s.components) != int(id) {
 		panic("components can only be added to a storage sequentially")
 	}
+	ln := len(s.components)
 	s.components = append(s.components, componentStorage{columns: make([]*column, len(s.tables))})
-	s.components[len(s.components)-1].pointer = unsafe.Pointer(&s.components[len(s.components)-1].columns[0])
+	s.components[ln].pointer = unsafe.Pointer(&s.components[ln].columns[0])
+
 	s.componentIndex = append(s.componentIndex, []archetypeID{})
 }
 
