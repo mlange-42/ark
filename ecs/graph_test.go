@@ -40,13 +40,28 @@ func TestGraph(t *testing.T) {
 		func() { g.Find(node.id, []ID{id(0)}, []ID{id(0)}, &mask) })
 }
 
-func BenchmarkGraphFind(b *testing.B) {
+func BenchmarkGraphFind1(b *testing.B) {
 	g := newGraph()
 
 	id1 := ID{0}
-	id2 := ID{1}
 
-	add := []ID{id2}
+	add := []ID{{1}}
+
+	mask1 := newMask()
+	node := g.Find(0, []ID{id1}, nil, &mask1)
+
+	for b.Loop() {
+		n := g.Find(node.id, add, nil, &mask1)
+		g.Find(n.id, nil, add, &mask1)
+	}
+}
+
+func BenchmarkGraphFind10(b *testing.B) {
+	g := newGraph()
+
+	id1 := ID{0}
+
+	add := []ID{{1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}}
 
 	mask1 := newMask()
 	node := g.Find(0, []ID{id1}, nil, &mask1)
