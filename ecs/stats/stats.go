@@ -15,6 +15,8 @@ type World struct {
 	ComponentTypes []reflect.Type `json:"-"`
 	// Component type names, indexed by component ID.
 	ComponentTypeNames []string
+	// Number of archetypes.
+	NumArchetypes int
 	// Archetype statistics.
 	Archetypes []Archetype
 	// Entity statistics.
@@ -53,6 +55,8 @@ type Archetype struct {
 	ComponentTypes []reflect.Type `json:"-"`
 	// Component type names for ComponentIDs.
 	ComponentTypeNames []string
+	// Number of tables.
+	NumTables int
 	// Table statistics.
 	Tables []Table
 	// Number of entities in the tables of this archetype.
