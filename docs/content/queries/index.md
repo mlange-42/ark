@@ -105,3 +105,23 @@ Instead, filters are only evaluated when a new archetype is created.
 When a registered filter is not required anymore, it can be unregistered with
 {{< api ecs Filter2.Unregister >}}.
 However, this is rarely required as (registered) filters are usually used over an entire game session or simulation run.
+
+## Parallel queries
+
+> [!NOTE]
+> This feature is not yet released and is planned for Ark v0.6.0.
+> You can try it out on the `main` branch.
+
+Ark in general is not thread-safe (see chapter [Design](../design/), section [Limitations](../design#limitations)).
+However, it is possible to execute queries in parallel.
+This is especially useful for two scenarios:
+
+1. Parallel execution of logic/systems that handle distinct sets of entities.
+1. Parallel execution inside a system, partitioning entities using [entity relations](../relations/).
+
+For the second use case, a [stand-alone example](https://github.com/mlange-42/ark/blob/main/examples/parallel_queries/main.go)
+is available that demonstrates the approach.
+
+It is the user's responsibility to avoid access to the same entities from parallel queries,
+which could cause data races and performance degradation due to [false sharing](https://en.wikipedia.org/wiki/False_sharing).
+For the two use cases given above, this is guaranteed because the parallel queries affect different [archetypes](../architecture) or relation sub-tables, respectively.
