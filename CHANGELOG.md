@@ -39,7 +39,7 @@
 - Adds a stand-alone example for using Ark with the [Ebiten](https://ebitengine.org/) game engine (#329)
 - Adds a user guide chapter on the new event system (#334, #345, #346, #347, #353, #355)
 - Adds stand-alone examples for built-in and custom events (#354)
-- Adds a stand-alone example for running queries concurrently (#360)
+- Adds a user guide section and a stand-alone example for running queries concurrently (#360, #391)
 - Allows inlining in user guide benchmarks for more realistic measurements (#382)
 
 ### Bugfixes

@@ -29,7 +29,7 @@ However, we are not able to leverage the power of queries to e.g. get all childr
 To make entity relations even more useful and efficient, Ark supports them as a first class feature.
 Relations are added to and removed from entities just like components,
 and hence can be queried like components, with the usual efficiency.
-This is achieved by creating separate [archetypes](../architecture)
+This is achieved by creating separate sub-tables inside [archetypes](../architecture)
 for relations with different target entities.
 
 ## Relation components
@@ -127,7 +127,7 @@ This means that the filter matches entities with any target.
 
 Entities that are the target of any relationships can be removed from the world like any other entity.
 When this happens, all entities that have this target in a relation get assigned to the zero entity as target.
-The respective [archetype](../architecture) is de-activated and marked for potential re-use for another target entity.
+The respective [archetype](../architecture) sub-table is de-activated and marked for potential re-use for another target entity.
 
 ## Limitation
 
@@ -140,7 +140,7 @@ The limitation to a single target is mainly a performance consideration.
 Firstly, the possibility for multiple targets would require a different,
 slower approach for component mapping in archetypes.
 Secondly, usage of multiple targets would easily lead to archetype fragmentation,
-as a separate archetype (table) would be created for each unique combination of targets.
+as a separate archetype sub-table would be created for each unique combination of targets.
 
 Entity relationships in Ark are still a very powerful feature,
 while discouraging use cases where they could easily lead to poor performance.
@@ -149,7 +149,7 @@ see the next section.
 
 ## When to use, and when not
 
-When using Ark's entity relations, an archetype is created for each target entity of a relation.
+When using Ark's entity relations, an archetype sub-table is created for each target entity of a relation.
 Thus, entity relations are not efficient if the number of target entities is high (tens of thousands),
 while only a low number of entities has a relation to each particular target (less than a few dozens).
 Particularly in the extreme case of 1:1 relations, storing entities in components
