@@ -2,8 +2,6 @@ package ecs
 
 import (
 	"math/bits"
-
-	"github.com/mlange-42/ark/ecs/stats"
 )
 
 // maskTotalBits is the size of a [bitMask] in bits.
@@ -21,14 +19,6 @@ func newMask64(ids ...ID) bitMask64 {
 	var mask bitMask64
 	for _, id := range ids {
 		mask.Set(id.id)
-	}
-	return mask
-}
-
-func newMaskFlags(ids ...stats.Option) bitMask64 {
-	var mask bitMask64
-	for _, id := range ids {
-		mask.Set(uint8(id))
 	}
 	return mask
 }
