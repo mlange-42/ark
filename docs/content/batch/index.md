@@ -22,6 +22,8 @@ creation can be batched with {{< api ecs Map2.NewBatch >}} et al.:
 
 {{< code-func batch_test.go TestNewBatchFn >}}
 
+The callback is called for each created entity, allowing for setting individual values.
+
 ## Components
 
 Components can be added, removed or exchanged in batch operations.
