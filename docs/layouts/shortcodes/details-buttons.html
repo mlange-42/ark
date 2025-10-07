@@ -1,0 +1,22 @@
+<script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+{{- $group := .Get "group" -}}
+{{ if $group }}
+<button onclick="expandGroup('{{ $group }}')" title="Expand section">➕</button>
+<button onclick="collapseGroup('{{ $group }}')" title="Collapse section">➖</button>
+{{ else }}
+<button onclick="expandAllDetails()" title="Expand all sections" aria-label="Expand all">➕</button>
+<button onclick="collapseAllDetails()" title="Collapse all sections" aria-label="Collapse all">➖</button>
+{{ end }}

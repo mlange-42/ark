@@ -4,7 +4,6 @@ type = 'docs'
 weight = 10
 description = 'Quickstart guide to install and use Ark.'
 [params]
-prev = "/"
 +++
 This page shows how to install Ark, and gives a minimal usage example.
 
