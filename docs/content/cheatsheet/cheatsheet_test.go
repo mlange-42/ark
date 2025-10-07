@@ -61,10 +61,12 @@ func TestCreateBatch(t *testing.T) {
 }
 
 func TestCreateBatchFn(t *testing.T) {
-	mapper.NewBatchFn(100, func(e ecs.Entity, pos *Position, vel *Velocity) {
-		pos.X, pos.Y = rand.Float64()*100, rand.Float64()*100
-		vel.X, vel.Y = rand.NormFloat64(), rand.NormFloat64()
-	})
+	mapper.NewBatchFn(
+		100,
+		func(e ecs.Entity, pos *Position, vel *Velocity) {
+			pos.X, pos.Y = rand.Float64()*100, rand.Float64()*100
+			vel.X, vel.Y = rand.NormFloat64(), rand.NormFloat64()
+		})
 }
 
 func TestRemoveEntity(t *testing.T) {
@@ -81,4 +83,45 @@ func TestRemoveEntitiesFn(t *testing.T) {
 	world.RemoveEntities(filter.Batch(), func(entity ecs.Entity) {
 		// Do something before removal
 	})
+}
+
+func TestAddRemoveComponents(t *testing.T) {
+	entity := world.NewEntity()
+
+	mapper.Add(
+		entity,
+		&Position{X: 100, Y: 100},
+		&Velocity{X: 1, Y: -1},
+	)
+
+	mapper.Remove(entity)
+}
+
+func TestAddBatch(t *testing.T) {
+	filter := ecs.NewFilter1[Altitude](&world).Exclusive()
+
+	mapper.AddBatch(
+		filter.Batch(),
+		&Position{X: 100, Y: 100},
+		&Velocity{X: 1, Y: -1},
+	)
+}
+
+func TestAddBatchFn(t *testing.T) {
+	filter := ecs.NewFilter1[Altitude](&world).Exclusive()
+
+	mapper.AddBatchFn(
+		filter.Batch(),
+		func(e ecs.Entity, pos *Position, vel *Velocity) {
+			pos.X, pos.Y = rand.Float64()*100, rand.Float64()*100
+			vel.X, vel.Y = rand.NormFloat64(), rand.NormFloat64()
+		})
+}
+
+func TestRemoveBatch(t *testing.T) {
+	filter := ecs.NewFilter2[Position, Velocity](&world)
+
+	mapper.RemoveBatch(
+		filter.Batch(),
+		func(entity ecs.Entity) { /* ... */ })
 }

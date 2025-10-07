@@ -10,7 +10,7 @@ Create an **entity without components**:
 
 {{< code-func cheatsheet_test.go TestCreateEmpty >}}
 
-For creating **entities with components**, you need a **component mapper**:
+A **component mapper** is required for creating **entities with components**:
 
 {{< code-func cheatsheet_test.go TestCreateMapper >}}
 
@@ -45,3 +45,25 @@ You can use a callback to do something with entities before their removal:
 {{< code-func cheatsheet_test.go TestRemoveEntitiesFn >}}
 
 ## Add/remove components
+
+A **component mapper** is required for adding and removing components.
+It adds or removes the given components from entities:
+
+{{< code-func cheatsheet_test.go TestCreateMapper >}}
+
+Add and remove components to/from a **single entity**:
+
+{{< code-func cheatsheet_test.go TestAddRemoveComponents >}}
+
+Add components to **all entities** matching a filter:
+
+{{< code-func cheatsheet_test.go TestAddBatch >}}
+
+Add components to **all entities** matching a filter, with individual initialization:
+
+{{< code-func cheatsheet_test.go TestAddBatchFn >}}
+
+Remove components from **all entities** matching a filter.
+The callback can be used to do something with entities before component removal:
+
+{{< code-func cheatsheet_test.go TestRemoveBatch >}}
