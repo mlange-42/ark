@@ -10,14 +10,12 @@ import (
 
 // Position component
 type Position struct {
-	X float64
-	Y float64
+	X, Y float64
 }
 
 // Velocity component
 type Velocity struct {
-	X float64
-	Y float64
+	DX, DY float64
 }
 
 func main() {
@@ -28,12 +26,11 @@ func main() {
 	// Save mappers permanently and re-use them for best performance
 	mapper := ecs.NewMap2[Position, Velocity](&world)
 
-	// Create entities
+	// Create entities with components
 	for range 1000 {
-		// Create a new Entity with components
 		_ = mapper.NewEntity(
 			&Position{X: rand.Float64() * 100, Y: rand.Float64() * 100},
-			&Velocity{X: rand.NormFloat64(), Y: rand.NormFloat64()},
+			&Velocity{DX: rand.NormFloat64(), DY: rand.NormFloat64()},
 		)
 	}
 
@@ -43,15 +40,14 @@ func main() {
 
 	// Time loop
 	for range 5000 {
-		// Get a fresh query
+		// Get a fresh query and iterate it
 		query := filter.Query()
-		// Iterate it
 		for query.Next() {
 			// Component access through the Query
 			pos, vel := query.Get()
 			// Update component fields
-			pos.X += vel.X
-			pos.Y += vel.Y
+			pos.X += vel.DX
+			pos.Y += vel.DY
 		}
 	}
 }
