@@ -37,7 +37,7 @@ func Observe(evt EventType) *Observer {
 }
 
 // New creates a new [Observer]. It is safe to call on `nil` instance.
-// It is a helper method, provided for consistency with generic observers like [Observer2].
+// It is a helper method, provided for consistency with generic observers like [Observer1].
 func (*Observer) New(evt EventType) *Observer {
 	return Observe(evt)
 }
