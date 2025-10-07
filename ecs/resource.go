@@ -8,6 +8,12 @@ type Resource[T any] struct {
 	id    ResID
 }
 
+// New creates a new [Resource]. It is safe to call on an uninitialized instance.
+// It is a helper method, intended to avoid repeated specification of the type parameter.
+func (Resource[T]) New(world *World) Resource[T] {
+	return NewResource[T](world)
+}
+
 // NewResource creates a new [Resource] mapper for a resource type.
 // This does not add a resource to the world, but only creates a mapper for resource access!
 //

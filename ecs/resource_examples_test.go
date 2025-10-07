@@ -21,3 +21,15 @@ func ExampleResource() {
 	_ = entity
 	// Output:
 }
+
+func ExampleResource_New() {
+	// Create a world.
+	world := ecs.NewWorld()
+
+	// Declare resource accessor, e.g. in struct definition.
+	var gridAccess ecs.Resource[Grid]
+
+	// Construct the accessor elsewhere, e.g. in the constructor.
+	gridAccess = gridAccess.New(&world)
+	// Output:
+}
