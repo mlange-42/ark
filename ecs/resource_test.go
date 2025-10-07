@@ -6,7 +6,8 @@ import (
 
 func TestResource(t *testing.T) {
 	w := NewWorld(1024)
-	get := NewResource[Grid](&w)
+	var get Resource[Grid]
+	get = get.New(&w)
 
 	expectFalse(t, get.Has())
 	gridResource := NewGrid(100, 200)
