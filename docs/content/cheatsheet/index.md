@@ -178,4 +178,7 @@ that also has `Velocity` but not `Altitude`.
 {{< code-func cheatsheet_test.go TestCustomEventObserver >}}
 {{% /details %}}
 
+<br />
+<br />
+
 {{< details-buttons paragraph="true" >}}
