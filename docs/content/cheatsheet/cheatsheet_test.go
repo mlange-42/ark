@@ -1,6 +1,7 @@
 package cheatsheet
 
 import (
+	"fmt"
 	"math/rand/v2"
 	"testing"
 
@@ -21,6 +22,8 @@ type Altitude struct {
 	Z float64
 }
 
+type Health struct{}
+
 type Grid struct{}
 
 func NewGrid(sx, sy int) Grid {
@@ -31,6 +34,9 @@ var world = ecs.NewWorld()
 var mapper = ecs.NewMap2[Position, Velocity](&world)
 var filter = ecs.NewFilter2[Position, Velocity](&world).Exclusive()
 var entity = world.NewEntity()
+
+var registry = ecs.EventRegistry{}
+var OnCollisionDetected = registry.NewEventType()
 
 func TestCreateWorld(t *testing.T) {
 	world := ecs.NewWorld()
@@ -142,6 +148,44 @@ func TestRemoveBatch(t *testing.T) {
 		func(entity ecs.Entity) { /* ... */ })
 }
 
+func TestFilterQuery(t *testing.T) {
+	filter := ecs.NewFilter2[Position, Velocity](&world)
+
+	query := filter.Query()
+	for query.Next() {
+		pos, vel := query.Get()
+		pos.X += vel.X
+		pos.Y += vel.Y
+	}
+}
+
+func TestFilterWith(t *testing.T) {
+	filter := ecs.NewFilter2[Position, Velocity](&world).
+		With(ecs.C[Altitude]())
+	_ = filter
+}
+
+func TestFilterWithout(t *testing.T) {
+	filter := ecs.NewFilter2[Position, Velocity](&world).
+		Without(ecs.C[Altitude]())
+	_ = filter
+}
+
+func TestFilterWithWithout(t *testing.T) {
+	filter := ecs.NewFilter1[Position](&world).
+		With(ecs.C[Velocity]()).
+		With(ecs.C[Altitude]()).
+		Without(ecs.C[Health]())
+	_ = filter
+}
+
+func TestQueryCount(t *testing.T) {
+	query := filter.Query()
+	fmt.Println(query.Count())
+
+	query.Close()
+}
+
 func TestResourcesQuick(t *testing.T) {
 	grid := NewGrid(100, 100)
 
@@ -154,4 +198,65 @@ func TestResources(t *testing.T) {
 
 	grid := gridResource.Get()
 	_ = grid
+}
+
+func TestObserver(t *testing.T) {
+	ecs.Observe(ecs.OnCreateEntity).
+		Do(func(e ecs.Entity) {
+			// Do something with the newly created entity.
+		}).
+		Register(&world)
+}
+
+func TestObserverFilter(t *testing.T) {
+	ecs.Observe(ecs.OnAddComponents).
+		For(ecs.C[Position]()).
+		For(ecs.C[Velocity]()).
+		Do(func(e ecs.Entity) {
+			// Do something with the entity.
+		}).
+		Register(&world)
+}
+
+func TestObserverFilterGeneric(t *testing.T) {
+	ecs.Observe2[Position, Velocity](ecs.OnAddComponents).
+		Do(func(e ecs.Entity, pos *Position, vel *Velocity) {
+			// Do something with the entity and the components
+		}).
+		Register(&world)
+}
+
+func TestObserverWithWithout(t *testing.T) {
+	ecs.Observe1[Position](ecs.OnAddComponents).
+		With(ecs.C[Velocity]()).
+		Without(ecs.C[Altitude]()).
+		Do(func(e ecs.Entity, pos *Position) {
+			// Do something with the entity and the component
+		}).
+		Register(&world)
+}
+
+func TestCustomEventType(t *testing.T) {
+	var registry = ecs.EventRegistry{}
+
+	var OnCollisionDetected = registry.NewEventType()
+	var OnInputReceived = registry.NewEventType()
+
+	_, _ = OnCollisionDetected, OnInputReceived
+}
+
+func TestCustomEvent(t *testing.T) {
+	event := world.Event(OnCollisionDetected).
+		For(ecs.C[Position]())
+
+	entity := mapper.NewEntity(&Position{}, &Velocity{})
+	event.Emit(entity)
+}
+
+func TestCustomEventObserver(t *testing.T) {
+	ecs.Observe1[Position](OnCollisionDetected).
+		Do(func(e ecs.Entity, p *Position) {
+			// Do something with the collision entity and the component
+		}).
+		Register(&world)
 }
