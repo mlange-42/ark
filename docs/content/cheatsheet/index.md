@@ -5,8 +5,10 @@ weight = 1000
 description = "Cheat sheet for frequent use cases."
 +++
 Frequently used Ark operations for quick lookup.
+{{< details-buttons paragraph="true" >}}
 
 ## World creation
+{{< details-buttons paragraph="true" >}}
 
 The world is the central ECS data storage.
 Most applications will use exactly one world.

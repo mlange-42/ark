@@ -1,0 +1,13 @@
+<script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+</script>
+{{- $wrap := .Get "paragraph" -}}
+{{- if eq $wrap "true" }}<p>{{ end -}}
+<button onclick="expandAllDetails()" title="Expand all sections" aria-label="Expand all">➕</button>
+<button onclick="collapseAllDetails()" title="Collapse all sections" aria-label="Collapse all">➖</button>
+{{- if eq $wrap "true" }}</p>{{ end -}}
