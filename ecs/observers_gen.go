@@ -12,6 +12,8 @@ type Observer1[A any] struct {
 }
 
 // Observe1 creates a new Observer1.
+//
+// See also [Observer1.New] for a shortcut when constructing an already defined instance.
 func Observe1[A any](evt EventType) *Observer1[A] {
 	return &Observer1[A]{
 		observer: Observer{
@@ -126,6 +128,8 @@ type Observer2[A any, B any] struct {
 }
 
 // Observe2 creates a new Observer2.
+//
+// See also [Observer2.New] for a shortcut when constructing an already defined instance.
 func Observe2[A any, B any](evt EventType) *Observer2[A, B] {
 	return &Observer2[A, B]{
 		observer: Observer{
@@ -253,6 +257,8 @@ type Observer3[A any, B any, C any] struct {
 }
 
 // Observe3 creates a new Observer3.
+//
+// See also [Observer3.New] for a shortcut when constructing an already defined instance.
 func Observe3[A any, B any, C any](evt EventType) *Observer3[A, B, C] {
 	return &Observer3[A, B, C]{
 		observer: Observer{
@@ -383,6 +389,8 @@ type Observer4[A any, B any, C any, D any] struct {
 }
 
 // Observe4 creates a new Observer4.
+//
+// See also [Observer4.New] for a shortcut when constructing an already defined instance.
 func Observe4[A any, B any, C any, D any](evt EventType) *Observer4[A, B, C, D] {
 	return &Observer4[A, B, C, D]{
 		observer: Observer{

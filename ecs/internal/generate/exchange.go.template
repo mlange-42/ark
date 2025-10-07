@@ -43,6 +43,8 @@ func (_ *Exchange{{.}}{{$genericsShort}}) New(world *World) *Exchange{{.}}{{$gen
 }
 
 // NewExchange{{.}} creates an [Exchange{{.}}].
+//
+// See also [Exchange{{.}}.New] for a shortcut when constructing an already defined instance.
 func NewExchange{{.}}{{$generics}}(world *World) *Exchange{{.}}{{$genericsShort}} {
 	ids := []ID{
 		{{- range $upper}}

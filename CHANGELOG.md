@@ -14,8 +14,7 @@
 - Adds custom event support for the event system (#340, #348)
 - Adds method `World.Shrink` for freeing memory that exceeds current requirements (#323)
 - World lock and filters are concurrency-safe, allowing for concurrent query execution (#360)
-- Adds method `Resource[T].New` as a shortcut to avoid repeated parameter specification (#393)
-- Adds methods `ObserverX.New` as a shortcut to avoid repeated parameter listing (#394)
+- Adds methods `ObserverX.New`, `Map.New` and `Resource.New` as shortcuts to avoid repeated parameter listing (#393, #394. #395)
 
 ### Performance
 
