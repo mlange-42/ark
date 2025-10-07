@@ -36,6 +36,12 @@ func Observe(evt EventType) *Observer {
 	}
 }
 
+// New creates a new [Observer]. It is safe to call on `nil` instance.
+// It is a helper method, provided for consistency with generic observers like [Observer2].
+func (*Observer) New(evt EventType) *Observer {
+	return Observe(evt)
+}
+
 // For adds components that the observer observes.
 // The component events, the observer triggers if these components are added to or removed from an entity.
 //

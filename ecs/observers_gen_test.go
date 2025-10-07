@@ -6,7 +6,8 @@ import "testing"
 
 func TestObserve1(t *testing.T) {
 	w := NewWorld()
-	obs := Observe1[CompA](OnAddComponents).Do(func(e Entity, a *CompA) {}).Register(&w)
+	var obs *Observer1[CompA]
+	obs = obs.New(OnAddComponents).Do(func(e Entity, a *CompA) {}).Register(&w)
 
 	expectPanicsWithValue(t, "can't modify a registered observer",
 		func() {
@@ -113,7 +114,8 @@ func TestObserver1Callback(t *testing.T) {
 
 func TestObserve2(t *testing.T) {
 	w := NewWorld()
-	obs := Observe2[CompA, CompB](OnAddComponents).Do(func(e Entity, a *CompA, b *CompB) {}).Register(&w)
+	var obs *Observer2[CompA, CompB]
+	obs = obs.New(OnAddComponents).Do(func(e Entity, a *CompA, b *CompB) {}).Register(&w)
 
 	expectPanicsWithValue(t, "can't modify a registered observer",
 		func() {
@@ -221,7 +223,8 @@ func TestObserver2Callback(t *testing.T) {
 
 func TestObserve3(t *testing.T) {
 	w := NewWorld()
-	obs := Observe3[CompA, CompB, CompC](OnAddComponents).Do(func(e Entity, a *CompA, b *CompB, c *CompC) {}).Register(&w)
+	var obs *Observer3[CompA, CompB, CompC]
+	obs = obs.New(OnAddComponents).Do(func(e Entity, a *CompA, b *CompB, c *CompC) {}).Register(&w)
 
 	expectPanicsWithValue(t, "can't modify a registered observer",
 		func() {
@@ -330,7 +333,8 @@ func TestObserver3Callback(t *testing.T) {
 
 func TestObserve4(t *testing.T) {
 	w := NewWorld()
-	obs := Observe4[CompA, CompB, CompC, CompD](OnAddComponents).Do(func(e Entity, a *CompA, b *CompB, c *CompC, d *CompD) {}).Register(&w)
+	var obs *Observer4[CompA, CompB, CompC, CompD]
+	obs = obs.New(OnAddComponents).Do(func(e Entity, a *CompA, b *CompB, c *CompC, d *CompD) {}).Register(&w)
 
 	expectPanicsWithValue(t, "can't modify a registered observer",
 		func() {
