@@ -4,6 +4,21 @@ type = "docs"
 weight = 1000
 description = "Cheat sheet for frequent use cases."
 +++
+Frequently used Ark operations for quick lookup.
+
+## World creation
+
+The world is the central ECS data storage.
+Most applications will use exactly one world.
+
+Create a World with default initial capacity:
+
+{{< code-func cheatsheet_test.go TestCreateWorld >}}
+
+Create a World with a specific initial capacity:
+
+{{< code-func cheatsheet_test.go TestCreateWorldConfig >}}
+
 ## Create entities
 
 Create an **entity without components**:
@@ -67,3 +82,21 @@ Remove components from **all entities** matching a filter.
 The callback can be used to do something with entities before component removal:
 
 {{< code-func cheatsheet_test.go TestRemoveBatch >}}
+
+## Resources
+
+Resources can be used for "global" data structures that are not associated to particular entities.
+
+Adding and getting resources, the simple but slower way (&approx;20ns):
+
+{{< code-func cheatsheet_test.go TestResourcesQuick >}}
+
+For repeated access, better use a resource accessor (`Get()` &approx;1ns):
+
+{{< code-func cheatsheet_test.go TestResources >}}
+
+(Creating the accessor does not add the actual `Grid` resource!)
+
+## Events and observers
+
+Create and register observers for ECS lifecycle events:

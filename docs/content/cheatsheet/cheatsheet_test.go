@@ -21,10 +21,26 @@ type Altitude struct {
 	Z float64
 }
 
+type Grid struct{}
+
+func NewGrid(sx, sy int) Grid {
+	return Grid{}
+}
+
 var world = ecs.NewWorld()
 var mapper = ecs.NewMap2[Position, Velocity](&world)
 var filter = ecs.NewFilter2[Position, Velocity](&world).Exclusive()
 var entity = world.NewEntity()
+
+func TestCreateWorld(t *testing.T) {
+	world := ecs.NewWorld()
+	_ = &world
+}
+
+func TestCreateWorldConfig(t *testing.T) {
+	world := ecs.NewWorld(1024)
+	_ = &world
+}
 
 func TestCreateEmpty(t *testing.T) {
 	e := world.NewEntity()
@@ -124,4 +140,18 @@ func TestRemoveBatch(t *testing.T) {
 	mapper.RemoveBatch(
 		filter.Batch(),
 		func(entity ecs.Entity) { /* ... */ })
+}
+
+func TestResourcesQuick(t *testing.T) {
+	grid := NewGrid(100, 100)
+
+	ecs.AddResource(&world, &grid)
+	_ = ecs.GetResource[Grid](&world)
+}
+
+func TestResources(t *testing.T) {
+	gridResource := ecs.NewResource[Grid](&world)
+
+	grid := gridResource.Get()
+	_ = grid
 }
