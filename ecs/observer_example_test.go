@@ -70,6 +70,17 @@ func ExampleObserver_Exclusive() {
 	// Output:
 }
 
+func ExampleObserver_New() {
+	w := ecs.NewWorld()
+
+	// Declare the observer, e.g. in struct definition.
+	var obs *ecs.Observer
+
+	// Construct the observer elsewhere, e.g. in the constructor.
+	obs = obs.New(ecs.OnAddComponents).Do(func(e ecs.Entity) {}).Register(&w)
+	// Output:
+}
+
 func ExampleObserver1() {
 	world := ecs.NewWorld()
 
@@ -152,5 +163,16 @@ func ExampleEvent() {
 
 	// Emit the event.
 	event.Emit(entity)
+	// Output:
+}
+
+func ExampleObserver1_New() {
+	w := ecs.NewWorld()
+
+	// Declare the observer, e.g. in struct definition.
+	var obs *ecs.Observer1[Position]
+
+	// Construct the observer elsewhere, e.g. in the constructor.
+	obs = obs.New(ecs.OnAddComponents).Do(func(e ecs.Entity, pos *Position) {}).Register(&w)
 	// Output:
 }

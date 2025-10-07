@@ -15,6 +15,7 @@
 - Adds method `World.Shrink` for freeing memory that exceeds current requirements (#323)
 - World lock and filters are concurrency-safe, allowing for concurrent query execution (#360)
 - Adds method `Resource[T].New` as a shortcut to avoid repeated parameter specification (#393)
+- Adds methods `ObserverX.New` as a shortcut to avoid repeated parameter listing (#394)
 
 ### Performance
 

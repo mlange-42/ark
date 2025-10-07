@@ -15,7 +15,8 @@ import "testing"
 
 func TestObserve{{.}}(t *testing.T) {
 	w := NewWorld()
-	obs := Observe{{.}}{{$generics}}(OnAddComponents).Do(func(e Entity, {{$args}}) {}).Register(&w)
+	var obs *Observer{{.}}{{$generics}}
+	obs = obs.New(OnAddComponents).Do(func(e Entity, {{$args}}) {}).Register(&w)
 
 	expectPanicsWithValue(t, "can't modify a registered observer",
 		func() {

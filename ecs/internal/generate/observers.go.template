@@ -32,6 +32,16 @@ func Observe{{.}}{{$generics}}(evt EventType) *Observer{{.}}{{$genericsShort}} {
 	}
 }
 
+// New creates a new [Observer{{.}}]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+{{- if ne . 1 }}
+//
+// See [Observer1.New] for an example.
+{{- end}}
+func (_ *Observer{{.}}{{$genericsShort}}) New(evt EventType) *Observer{{.}}{{$genericsShort}} {
+    return Observe{{.}}{{$genericsShort}}(evt)
+}
+
 // For adds further components that the observer observes, in addition to its generic parameters.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.

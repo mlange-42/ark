@@ -21,6 +21,12 @@ func Observe1[A any](evt EventType) *Observer1[A] {
 	}
 }
 
+// New creates a new [Observer1]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+func (_ *Observer1[A]) New(evt EventType) *Observer1[A] {
+	return Observe1[A](evt)
+}
+
 // For adds further components that the observer observes, in addition to its generic parameters.
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
@@ -127,6 +133,14 @@ func Observe2[A any, B any](evt EventType) *Observer2[A, B] {
 			id:    maxObserverID,
 		},
 	}
+}
+
+// New creates a new [Observer2]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Observer1.New] for an example.
+func (_ *Observer2[A, B]) New(evt EventType) *Observer2[A, B] {
+	return Observe2[A, B](evt)
 }
 
 // For adds further components that the observer observes, in addition to its generic parameters.
@@ -246,6 +260,14 @@ func Observe3[A any, B any, C any](evt EventType) *Observer3[A, B, C] {
 			id:    maxObserverID,
 		},
 	}
+}
+
+// New creates a new [Observer3]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Observer1.New] for an example.
+func (_ *Observer3[A, B, C]) New(evt EventType) *Observer3[A, B, C] {
+	return Observe3[A, B, C](evt)
 }
 
 // For adds further components that the observer observes, in addition to its generic parameters.
@@ -368,6 +390,14 @@ func Observe4[A any, B any, C any, D any](evt EventType) *Observer4[A, B, C, D] 
 			id:    maxObserverID,
 		},
 	}
+}
+
+// New creates a new [Observer4]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated listing of type parameters.
+//
+// See [Observer1.New] for an example.
+func (_ *Observer4[A, B, C, D]) New(evt EventType) *Observer4[A, B, C, D] {
+	return Observe4[A, B, C, D](evt)
 }
 
 // For adds further components that the observer observes, in addition to its generic parameters.
