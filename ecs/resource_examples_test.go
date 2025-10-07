@@ -31,4 +31,5 @@ func ExampleResource_New() {
 
 	// Construct the accessor elsewhere, e.g. in the constructor.
 	gridAccess = gridAccess.New(&world)
+	// Output:
 }
