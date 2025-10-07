@@ -24,6 +24,8 @@ func (_ *Map1[A]) New(world *World) *Map1[A] {
 }
 
 // NewMap1 creates a new [Map1].
+//
+// See also [Map1.New] for a shortcut when constructing an already defined instance.
 func NewMap1[A any](world *World) *Map1[A] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -330,6 +332,8 @@ func (_ *Map2[A, B]) New(world *World) *Map2[A, B] {
 }
 
 // NewMap2 creates a new [Map2].
+//
+// See also [Map2.New] for a shortcut when constructing an already defined instance.
 func NewMap2[A any, B any](world *World) *Map2[A, B] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -656,6 +660,8 @@ func (_ *Map3[A, B, C]) New(world *World) *Map3[A, B, C] {
 }
 
 // NewMap3 creates a new [Map3].
+//
+// See also [Map3.New] for a shortcut when constructing an already defined instance.
 func NewMap3[A any, B any, C any](world *World) *Map3[A, B, C] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -998,6 +1004,8 @@ func (_ *Map4[A, B, C, D]) New(world *World) *Map4[A, B, C, D] {
 }
 
 // NewMap4 creates a new [Map4].
+//
+// See also [Map4.New] for a shortcut when constructing an already defined instance.
 func NewMap4[A any, B any, C any, D any](world *World) *Map4[A, B, C, D] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -1356,6 +1364,8 @@ func (_ *Map5[A, B, C, D, E]) New(world *World) *Map5[A, B, C, D, E] {
 }
 
 // NewMap5 creates a new [Map5].
+//
+// See also [Map5.New] for a shortcut when constructing an already defined instance.
 func NewMap5[A any, B any, C any, D any, E any](world *World) *Map5[A, B, C, D, E] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -1730,6 +1740,8 @@ func (_ *Map6[A, B, C, D, E, F]) New(world *World) *Map6[A, B, C, D, E, F] {
 }
 
 // NewMap6 creates a new [Map6].
+//
+// See also [Map6.New] for a shortcut when constructing an already defined instance.
 func NewMap6[A any, B any, C any, D any, E any, F any](world *World) *Map6[A, B, C, D, E, F] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -2120,6 +2132,8 @@ func (_ *Map7[A, B, C, D, E, F, G]) New(world *World) *Map7[A, B, C, D, E, F, G]
 }
 
 // NewMap7 creates a new [Map7].
+//
+// See also [Map7.New] for a shortcut when constructing an already defined instance.
 func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) *Map7[A, B, C, D, E, F, G] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -2526,6 +2540,8 @@ func (_ *Map8[A, B, C, D, E, F, G, H]) New(world *World) *Map8[A, B, C, D, E, F,
 }
 
 // NewMap8 creates a new [Map8].
+//
+// See also [Map8.New] for a shortcut when constructing an already defined instance.
 func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) *Map8[A, B, C, D, E, F, G, H] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -2948,6 +2964,8 @@ func (_ *Map9[A, B, C, D, E, F, G, H, I]) New(world *World) *Map9[A, B, C, D, E,
 }
 
 // NewMap9 creates a new [Map9].
+//
+// See also [Map9.New] for a shortcut when constructing an already defined instance.
 func NewMap9[A any, B any, C any, D any, E any, F any, G any, H any, I any](world *World) *Map9[A, B, C, D, E, F, G, H, I] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -3386,6 +3404,8 @@ func (_ *Map10[A, B, C, D, E, F, G, H, I, J]) New(world *World) *Map10[A, B, C, 
 }
 
 // NewMap10 creates a new [Map10].
+//
+// See also [Map10.New] for a shortcut when constructing an already defined instance.
 func NewMap10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any](world *World) *Map10[A, B, C, D, E, F, G, H, I, J] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -3840,6 +3860,8 @@ func (_ *Map11[A, B, C, D, E, F, G, H, I, J, K]) New(world *World) *Map11[A, B, 
 }
 
 // NewMap11 creates a new [Map11].
+//
+// See also [Map11.New] for a shortcut when constructing an already defined instance.
 func NewMap11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any](world *World) *Map11[A, B, C, D, E, F, G, H, I, J, K] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -4310,6 +4332,8 @@ func (_ *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) New(world *World) *Map12[A, 
 }
 
 // NewMap12 creates a new [Map12].
+//
+// See also [Map12.New] for a shortcut when constructing an already defined instance.
 func NewMap12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any, L any](world *World) *Map12[A, B, C, D, E, F, G, H, I, J, K, L] {
 	ids := []ID{
 		ComponentID[A](world),

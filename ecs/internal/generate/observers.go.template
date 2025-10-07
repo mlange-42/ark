@@ -23,6 +23,8 @@ type Observer{{.}}{{$generics}} struct {
 }
 
 // Observe{{.}} creates a new Observer{{.}}.
+//
+// See also [Observer{{.}}.New] for a shortcut when constructing an already defined instance.
 func Observe{{.}}{{$generics}}(evt EventType) *Observer{{.}}{{$genericsShort}} {
 	return &Observer{{.}}{{$genericsShort}}{
 		observer: Observer{

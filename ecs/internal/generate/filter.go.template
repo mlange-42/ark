@@ -47,6 +47,8 @@ func (*Filter{{.}}{{$genericsShort}}) New(world *World) *Filter{{.}}{{$genericsS
 // NewFilter{{.}} creates a new [Filter{{.}}].
 //
 // Use [Filter{{.}}.Query] to obtain a [Query{{.}}].
+//
+// See also [Filter{{.}}.New] for a shortcut when constructing an already defined instance.
 func NewFilter{{.}}{{$generics}}(world *World) *Filter{{.}}{{$genericsShort}} {
 	ids := []ID{
 		{{- range $i, $v := $upper}}

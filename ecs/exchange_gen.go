@@ -26,6 +26,8 @@ func (_ *Exchange1[A]) New(world *World) *Exchange1[A] {
 }
 
 // NewExchange1 creates an [Exchange1].
+//
+// See also [Exchange1.New] for a shortcut when constructing an already defined instance.
 func NewExchange1[A any](world *World) *Exchange1[A] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -216,6 +218,8 @@ func (_ *Exchange2[A, B]) New(world *World) *Exchange2[A, B] {
 }
 
 // NewExchange2 creates an [Exchange2].
+//
+// See also [Exchange2.New] for a shortcut when constructing an already defined instance.
 func NewExchange2[A any, B any](world *World) *Exchange2[A, B] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -418,6 +422,8 @@ func (_ *Exchange3[A, B, C]) New(world *World) *Exchange3[A, B, C] {
 }
 
 // NewExchange3 creates an [Exchange3].
+//
+// See also [Exchange3.New] for a shortcut when constructing an already defined instance.
 func NewExchange3[A any, B any, C any](world *World) *Exchange3[A, B, C] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -628,6 +634,8 @@ func (_ *Exchange4[A, B, C, D]) New(world *World) *Exchange4[A, B, C, D] {
 }
 
 // NewExchange4 creates an [Exchange4].
+//
+// See also [Exchange4.New] for a shortcut when constructing an already defined instance.
 func NewExchange4[A any, B any, C any, D any](world *World) *Exchange4[A, B, C, D] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -846,6 +854,8 @@ func (_ *Exchange5[A, B, C, D, E]) New(world *World) *Exchange5[A, B, C, D, E] {
 }
 
 // NewExchange5 creates an [Exchange5].
+//
+// See also [Exchange5.New] for a shortcut when constructing an already defined instance.
 func NewExchange5[A any, B any, C any, D any, E any](world *World) *Exchange5[A, B, C, D, E] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -1072,6 +1082,8 @@ func (_ *Exchange6[A, B, C, D, E, F]) New(world *World) *Exchange6[A, B, C, D, E
 }
 
 // NewExchange6 creates an [Exchange6].
+//
+// See also [Exchange6.New] for a shortcut when constructing an already defined instance.
 func NewExchange6[A any, B any, C any, D any, E any, F any](world *World) *Exchange6[A, B, C, D, E, F] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -1306,6 +1318,8 @@ func (_ *Exchange7[A, B, C, D, E, F, G]) New(world *World) *Exchange7[A, B, C, D
 }
 
 // NewExchange7 creates an [Exchange7].
+//
+// See also [Exchange7.New] for a shortcut when constructing an already defined instance.
 func NewExchange7[A any, B any, C any, D any, E any, F any, G any](world *World) *Exchange7[A, B, C, D, E, F, G] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -1548,6 +1562,8 @@ func (_ *Exchange8[A, B, C, D, E, F, G, H]) New(world *World) *Exchange8[A, B, C
 }
 
 // NewExchange8 creates an [Exchange8].
+//
+// See also [Exchange8.New] for a shortcut when constructing an already defined instance.
 func NewExchange8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) *Exchange8[A, B, C, D, E, F, G, H] {
 	ids := []ID{
 		ComponentID[A](world),

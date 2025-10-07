@@ -33,6 +33,8 @@ func (*Filter0) New(world *World) *Filter0 {
 // NewFilter0 creates a new [Filter0].
 //
 // Use [Filter0.Query] to obtain a [Query0].
+//
+// See also [Filter0.New] for a shortcut when constructing an already defined instance.
 func NewFilter0(world *World) *Filter0 {
 	ids := []ID{}
 	components := make([]*componentStorage, 0)
@@ -217,6 +219,8 @@ func (*Filter1[A]) New(world *World) *Filter1[A] {
 // NewFilter1 creates a new [Filter1].
 //
 // Use [Filter1.Query] to obtain a [Query1].
+//
+// See also [Filter1.New] for a shortcut when constructing an already defined instance.
 func NewFilter1[A any](world *World) *Filter1[A] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -399,6 +403,8 @@ func (*Filter2[A, B]) New(world *World) *Filter2[A, B] {
 // NewFilter2 creates a new [Filter2].
 //
 // Use [Filter2.Query] to obtain a [Query2].
+//
+// See also [Filter2.New] for a shortcut when constructing an already defined instance.
 func NewFilter2[A any, B any](world *World) *Filter2[A, B] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -587,6 +593,8 @@ func (*Filter3[A, B, C]) New(world *World) *Filter3[A, B, C] {
 // NewFilter3 creates a new [Filter3].
 //
 // Use [Filter3.Query] to obtain a [Query3].
+//
+// See also [Filter3.New] for a shortcut when constructing an already defined instance.
 func NewFilter3[A any, B any, C any](world *World) *Filter3[A, B, C] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -777,6 +785,8 @@ func (*Filter4[A, B, C, D]) New(world *World) *Filter4[A, B, C, D] {
 // NewFilter4 creates a new [Filter4].
 //
 // Use [Filter4.Query] to obtain a [Query4].
+//
+// See also [Filter4.New] for a shortcut when constructing an already defined instance.
 func NewFilter4[A any, B any, C any, D any](world *World) *Filter4[A, B, C, D] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -969,6 +979,8 @@ func (*Filter5[A, B, C, D, E]) New(world *World) *Filter5[A, B, C, D, E] {
 // NewFilter5 creates a new [Filter5].
 //
 // Use [Filter5.Query] to obtain a [Query5].
+//
+// See also [Filter5.New] for a shortcut when constructing an already defined instance.
 func NewFilter5[A any, B any, C any, D any, E any](world *World) *Filter5[A, B, C, D, E] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -1163,6 +1175,8 @@ func (*Filter6[A, B, C, D, E, F]) New(world *World) *Filter6[A, B, C, D, E, F] {
 // NewFilter6 creates a new [Filter6].
 //
 // Use [Filter6.Query] to obtain a [Query6].
+//
+// See also [Filter6.New] for a shortcut when constructing an already defined instance.
 func NewFilter6[A any, B any, C any, D any, E any, F any](world *World) *Filter6[A, B, C, D, E, F] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -1359,6 +1373,8 @@ func (*Filter7[A, B, C, D, E, F, G]) New(world *World) *Filter7[A, B, C, D, E, F
 // NewFilter7 creates a new [Filter7].
 //
 // Use [Filter7.Query] to obtain a [Query7].
+//
+// See also [Filter7.New] for a shortcut when constructing an already defined instance.
 func NewFilter7[A any, B any, C any, D any, E any, F any, G any](world *World) *Filter7[A, B, C, D, E, F, G] {
 	ids := []ID{
 		ComponentID[A](world),
@@ -1557,6 +1573,8 @@ func (*Filter8[A, B, C, D, E, F, G, H]) New(world *World) *Filter8[A, B, C, D, E
 // NewFilter8 creates a new [Filter8].
 //
 // Use [Filter8.Query] to obtain a [Query8].
+//
+// See also [Filter8.New] for a shortcut when constructing an already defined instance.
 func NewFilter8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) *Filter8[A, B, C, D, E, F, G, H] {
 	ids := []ID{
 		ComponentID[A](world),

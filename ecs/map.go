@@ -1,6 +1,7 @@
 package ecs
 
 // Map is a mapper to access and manipulate components of an entity.
+// It is equivalent to [Map1], with slightly more convenient methods tailored for a single component.
 //
 // Instances should be created during initialization and stored, e.g. in systems.
 type Map[T any] struct {
@@ -13,6 +14,8 @@ type Map[T any] struct {
 }
 
 // NewMap creates a new [Map].
+//
+// See also [Map.New] for a shortcut when constructing an already defined instance.
 func NewMap[T any](w *World) *Map[T] {
 	id := ComponentID[T](w)
 	return &Map[T]{
