@@ -13,7 +13,6 @@ function collapseGroup(group) {
 }
 </script>
 {{- $group := .Get "group" -}}
-<p>
 {{ if $group }}
 <button onclick="expandGroup('{{ $group }}')" title="Expand section">➕</button>
 <button onclick="collapseGroup('{{ $group }}')" title="Collapse section">➖</button>
@@ -21,4 +20,3 @@ function collapseGroup(group) {
 <button onclick="expandAllDetails()" title="Expand all sections" aria-label="Expand all">➕</button>
 <button onclick="collapseAllDetails()" title="Collapse all sections" aria-label="Collapse all">➖</button>
 {{ end }}
-</p>
