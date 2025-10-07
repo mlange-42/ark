@@ -24,6 +24,12 @@ func NewMap[T any](w *World) *Map[T] {
 	}
 }
 
+// New creates a new [Map]. It is safe to call on `nil` instance.
+// It is a helper method, intended to avoid repeated specification of the type parameter.
+func (*Map[A]) New(world *World) *Map[A] {
+	return NewMap[A](world)
+}
+
 // NewEntity creates a new entity with the mapped component.
 //
 // If the mapped component is a relationship (see [RelationMarker]),

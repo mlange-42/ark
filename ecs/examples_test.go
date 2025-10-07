@@ -138,6 +138,17 @@ func ExampleMap() {
 	// Output:
 }
 
+func ExampleMap_New() {
+	world := ecs.NewWorld()
+
+	// Declare the mapper, e.g. in your system struct.
+	var mapper *ecs.Map[Position]
+
+	// Construct the mapper, avoiding repeated generics.
+	mapper = mapper.New(&world)
+	// Output:
+}
+
 func ExampleMap2() {
 	world := ecs.NewWorld()
 
