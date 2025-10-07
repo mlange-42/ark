@@ -9,7 +9,7 @@ type Resource[T any] struct {
 }
 
 // New creates a new [Resource]. It is safe to call on an uninitialized instance.
-// It is a helper method, intended to avoid repeated listing of type parameters.
+// It is a helper method, intended to avoid repeated specification of the type parameter.
 //
 // Due to value receiver, the return type must be assigned back to the original value.
 func (Resource[T]) New(world *World) Resource[T] {
