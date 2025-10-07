@@ -841,3 +841,25 @@ func TestWorldShrinkTime(t *testing.T) {
 
 	w.RemoveEntity(parent)
 }
+
+func TestSharedComponents(t *testing.T) {
+	world := NewWorld()
+
+	shared := &Position{1, 2}
+
+	builder := NewMap1[*Position](&world)
+
+	e1 := builder.NewEntity(&shared)
+	e2 := builder.NewEntity(&shared)
+
+	shared.X = 100
+
+	expectEqual(t, 100, (*builder.Get(e1)).X)
+	expectEqual(t, 100, (*builder.Get(e2)).X)
+
+	posPtr := (*builder.Get(e1))
+	posPtr.X = 200
+
+	expectEqual(t, 200, (*builder.Get(e1)).X)
+	expectEqual(t, 200, (*builder.Get(e2)).X)
+}
