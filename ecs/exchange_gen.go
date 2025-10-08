@@ -21,7 +21,7 @@ type Exchange1[A any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Exchange2.New] for an example.
-func (_ *Exchange1[A]) New(world *World) *Exchange1[A] {
+func (*Exchange1[A]) New(world *World) *Exchange1[A] {
 	return NewExchange1[A](world)
 }
 
@@ -213,7 +213,7 @@ type Exchange2[A any, B any] struct {
 
 // New creates a new [Exchange2]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Exchange2[A, B]) New(world *World) *Exchange2[A, B] {
+func (*Exchange2[A, B]) New(world *World) *Exchange2[A, B] {
 	return NewExchange2[A, B](world)
 }
 
@@ -417,7 +417,7 @@ type Exchange3[A any, B any, C any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Exchange2.New] for an example.
-func (_ *Exchange3[A, B, C]) New(world *World) *Exchange3[A, B, C] {
+func (*Exchange3[A, B, C]) New(world *World) *Exchange3[A, B, C] {
 	return NewExchange3[A, B, C](world)
 }
 
@@ -629,7 +629,7 @@ type Exchange4[A any, B any, C any, D any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Exchange2.New] for an example.
-func (_ *Exchange4[A, B, C, D]) New(world *World) *Exchange4[A, B, C, D] {
+func (*Exchange4[A, B, C, D]) New(world *World) *Exchange4[A, B, C, D] {
 	return NewExchange4[A, B, C, D](world)
 }
 
@@ -849,7 +849,7 @@ type Exchange5[A any, B any, C any, D any, E any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Exchange2.New] for an example.
-func (_ *Exchange5[A, B, C, D, E]) New(world *World) *Exchange5[A, B, C, D, E] {
+func (*Exchange5[A, B, C, D, E]) New(world *World) *Exchange5[A, B, C, D, E] {
 	return NewExchange5[A, B, C, D, E](world)
 }
 
@@ -1077,7 +1077,7 @@ type Exchange6[A any, B any, C any, D any, E any, F any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Exchange2.New] for an example.
-func (_ *Exchange6[A, B, C, D, E, F]) New(world *World) *Exchange6[A, B, C, D, E, F] {
+func (*Exchange6[A, B, C, D, E, F]) New(world *World) *Exchange6[A, B, C, D, E, F] {
 	return NewExchange6[A, B, C, D, E, F](world)
 }
 
@@ -1313,7 +1313,7 @@ type Exchange7[A any, B any, C any, D any, E any, F any, G any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Exchange2.New] for an example.
-func (_ *Exchange7[A, B, C, D, E, F, G]) New(world *World) *Exchange7[A, B, C, D, E, F, G] {
+func (*Exchange7[A, B, C, D, E, F, G]) New(world *World) *Exchange7[A, B, C, D, E, F, G] {
 	return NewExchange7[A, B, C, D, E, F, G](world)
 }
 
@@ -1557,7 +1557,7 @@ type Exchange8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Exchange2.New] for an example.
-func (_ *Exchange8[A, B, C, D, E, F, G, H]) New(world *World) *Exchange8[A, B, C, D, E, F, G, H] {
+func (*Exchange8[A, B, C, D, E, F, G, H]) New(world *World) *Exchange8[A, B, C, D, E, F, G, H] {
 	return NewExchange8[A, B, C, D, E, F, G, H](world)
 }
 

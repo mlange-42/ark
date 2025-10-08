@@ -39,7 +39,7 @@ type Map{{.}}{{$generics}} struct {
 //
 // See [Map2.New] for an example.
 {{- end}}
-func (_ *Map{{.}}{{$genericsShort}}) New(world *World) *Map{{.}}{{$genericsShort}} {
+func (*Map{{.}}{{$genericsShort}}) New(world *World) *Map{{.}}{{$genericsShort}} {
     return NewMap{{.}}{{$genericsShort}}(world)
 }
 

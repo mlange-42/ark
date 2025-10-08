@@ -38,7 +38,7 @@ type Exchange{{.}}{{$generics}} struct {
 //
 // See [Exchange2.New] for an example.
 {{- end}}
-func (_ *Exchange{{.}}{{$genericsShort}}) New(world *World) *Exchange{{.}}{{$genericsShort}} {
+func (*Exchange{{.}}{{$genericsShort}}) New(world *World) *Exchange{{.}}{{$genericsShort}} {
     return NewExchange{{.}}{{$genericsShort}}(world)
 }
 
