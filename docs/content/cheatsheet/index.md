@@ -29,6 +29,8 @@ API: {{< api ecs World.New >}}
 
 {{< details-buttons group="create" >}}
 
+Entities represent the “objects” in a game or simulation.
+
 {{% details closed="true" group="create" title="✨ Create an **entity without components**" %}}
 Create an **entity without components**:
 {{< code-func cheatsheet_test.go TestCreateEmpty >}}
@@ -85,6 +87,8 @@ API: {{< api ecs World.RemoveEntities >}}
 
 {{< details-buttons group="components" >}}
 
+Components store the data that is associated to entities.
+
 {{% details closed="true" group="components" title="🧩 A **component mapper** is required for adding and removing components" %}}
 It adds or removes the given components to/from entities.
 Component mappers should be stored and re-used for best performance.
@@ -116,6 +120,8 @@ API: {{< api ecs Map2.RemoveBatch >}}
 ## Filters and queries
 
 {{< details-buttons group="queries" >}}
+
+Queries are the main work horse for implementing logic.
 
 {{% details closed="true" group="queries" title="🔍 Use **filters and queries** to iterate entities" %}}
 Filters should be stored and re-used for best performance.  
@@ -161,6 +167,8 @@ API: {{< api ecs Query.Count >}}, {{< api ecs Query.Close >}}
 
 {{< details-buttons group="access" >}}
 
+Components can also be accessed for arbitrary entities, not only inside queries.
+
 {{% details closed="true" group="access" title="🧩 A **component mapper** is required for component access outside queries" %}}
 Allows access to the given components.
 {{< code-func cheatsheet_test.go TestCreateMapper >}}
@@ -177,7 +185,7 @@ API: {{< api ecs Map2.Get >}}
 API: {{< api ecs Map2.HasAll >}}
 {{% /details %}}
 
-{{% details closed="true" group="access" title="🧩 A more convenient mapper for a **single component**" %}}
+{{% details closed="true" group="access" title="🧩 For **single component access**, there is a slightly more convenient mapper" %}}
 {{< code-func cheatsheet_test.go TestComponentAccessSingle >}}
 API: {{< api ecs Map >}}
 {{% /details %}}
@@ -207,6 +215,8 @@ API: {{< api ecs Resource >}}, {{< api ecs Resource.Get >}}
 > [!NOTE]
 > This feature is not yet released and is planned for Ark v0.6.0.
 > You can try it out on the `main` branch.
+
+Observers allow to react on ECS lifecycle events, like entity creation or component addition.
 
 {{% details closed="true" group="events" title="👀 **Create and register** observers for ECS lifecycle events" %}}
 Gets notified on any creation of an entity.
