@@ -144,6 +144,10 @@ Resources can be used for "global", singleton-like data structures that are not 
 
 {{< details-buttons group="events" >}}
 
+> [!NOTE]
+> This feature is not yet released and is planned for Ark v0.6.0.
+> You can try it out on the `main` branch.
+
 {{% details closed="true" group="events" title="👀 **Create and register** observers for ECS lifecycle events" %}}
 Gets notified on any creation of an entity.
 {{< code-func cheatsheet_test.go TestObserver >}}
