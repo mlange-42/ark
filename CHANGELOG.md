@@ -42,7 +42,7 @@
 - Adds stand-alone examples for built-in and custom events (#354)
 - Adds a user guide section and a stand-alone example for running queries concurrently (#360, #391)
 - Allows inlining in user guide benchmarks for more realistic measurements (#382)
-- Adds a cheat sheet for quick lookup to the user guide (#397, #399)
+- Adds a cheat sheet for quick lookup to the user guide (#397, #399, #402)
 
 ### Bugfixes
 

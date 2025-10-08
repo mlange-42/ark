@@ -29,6 +29,8 @@ API: {{< api ecs World.New >}}
 
 {{< details-buttons group="create" >}}
 
+Entities represent the “objects” in a game or simulation.
+
 {{% details closed="true" group="create" title="✨ Create an **entity without components**" %}}
 Create an **entity without components**:
 {{< code-func cheatsheet_test.go TestCreateEmpty >}}
@@ -85,6 +87,8 @@ API: {{< api ecs World.RemoveEntities >}}
 
 {{< details-buttons group="components" >}}
 
+Components store the data that is associated to entities.
+
 {{% details closed="true" group="components" title="🧩 A **component mapper** is required for adding and removing components" %}}
 It adds or removes the given components to/from entities.
 Component mappers should be stored and re-used for best performance.
@@ -117,6 +121,8 @@ API: {{< api ecs Map2.RemoveBatch >}}
 
 {{< details-buttons group="queries" >}}
 
+Queries are the main work horse for implementing logic.
+
 {{% details closed="true" group="queries" title="🔍 Use **filters and queries** to iterate entities" %}}
 Filters should be stored and re-used for best performance.  
 Always create a new query before iterating.
@@ -146,24 +152,56 @@ API: {{< api ecs Filter2.Exclusive >}}
 API: {{< api ecs Filter2.With >}}, {{< api ecs Filter2.Without >}}
 {{% /details %}}
 
+{{% details closed="true" group="queries" title="🔍 **Access entities** in query loops" %}}
+{{< code-func cheatsheet_test.go TestQueryEntity >}}
+API: {{< api ecs Query.Entity >}}
+{{% /details %}}
+
 {{% details closed="true" group="queries" title="🔍 Queries can **count entities** without iterating" %}}
 Note that a query that is not iterated must be closed explicitly.
 {{< code-func cheatsheet_test.go TestQueryCount >}}
 API: {{< api ecs Query.Count >}}, {{< api ecs Query.Close >}}
 {{% /details %}}
 
+## Access components
+
+{{< details-buttons group="access" >}}
+
+Components can also be accessed for arbitrary entities, not only inside queries.
+
+{{% details closed="true" group="access" title="🧩 A **component mapper** is required for component access outside queries" %}}
+Allows access to the given components.
+{{< code-func cheatsheet_test.go TestCreateMapper >}}
+API: {{< api ecs Map1 >}},  {{< api ecs Map2 >}}, ...
+{{% /details %}}
+
+{{% details closed="true" group="access" title="🧩 **Access components** by entity" %}}
+{{< code-func cheatsheet_test.go TestComponentAccess >}}
+API: {{< api ecs Map2.Get >}}
+{{% /details %}}
+
+{{% details closed="true" group="access" title="🧩 **Check for existence** of components for an entity" %}}
+{{< code-func cheatsheet_test.go TestComponentCheck >}}
+API: {{< api ecs Map2.HasAll >}}
+{{% /details %}}
+
+{{% details closed="true" group="access" title="🧩 For **single component access**, there is a slightly more convenient mapper" %}}
+{{< code-func cheatsheet_test.go TestComponentAccessSingle >}}
+API: {{< api ecs Map >}}
+{{% /details %}}
+
 ## Resources
 
 {{< details-buttons group="resources" >}}
 
-Resources can be used for "global", singleton-like data structures that are not associated to particular entities.
+Resources are "global", singleton-like data structures that are not associated to a particular entity.
 
-{{% details closed="true" group="resources" title="📦 Adding and getting resources, the simple but slower way (&approx;20ns)" %}}
+{{% details closed="true" group="resources" title="📦 Adding and **getting resources**, the simple but slower way (&approx;20ns)" %}}
 {{< code-func cheatsheet_test.go TestResourcesQuick >}}
 API: {{< api ecs AddResource >}}, {{< api ecs GetResource >}}
 {{% /details %}}
 
-{{% details closed="true" group="resources" title="📦 For repeated access, better use a resource accessor (`Get()` &approx;1ns)" %}}
+{{% details closed="true" group="resources" title="📦 For **repeated access**, better use a resource accessor (`Get()` &approx;1ns)" %}}
 {{< code-func cheatsheet_test.go TestResources >}}
 (Creating the accessor does not add the actual `Grid` resource!)
 
@@ -177,6 +215,8 @@ API: {{< api ecs Resource >}}, {{< api ecs Resource.Get >}}
 > [!NOTE]
 > This feature is not yet released and is planned for Ark v0.6.0.
 > You can try it out on the `main` branch.
+
+Observers allow to react to ECS lifecycle events, like entity creation or component addition.
 
 {{% details closed="true" group="events" title="👀 **Create and register** observers for ECS lifecycle events" %}}
 Gets notified on any creation of an entity.
