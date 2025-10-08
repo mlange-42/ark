@@ -121,7 +121,7 @@ API: {{< api ecs Map2.RemoveBatch >}}
 Filters should be stored and re-used for best performance.  
 Always create a new query before iterating.
 {{< code-func cheatsheet_test.go TestFilterQuery >}}
-API: {{< api ecs Filter1 >}}, {{< api ecs Filter2 >}}, ..., {{< api ecs Filter2.Query >}}
+API: {{< api ecs Filter1 >}}, {{< api ecs Filter2 >}}, ..., {{< api ecs Filter2.Query >}}, {{< api ecs Query2.Next >}}, {{< api ecs Query2.Get >}}
 {{% /details %}}
 
 {{% details closed="true" group="queries" title="🔍 Filters can match **additional components**" %}}
