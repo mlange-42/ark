@@ -2,9 +2,9 @@
 title = 'Cheat sheet'
 type = "docs"
 weight = 1000
-description = "Cheat sheet for frequent use cases."
+description = "Cheat sheet for Ark's most frequently used APIs."
 +++
-Frequently used Ark operations for quick lookup.
+Frequently used Ark APIs for quick lookup.
 
 {{< details-buttons paragraph="true" >}}
 
