@@ -194,14 +194,14 @@ API: {{< api ecs Map >}}
 
 {{< details-buttons group="resources" >}}
 
-Resources are "global", singleton-like data structures that are not associated to particular entities.
+Resources are "global", singleton-like data structures that are not associated to a particular entity.
 
-{{% details closed="true" group="resources" title="📦 Adding and getting resources, the simple but slower way (&approx;20ns)" %}}
+{{% details closed="true" group="resources" title="📦 Adding and **getting resources**, the simple but slower way (&approx;20ns)" %}}
 {{< code-func cheatsheet_test.go TestResourcesQuick >}}
 API: {{< api ecs AddResource >}}, {{< api ecs GetResource >}}
 {{% /details %}}
 
-{{% details closed="true" group="resources" title="📦 For repeated access, better use a resource accessor (`Get()` &approx;1ns)" %}}
+{{% details closed="true" group="resources" title="📦 For **repeated access**, better use a resource accessor (`Get()` &approx;1ns)" %}}
 {{< code-func cheatsheet_test.go TestResources >}}
 (Creating the accessor does not add the actual `Grid` resource!)
 
