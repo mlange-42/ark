@@ -171,6 +171,12 @@ func TestFilterWithout(t *testing.T) {
 	_ = filter
 }
 
+func TestFilterExclusive(t *testing.T) {
+	filter := ecs.NewFilter2[Position, Velocity](&world).
+		Exclusive()
+	_ = filter
+}
+
 func TestFilterWithWithout(t *testing.T) {
 	filter := ecs.NewFilter1[Position](&world).
 		With(ecs.C[Velocity]()).
