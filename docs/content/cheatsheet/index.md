@@ -194,7 +194,7 @@ API: {{< api ecs Map >}}
 
 {{< details-buttons group="resources" >}}
 
-Resources can be used for "global", singleton-like data structures that are not associated to particular entities.
+Resources are "global", singleton-like data structures that are not associated to particular entities.
 
 {{% details closed="true" group="resources" title="📦 Adding and getting resources, the simple but slower way (&approx;20ns)" %}}
 {{< code-func cheatsheet_test.go TestResourcesQuick >}}
@@ -216,7 +216,7 @@ API: {{< api ecs Resource >}}, {{< api ecs Resource.Get >}}
 > This feature is not yet released and is planned for Ark v0.6.0.
 > You can try it out on the `main` branch.
 
-Observers allow to react on ECS lifecycle events, like entity creation or component addition.
+Observers allow to react to ECS lifecycle events, like entity creation or component addition.
 
 {{% details closed="true" group="events" title="👀 **Create and register** observers for ECS lifecycle events" %}}
 Gets notified on any creation of an entity.
