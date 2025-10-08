@@ -19,7 +19,7 @@ type Map1[A any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map1[A]) New(world *World) *Map1[A] {
+func (*Map1[A]) New(world *World) *Map1[A] {
 	return NewMap1[A](world)
 }
 
@@ -327,7 +327,7 @@ type Map2[A any, B any] struct {
 
 // New creates a new [Map2]. It is safe to call on `nil` instance.
 // It is a helper method, intended to avoid repeated listing of type parameters.
-func (_ *Map2[A, B]) New(world *World) *Map2[A, B] {
+func (*Map2[A, B]) New(world *World) *Map2[A, B] {
 	return NewMap2[A, B](world)
 }
 
@@ -655,7 +655,7 @@ type Map3[A any, B any, C any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map3[A, B, C]) New(world *World) *Map3[A, B, C] {
+func (*Map3[A, B, C]) New(world *World) *Map3[A, B, C] {
 	return NewMap3[A, B, C](world)
 }
 
@@ -999,7 +999,7 @@ type Map4[A any, B any, C any, D any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map4[A, B, C, D]) New(world *World) *Map4[A, B, C, D] {
+func (*Map4[A, B, C, D]) New(world *World) *Map4[A, B, C, D] {
 	return NewMap4[A, B, C, D](world)
 }
 
@@ -1359,7 +1359,7 @@ type Map5[A any, B any, C any, D any, E any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map5[A, B, C, D, E]) New(world *World) *Map5[A, B, C, D, E] {
+func (*Map5[A, B, C, D, E]) New(world *World) *Map5[A, B, C, D, E] {
 	return NewMap5[A, B, C, D, E](world)
 }
 
@@ -1735,7 +1735,7 @@ type Map6[A any, B any, C any, D any, E any, F any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map6[A, B, C, D, E, F]) New(world *World) *Map6[A, B, C, D, E, F] {
+func (*Map6[A, B, C, D, E, F]) New(world *World) *Map6[A, B, C, D, E, F] {
 	return NewMap6[A, B, C, D, E, F](world)
 }
 
@@ -2127,7 +2127,7 @@ type Map7[A any, B any, C any, D any, E any, F any, G any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map7[A, B, C, D, E, F, G]) New(world *World) *Map7[A, B, C, D, E, F, G] {
+func (*Map7[A, B, C, D, E, F, G]) New(world *World) *Map7[A, B, C, D, E, F, G] {
 	return NewMap7[A, B, C, D, E, F, G](world)
 }
 
@@ -2535,7 +2535,7 @@ type Map8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map8[A, B, C, D, E, F, G, H]) New(world *World) *Map8[A, B, C, D, E, F, G, H] {
+func (*Map8[A, B, C, D, E, F, G, H]) New(world *World) *Map8[A, B, C, D, E, F, G, H] {
 	return NewMap8[A, B, C, D, E, F, G, H](world)
 }
 
@@ -2959,7 +2959,7 @@ type Map9[A any, B any, C any, D any, E any, F any, G any, H any, I any] struct 
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map9[A, B, C, D, E, F, G, H, I]) New(world *World) *Map9[A, B, C, D, E, F, G, H, I] {
+func (*Map9[A, B, C, D, E, F, G, H, I]) New(world *World) *Map9[A, B, C, D, E, F, G, H, I] {
 	return NewMap9[A, B, C, D, E, F, G, H, I](world)
 }
 
@@ -3399,7 +3399,7 @@ type Map10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any]
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map10[A, B, C, D, E, F, G, H, I, J]) New(world *World) *Map10[A, B, C, D, E, F, G, H, I, J] {
+func (*Map10[A, B, C, D, E, F, G, H, I, J]) New(world *World) *Map10[A, B, C, D, E, F, G, H, I, J] {
 	return NewMap10[A, B, C, D, E, F, G, H, I, J](world)
 }
 
@@ -3855,7 +3855,7 @@ type Map11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any,
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map11[A, B, C, D, E, F, G, H, I, J, K]) New(world *World) *Map11[A, B, C, D, E, F, G, H, I, J, K] {
+func (*Map11[A, B, C, D, E, F, G, H, I, J, K]) New(world *World) *Map11[A, B, C, D, E, F, G, H, I, J, K] {
 	return NewMap11[A, B, C, D, E, F, G, H, I, J, K](world)
 }
 
@@ -4327,7 +4327,7 @@ type Map12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any,
 // It is a helper method, intended to avoid repeated listing of type parameters.
 //
 // See [Map2.New] for an example.
-func (_ *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) New(world *World) *Map12[A, B, C, D, E, F, G, H, I, J, K, L] {
+func (*Map12[A, B, C, D, E, F, G, H, I, J, K, L]) New(world *World) *Map12[A, B, C, D, E, F, G, H, I, J, K, L] {
 	return NewMap12[A, B, C, D, E, F, G, H, I, J, K, L](world)
 }
 

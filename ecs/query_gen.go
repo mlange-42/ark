@@ -41,9 +41,8 @@ func (q *Query0) Count() int {
 	if q.cache == nil {
 		if q.hasRareComp {
 			return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
-		} else {
-			return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes)
 		}
+		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes)
 	}
 	return countQueryCache(&q.world.storage, q.cache, q.relations)
 }
@@ -63,9 +62,8 @@ func (q *Query0) EntityAt(index int) Entity {
 	if q.cache == nil {
 		if q.hasRareComp {
 			return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
-		} else {
-			return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes, uint32(index))
 		}
+		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes, uint32(index))
 	}
 	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
 }
