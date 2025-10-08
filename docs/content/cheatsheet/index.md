@@ -146,10 +146,40 @@ API: {{< api ecs Filter2.Exclusive >}}
 API: {{< api ecs Filter2.With >}}, {{< api ecs Filter2.Without >}}
 {{% /details %}}
 
+{{% details closed="true" group="queries" title="🔍 **Access entities** in query loops" %}}
+{{< code-func cheatsheet_test.go TestQueryEntity >}}
+API: {{< api ecs Query.Entity >}}
+{{% /details %}}
+
 {{% details closed="true" group="queries" title="🔍 Queries can **count entities** without iterating" %}}
 Note that a query that is not iterated must be closed explicitly.
 {{< code-func cheatsheet_test.go TestQueryCount >}}
 API: {{< api ecs Query.Count >}}, {{< api ecs Query.Close >}}
+{{% /details %}}
+
+## Access components
+
+{{< details-buttons group="access" >}}
+
+{{% details closed="true" group="access" title="🧩 A **component mapper** is required for component access outside queries" %}}
+Allows access to the given components.
+{{< code-func cheatsheet_test.go TestCreateMapper >}}
+API: {{< api ecs Map1 >}},  {{< api ecs Map2 >}}, ...
+{{% /details %}}
+
+{{% details closed="true" group="access" title="🧩 **Access components** by entity" %}}
+{{< code-func cheatsheet_test.go TestComponentAccess >}}
+API: {{< api ecs Map2.Get >}}
+{{% /details %}}
+
+{{% details closed="true" group="access" title="🧩 **Check for existence** of components for an entity" %}}
+{{< code-func cheatsheet_test.go TestComponentCheck >}}
+API: {{< api ecs Map2.HasAll >}}
+{{% /details %}}
+
+{{% details closed="true" group="access" title="🧩 A more convenient mapper for a **single component**" %}}
+{{< code-func cheatsheet_test.go TestComponentAccessSingle >}}
+API: {{< api ecs Map >}}
 {{% /details %}}
 
 ## Resources

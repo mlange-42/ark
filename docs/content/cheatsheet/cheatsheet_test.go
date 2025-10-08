@@ -185,11 +185,43 @@ func TestFilterWithWithout(t *testing.T) {
 	_ = filter
 }
 
+func TestQueryEntity(t *testing.T) {
+	query := filter.Query()
+	for query.Next() {
+		entity := query.Entity()
+		_ = entity
+	}
+}
+
 func TestQueryCount(t *testing.T) {
 	query := filter.Query()
 	fmt.Println(query.Count())
 
 	query.Close()
+}
+
+func TestComponentAccess(t *testing.T) {
+	entity := mapper.NewEntity(&Position{X: 100, Y: 100}, &Velocity{X: 1, Y: -1})
+
+	pos, vel := mapper.Get(entity)
+	_, _ = pos, vel
+}
+
+func TestComponentCheck(t *testing.T) {
+	entity := mapper.NewEntity(&Position{X: 100, Y: 100}, &Velocity{X: 1, Y: -1})
+
+	hasPosAndVel := mapper.HasAll(entity)
+	_ = hasPosAndVel
+}
+
+func TestComponentAccessSingle(t *testing.T) {
+	mapper := ecs.NewMap[Position](&world)
+	entity := mapper.NewEntity(&Position{X: 100, Y: 100})
+
+	if mapper.Has(entity) {
+		pos := mapper.Get(entity)
+		_ = pos
+	}
 }
 
 func TestResourcesQuick(t *testing.T) {
