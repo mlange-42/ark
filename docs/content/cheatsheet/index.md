@@ -249,7 +249,7 @@ API: {{< api ecs Observer1.With >}}, {{< api ecs Observer1.Without >}}
 API: {{< api ecs EventRegistry >}}, {{< api ecs EventRegistry.NewEventType >}}
 {{% /details %}}
 
-{{% details closed="true" group="events" title="📣 **Custom events** can emitted by the user" %}}
+{{% details closed="true" group="events" title="📣 **Custom events** can be emitted by the user" %}}
 {{< code-func cheatsheet_test.go TestCustomEvent >}}
 API: {{< api ecs World.Event >}}, {{< api ecs Event >}}
 {{% /details %}}
