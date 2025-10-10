@@ -32,8 +32,8 @@ type cache struct {
 }
 
 // newCache creates a new [cache].
-func newCache() cache {
-	return cache{
+func newCache() *cache {
+	return &cache{
 		intPool: newIntPool[cacheID](128),
 		indices: map[cacheID]int{},
 		filters: []cacheEntry{},

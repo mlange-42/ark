@@ -470,7 +470,7 @@ func TestWorldReset(t *testing.T) {
 	expectEqual(t, 4, query.Count())
 	query.Close()
 
-	obs := &world.storage.observers
+	obs := world.storage.observers
 	expectEqual(t, maxObserverID, o.id)
 	expectTrue(t, obs.allComps[OnCreateEntity].IsZero())
 	expectTrue(t, obs.allWith[OnCreateEntity].IsZero())

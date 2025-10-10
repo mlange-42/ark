@@ -132,7 +132,7 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
-		reg := &f.world.storage.registry
+		reg := f.world.storage.registry
 		gen := reg.getGeneration()
 		if f.generation != gen {
 			f.mutex.Lock()
@@ -321,7 +321,7 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
-		reg := &f.world.storage.registry
+		reg := f.world.storage.registry
 		gen := reg.getGeneration()
 		if f.generation != gen {
 			f.mutex.Lock()
@@ -507,7 +507,7 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
-		reg := &f.world.storage.registry
+		reg := f.world.storage.registry
 		gen := reg.getGeneration()
 		if f.generation != gen {
 			f.mutex.Lock()
@@ -699,7 +699,7 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
-		reg := &f.world.storage.registry
+		reg := f.world.storage.registry
 		gen := reg.getGeneration()
 		if f.generation != gen {
 			f.mutex.Lock()
@@ -893,7 +893,7 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
-		reg := &f.world.storage.registry
+		reg := f.world.storage.registry
 		gen := reg.getGeneration()
 		if f.generation != gen {
 			f.mutex.Lock()
@@ -1089,7 +1089,7 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
-		reg := &f.world.storage.registry
+		reg := f.world.storage.registry
 		gen := reg.getGeneration()
 		if f.generation != gen {
 			f.mutex.Lock()
@@ -1287,7 +1287,7 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
-		reg := &f.world.storage.registry
+		reg := f.world.storage.registry
 		gen := reg.getGeneration()
 		if f.generation != gen {
 			f.mutex.Lock()
@@ -1487,7 +1487,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
-		reg := &f.world.storage.registry
+		reg := f.world.storage.registry
 		gen := reg.getGeneration()
 		if f.generation != gen {
 			f.mutex.Lock()
@@ -1689,7 +1689,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
-		reg := &f.world.storage.registry
+		reg := f.world.storage.registry
 		gen := reg.getGeneration()
 		if f.generation != gen {
 			f.mutex.Lock()

@@ -9,19 +9,19 @@ import (
 type storage struct {
 	entities           []entityIndex      // Entity positions in archetypes, indexed by entity ID
 	isTarget           []bool             // Whether each entity is a target of a relationship
-	graph              graph              // Graph for fast archetype traversal
-	slices             slices             // Slices for internal re-use
+	graph              *graph             // Graph for fast archetype traversal
+	slices             *slices            // Slices for internal re-use
 	archetypes         []archetype        // All archetypes
 	allArchetypes      []archetypeID      // list of all archetype IDs to simplify usage of componentIndex
 	componentIndex     [][]archetypeID    // Archetypes indexed by components IDs; each archetype appears under all its component IDs
 	relationArchetypes []archetypeID      // All archetypes with relationships
 	tables             []table            // All tables
 	components         []componentStorage // Component storages for fast random/world access
-	cache              cache              // Filter cache
-	entityPool         entityPool         // Entity pool for creation and recycling
-	registry           componentRegistry  // Component registry
-	locks              lock               // World locks
-	observers          observerManager    // Observer/event manager
+	cache              *cache             // Filter cache
+	entityPool         *entityPool        // Entity pool for creation and recycling
+	registry           *componentRegistry // Component registry
+	locks              *lock              // World locks
+	observers          *observerManager   // Observer/event manager
 	config             config             // Storage configuration (initial capacities)
 }
 
@@ -41,8 +41,8 @@ type slices struct {
 	entitiesCleanup []Entity
 }
 
-func newSlices() slices {
-	return slices{
+func newSlices() *slices {
+	return &slices{
 		batches: make([]batchTable, 0, 32),
 		tables:  make([]tableID, 0, 32),
 		ints:    make([]uint32, 0, 32),
@@ -76,7 +76,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, nil, nil))
 	return storage{
 		config:         config,
-		registry:       reg,
+		registry:       &reg,
 		locks:          newLock(),
 		observers:      newObserverManager(),
 		cache:          newCache(),
@@ -367,7 +367,7 @@ func (s *storage) createEntities(table *table, count int) {
 func (s *storage) createArchetype(node *node) *archetype {
 	comps := node.mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
-	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, &s.registry))
+	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, s.registry))
 	archetype := &s.archetypes[index]
 
 	s.allArchetypes = append(s.allArchetypes, archetype.id)
@@ -411,7 +411,7 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 			cap = s.config.initialCapacityRelations
 		}
 		s.tables = append(s.tables, newTable(
-			newTableID, archetype, uint32(cap), &s.registry,
+			newTableID, archetype, uint32(cap), s.registry,
 			targets, relations))
 	}
 	archetype.AddTable(&s.tables[newTableID])

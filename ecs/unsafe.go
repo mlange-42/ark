@@ -184,7 +184,7 @@ func (u Unsafe) LoadEntities(data *EntityDump) {
 	copy(entities, data.Entities)
 
 	if capacity > 0 {
-		u.world.storage.entityPool = entityPool{
+		u.world.storage.entityPool = &entityPool{
 			entities:  entities,
 			next:      entityID(data.Next),
 			available: data.Available,

@@ -122,9 +122,9 @@ type observerIndex struct {
 	event EventType
 }
 
-func newObserverManager() observerManager {
+func newObserverManager() *observerManager {
 	maxEvents := math.MaxUint8 + 1
-	return observerManager{
+	return &observerManager{
 		observers:    make([][]*Observer, maxEvents),
 		hasObservers: make([]bool, maxEvents),
 		anyNoComps:   make([]bool, maxEvents),

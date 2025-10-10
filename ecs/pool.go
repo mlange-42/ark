@@ -21,13 +21,13 @@ type entityPool struct {
 }
 
 // newEntityPool creates a new, initialized Entity pool.
-func newEntityPool(initialCapacity uint32, reserved uint32) entityPool {
+func newEntityPool(initialCapacity uint32, reserved uint32) *entityPool {
 	entities := make([]Entity, reserved, initialCapacity+reserved)
 	// Reserved zero and wildcard entities.
 	for i := range reserved {
 		entities[i] = Entity{entityID(i), math.MaxUint32}
 	}
-	return entityPool{
+	return &entityPool{
 		entities:  entities,
 		next:      0,
 		available: 0,

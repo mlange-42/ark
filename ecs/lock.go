@@ -13,8 +13,8 @@ type lock struct {
 	mu      sync.Mutex
 }
 
-func newLock() lock {
-	return lock{
+func newLock() *lock {
+	return &lock{
 		bitPool: newBitPool(),
 	}
 }

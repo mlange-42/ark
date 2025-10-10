@@ -29,11 +29,11 @@ type graph struct {
 	nodes []node
 }
 
-func newGraph() graph {
+func newGraph() *graph {
 	nodes := make([]node, 0, 128)
 	nodes = append(nodes, newNode(0, 0, &bitMask{}))
 
-	return graph{
+	return &graph{
 		nodes: nodes,
 	}
 }

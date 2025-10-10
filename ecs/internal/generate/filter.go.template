@@ -154,7 +154,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
 	} else {
-		reg := &f.world.storage.registry
+		reg := f.world.storage.registry
 		gen := reg.getGeneration()
 		if f.generation != gen {
 			f.mutex.Lock()
