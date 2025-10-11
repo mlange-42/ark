@@ -188,7 +188,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	lock := w.lock()
 
 	relRemoved := false
-	tables := w.storage.getTables(batch)
+	tables := w.storage.getBatchTables(batch)
 	batchTables := w.storage.slices.batches
 	for _, tableID := range tables {
 		table := &w.storage.tables[tableID]
@@ -399,7 +399,7 @@ func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(
 	lock := w.lock()
 	hasObserver := w.storage.observers.HasObservers(OnAddRelations) || w.storage.observers.HasObservers(OnRemoveRelations)
 
-	tables := w.storage.getTables(batch)
+	tables := w.storage.getBatchTables(batch)
 	lengths := w.storage.slices.ints
 	var totalEntities uint32 = 0
 	for _, tableID := range tables {

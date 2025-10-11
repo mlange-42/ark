@@ -51,7 +51,7 @@ func (c *cache) register(storage *storage, filter *filter, relations []relationI
 	id := c.intPool.Get()
 	filter.cache = id
 	index := len(c.filters)
-	tables := newTableIDs(storage.getTableIDs(filter, relations)...)
+	tables := newTableIDs(storage.getCacheTables(filter, relations)...)
 	c.filters = append(c.filters,
 		cacheEntry{
 			id:        id,

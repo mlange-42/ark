@@ -106,7 +106,7 @@ func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 		lock = w.lock()
 	}
 
-	tables := w.storage.getTables(&batch)
+	tables := w.storage.getBatchTables(&batch)
 
 	if fn != nil {
 		for _, tableID := range tables {
