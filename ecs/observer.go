@@ -8,19 +8,23 @@ package ecs
 // See [EventType] for available events.
 // See also [Observer1], [Observer2], etc.
 type Observer struct {
+	observerData
+	comps     []Comp
+	with      []Comp
+	without   []Comp
+	id        observerID
+	event     EventType
+	exclusive bool
+}
+
+type observerData struct {
 	compsMask   bitMask
 	withMask    bitMask
 	withoutMask bitMask
 	callback    func(Entity)
-	comps       []Comp
-	with        []Comp
-	without     []Comp
-	id          observerID
-	event       EventType
 	hasComps    bool
 	hasWithout  bool
 	hasWith     bool
-	exclusive   bool
 }
 
 // Observe creates a new ECS event observer for the specified event type.
