@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/klauspost/cpuid/v2"
@@ -12,7 +14,10 @@ const version = "v0.5.3-dev"
 const goVersion = "1.25.1"
 
 func main() {
-	repetitions := 3
+	repetitions, err := strconv.Atoi(os.Args[1])
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Printf("Last run: %s  \n", time.Now().Format(time.RFC1123))
 	fmt.Printf("Version: Ark %s  \n", version)

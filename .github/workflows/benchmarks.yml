@@ -51,7 +51,7 @@ jobs:
       - name: Benchmark tables
         run: |
           cd ./benchmark
-          go run ./table | tee BENCHMARKS.md
+          go run ./table 3 | tee BENCHMARKS.md
       - name: Archive benchmark results
         uses: actions/upload-artifact@v4
         with:
@@ -72,7 +72,7 @@ jobs:
       - name: Benchmark tables
         run: |
           cd ./benchmark
-          go run -tags ark_tiny ./table | tee BENCHMARKS.md
+          go run -tags ark_tiny ./table 1 | tee BENCHMARKS.md
       - name: Archive benchmark results
         uses: actions/upload-artifact@v4
         with:
