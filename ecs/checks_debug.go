@@ -15,8 +15,7 @@ func (c *cursor) checkQueryGet() {
 }
 
 func (s *storage) checkHasComponent(entity Entity, comp ID) {
-	index := s.entities[entity.id]
-	if s.components[comp.id].columns[index.table] == nil {
+	if s.entities[entity.id].table == nil {
 		panic("entity does not have the requested component")
 	}
 }

@@ -263,7 +263,7 @@ func (w *World) Stats() *stats.World {
 	for i = range cntOld {
 		arch := &w.storage.archetypes[i]
 		archStats := &w.stats.Archetypes[i]
-		arch.UpdateStats(archStats, &w.storage)
+		arch.UpdateStats(archStats)
 		memory += archStats.Memory
 		memoryUsed += archStats.MemoryUsed
 	}

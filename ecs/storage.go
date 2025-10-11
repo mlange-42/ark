@@ -135,7 +135,7 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 			shouldRelease = false
 		}
 	}
-	table, ok := arch.GetTable(s, allRelations)
+	table, ok := arch.GetTable(allRelations)
 	if !ok {
 		if shouldRelease {
 			// Copy the slice, as it comes from the slice pool
@@ -174,7 +174,7 @@ func (s *storage) findOrCreateTableAdd(oldTable *table, add []ID, relations []re
 		shouldRelease = false
 	}
 
-	table, ok := arch.GetTable(s, allRelations)
+	table, ok := arch.GetTable(allRelations)
 	if !ok {
 		if shouldRelease {
 			// Copy the slice, as it comes from the slice pool
@@ -212,7 +212,7 @@ func (s *storage) findOrCreateTableRemove(oldTable *table, remove []ID, outMask 
 			relationRemoved = true
 		}
 	}
-	table, ok := arch.GetTable(s, allRelations)
+	table, ok := arch.GetTable(allRelations)
 	if !ok {
 		// Copy the slice, as it comes from the slice pool
 		tableRelations := make([]relationID, len(allRelations))
@@ -465,7 +465,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 
 			if table.Len() > 0 {
 				allRelations := s.getExchangeTargetsUnchecked(table, newRelations)
-				newTable, ok := archetype.GetTable(s, allRelations)
+				newTable, ok := archetype.GetTable(allRelations)
 				if !ok {
 					// Copy the slice, as it comes from the slice pool
 					tableRelations := make([]relationID, len(allRelations))

@@ -124,17 +124,17 @@ func (a *archetype) HasRelations() bool {
 	return a.numRelations > 0
 }
 
-func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, bool) {
+func (a *archetype) GetTable(relations []relationID) (*table, bool) {
 	if len(a.tables.tables) == 0 {
 		return nil, false
 	}
 	if !a.HasRelations() {
 		return a.tables.tables[0], true
 	}
-	return a.getTableSlowPath(storage, relations)
+	return a.getTableSlowPath(relations)
 }
 
-func (a *archetype) getTableSlowPath(storage *storage, relations []relationID) (*table, bool) {
+func (a *archetype) getTableSlowPath(relations []relationID) (*table, bool) {
 	if uint8(len(relations)) < a.numRelations {
 		panic("relation targets must be fully specified")
 	}
@@ -192,7 +192,7 @@ func (a *archetype) FreeTable(table *table) {
 	}
 }
 
-func (a *archetype) FreeAllTables(storage *storage) {
+func (a *archetype) FreeAllTables() {
 	for _, table := range a.tables.tables {
 		table.isFree = true
 	}
@@ -248,7 +248,7 @@ func (a *archetype) Reset(storage *storage) {
 		storage.cache.removeTable(table)
 	}
 
-	a.FreeAllTables(storage)
+	a.FreeAllTables()
 }
 
 // Stats generates statistics for an archetype.
@@ -303,7 +303,7 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 }
 
 // UpdateStats updates statistics for an archetype.
-func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
+func (a *archetype) UpdateStats(stats *stats.Archetype) {
 	tables := a.tables
 
 	cap := 0

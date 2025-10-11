@@ -45,7 +45,7 @@ func (q *Query0) Count() int {
 		}
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes)
 	}
-	return countQueryCache(&q.world.storage, q.cache, q.relations)
+	return countQueryCache(q.cache, q.relations)
 }
 
 // EntityAt returns the entity at a given index.
@@ -66,7 +66,7 @@ func (q *Query0) EntityAt(index int) Entity {
 		}
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes, uint32(index))
 	}
-	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+	return entityAtCache(q.cache, q.relations, uint32(index))
 }
 
 // Close closes the Query and unlocks the world.
@@ -197,7 +197,7 @@ func (q *Query1[A]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
-	return countQueryCache(&q.world.storage, q.cache, q.relations)
+	return countQueryCache(q.cache, q.relations)
 }
 
 // EntityAt returns the entity at a given index.
@@ -215,7 +215,7 @@ func (q *Query1[A]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
-	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+	return entityAtCache(q.cache, q.relations, uint32(index))
 }
 
 // Close closes the Query and unlocks the world.
@@ -340,7 +340,7 @@ func (q *Query2[A, B]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
-	return countQueryCache(&q.world.storage, q.cache, q.relations)
+	return countQueryCache(q.cache, q.relations)
 }
 
 // EntityAt returns the entity at a given index.
@@ -356,7 +356,7 @@ func (q *Query2[A, B]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
-	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+	return entityAtCache(q.cache, q.relations, uint32(index))
 }
 
 // Close closes the Query and unlocks the world.
@@ -488,7 +488,7 @@ func (q *Query3[A, B, C]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
-	return countQueryCache(&q.world.storage, q.cache, q.relations)
+	return countQueryCache(q.cache, q.relations)
 }
 
 // EntityAt returns the entity at a given index.
@@ -506,7 +506,7 @@ func (q *Query3[A, B, C]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
-	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+	return entityAtCache(q.cache, q.relations, uint32(index))
 }
 
 // Close closes the Query and unlocks the world.
@@ -641,7 +641,7 @@ func (q *Query4[A, B, C, D]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
-	return countQueryCache(&q.world.storage, q.cache, q.relations)
+	return countQueryCache(q.cache, q.relations)
 }
 
 // EntityAt returns the entity at a given index.
@@ -659,7 +659,7 @@ func (q *Query4[A, B, C, D]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
-	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+	return entityAtCache(q.cache, q.relations, uint32(index))
 }
 
 // Close closes the Query and unlocks the world.
@@ -797,7 +797,7 @@ func (q *Query5[A, B, C, D, E]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
-	return countQueryCache(&q.world.storage, q.cache, q.relations)
+	return countQueryCache(q.cache, q.relations)
 }
 
 // EntityAt returns the entity at a given index.
@@ -815,7 +815,7 @@ func (q *Query5[A, B, C, D, E]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
-	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+	return entityAtCache(q.cache, q.relations, uint32(index))
 }
 
 // Close closes the Query and unlocks the world.
@@ -956,7 +956,7 @@ func (q *Query6[A, B, C, D, E, F]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
-	return countQueryCache(&q.world.storage, q.cache, q.relations)
+	return countQueryCache(q.cache, q.relations)
 }
 
 // EntityAt returns the entity at a given index.
@@ -974,7 +974,7 @@ func (q *Query6[A, B, C, D, E, F]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
-	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+	return entityAtCache(q.cache, q.relations, uint32(index))
 }
 
 // Close closes the Query and unlocks the world.
@@ -1118,7 +1118,7 @@ func (q *Query7[A, B, C, D, E, F, G]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
-	return countQueryCache(&q.world.storage, q.cache, q.relations)
+	return countQueryCache(q.cache, q.relations)
 }
 
 // EntityAt returns the entity at a given index.
@@ -1136,7 +1136,7 @@ func (q *Query7[A, B, C, D, E, F, G]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
-	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+	return entityAtCache(q.cache, q.relations, uint32(index))
 }
 
 // Close closes the Query and unlocks the world.
@@ -1283,7 +1283,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Count() int {
 	if q.cache == nil {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp])
 	}
-	return countQueryCache(&q.world.storage, q.cache, q.relations)
+	return countQueryCache(q.cache, q.relations)
 }
 
 // EntityAt returns the entity at a given index.
@@ -1301,7 +1301,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) EntityAt(index int) Entity {
 	if q.cache == nil {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.componentIndex[q.rareComp], uint32(index))
 	}
-	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+	return entityAtCache(q.cache, q.relations, uint32(index))
 }
 
 // Close closes the Query and unlocks the world.

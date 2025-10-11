@@ -344,7 +344,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	}
 
 	oldArch := &w.storage.archetypes[oldTable.archetype]
-	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
+	newTable, ok := oldArch.GetTable(newRelations)
 	if !ok {
 		newTable = w.storage.createTable(oldArch, newRelations)
 	}
@@ -424,7 +424,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 	}
 
 	oldArch := &w.storage.archetypes[oldTable.archetype]
-	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
+	newTable, ok := oldArch.GetTable(newRelations)
 	if !ok {
 		newTable = w.storage.createTable(oldArch, newRelations)
 	}

@@ -2,7 +2,7 @@ package ecs
 
 import "fmt"
 
-func entityAtCache(storage *storage, cache *cacheEntry, relations []relationID, index uint32) Entity {
+func entityAtCache(cache *cacheEntry, relations []relationID, index uint32) Entity {
 	count := uint32(0)
 	for _, table := range cache.tables.tables {
 		if table.Len() == 0 {
@@ -53,7 +53,7 @@ func entityAt(storage *storage, filter *filter, relations []relationID, archetyp
 	panic(fmt.Sprintf("entity index %d out of bounds for query with %d entities", index, count))
 }
 
-func countQueryCache(storage *storage, cache *cacheEntry, relations []relationID) int {
+func countQueryCache(cache *cacheEntry, relations []relationID) int {
 	count := 0
 	for _, table := range cache.tables.tables {
 		if table.Len() == 0 {

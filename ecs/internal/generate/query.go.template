@@ -80,7 +80,7 @@ func (q *Query{{.}}{{$genericsShort}}) Count() int {
 		return countQuery(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes)
 		{{- end}}
 	}
-	return countQueryCache(&q.world.storage, q.cache, q.relations)
+	return countQueryCache(q.cache, q.relations)
 }
 
 // EntityAt returns the entity at a given index.
@@ -107,7 +107,7 @@ func (q *Query{{.}}{{$genericsShort}}) EntityAt(index int) Entity {
 		return entityAt(&q.world.storage, q.filter, q.relations, q.world.storage.allArchetypes, uint32(index))
 		{{- end}}
 	}
-	return entityAtCache(&q.world.storage, q.cache, q.relations, uint32(index))
+	return entityAtCache(q.cache, q.relations, uint32(index))
 }
 
 // Close closes the Query and unlocks the world.

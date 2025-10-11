@@ -86,8 +86,7 @@ func TestPagedSlice(t *testing.T) {
 	a := newPagesSlice[uint32](32)
 	expectEqual(t, 32, a.pageSize)
 
-	var i uint32
-	for i = 0; i < 66; i++ {
+	for i := range uint32(66) {
 		a.Add(i)
 		expectEqual(t, i, *a.Get(i))
 		expectEqual(t, i+1, a.Len())
