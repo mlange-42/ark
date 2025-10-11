@@ -27,6 +27,7 @@ type Query0 struct {
 	lock        uint8
 	rareComp    uint8
 	hasRareComp bool
+	isPooled    bool
 }
 
 // Count counts the entities matching this query.
@@ -80,8 +81,10 @@ func (q *Query0) Close() {
 	q.cache = nil
 
 	q.world.storage.mu.Lock()
-	q.world.storage.slices.relationsPool.Recycle(q.relations)
 	q.world.unlock(q.lock)
+	if q.isPooled {
+		q.world.storage.slices.relationsPool.Recycle(q.relations)
+	}
 	q.world.storage.mu.Unlock()
 }
 
@@ -173,6 +176,8 @@ type Query1[A any] struct {
 	cursor     cursor
 	lock       uint8
 	rareComp   uint8
+
+	isPooled bool
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -226,8 +231,10 @@ func (q *Query1[A]) Close() {
 	q.columnA = nil
 
 	q.world.storage.mu.Lock()
-	q.world.storage.slices.relationsPool.Recycle(q.relations)
 	q.world.unlock(q.lock)
+	if q.isPooled {
+		q.world.storage.slices.relationsPool.Recycle(q.relations)
+	}
 	q.world.storage.mu.Unlock()
 }
 
@@ -314,6 +321,8 @@ type Query2[A any, B any] struct {
 	cursor     cursor
 	lock       uint8
 	rareComp   uint8
+
+	isPooled bool
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -364,8 +373,10 @@ func (q *Query2[A, B]) Close() {
 	q.columnB = nil
 
 	q.world.storage.mu.Lock()
-	q.world.storage.slices.relationsPool.Recycle(q.relations)
 	q.world.unlock(q.lock)
+	if q.isPooled {
+		q.world.storage.slices.relationsPool.Recycle(q.relations)
+	}
 	q.world.storage.mu.Unlock()
 }
 
@@ -456,6 +467,8 @@ type Query3[A any, B any, C any] struct {
 	cursor     cursor
 	lock       uint8
 	rareComp   uint8
+
+	isPooled bool
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -511,8 +524,10 @@ func (q *Query3[A, B, C]) Close() {
 	q.columnC = nil
 
 	q.world.storage.mu.Lock()
-	q.world.storage.slices.relationsPool.Recycle(q.relations)
 	q.world.unlock(q.lock)
+	if q.isPooled {
+		q.world.storage.slices.relationsPool.Recycle(q.relations)
+	}
 	q.world.storage.mu.Unlock()
 }
 
@@ -605,6 +620,8 @@ type Query4[A any, B any, C any, D any] struct {
 	cursor     cursor
 	lock       uint8
 	rareComp   uint8
+
+	isPooled bool
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -661,8 +678,10 @@ func (q *Query4[A, B, C, D]) Close() {
 	q.columnD = nil
 
 	q.world.storage.mu.Lock()
-	q.world.storage.slices.relationsPool.Recycle(q.relations)
 	q.world.unlock(q.lock)
+	if q.isPooled {
+		q.world.storage.slices.relationsPool.Recycle(q.relations)
+	}
 	q.world.storage.mu.Unlock()
 }
 
@@ -757,6 +776,8 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	cursor     cursor
 	lock       uint8
 	rareComp   uint8
+
+	isPooled bool
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -814,8 +835,10 @@ func (q *Query5[A, B, C, D, E]) Close() {
 	q.columnE = nil
 
 	q.world.storage.mu.Lock()
-	q.world.storage.slices.relationsPool.Recycle(q.relations)
 	q.world.unlock(q.lock)
+	if q.isPooled {
+		q.world.storage.slices.relationsPool.Recycle(q.relations)
+	}
 	q.world.storage.mu.Unlock()
 }
 
@@ -912,6 +935,8 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	cursor     cursor
 	lock       uint8
 	rareComp   uint8
+
+	isPooled bool
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -970,8 +995,10 @@ func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.columnF = nil
 
 	q.world.storage.mu.Lock()
-	q.world.storage.slices.relationsPool.Recycle(q.relations)
 	q.world.unlock(q.lock)
+	if q.isPooled {
+		q.world.storage.slices.relationsPool.Recycle(q.relations)
+	}
 	q.world.storage.mu.Unlock()
 }
 
@@ -1070,6 +1097,8 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	cursor     cursor
 	lock       uint8
 	rareComp   uint8
+
+	isPooled bool
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -1129,8 +1158,10 @@ func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.columnG = nil
 
 	q.world.storage.mu.Lock()
-	q.world.storage.slices.relationsPool.Recycle(q.relations)
 	q.world.unlock(q.lock)
+	if q.isPooled {
+		q.world.storage.slices.relationsPool.Recycle(q.relations)
+	}
 	q.world.storage.mu.Unlock()
 }
 
@@ -1231,6 +1262,8 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	cursor     cursor
 	lock       uint8
 	rareComp   uint8
+
+	isPooled bool
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
@@ -1291,8 +1324,10 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.columnH = nil
 
 	q.world.storage.mu.Lock()
-	q.world.storage.slices.relationsPool.Recycle(q.relations)
 	q.world.unlock(q.lock)
+	if q.isPooled {
+		q.world.storage.slices.relationsPool.Recycle(q.relations)
+	}
 	q.world.storage.mu.Unlock()
 }
 

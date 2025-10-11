@@ -124,9 +124,13 @@ func (f *Filter0) Unregister() {
 // Relation targets provided here are added to those specified with [Filter0.Relations].
 // Relation components must be in the filter's parameters or added via [Filter0.With] beforehand.
 func (f *Filter0) Query(rel ...Relation) Query0 {
+	pooled := len(rel) > 0
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	relations := f.world.storage.slices.relationsPool.Get()
+	var relations []relationID
+	if pooled {
+		relations = f.world.storage.slices.relationsPool.Get()
+	}
 	f.world.storage.mu.Unlock()
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
@@ -161,6 +165,7 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 		},
 		rareComp:    f.rareComp,
 		hasRareComp: len(f.ids) > 0,
+		isPooled:    pooled,
 	}
 }
 
@@ -317,9 +322,13 @@ func (f *Filter1[A]) Unregister() {
 // Relation targets provided here are added to those specified with [Filter1.Relations].
 // Relation components must be in the filter's parameters or added via [Filter1.With] beforehand.
 func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
+	pooled := len(rel) > 0
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	relations := f.world.storage.slices.relationsPool.Get()
+	var relations []relationID
+	if pooled {
+		relations = f.world.storage.slices.relationsPool.Get()
+	}
 	f.world.storage.mu.Unlock()
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
@@ -353,6 +362,8 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 			maxIndex:  -1,
 		},
 		rareComp: f.rareComp,
+
+		isPooled: pooled,
 	}
 }
 
@@ -507,9 +518,13 @@ func (f *Filter2[A, B]) Unregister() {
 // Relation targets provided here are added to those specified with [Filter2.Relations].
 // Relation components must be in the filter's parameters or added via [Filter2.With] beforehand.
 func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
+	pooled := len(rel) > 0
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	relations := f.world.storage.slices.relationsPool.Get()
+	var relations []relationID
+	if pooled {
+		relations = f.world.storage.slices.relationsPool.Get()
+	}
 	f.world.storage.mu.Unlock()
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
@@ -543,6 +558,8 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 			maxIndex:  -1,
 		},
 		rareComp: f.rareComp,
+
+		isPooled: pooled,
 	}
 }
 
@@ -703,9 +720,13 @@ func (f *Filter3[A, B, C]) Unregister() {
 // Relation targets provided here are added to those specified with [Filter3.Relations].
 // Relation components must be in the filter's parameters or added via [Filter3.With] beforehand.
 func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
+	pooled := len(rel) > 0
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	relations := f.world.storage.slices.relationsPool.Get()
+	var relations []relationID
+	if pooled {
+		relations = f.world.storage.slices.relationsPool.Get()
+	}
 	f.world.storage.mu.Unlock()
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
@@ -739,6 +760,8 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 			maxIndex:  -1,
 		},
 		rareComp: f.rareComp,
+
+		isPooled: pooled,
 	}
 }
 
@@ -901,9 +924,13 @@ func (f *Filter4[A, B, C, D]) Unregister() {
 // Relation targets provided here are added to those specified with [Filter4.Relations].
 // Relation components must be in the filter's parameters or added via [Filter4.With] beforehand.
 func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
+	pooled := len(rel) > 0
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	relations := f.world.storage.slices.relationsPool.Get()
+	var relations []relationID
+	if pooled {
+		relations = f.world.storage.slices.relationsPool.Get()
+	}
 	f.world.storage.mu.Unlock()
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
@@ -937,6 +964,8 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 			maxIndex:  -1,
 		},
 		rareComp: f.rareComp,
+
+		isPooled: pooled,
 	}
 }
 
@@ -1101,9 +1130,13 @@ func (f *Filter5[A, B, C, D, E]) Unregister() {
 // Relation targets provided here are added to those specified with [Filter5.Relations].
 // Relation components must be in the filter's parameters or added via [Filter5.With] beforehand.
 func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
+	pooled := len(rel) > 0
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	relations := f.world.storage.slices.relationsPool.Get()
+	var relations []relationID
+	if pooled {
+		relations = f.world.storage.slices.relationsPool.Get()
+	}
 	f.world.storage.mu.Unlock()
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
@@ -1137,6 +1170,8 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 			maxIndex:  -1,
 		},
 		rareComp: f.rareComp,
+
+		isPooled: pooled,
 	}
 }
 
@@ -1303,9 +1338,13 @@ func (f *Filter6[A, B, C, D, E, F]) Unregister() {
 // Relation targets provided here are added to those specified with [Filter6.Relations].
 // Relation components must be in the filter's parameters or added via [Filter6.With] beforehand.
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E, F] {
+	pooled := len(rel) > 0
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	relations := f.world.storage.slices.relationsPool.Get()
+	var relations []relationID
+	if pooled {
+		relations = f.world.storage.slices.relationsPool.Get()
+	}
 	f.world.storage.mu.Unlock()
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
@@ -1339,6 +1378,8 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 			maxIndex:  -1,
 		},
 		rareComp: f.rareComp,
+
+		isPooled: pooled,
 	}
 }
 
@@ -1507,9 +1548,13 @@ func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
 // Relation targets provided here are added to those specified with [Filter7.Relations].
 // Relation components must be in the filter's parameters or added via [Filter7.With] beforehand.
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D, E, F, G] {
+	pooled := len(rel) > 0
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	relations := f.world.storage.slices.relationsPool.Get()
+	var relations []relationID
+	if pooled {
+		relations = f.world.storage.slices.relationsPool.Get()
+	}
 	f.world.storage.mu.Unlock()
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
@@ -1543,6 +1588,8 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 			maxIndex:  -1,
 		},
 		rareComp: f.rareComp,
+
+		isPooled: pooled,
 	}
 }
 
@@ -1713,9 +1760,13 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
 // Relation targets provided here are added to those specified with [Filter8.Relations].
 // Relation components must be in the filter's parameters or added via [Filter8.With] beforehand.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C, D, E, F, G, H] {
+	pooled := len(rel) > 0
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	relations := f.world.storage.slices.relationsPool.Get()
+	var relations []relationID
+	if pooled {
+		relations = f.world.storage.slices.relationsPool.Get()
+	}
 	f.world.storage.mu.Unlock()
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
@@ -1749,6 +1800,8 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 			maxIndex:  -1,
 		},
 		rareComp: f.rareComp,
+
+		isPooled: pooled,
 	}
 }
 

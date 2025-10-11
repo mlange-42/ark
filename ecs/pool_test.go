@@ -200,3 +200,12 @@ func BenchmarkPoolAlive(b *testing.B) {
 		_ = pool.Alive(entity)
 	}
 }
+
+func BenchmarkSlicePool(b *testing.B) {
+	p := newSlicePool[relationID](8, 8)
+
+	for b.Loop() {
+		sl := p.Get()
+		p.Recycle(sl)
+	}
+}

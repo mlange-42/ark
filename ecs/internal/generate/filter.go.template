@@ -146,9 +146,13 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
 // Relation components must be in the filter's parameters or added via [Filter{{.}}.With] beforehand.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$genericsShort}} {
+	pooled := len(rel) > 0
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	relations := f.world.storage.slices.relationsPool.Get()
+	var relations []relationID
+	if pooled {
+		relations = f.world.storage.slices.relationsPool.Get()
+	}
 	f.world.storage.mu.Unlock()
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 	
@@ -181,10 +185,11 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 			index:     0,
 			maxIndex:  -1,
 		},
-		rareComp: f.rareComp,
+		rareComp:   f.rareComp,
 		{{if eq . 0 -}}
 		hasRareComp: len(f.ids) > 0,
 		{{- end}}
+		isPooled:   pooled,
 	}
 }
 

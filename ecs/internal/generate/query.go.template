@@ -49,6 +49,7 @@ type Query{{.}}{{$generics}} struct {
 	{{if eq . 0 -}}
 	hasRareComp bool
 	{{- end}}
+	isPooled    bool
 }
 
 {{if . -}}
@@ -124,8 +125,10 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	{{- end}}
 	
 	q.world.storage.mu.Lock()
-	q.world.storage.slices.relationsPool.Recycle(q.relations)
 	q.world.unlock(q.lock)
+	if q.isPooled {
+		q.world.storage.slices.relationsPool.Recycle(q.relations)
+	}
 	q.world.storage.mu.Unlock()
 }
 
