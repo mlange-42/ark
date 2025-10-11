@@ -234,7 +234,7 @@ func (a *archetype) FreeAllTables(storage *storage) {
 	}
 }
 
-// Adds the given table to the archetype's list of tables,
+// AddTable adds the given table to the archetype's list of tables,
 // and to the relation tables of there are any relations.
 func (a *archetype) AddTable(table *table) {
 	a.tables.Append(table.id)

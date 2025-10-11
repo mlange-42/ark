@@ -25,7 +25,7 @@ func newNode(id nodeID, archetype archetypeID, mask *bitMask) node {
 	}
 }
 
-// Returns the archetype of the node, and whether the node has an archetype.
+// GetArchetype returns the archetype of the node, and whether the node has an archetype.
 func (n *node) GetArchetype() (archetypeID, bool) {
 	return n.archetype, n.archetype != maxArchetypeID
 }
@@ -90,7 +90,7 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 	return curr
 }
 
-// Find the node for a given start node and components to add.
+// FindAdd finds the node for a given start node and components to add.
 //
 // The bitMask argument gets modified and reflects the mask of the resulting node.
 func (g *graph) FindAdd(start nodeID, add []ID, outMask *bitMask) *node {
@@ -116,7 +116,7 @@ func (g *graph) FindAdd(start nodeID, add []ID, outMask *bitMask) *node {
 	return curr
 }
 
-// Find the node for a given start node and components to remove.
+// FindRemove finds the node for a given start node and components to remove.
 //
 // The bitMask argument gets modified and reflects the mask of the resulting node.
 func (g *graph) FindRemove(start nodeID, remove []ID, outMask *bitMask) *node {
