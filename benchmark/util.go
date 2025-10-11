@@ -18,11 +18,17 @@ type Benchmark struct {
 }
 
 // RunBenchmarks runs the benchmarks and prints the results.
-func RunBenchmarks(title string, benches []Benchmark, format func([]Benchmark) string) {
+func RunBenchmarks(title string, benches []Benchmark, count int, format func([]Benchmark) string) {
 	for i := range benches {
 		b := &benches[i]
-		res := testing.Benchmark(b.F)
-		b.T = float64(res.T.Nanoseconds()) / float64(res.N*b.N)
+		var t int64
+		var n int
+		for range count {
+			res := testing.Benchmark(b.F)
+			t += res.T.Nanoseconds()
+			n += res.N
+		}
+		b.T = float64(t) / float64(n*b.N)
 	}
 	fmt.Printf("## %s\n\n%s", title, format(benches))
 }
