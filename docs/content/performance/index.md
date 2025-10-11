@@ -28,7 +28,7 @@ The largest potential for optimizing queries is the clever design of components.
 The aim should be that queries access only data that is actually required,
 while at the same time reducing the amount of accessed components.
 Accessing fewer data means fewer cache misses, while accessing fewer components reduces array indexing.
-To access only data that it actually required primarily means that the accessed components should contain only data that is used by the query.
+To access only data that it actually required primarily means that the accessed components should ideally contain only data that is used by the query.
 
 A component should only contain closely related data that is mostly or always accessed together.
 A `Position` component with `X` and `Y` is a good example.
@@ -37,6 +37,17 @@ What should be avoided are all-in-one components that mimic OOP classes to repre
 A good (or rather, bad) example is a `Tree` component with `X`, `Y`, `Biomass`, `Height`, `StemDiameter` and `LeaveAreaIndex` (or more).
 
 For fast memory access, the use of slices in components should be avoided. Use fixed-size arrays where possible.
+
+## Store filters and mappers
+
+You may have noticed that there is a two-stage approach for creating [queries](../queries/) and for creating and [modifying entities](../operations/):
+you need to create a {{< api ecs Filter2 ecs.FilterX >}} or a {{< api ecs Map2 ecs.MapX >}} first, respectively.
+This may seem a bit tedious at first, but is motivated by performance considerations.
+The reason is that the lookup of IDs for component operations is a relatively costly operations with &approx;20ns per component.
+
+These {{< api ecs Filter2 ecs.FilterX >}} and {{< api ecs Map2 ecs.MapX >}} instances
+should be stored persistently and re-used if possible.
+This avoids the repeated overhead of component ID lookup.
 
 ## Filter caching
 
