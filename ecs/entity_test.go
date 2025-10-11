@@ -13,7 +13,7 @@ func TestEntity(t *testing.T) {
 
 func TestEntityIndex(t *testing.T) {
 	index := entityIndex{}
-	expectEqual(t, 0, index.table)
+	expectNil(t, index.table)
 	expectEqual(t, 0, index.row)
 }
 

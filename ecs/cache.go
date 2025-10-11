@@ -90,7 +90,7 @@ func (c *cache) addTable(storage *storage, table *table) {
 			if !e.filter.matches(&arch.mask) {
 				continue
 			}
-			e.tables.Append(table.id)
+			e.tables.Append(table)
 		}
 		return
 	}
@@ -103,7 +103,7 @@ func (c *cache) addTable(storage *storage, table *table) {
 		if !table.Matches(e.relations) {
 			continue
 		}
-		e.tables.Append(table.id)
+		e.tables.Append(table)
 	}
 }
 

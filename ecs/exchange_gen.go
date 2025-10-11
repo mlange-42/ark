@@ -167,10 +167,9 @@ func (ex *Exchange1[A]) ExchangeBatchFn(batch Batch, fn func(Entity, *A), rel ..
 func (ex *Exchange1[A]) exchangeBatchFn(batch *Batch, fn func(Entity, *A), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &ex.world.storage.tables[tableID]
+		process = func(table *table, start, len uint32) {
 			columnA := table.Column(ex.ids[0])
 
 			for i := range len {
@@ -191,10 +190,9 @@ func (ex *Exchange1[A]) exchangeBatchFn(batch *Batch, fn func(Entity, *A), remov
 
 func (ex *Exchange1[A]) runCallback(entity Entity, fn func(a *A)) {
 	index := &ex.world.storage.entities[entity.id]
-	table := &ex.world.storage.tables[index.table]
 	row := uintptr(index.row)
 	fn(
-		(*A)(table.Column(ex.ids[0]).Get(row)),
+		(*A)(index.table.Column(ex.ids[0]).Get(row)),
 	)
 }
 
@@ -364,10 +362,9 @@ func (ex *Exchange2[A, B]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *B),
 func (ex *Exchange2[A, B]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &ex.world.storage.tables[tableID]
+		process = func(table *table, start, len uint32) {
 			columnA := table.Column(ex.ids[0])
 			columnB := table.Column(ex.ids[1])
 
@@ -390,11 +387,10 @@ func (ex *Exchange2[A, B]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B)
 
 func (ex *Exchange2[A, B]) runCallback(entity Entity, fn func(a *A, b *B)) {
 	index := &ex.world.storage.entities[entity.id]
-	table := &ex.world.storage.tables[index.table]
 	row := uintptr(index.row)
 	fn(
-		(*A)(table.Column(ex.ids[0]).Get(row)),
-		(*B)(table.Column(ex.ids[1]).Get(row)),
+		(*A)(index.table.Column(ex.ids[0]).Get(row)),
+		(*B)(index.table.Column(ex.ids[1]).Get(row)),
 	)
 }
 
@@ -573,10 +569,9 @@ func (ex *Exchange3[A, B, C]) ExchangeBatchFn(batch Batch, fn func(Entity, *A, *
 func (ex *Exchange3[A, B, C]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &ex.world.storage.tables[tableID]
+		process = func(table *table, start, len uint32) {
 			columnA := table.Column(ex.ids[0])
 			columnB := table.Column(ex.ids[1])
 			columnC := table.Column(ex.ids[2])
@@ -601,12 +596,11 @@ func (ex *Exchange3[A, B, C]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, 
 
 func (ex *Exchange3[A, B, C]) runCallback(entity Entity, fn func(a *A, b *B, c *C)) {
 	index := &ex.world.storage.entities[entity.id]
-	table := &ex.world.storage.tables[index.table]
 	row := uintptr(index.row)
 	fn(
-		(*A)(table.Column(ex.ids[0]).Get(row)),
-		(*B)(table.Column(ex.ids[1]).Get(row)),
-		(*C)(table.Column(ex.ids[2]).Get(row)),
+		(*A)(index.table.Column(ex.ids[0]).Get(row)),
+		(*B)(index.table.Column(ex.ids[1]).Get(row)),
+		(*C)(index.table.Column(ex.ids[2]).Get(row)),
 	)
 }
 
@@ -790,10 +784,9 @@ func (ex *Exchange4[A, B, C, D]) ExchangeBatchFn(batch Batch, fn func(Entity, *A
 func (ex *Exchange4[A, B, C, D]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &ex.world.storage.tables[tableID]
+		process = func(table *table, start, len uint32) {
 			columnA := table.Column(ex.ids[0])
 			columnB := table.Column(ex.ids[1])
 			columnC := table.Column(ex.ids[2])
@@ -820,13 +813,12 @@ func (ex *Exchange4[A, B, C, D]) exchangeBatchFn(batch *Batch, fn func(Entity, *
 
 func (ex *Exchange4[A, B, C, D]) runCallback(entity Entity, fn func(a *A, b *B, c *C, d *D)) {
 	index := &ex.world.storage.entities[entity.id]
-	table := &ex.world.storage.tables[index.table]
 	row := uintptr(index.row)
 	fn(
-		(*A)(table.Column(ex.ids[0]).Get(row)),
-		(*B)(table.Column(ex.ids[1]).Get(row)),
-		(*C)(table.Column(ex.ids[2]).Get(row)),
-		(*D)(table.Column(ex.ids[3]).Get(row)),
+		(*A)(index.table.Column(ex.ids[0]).Get(row)),
+		(*B)(index.table.Column(ex.ids[1]).Get(row)),
+		(*C)(index.table.Column(ex.ids[2]).Get(row)),
+		(*D)(index.table.Column(ex.ids[3]).Get(row)),
 	)
 }
 
@@ -1015,10 +1007,9 @@ func (ex *Exchange5[A, B, C, D, E]) ExchangeBatchFn(batch Batch, fn func(Entity,
 func (ex *Exchange5[A, B, C, D, E]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &ex.world.storage.tables[tableID]
+		process = func(table *table, start, len uint32) {
 			columnA := table.Column(ex.ids[0])
 			columnB := table.Column(ex.ids[1])
 			columnC := table.Column(ex.ids[2])
@@ -1047,14 +1038,13 @@ func (ex *Exchange5[A, B, C, D, E]) exchangeBatchFn(batch *Batch, fn func(Entity
 
 func (ex *Exchange5[A, B, C, D, E]) runCallback(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E)) {
 	index := &ex.world.storage.entities[entity.id]
-	table := &ex.world.storage.tables[index.table]
 	row := uintptr(index.row)
 	fn(
-		(*A)(table.Column(ex.ids[0]).Get(row)),
-		(*B)(table.Column(ex.ids[1]).Get(row)),
-		(*C)(table.Column(ex.ids[2]).Get(row)),
-		(*D)(table.Column(ex.ids[3]).Get(row)),
-		(*E)(table.Column(ex.ids[4]).Get(row)),
+		(*A)(index.table.Column(ex.ids[0]).Get(row)),
+		(*B)(index.table.Column(ex.ids[1]).Get(row)),
+		(*C)(index.table.Column(ex.ids[2]).Get(row)),
+		(*D)(index.table.Column(ex.ids[3]).Get(row)),
+		(*E)(index.table.Column(ex.ids[4]).Get(row)),
 	)
 }
 
@@ -1248,10 +1238,9 @@ func (ex *Exchange6[A, B, C, D, E, F]) ExchangeBatchFn(batch Batch, fn func(Enti
 func (ex *Exchange6[A, B, C, D, E, F]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &ex.world.storage.tables[tableID]
+		process = func(table *table, start, len uint32) {
 			columnA := table.Column(ex.ids[0])
 			columnB := table.Column(ex.ids[1])
 			columnC := table.Column(ex.ids[2])
@@ -1282,15 +1271,14 @@ func (ex *Exchange6[A, B, C, D, E, F]) exchangeBatchFn(batch *Batch, fn func(Ent
 
 func (ex *Exchange6[A, B, C, D, E, F]) runCallback(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F)) {
 	index := &ex.world.storage.entities[entity.id]
-	table := &ex.world.storage.tables[index.table]
 	row := uintptr(index.row)
 	fn(
-		(*A)(table.Column(ex.ids[0]).Get(row)),
-		(*B)(table.Column(ex.ids[1]).Get(row)),
-		(*C)(table.Column(ex.ids[2]).Get(row)),
-		(*D)(table.Column(ex.ids[3]).Get(row)),
-		(*E)(table.Column(ex.ids[4]).Get(row)),
-		(*F)(table.Column(ex.ids[5]).Get(row)),
+		(*A)(index.table.Column(ex.ids[0]).Get(row)),
+		(*B)(index.table.Column(ex.ids[1]).Get(row)),
+		(*C)(index.table.Column(ex.ids[2]).Get(row)),
+		(*D)(index.table.Column(ex.ids[3]).Get(row)),
+		(*E)(index.table.Column(ex.ids[4]).Get(row)),
+		(*F)(index.table.Column(ex.ids[5]).Get(row)),
 	)
 }
 
@@ -1489,10 +1477,9 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) ExchangeBatchFn(batch Batch, fn func(E
 func (ex *Exchange7[A, B, C, D, E, F, G]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &ex.world.storage.tables[tableID]
+		process = func(table *table, start, len uint32) {
 			columnA := table.Column(ex.ids[0])
 			columnB := table.Column(ex.ids[1])
 			columnC := table.Column(ex.ids[2])
@@ -1525,16 +1512,15 @@ func (ex *Exchange7[A, B, C, D, E, F, G]) exchangeBatchFn(batch *Batch, fn func(
 
 func (ex *Exchange7[A, B, C, D, E, F, G]) runCallback(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G)) {
 	index := &ex.world.storage.entities[entity.id]
-	table := &ex.world.storage.tables[index.table]
 	row := uintptr(index.row)
 	fn(
-		(*A)(table.Column(ex.ids[0]).Get(row)),
-		(*B)(table.Column(ex.ids[1]).Get(row)),
-		(*C)(table.Column(ex.ids[2]).Get(row)),
-		(*D)(table.Column(ex.ids[3]).Get(row)),
-		(*E)(table.Column(ex.ids[4]).Get(row)),
-		(*F)(table.Column(ex.ids[5]).Get(row)),
-		(*G)(table.Column(ex.ids[6]).Get(row)),
+		(*A)(index.table.Column(ex.ids[0]).Get(row)),
+		(*B)(index.table.Column(ex.ids[1]).Get(row)),
+		(*C)(index.table.Column(ex.ids[2]).Get(row)),
+		(*D)(index.table.Column(ex.ids[3]).Get(row)),
+		(*E)(index.table.Column(ex.ids[4]).Get(row)),
+		(*F)(index.table.Column(ex.ids[5]).Get(row)),
+		(*G)(index.table.Column(ex.ids[6]).Get(row)),
 	)
 }
 
@@ -1738,10 +1724,9 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) ExchangeBatchFn(batch Batch, fn fun
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) exchangeBatchFn(batch *Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), remove bool, rel ...Relation) {
 	ex.relations = relationSlice(rel).ToRelations(ex.world, &ex.mask, ex.ids, ex.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &ex.world.storage.tables[tableID]
+		process = func(table *table, start, len uint32) {
 			columnA := table.Column(ex.ids[0])
 			columnB := table.Column(ex.ids[1])
 			columnC := table.Column(ex.ids[2])
@@ -1776,16 +1761,15 @@ func (ex *Exchange8[A, B, C, D, E, F, G, H]) exchangeBatchFn(batch *Batch, fn fu
 
 func (ex *Exchange8[A, B, C, D, E, F, G, H]) runCallback(entity Entity, fn func(a *A, b *B, c *C, d *D, e *E, f *F, g *G, h *H)) {
 	index := &ex.world.storage.entities[entity.id]
-	table := &ex.world.storage.tables[index.table]
 	row := uintptr(index.row)
 	fn(
-		(*A)(table.Column(ex.ids[0]).Get(row)),
-		(*B)(table.Column(ex.ids[1]).Get(row)),
-		(*C)(table.Column(ex.ids[2]).Get(row)),
-		(*D)(table.Column(ex.ids[3]).Get(row)),
-		(*E)(table.Column(ex.ids[4]).Get(row)),
-		(*F)(table.Column(ex.ids[5]).Get(row)),
-		(*G)(table.Column(ex.ids[6]).Get(row)),
-		(*H)(table.Column(ex.ids[7]).Get(row)),
+		(*A)(index.table.Column(ex.ids[0]).Get(row)),
+		(*B)(index.table.Column(ex.ids[1]).Get(row)),
+		(*C)(index.table.Column(ex.ids[2]).Get(row)),
+		(*D)(index.table.Column(ex.ids[3]).Get(row)),
+		(*E)(index.table.Column(ex.ids[4]).Get(row)),
+		(*F)(index.table.Column(ex.ids[5]).Get(row)),
+		(*G)(index.table.Column(ex.ids[6]).Get(row)),
+		(*H)(index.table.Column(ex.ids[7]).Get(row)),
 	)
 }

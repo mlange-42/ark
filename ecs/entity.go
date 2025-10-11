@@ -77,6 +77,6 @@ func (e *Entity) UnmarshalJSON(data []byte) error {
 
 // entityIndex denotes an entity's location by table and row index.
 type entityIndex struct {
-	table tableID
+	table *table
 	row   uint32
 }

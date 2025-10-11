@@ -13,10 +13,15 @@ func TestArchetype(t *testing.T) {
 func TestTableIDs(t *testing.T) {
 	ids := newTableIDs()
 
-	ids.Append(2)
-	ids.Append(3)
-	ids.Append(4)
-	ids.Append(5)
+	t2 := table{id: 2}
+	t3 := table{id: 3}
+	t4 := table{id: 4}
+	t5 := table{id: 5}
+
+	ids.Append(&t2)
+	ids.Append(&t3)
+	ids.Append(&t4)
+	ids.Append(&t5)
 
 	expectEqual(t, 4, len(ids.tables))
 	expectEqual(t, 4, len(ids.indices))
@@ -26,7 +31,7 @@ func TestTableIDs(t *testing.T) {
 	expectEqual(t, 3, len(ids.tables))
 	expectEqual(t, 3, len(ids.indices))
 
-	expectSlicesEqual(t, []tableID{2, 5, 4}, ids.tables)
+	expectSlicesEqual(t, []*table{&t2, &t5, &t4}, ids.tables)
 
 	idx, ok := ids.indices[5]
 	expectEqual(t, 1, idx)

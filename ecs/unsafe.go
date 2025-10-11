@@ -135,7 +135,7 @@ func (u Unsafe) IDs(entity Entity) IDs {
 		panic("can't get component IDs of a dead entity")
 	}
 	index := u.world.storage.entities[entity.id]
-	return newIDs(u.world.storage.tables[index.table].ids)
+	return newIDs(index.table.ids)
 }
 
 // DumpEntities dumps entity information into an [EntityDump] object.
@@ -196,11 +196,11 @@ func (u Unsafe) LoadEntities(data *EntityDump) {
 	u.world.storage.entities = make([]entityIndex, capacity)
 	u.world.storage.isTarget = make([]bool, capacity)
 
-	table := &u.world.storage.tables[0]
+	table := u.world.storage.tables.Get(0)
 	table.Extend(uint32(len(data.Alive)))
 	for _, idx := range data.Alive {
 		entity := u.world.storage.entityPool.entities[idx]
 		tableIdx := table.Add(entity)
-		u.world.storage.entities[entity.id] = entityIndex{table: table.id, row: tableIdx}
+		u.world.storage.entities[entity.id] = entityIndex{table: table, row: tableIdx}
 	}
 }

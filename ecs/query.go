@@ -7,7 +7,7 @@ type UnsafeQuery struct {
 	world     *World
 	table     *table
 	relations []relationID
-	tables    []tableID
+	tables    []*table
 	filter    filter
 	cursor    cursor
 	lock      uint8
@@ -80,7 +80,7 @@ func (q *UnsafeQuery) nextArchetype() bool {
 		}
 
 		if !archetype.HasRelations() {
-			table := &q.world.storage.tables[archetype.tables.tables[0]]
+			table := archetype.tables.tables[0]
 			if table.len > 0 {
 				q.setTable(0, table)
 				return true
@@ -102,7 +102,7 @@ func (q *UnsafeQuery) nextTable() bool {
 	maxTableIndex := int32(len(q.tables) - 1)
 	for q.cursor.table < maxTableIndex {
 		q.cursor.table++
-		table := &q.world.storage.tables[q.tables[q.cursor.table]]
+		table := q.tables[q.cursor.table]
 		if table.len == 0 || !table.Matches(q.relations) {
 			continue
 		}

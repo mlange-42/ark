@@ -127,7 +127,7 @@ func (o *Observer{{.}}{{$genericsShort}}) Register(w *World) *Observer{{.}}{{$ge
 		o.callback(
 			e,
 			{{- range $i, $v := $upper}}
-			(*{{$v}})(storage{{$v}}.columns[index.table].Get(row)),
+			(*{{$v}})(storage{{$v}}.columns[index.table.id].Get(row)),
 			{{- end}}
 		)
 	}
