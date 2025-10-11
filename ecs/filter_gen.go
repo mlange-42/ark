@@ -125,7 +125,7 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 	var relations []relationID
 
 	f.world.storage.mu.Lock()
-	lock := f.world.lock()
+	lock := f.world.storage.lock()
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
@@ -319,7 +319,7 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 	var relations []relationID
 
 	f.world.storage.mu.Lock()
-	lock := f.world.lock()
+	lock := f.world.storage.lock()
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
@@ -511,7 +511,7 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 	var relations []relationID
 
 	f.world.storage.mu.Lock()
-	lock := f.world.lock()
+	lock := f.world.storage.lock()
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
@@ -709,7 +709,7 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 	var relations []relationID
 
 	f.world.storage.mu.Lock()
-	lock := f.world.lock()
+	lock := f.world.storage.lock()
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
@@ -909,7 +909,7 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 	var relations []relationID
 
 	f.world.storage.mu.Lock()
-	lock := f.world.lock()
+	lock := f.world.storage.lock()
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
@@ -1111,7 +1111,7 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 	var relations []relationID
 
 	f.world.storage.mu.Lock()
-	lock := f.world.lock()
+	lock := f.world.storage.lock()
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
@@ -1315,7 +1315,7 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 	var relations []relationID
 
 	f.world.storage.mu.Lock()
-	lock := f.world.lock()
+	lock := f.world.storage.lock()
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
@@ -1521,7 +1521,7 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 	var relations []relationID
 
 	f.world.storage.mu.Lock()
-	lock := f.world.lock()
+	lock := f.world.storage.lock()
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
@@ -1729,7 +1729,7 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 	var relations []relationID
 
 	f.world.storage.mu.Lock()
-	lock := f.world.lock()
+	lock := f.world.storage.lock()
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}

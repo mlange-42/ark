@@ -125,7 +125,7 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	{{- end}}
 	
 	q.world.storage.mu.Lock()
-	q.world.unlock(q.lock)
+	q.world.storage.unlock(q.lock)
 	if q.isPooled {
 		q.world.storage.slices.relationsPool.Recycle(q.relations)
 	}

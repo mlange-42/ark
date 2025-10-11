@@ -147,7 +147,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 	var relations []relationID
 
 	f.world.storage.mu.Lock()
-	lock := f.world.lock()
+	lock := f.world.storage.lock()
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}

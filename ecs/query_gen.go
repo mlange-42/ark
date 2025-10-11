@@ -81,7 +81,7 @@ func (q *Query0) Close() {
 	q.cache = nil
 
 	q.world.storage.mu.Lock()
-	q.world.unlock(q.lock)
+	q.world.storage.unlock(q.lock)
 	if q.isPooled {
 		q.world.storage.slices.relationsPool.Recycle(q.relations)
 	}
@@ -231,7 +231,7 @@ func (q *Query1[A]) Close() {
 	q.columnA = nil
 
 	q.world.storage.mu.Lock()
-	q.world.unlock(q.lock)
+	q.world.storage.unlock(q.lock)
 	if q.isPooled {
 		q.world.storage.slices.relationsPool.Recycle(q.relations)
 	}
@@ -373,7 +373,7 @@ func (q *Query2[A, B]) Close() {
 	q.columnB = nil
 
 	q.world.storage.mu.Lock()
-	q.world.unlock(q.lock)
+	q.world.storage.unlock(q.lock)
 	if q.isPooled {
 		q.world.storage.slices.relationsPool.Recycle(q.relations)
 	}
@@ -524,7 +524,7 @@ func (q *Query3[A, B, C]) Close() {
 	q.columnC = nil
 
 	q.world.storage.mu.Lock()
-	q.world.unlock(q.lock)
+	q.world.storage.unlock(q.lock)
 	if q.isPooled {
 		q.world.storage.slices.relationsPool.Recycle(q.relations)
 	}
@@ -678,7 +678,7 @@ func (q *Query4[A, B, C, D]) Close() {
 	q.columnD = nil
 
 	q.world.storage.mu.Lock()
-	q.world.unlock(q.lock)
+	q.world.storage.unlock(q.lock)
 	if q.isPooled {
 		q.world.storage.slices.relationsPool.Recycle(q.relations)
 	}
@@ -835,7 +835,7 @@ func (q *Query5[A, B, C, D, E]) Close() {
 	q.columnE = nil
 
 	q.world.storage.mu.Lock()
-	q.world.unlock(q.lock)
+	q.world.storage.unlock(q.lock)
 	if q.isPooled {
 		q.world.storage.slices.relationsPool.Recycle(q.relations)
 	}
@@ -995,7 +995,7 @@ func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.columnF = nil
 
 	q.world.storage.mu.Lock()
-	q.world.unlock(q.lock)
+	q.world.storage.unlock(q.lock)
 	if q.isPooled {
 		q.world.storage.slices.relationsPool.Recycle(q.relations)
 	}
@@ -1158,7 +1158,7 @@ func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.columnG = nil
 
 	q.world.storage.mu.Lock()
-	q.world.unlock(q.lock)
+	q.world.storage.unlock(q.lock)
 	if q.isPooled {
 		q.world.storage.slices.relationsPool.Recycle(q.relations)
 	}
@@ -1324,7 +1324,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.columnH = nil
 
 	q.world.storage.mu.Lock()
-	q.world.unlock(q.lock)
+	q.world.storage.unlock(q.lock)
 	if q.isPooled {
 		q.world.storage.slices.relationsPool.Recycle(q.relations)
 	}
