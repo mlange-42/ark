@@ -49,10 +49,10 @@ func TestObserve{{.}}(t *testing.T) {
 	obs = Observe{{.}}{{$generics}}(OnAddComponents).Do(func(e Entity, {{$args}}) {})
 
 	obs.For()
-	expectEqual(t, 0, len(obs.comps))
+	expectEqual(t, {{.}}, len(obs.observer.comps))
 
 	obs.For(C[Position]())
-	expectEqual(t, 1, len(obs.comps))
+	expectEqual(t, {{.}}+1, len(obs.observer.comps))
 
 	obs = Observe{{.}}{{$generics}}(OnAddComponents).With().Do(func(e Entity, {{$args}}) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.with))

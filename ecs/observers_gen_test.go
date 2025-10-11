@@ -40,10 +40,10 @@ func TestObserve1(t *testing.T) {
 	obs = Observe1[CompA](OnAddComponents).Do(func(e Entity, a *CompA) {})
 
 	obs.For()
-	expectEqual(t, 0, len(obs.comps))
+	expectEqual(t, 1, len(obs.observer.comps))
 
 	obs.For(C[Position]())
-	expectEqual(t, 1, len(obs.comps))
+	expectEqual(t, 1+1, len(obs.observer.comps))
 
 	obs = Observe1[CompA](OnAddComponents).With().Do(func(e Entity, a *CompA) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.with))
@@ -148,10 +148,10 @@ func TestObserve2(t *testing.T) {
 	obs = Observe2[CompA, CompB](OnAddComponents).Do(func(e Entity, a *CompA, b *CompB) {})
 
 	obs.For()
-	expectEqual(t, 0, len(obs.comps))
+	expectEqual(t, 2, len(obs.observer.comps))
 
 	obs.For(C[Position]())
-	expectEqual(t, 1, len(obs.comps))
+	expectEqual(t, 2+1, len(obs.observer.comps))
 
 	obs = Observe2[CompA, CompB](OnAddComponents).With().Do(func(e Entity, a *CompA, b *CompB) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.with))
@@ -257,10 +257,10 @@ func TestObserve3(t *testing.T) {
 	obs = Observe3[CompA, CompB, CompC](OnAddComponents).Do(func(e Entity, a *CompA, b *CompB, c *CompC) {})
 
 	obs.For()
-	expectEqual(t, 0, len(obs.comps))
+	expectEqual(t, 3, len(obs.observer.comps))
 
 	obs.For(C[Position]())
-	expectEqual(t, 1, len(obs.comps))
+	expectEqual(t, 3+1, len(obs.observer.comps))
 
 	obs = Observe3[CompA, CompB, CompC](OnAddComponents).With().Do(func(e Entity, a *CompA, b *CompB, c *CompC) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.with))
@@ -367,10 +367,10 @@ func TestObserve4(t *testing.T) {
 	obs = Observe4[CompA, CompB, CompC, CompD](OnAddComponents).Do(func(e Entity, a *CompA, b *CompB, c *CompC, d *CompD) {})
 
 	obs.For()
-	expectEqual(t, 0, len(obs.comps))
+	expectEqual(t, 4, len(obs.observer.comps))
 
 	obs.For(C[Position]())
-	expectEqual(t, 1, len(obs.comps))
+	expectEqual(t, 4+1, len(obs.observer.comps))
 
 	obs = Observe4[CompA, CompB, CompC, CompD](OnAddComponents).With().Do(func(e Entity, a *CompA, b *CompB, c *CompC, d *CompD) {}).Register(&w)
 	expectEqual(t, 0, len(obs.observer.with))

@@ -105,7 +105,7 @@ func (e Event) Emit(entity Entity) {
 }
 
 type observerManager struct {
-	observers    [][]*Observer
+	observers    [][]*observerData
 	hasObservers []bool
 	allComps     []bitMask
 	allWith      []bitMask
@@ -125,7 +125,7 @@ type observerIndex struct {
 func newObserverManager() observerManager {
 	maxEvents := math.MaxUint8 + 1
 	return observerManager{
-		observers:    make([][]*Observer, maxEvents),
+		observers:    make([][]*observerData, maxEvents),
 		hasObservers: make([]bool, maxEvents),
 		anyNoComps:   make([]bool, maxEvents),
 		anyNoWith:    make([]bool, maxEvents),
@@ -189,7 +189,7 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 	}
 
 	m.indices[o.id] = observerIndex{idx: uint32(len(m.observers[o.event])), event: o.event}
-	m.observers[o.event] = append(m.observers[o.event], o)
+	m.observers[o.event] = append(m.observers[o.event], &o.observerData)
 	m.hasObservers[o.event] = true
 	if o.event > m.maxEventType {
 		m.maxEventType = o.event
@@ -239,12 +239,12 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 
 	var allWith bitMask
 	m.anyNoWith[o.event] = false
-	for _, o := range m.observers[o.event] {
-		if !o.hasWith {
+	for _, obs := range m.observers[o.event] {
+		if !obs.hasWith {
 			m.anyNoWith[o.event] = true
 			break
 		}
-		allWith.OrI(&o.withMask)
+		allWith.OrI(&obs.withMask)
 	}
 	m.allWith[o.event] = allWith
 
@@ -254,12 +254,12 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 
 	var allComps bitMask
 	m.anyNoComps[o.event] = false
-	for _, o := range m.observers[o.event] {
-		if !o.hasComps {
+	for _, obs := range m.observers[o.event] {
+		if !obs.hasComps {
 			m.anyNoComps[o.event] = true
 			break
 		}
-		allComps.OrI(&o.compsMask)
+		allComps.OrI(&obs.compsMask)
 	}
 	m.allComps[o.event] = allComps
 }

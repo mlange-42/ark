@@ -129,6 +129,7 @@ func TestTypeSizes(t *testing.T) {
 	printTypeSize[cursor]()
 	printTypeSize[Relation]()
 	printTypeSize[Observer]()
+	printTypeSize[observerData]()
 	printTypeSizeName[Map2[Position, Velocity]]("Map2")
 	printTypeSizeName[Filter2[Position, Velocity]]("Filter2")
 	printTypeSizeName[Query2[Position, Velocity]]("Query2")

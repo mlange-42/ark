@@ -7,7 +7,7 @@ import (
 )
 
 type number interface {
-	int | int8 | uint8 | int16 | uint16 | int32 | uint32 | int64 | uint64 | cacheID | observerID
+	int | int8 | uint8 | int16 | uint16 | int32 | uint32 | cacheID | observerID
 }
 
 // entityPool is an implementation using implicit linked lists.
@@ -153,8 +153,8 @@ func (p *bitPool) Reset() {
 // entityPool is an implementation using implicit linked lists.
 // Implements https://skypjack.github.io/2019-05-06-ecs-baf-part-3/
 type intPool[T number] struct {
-	next              T
 	pool              []T
+	next              T
 	available         uint32
 	capacityIncrement uint32
 }
