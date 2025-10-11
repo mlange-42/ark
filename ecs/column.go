@@ -130,9 +130,14 @@ func newEntityColumn(capacity uint32) entityColumn {
 	}
 }
 
-// Get returns a pointer to the component at the given index.
+// Get returns a pointer to the entity at the given index.
 func (c *entityColumn) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*entitySize)
+}
+
+// GetEntity returns the entity at the given index.
+func (c *entityColumn) GetEntity(index uintptr) Entity {
+	return *(*Entity)(unsafe.Add(c.pointer, index*entitySize))
 }
 
 // CopyToEnd copies from the given column to the end of this column.

@@ -18,12 +18,13 @@ type cursor struct {
 type Query0 struct {
 	world       *World
 	filter      *filter
-	table       *table
 	cache       *cacheEntry
+	entities    *entityColumn
 	relations   []relationID
 	tables      []tableID
 	components  []*componentStorage
 	cursor      cursor
+	tableID     tableID
 	lock        uint8
 	rareComp    uint8
 	hasRareComp bool
@@ -77,7 +78,8 @@ func (q *Query0) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
-	q.table = nil
+	q.entities = nil
+	q.tableID = maxTableID
 	q.cache = nil
 
 	q.world.storage.mu.Lock()
@@ -153,9 +155,10 @@ func (q *Query0) nextTable(tables []tableID) bool {
 
 func (q *Query0) setTable(index int32, table *table) {
 	q.cursor.table = index
-	q.table = table
+	q.tableID = table.id
+	q.entities = &table.entities
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.len - 1)
+	q.cursor.maxIndex = int64(table.len - 1)
 }
 
 // Query1 is a query for 1 components.
@@ -167,13 +170,14 @@ func (q *Query0) setTable(index int32, table *table) {
 type Query1[A any] struct {
 	world      *World
 	filter     *filter
-	table      *table
 	cache      *cacheEntry
 	columnA    *columnLayout
+	entities   *entityColumn
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
+	tableID    tableID
 	lock       uint8
 	rareComp   uint8
 
@@ -182,7 +186,7 @@ type Query1[A any] struct {
 
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query1[A]) GetRelation(index int) Entity {
-	return q.components[index].columns[q.table.id].target
+	return q.components[index].columns[q.tableID].target
 }
 
 // Count counts the entities matching this query.
@@ -226,7 +230,8 @@ func (q *Query1[A]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
-	q.table = nil
+	q.entities = nil
+	q.tableID = maxTableID
 	q.cache = nil
 	q.columnA = nil
 
@@ -298,10 +303,11 @@ func (q *Query1[A]) nextTable(tables []tableID) bool {
 
 func (q *Query1[A]) setTable(index int32, table *table) {
 	q.cursor.table = index
-	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
+	q.tableID = table.id
+	q.entities = &table.entities
+	q.columnA = q.components[0].columns[q.tableID]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.len - 1)
+	q.cursor.maxIndex = int64(table.len - 1)
 }
 
 // Query2 is a query for 2 components.
@@ -311,14 +317,15 @@ func (q *Query1[A]) setTable(index int32, table *table) {
 type Query2[A any, B any] struct {
 	world      *World
 	filter     *filter
-	table      *table
 	cache      *cacheEntry
 	columnA    *columnLayout
 	columnB    *columnLayout
+	entities   *entityColumn
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
+	tableID    tableID
 	lock       uint8
 	rareComp   uint8
 
@@ -327,7 +334,7 @@ type Query2[A any, B any] struct {
 
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query2[A, B]) GetRelation(index int) Entity {
-	return q.components[index].columns[q.table.id].target
+	return q.components[index].columns[q.tableID].target
 }
 
 // Count counts the entities matching this query.
@@ -367,7 +374,8 @@ func (q *Query2[A, B]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
-	q.table = nil
+	q.entities = nil
+	q.tableID = maxTableID
 	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -440,11 +448,12 @@ func (q *Query2[A, B]) nextTable(tables []tableID) bool {
 
 func (q *Query2[A, B]) setTable(index int32, table *table) {
 	q.cursor.table = index
-	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
+	q.tableID = table.id
+	q.entities = &table.entities
+	q.columnA = q.components[0].columns[q.tableID]
+	q.columnB = q.components[1].columns[q.tableID]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.len - 1)
+	q.cursor.maxIndex = int64(table.len - 1)
 }
 
 // Query3 is a query for 3 components.
@@ -456,15 +465,16 @@ func (q *Query2[A, B]) setTable(index int32, table *table) {
 type Query3[A any, B any, C any] struct {
 	world      *World
 	filter     *filter
-	table      *table
 	cache      *cacheEntry
 	columnA    *columnLayout
 	columnB    *columnLayout
 	columnC    *columnLayout
+	entities   *entityColumn
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
+	tableID    tableID
 	lock       uint8
 	rareComp   uint8
 
@@ -473,7 +483,7 @@ type Query3[A any, B any, C any] struct {
 
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query3[A, B, C]) GetRelation(index int) Entity {
-	return q.components[index].columns[q.table.id].target
+	return q.components[index].columns[q.tableID].target
 }
 
 // Count counts the entities matching this query.
@@ -517,7 +527,8 @@ func (q *Query3[A, B, C]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
-	q.table = nil
+	q.entities = nil
+	q.tableID = maxTableID
 	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -591,12 +602,13 @@ func (q *Query3[A, B, C]) nextTable(tables []tableID) bool {
 
 func (q *Query3[A, B, C]) setTable(index int32, table *table) {
 	q.cursor.table = index
-	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
+	q.tableID = table.id
+	q.entities = &table.entities
+	q.columnA = q.components[0].columns[q.tableID]
+	q.columnB = q.components[1].columns[q.tableID]
+	q.columnC = q.components[2].columns[q.tableID]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.len - 1)
+	q.cursor.maxIndex = int64(table.len - 1)
 }
 
 // Query4 is a query for 4 components.
@@ -608,16 +620,17 @@ func (q *Query3[A, B, C]) setTable(index int32, table *table) {
 type Query4[A any, B any, C any, D any] struct {
 	world      *World
 	filter     *filter
-	table      *table
 	cache      *cacheEntry
 	columnA    *columnLayout
 	columnB    *columnLayout
 	columnC    *columnLayout
 	columnD    *columnLayout
+	entities   *entityColumn
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
+	tableID    tableID
 	lock       uint8
 	rareComp   uint8
 
@@ -626,7 +639,7 @@ type Query4[A any, B any, C any, D any] struct {
 
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query4[A, B, C, D]) GetRelation(index int) Entity {
-	return q.components[index].columns[q.table.id].target
+	return q.components[index].columns[q.tableID].target
 }
 
 // Count counts the entities matching this query.
@@ -670,7 +683,8 @@ func (q *Query4[A, B, C, D]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
-	q.table = nil
+	q.entities = nil
+	q.tableID = maxTableID
 	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -745,13 +759,14 @@ func (q *Query4[A, B, C, D]) nextTable(tables []tableID) bool {
 
 func (q *Query4[A, B, C, D]) setTable(index int32, table *table) {
 	q.cursor.table = index
-	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnD = q.components[3].columns[q.table.id]
+	q.tableID = table.id
+	q.entities = &table.entities
+	q.columnA = q.components[0].columns[q.tableID]
+	q.columnB = q.components[1].columns[q.tableID]
+	q.columnC = q.components[2].columns[q.tableID]
+	q.columnD = q.components[3].columns[q.tableID]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.len - 1)
+	q.cursor.maxIndex = int64(table.len - 1)
 }
 
 // Query5 is a query for 5 components.
@@ -763,17 +778,18 @@ func (q *Query4[A, B, C, D]) setTable(index int32, table *table) {
 type Query5[A any, B any, C any, D any, E any] struct {
 	world      *World
 	filter     *filter
-	table      *table
 	cache      *cacheEntry
 	columnA    *columnLayout
 	columnB    *columnLayout
 	columnC    *columnLayout
 	columnD    *columnLayout
 	columnE    *columnLayout
+	entities   *entityColumn
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
+	tableID    tableID
 	lock       uint8
 	rareComp   uint8
 
@@ -782,7 +798,7 @@ type Query5[A any, B any, C any, D any, E any] struct {
 
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query5[A, B, C, D, E]) GetRelation(index int) Entity {
-	return q.components[index].columns[q.table.id].target
+	return q.components[index].columns[q.tableID].target
 }
 
 // Count counts the entities matching this query.
@@ -826,7 +842,8 @@ func (q *Query5[A, B, C, D, E]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
-	q.table = nil
+	q.entities = nil
+	q.tableID = maxTableID
 	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -902,14 +919,15 @@ func (q *Query5[A, B, C, D, E]) nextTable(tables []tableID) bool {
 
 func (q *Query5[A, B, C, D, E]) setTable(index int32, table *table) {
 	q.cursor.table = index
-	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnE = q.components[4].columns[q.table.id]
+	q.tableID = table.id
+	q.entities = &table.entities
+	q.columnA = q.components[0].columns[q.tableID]
+	q.columnB = q.components[1].columns[q.tableID]
+	q.columnC = q.components[2].columns[q.tableID]
+	q.columnD = q.components[3].columns[q.tableID]
+	q.columnE = q.components[4].columns[q.tableID]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.len - 1)
+	q.cursor.maxIndex = int64(table.len - 1)
 }
 
 // Query6 is a query for 6 components.
@@ -921,7 +939,6 @@ func (q *Query5[A, B, C, D, E]) setTable(index int32, table *table) {
 type Query6[A any, B any, C any, D any, E any, F any] struct {
 	world      *World
 	filter     *filter
-	table      *table
 	cache      *cacheEntry
 	columnA    *columnLayout
 	columnB    *columnLayout
@@ -929,10 +946,12 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	columnD    *columnLayout
 	columnE    *columnLayout
 	columnF    *columnLayout
+	entities   *entityColumn
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
+	tableID    tableID
 	lock       uint8
 	rareComp   uint8
 
@@ -941,7 +960,7 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query6[A, B, C, D, E, F]) GetRelation(index int) Entity {
-	return q.components[index].columns[q.table.id].target
+	return q.components[index].columns[q.tableID].target
 }
 
 // Count counts the entities matching this query.
@@ -985,7 +1004,8 @@ func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
-	q.table = nil
+	q.entities = nil
+	q.tableID = maxTableID
 	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -1062,15 +1082,16 @@ func (q *Query6[A, B, C, D, E, F]) nextTable(tables []tableID) bool {
 
 func (q *Query6[A, B, C, D, E, F]) setTable(index int32, table *table) {
 	q.cursor.table = index
-	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnE = q.components[4].columns[q.table.id]
-	q.columnF = q.components[5].columns[q.table.id]
+	q.tableID = table.id
+	q.entities = &table.entities
+	q.columnA = q.components[0].columns[q.tableID]
+	q.columnB = q.components[1].columns[q.tableID]
+	q.columnC = q.components[2].columns[q.tableID]
+	q.columnD = q.components[3].columns[q.tableID]
+	q.columnE = q.components[4].columns[q.tableID]
+	q.columnF = q.components[5].columns[q.tableID]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.len - 1)
+	q.cursor.maxIndex = int64(table.len - 1)
 }
 
 // Query7 is a query for 7 components.
@@ -1082,7 +1103,6 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int32, table *table) {
 type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	world      *World
 	filter     *filter
-	table      *table
 	cache      *cacheEntry
 	columnA    *columnLayout
 	columnB    *columnLayout
@@ -1091,10 +1111,12 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	columnE    *columnLayout
 	columnF    *columnLayout
 	columnG    *columnLayout
+	entities   *entityColumn
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
+	tableID    tableID
 	lock       uint8
 	rareComp   uint8
 
@@ -1103,7 +1125,7 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query7[A, B, C, D, E, F, G]) GetRelation(index int) Entity {
-	return q.components[index].columns[q.table.id].target
+	return q.components[index].columns[q.tableID].target
 }
 
 // Count counts the entities matching this query.
@@ -1147,7 +1169,8 @@ func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
-	q.table = nil
+	q.entities = nil
+	q.tableID = maxTableID
 	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -1225,16 +1248,17 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable(tables []tableID) bool {
 
 func (q *Query7[A, B, C, D, E, F, G]) setTable(index int32, table *table) {
 	q.cursor.table = index
-	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnE = q.components[4].columns[q.table.id]
-	q.columnF = q.components[5].columns[q.table.id]
-	q.columnG = q.components[6].columns[q.table.id]
+	q.tableID = table.id
+	q.entities = &table.entities
+	q.columnA = q.components[0].columns[q.tableID]
+	q.columnB = q.components[1].columns[q.tableID]
+	q.columnC = q.components[2].columns[q.tableID]
+	q.columnD = q.components[3].columns[q.tableID]
+	q.columnE = q.components[4].columns[q.tableID]
+	q.columnF = q.components[5].columns[q.tableID]
+	q.columnG = q.components[6].columns[q.tableID]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.len - 1)
+	q.cursor.maxIndex = int64(table.len - 1)
 }
 
 // Query8 is a query for 8 components.
@@ -1246,7 +1270,6 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int32, table *table) {
 type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	world      *World
 	filter     *filter
-	table      *table
 	cache      *cacheEntry
 	columnA    *columnLayout
 	columnB    *columnLayout
@@ -1256,10 +1279,12 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	columnF    *columnLayout
 	columnG    *columnLayout
 	columnH    *columnLayout
+	entities   *entityColumn
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
+	tableID    tableID
 	lock       uint8
 	rareComp   uint8
 
@@ -1268,7 +1293,7 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query8[A, B, C, D, E, F, G, H]) GetRelation(index int) Entity {
-	return q.components[index].columns[q.table.id].target
+	return q.components[index].columns[q.tableID].target
 }
 
 // Count counts the entities matching this query.
@@ -1312,7 +1337,8 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
-	q.table = nil
+	q.entities = nil
+	q.tableID = maxTableID
 	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
@@ -1391,15 +1417,16 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable(tables []tableID) bool {
 
 func (q *Query8[A, B, C, D, E, F, G, H]) setTable(index int32, table *table) {
 	q.cursor.table = index
-	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnE = q.components[4].columns[q.table.id]
-	q.columnF = q.components[5].columns[q.table.id]
-	q.columnG = q.components[6].columns[q.table.id]
-	q.columnH = q.components[7].columns[q.table.id]
+	q.tableID = table.id
+	q.entities = &table.entities
+	q.columnA = q.components[0].columns[q.tableID]
+	q.columnB = q.components[1].columns[q.tableID]
+	q.columnC = q.components[2].columns[q.tableID]
+	q.columnD = q.components[3].columns[q.tableID]
+	q.columnE = q.components[4].columns[q.tableID]
+	q.columnF = q.components[5].columns[q.tableID]
+	q.columnG = q.components[6].columns[q.tableID]
+	q.columnH = q.components[7].columns[q.tableID]
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.len - 1)
+	q.cursor.maxIndex = int64(table.len - 1)
 }

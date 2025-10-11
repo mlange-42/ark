@@ -15,7 +15,7 @@ func (q *Query0) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query0) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
+	return q.entities.GetEntity(q.cursor.index)
 }
 
 // Next advances the query's cursor to the next entity.
@@ -29,7 +29,7 @@ func (q *Query1[A]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query1[A]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
+	return q.entities.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
@@ -50,7 +50,7 @@ func (q *Query2[A, B]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query2[A, B]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
+	return q.entities.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
@@ -72,7 +72,7 @@ func (q *Query3[A, B, C]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query3[A, B, C]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
+	return q.entities.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
@@ -95,7 +95,7 @@ func (q *Query4[A, B, C, D]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query4[A, B, C, D]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
+	return q.entities.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
@@ -119,7 +119,7 @@ func (q *Query5[A, B, C, D, E]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query5[A, B, C, D, E]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
+	return q.entities.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
@@ -144,7 +144,7 @@ func (q *Query6[A, B, C, D, E, F]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
+	return q.entities.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
@@ -170,7 +170,7 @@ func (q *Query7[A, B, C, D, E, F, G]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
+	return q.entities.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.
@@ -197,7 +197,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
+	return q.entities.GetEntity(q.cursor.index)
 }
 
 // Get returns the queried components of the current entity.

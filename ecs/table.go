@@ -89,7 +89,7 @@ func (t *table) Has(component ID) bool {
 }
 
 func (t *table) GetEntity(index uintptr) Entity {
-	return *(*Entity)(t.entities.Get(index))
+	return t.entities.GetEntity(index)
 }
 
 func (t *table) GetRelation(component ID) Entity {

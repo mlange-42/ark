@@ -26,7 +26,7 @@ func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 
 // Entity returns the current entity.
 func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
-	return q.table.GetEntity(q.cursor.index)
+	return q.entities.GetEntity(q.cursor.index)
 }
 
 {{if . -}}
