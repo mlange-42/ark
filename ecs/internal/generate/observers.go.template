@@ -19,17 +19,22 @@ package ecs
 type Observer{{.}}{{$generics}} struct {
 	observer Observer
 	callback func(Entity, {{$fn_args}})
-	comps    []Comp
 }
 
 // Observe{{.}} creates a new Observer{{.}}.
 //
 // See also [Observer{{.}}.New] for a shortcut when constructing an already defined instance.
 func Observe{{.}}{{$generics}}(evt EventType) *Observer{{.}}{{$genericsShort}} {
+	comps := make([]Comp, 0, 6)
+	{{- range $i, $v := $upper}}
+	comps = append(comps, comp[{{$v}}]())
+	{{- end}}
+
 	return &Observer{{.}}{{$genericsShort}}{
 		observer: Observer{
 			event: evt,
 			id:    maxObserverID,
+			comps: comps,
 		},
 	}
 }
@@ -52,13 +57,7 @@ func (_ *Observer{{.}}{{$genericsShort}}) New(evt EventType) *Observer{{.}}{{$ge
 // See [Observer1.For] for an example.
 {{- end}}
 func (o *Observer{{.}}{{$genericsShort}}) For(comps ...Comp) *Observer{{.}}{{$genericsShort}} {
-	if o.observer.id != maxObserverID {
-		panic("can't modify a registered observer")
-	}
-	if len(comps) == 0 {
-		return o
-	}
-	o.comps = append(o.comps, comps...)
+	o.observer.For(comps...)
 	return o
 }
 
@@ -112,9 +111,6 @@ func (o *Observer{{.}}{{$genericsShort}}) Do(fn func(Entity, {{$fn_args}})) *Obs
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer{{.}}{{$genericsShort}}) Register(w *World) *Observer{{.}}{{$genericsShort}} {
-	if o.observer.id != maxObserverID {
-		panic("observer is already registered")
-	}
 	if o.callback == nil {
 		panic("observer callback must be set via Do before registering")
 	}
@@ -131,16 +127,6 @@ func (o *Observer{{.}}{{$genericsShort}}) Register(w *World) *Observer{{.}}{{$ge
 			{{- end}}
 		)
 	}
-
-	o.observer.comps = o.observer.comps[:0]
-	o.observer.For(
-		{{- range $i, $v := $upper}}
-		comp[{{$v}}](),
-		{{- end}}
-	)
-	o.observer.For(
-		o.comps...
-	)
 
 	w.registerObserver(&o.observer)
 	return o

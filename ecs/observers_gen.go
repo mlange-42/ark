@@ -8,17 +8,20 @@ package ecs
 type Observer1[A any] struct {
 	observer Observer
 	callback func(Entity, *A)
-	comps    []Comp
 }
 
 // Observe1 creates a new Observer1.
 //
 // See also [Observer1.New] for a shortcut when constructing an already defined instance.
 func Observe1[A any](evt EventType) *Observer1[A] {
+	comps := make([]Comp, 0, 6)
+	comps = append(comps, comp[A]())
+
 	return &Observer1[A]{
 		observer: Observer{
 			event: evt,
 			id:    maxObserverID,
+			comps: comps,
 		},
 	}
 }
@@ -33,13 +36,7 @@ func (_ *Observer1[A]) New(evt EventType) *Observer1[A] {
 //
 // Method calls can be chained, which has the same effect as calling with multiple arguments.
 func (o *Observer1[A]) For(comps ...Comp) *Observer1[A] {
-	if o.observer.id != maxObserverID {
-		panic("can't modify a registered observer")
-	}
-	if len(comps) == 0 {
-		return o
-	}
-	o.comps = append(o.comps, comps...)
+	o.observer.For(comps...)
 	return o
 }
 
@@ -81,9 +78,6 @@ func (o *Observer1[A]) Do(fn func(Entity, *A)) *Observer1[A] {
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer1[A]) Register(w *World) *Observer1[A] {
-	if o.observer.id != maxObserverID {
-		panic("observer is already registered")
-	}
 	if o.callback == nil {
 		panic("observer callback must be set via Do before registering")
 	}
@@ -97,14 +91,6 @@ func (o *Observer1[A]) Register(w *World) *Observer1[A] {
 			(*A)(storageA.columns[index.table].Get(row)),
 		)
 	}
-
-	o.observer.comps = o.observer.comps[:0]
-	o.observer.For(
-		comp[A](),
-	)
-	o.observer.For(
-		o.comps...,
-	)
 
 	w.registerObserver(&o.observer)
 	return o
@@ -124,17 +110,21 @@ func (o *Observer1[A]) Unregister(w *World) *Observer1[A] {
 type Observer2[A any, B any] struct {
 	observer Observer
 	callback func(Entity, *A, *B)
-	comps    []Comp
 }
 
 // Observe2 creates a new Observer2.
 //
 // See also [Observer2.New] for a shortcut when constructing an already defined instance.
 func Observe2[A any, B any](evt EventType) *Observer2[A, B] {
+	comps := make([]Comp, 0, 6)
+	comps = append(comps, comp[A]())
+	comps = append(comps, comp[B]())
+
 	return &Observer2[A, B]{
 		observer: Observer{
 			event: evt,
 			id:    maxObserverID,
+			comps: comps,
 		},
 	}
 }
@@ -153,13 +143,7 @@ func (_ *Observer2[A, B]) New(evt EventType) *Observer2[A, B] {
 //
 // See [Observer1.For] for an example.
 func (o *Observer2[A, B]) For(comps ...Comp) *Observer2[A, B] {
-	if o.observer.id != maxObserverID {
-		panic("can't modify a registered observer")
-	}
-	if len(comps) == 0 {
-		return o
-	}
-	o.comps = append(o.comps, comps...)
+	o.observer.For(comps...)
 	return o
 }
 
@@ -207,9 +191,6 @@ func (o *Observer2[A, B]) Do(fn func(Entity, *A, *B)) *Observer2[A, B] {
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer2[A, B]) Register(w *World) *Observer2[A, B] {
-	if o.observer.id != maxObserverID {
-		panic("observer is already registered")
-	}
 	if o.callback == nil {
 		panic("observer callback must be set via Do before registering")
 	}
@@ -225,15 +206,6 @@ func (o *Observer2[A, B]) Register(w *World) *Observer2[A, B] {
 			(*B)(storageB.columns[index.table].Get(row)),
 		)
 	}
-
-	o.observer.comps = o.observer.comps[:0]
-	o.observer.For(
-		comp[A](),
-		comp[B](),
-	)
-	o.observer.For(
-		o.comps...,
-	)
 
 	w.registerObserver(&o.observer)
 	return o
@@ -253,17 +225,22 @@ func (o *Observer2[A, B]) Unregister(w *World) *Observer2[A, B] {
 type Observer3[A any, B any, C any] struct {
 	observer Observer
 	callback func(Entity, *A, *B, *C)
-	comps    []Comp
 }
 
 // Observe3 creates a new Observer3.
 //
 // See also [Observer3.New] for a shortcut when constructing an already defined instance.
 func Observe3[A any, B any, C any](evt EventType) *Observer3[A, B, C] {
+	comps := make([]Comp, 0, 6)
+	comps = append(comps, comp[A]())
+	comps = append(comps, comp[B]())
+	comps = append(comps, comp[C]())
+
 	return &Observer3[A, B, C]{
 		observer: Observer{
 			event: evt,
 			id:    maxObserverID,
+			comps: comps,
 		},
 	}
 }
@@ -282,13 +259,7 @@ func (_ *Observer3[A, B, C]) New(evt EventType) *Observer3[A, B, C] {
 //
 // See [Observer1.For] for an example.
 func (o *Observer3[A, B, C]) For(comps ...Comp) *Observer3[A, B, C] {
-	if o.observer.id != maxObserverID {
-		panic("can't modify a registered observer")
-	}
-	if len(comps) == 0 {
-		return o
-	}
-	o.comps = append(o.comps, comps...)
+	o.observer.For(comps...)
 	return o
 }
 
@@ -336,9 +307,6 @@ func (o *Observer3[A, B, C]) Do(fn func(Entity, *A, *B, *C)) *Observer3[A, B, C]
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer3[A, B, C]) Register(w *World) *Observer3[A, B, C] {
-	if o.observer.id != maxObserverID {
-		panic("observer is already registered")
-	}
 	if o.callback == nil {
 		panic("observer callback must be set via Do before registering")
 	}
@@ -356,16 +324,6 @@ func (o *Observer3[A, B, C]) Register(w *World) *Observer3[A, B, C] {
 			(*C)(storageC.columns[index.table].Get(row)),
 		)
 	}
-
-	o.observer.comps = o.observer.comps[:0]
-	o.observer.For(
-		comp[A](),
-		comp[B](),
-		comp[C](),
-	)
-	o.observer.For(
-		o.comps...,
-	)
 
 	w.registerObserver(&o.observer)
 	return o
@@ -385,17 +343,23 @@ func (o *Observer3[A, B, C]) Unregister(w *World) *Observer3[A, B, C] {
 type Observer4[A any, B any, C any, D any] struct {
 	observer Observer
 	callback func(Entity, *A, *B, *C, *D)
-	comps    []Comp
 }
 
 // Observe4 creates a new Observer4.
 //
 // See also [Observer4.New] for a shortcut when constructing an already defined instance.
 func Observe4[A any, B any, C any, D any](evt EventType) *Observer4[A, B, C, D] {
+	comps := make([]Comp, 0, 6)
+	comps = append(comps, comp[A]())
+	comps = append(comps, comp[B]())
+	comps = append(comps, comp[C]())
+	comps = append(comps, comp[D]())
+
 	return &Observer4[A, B, C, D]{
 		observer: Observer{
 			event: evt,
 			id:    maxObserverID,
+			comps: comps,
 		},
 	}
 }
@@ -414,13 +378,7 @@ func (_ *Observer4[A, B, C, D]) New(evt EventType) *Observer4[A, B, C, D] {
 //
 // See [Observer1.For] for an example.
 func (o *Observer4[A, B, C, D]) For(comps ...Comp) *Observer4[A, B, C, D] {
-	if o.observer.id != maxObserverID {
-		panic("can't modify a registered observer")
-	}
-	if len(comps) == 0 {
-		return o
-	}
-	o.comps = append(o.comps, comps...)
+	o.observer.For(comps...)
 	return o
 }
 
@@ -468,9 +426,6 @@ func (o *Observer4[A, B, C, D]) Do(fn func(Entity, *A, *B, *C, *D)) *Observer4[A
 
 // Register this observer. This is mandatory for the observer to take effect.
 func (o *Observer4[A, B, C, D]) Register(w *World) *Observer4[A, B, C, D] {
-	if o.observer.id != maxObserverID {
-		panic("observer is already registered")
-	}
 	if o.callback == nil {
 		panic("observer callback must be set via Do before registering")
 	}
@@ -490,17 +445,6 @@ func (o *Observer4[A, B, C, D]) Register(w *World) *Observer4[A, B, C, D] {
 			(*D)(storageD.columns[index.table].Get(row)),
 		)
 	}
-
-	o.observer.comps = o.observer.comps[:0]
-	o.observer.For(
-		comp[A](),
-		comp[B](),
-		comp[C](),
-		comp[D](),
-	)
-	o.observer.For(
-		o.comps...,
-	)
 
 	w.registerObserver(&o.observer)
 	return o
