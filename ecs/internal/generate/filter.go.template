@@ -151,9 +151,9 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
-	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.generation {
 		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
-		f.generation = f.world.storage.registry.getGeneration()
+		f.generation = f.world.storage.registry.generation
 	}
 	f.world.storage.mu.Unlock()
 
