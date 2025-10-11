@@ -125,13 +125,19 @@ func (f *Filter0) Unregister() {
 // Relation components must be in the filter's parameters or added via [Filter0.With] beforehand.
 func (f *Filter0) Query(rel ...Relation) Query0 {
 	pooled := len(rel) > 0
+	var relations []relationID
+
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	var relations []relationID
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
+		f.generation = f.world.storage.registry.getGeneration()
+	}
 	f.world.storage.mu.Unlock()
+
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
 	var start uint8
@@ -139,15 +145,6 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
-	} else {
-		reg := &f.world.storage.registry
-		gen := reg.getGeneration()
-		if f.generation != gen {
-			f.mutex.Lock()
-			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = gen
-			f.mutex.Unlock()
-		}
 	}
 
 	return Query0{
@@ -323,13 +320,19 @@ func (f *Filter1[A]) Unregister() {
 // Relation components must be in the filter's parameters or added via [Filter1.With] beforehand.
 func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 	pooled := len(rel) > 0
+	var relations []relationID
+
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	var relations []relationID
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
+		f.generation = f.world.storage.registry.getGeneration()
+	}
 	f.world.storage.mu.Unlock()
+
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
 	var start uint8
@@ -337,15 +340,6 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
-	} else {
-		reg := &f.world.storage.registry
-		gen := reg.getGeneration()
-		if f.generation != gen {
-			f.mutex.Lock()
-			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = gen
-			f.mutex.Unlock()
-		}
 	}
 
 	return Query1[A]{
@@ -519,13 +513,19 @@ func (f *Filter2[A, B]) Unregister() {
 // Relation components must be in the filter's parameters or added via [Filter2.With] beforehand.
 func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 	pooled := len(rel) > 0
+	var relations []relationID
+
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	var relations []relationID
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
+		f.generation = f.world.storage.registry.getGeneration()
+	}
 	f.world.storage.mu.Unlock()
+
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
 	var start uint8
@@ -533,15 +533,6 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
-	} else {
-		reg := &f.world.storage.registry
-		gen := reg.getGeneration()
-		if f.generation != gen {
-			f.mutex.Lock()
-			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = gen
-			f.mutex.Unlock()
-		}
 	}
 
 	return Query2[A, B]{
@@ -721,13 +712,19 @@ func (f *Filter3[A, B, C]) Unregister() {
 // Relation components must be in the filter's parameters or added via [Filter3.With] beforehand.
 func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 	pooled := len(rel) > 0
+	var relations []relationID
+
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	var relations []relationID
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
+		f.generation = f.world.storage.registry.getGeneration()
+	}
 	f.world.storage.mu.Unlock()
+
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
 	var start uint8
@@ -735,15 +732,6 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
-	} else {
-		reg := &f.world.storage.registry
-		gen := reg.getGeneration()
-		if f.generation != gen {
-			f.mutex.Lock()
-			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = gen
-			f.mutex.Unlock()
-		}
 	}
 
 	return Query3[A, B, C]{
@@ -925,13 +913,19 @@ func (f *Filter4[A, B, C, D]) Unregister() {
 // Relation components must be in the filter's parameters or added via [Filter4.With] beforehand.
 func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 	pooled := len(rel) > 0
+	var relations []relationID
+
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	var relations []relationID
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
+		f.generation = f.world.storage.registry.getGeneration()
+	}
 	f.world.storage.mu.Unlock()
+
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
 	var start uint8
@@ -939,15 +933,6 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
-	} else {
-		reg := &f.world.storage.registry
-		gen := reg.getGeneration()
-		if f.generation != gen {
-			f.mutex.Lock()
-			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = gen
-			f.mutex.Unlock()
-		}
 	}
 
 	return Query4[A, B, C, D]{
@@ -1131,13 +1116,19 @@ func (f *Filter5[A, B, C, D, E]) Unregister() {
 // Relation components must be in the filter's parameters or added via [Filter5.With] beforehand.
 func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 	pooled := len(rel) > 0
+	var relations []relationID
+
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	var relations []relationID
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
+		f.generation = f.world.storage.registry.getGeneration()
+	}
 	f.world.storage.mu.Unlock()
+
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
 	var start uint8
@@ -1145,15 +1136,6 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
-	} else {
-		reg := &f.world.storage.registry
-		gen := reg.getGeneration()
-		if f.generation != gen {
-			f.mutex.Lock()
-			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = gen
-			f.mutex.Unlock()
-		}
 	}
 
 	return Query5[A, B, C, D, E]{
@@ -1339,13 +1321,19 @@ func (f *Filter6[A, B, C, D, E, F]) Unregister() {
 // Relation components must be in the filter's parameters or added via [Filter6.With] beforehand.
 func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E, F] {
 	pooled := len(rel) > 0
+	var relations []relationID
+
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	var relations []relationID
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
+		f.generation = f.world.storage.registry.getGeneration()
+	}
 	f.world.storage.mu.Unlock()
+
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
 	var start uint8
@@ -1353,15 +1341,6 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
-	} else {
-		reg := &f.world.storage.registry
-		gen := reg.getGeneration()
-		if f.generation != gen {
-			f.mutex.Lock()
-			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = gen
-			f.mutex.Unlock()
-		}
 	}
 
 	return Query6[A, B, C, D, E, F]{
@@ -1549,13 +1528,19 @@ func (f *Filter7[A, B, C, D, E, F, G]) Unregister() {
 // Relation components must be in the filter's parameters or added via [Filter7.With] beforehand.
 func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D, E, F, G] {
 	pooled := len(rel) > 0
+	var relations []relationID
+
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	var relations []relationID
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
+		f.generation = f.world.storage.registry.getGeneration()
+	}
 	f.world.storage.mu.Unlock()
+
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
 	var start uint8
@@ -1563,15 +1548,6 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
-	} else {
-		reg := &f.world.storage.registry
-		gen := reg.getGeneration()
-		if f.generation != gen {
-			f.mutex.Lock()
-			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = gen
-			f.mutex.Unlock()
-		}
 	}
 
 	return Query7[A, B, C, D, E, F, G]{
@@ -1761,13 +1737,19 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Unregister() {
 // Relation components must be in the filter's parameters or added via [Filter8.With] beforehand.
 func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C, D, E, F, G, H] {
 	pooled := len(rel) > 0
+	var relations []relationID
+
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	var relations []relationID
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
+		f.generation = f.world.storage.registry.getGeneration()
+	}
 	f.world.storage.mu.Unlock()
+
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 
 	var start uint8
@@ -1775,15 +1757,6 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
-	} else {
-		reg := &f.world.storage.registry
-		gen := reg.getGeneration()
-		if f.generation != gen {
-			f.mutex.Lock()
-			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = gen
-			f.mutex.Unlock()
-		}
 	}
 
 	return Query8[A, B, C, D, E, F, G, H]{

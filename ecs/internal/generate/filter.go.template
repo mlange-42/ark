@@ -147,13 +147,19 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // Relation components must be in the filter's parameters or added via [Filter{{.}}.With] beforehand.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$genericsShort}} {
 	pooled := len(rel) > 0
+	var relations []relationID
+
 	f.world.storage.mu.Lock()
 	lock := f.world.lock()
-	var relations []relationID
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.getGeneration() {
+		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
+		f.generation = f.world.storage.registry.getGeneration()
+	}
 	f.world.storage.mu.Unlock()
+
 	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
 	
 	var start uint8
@@ -161,15 +167,6 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations
 		cache = f.world.storage.getRegisteredFilter(f.filter.cache)
-	} else {
-		reg := &f.world.storage.registry
-		gen := reg.getGeneration()
-		if f.generation != gen {
-			f.mutex.Lock()
-			f.rareComp = reg.rareComponent(f.ids).id
-			f.generation = gen
-			f.mutex.Unlock()
-		}
 	}
 
 	return Query{{.}}{{$genericsShort}}{
