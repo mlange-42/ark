@@ -2904,6 +2904,21 @@ func TestQuery0Relations(t *testing.T) {
 	}
 	expectEqual(t, cnt, n)
 
+	// relation query
+	filter = NewFilter0(&w).With(C[ChildOf]())
+	query = filter.Query(RelIdx(0, parent1))
+	expectEqual(t, n, query.Count())
+
+	e = query.EntityAt(n - 1)
+	expectEqual(t, 32, int(e.ID()))
+
+	cnt = 0
+	for query.Next() {
+		_ = query.Entity()
+		cnt++
+	}
+	expectEqual(t, cnt, n)
+
 	// registered filter
 	filter = NewFilter0(&w).Register()
 	query = filter.Query()
