@@ -428,7 +428,7 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 			id := ID{id: uint8(i)}
 			comps := &s.components[i]
 			if archetype.mask.Get(id.id) {
-				comps.columns = append(comps.columns, &table.GetColumn(id).columnLayout)
+				comps.columns = append(comps.columns, &table.Column(id).columnLayout)
 			} else {
 				comps.columns = append(comps.columns, nil)
 			}

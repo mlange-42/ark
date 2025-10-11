@@ -316,8 +316,8 @@ func (w *World) exchangeTable(oldTableID, newTableID tableID, relations []relati
 	newTable.AddAllEntities(oldTable, count)
 	for _, id := range oldIDs {
 		if mask.Get(id.id) {
-			oldCol := oldTable.GetColumn(id)
-			newCol := newTable.GetColumn(id)
+			oldCol := oldTable.Column(id)
+			newCol := newTable.Column(id)
 			newCol.CopyToEnd(oldCol, newTable.len, count)
 		}
 	}

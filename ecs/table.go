@@ -96,10 +96,6 @@ func (t *table) GetRelation(component ID) Entity {
 	return t.components[component.id].target
 }
 
-func (t *table) GetColumn(component ID) *column {
-	return t.components[component.id]
-}
-
 func (t *table) Set(component ID, index uint32, src *column, srcIndex int) {
 	t.components[component.id].Set(index, src, srcIndex)
 }
