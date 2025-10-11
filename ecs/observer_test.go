@@ -124,7 +124,7 @@ func TestObserverManager(t *testing.T) {
 	m := newObserverManager()
 	expectPanicsWithValue(t, "can't unregister observer, not found",
 		func() {
-			m.RemoveObserver(&Observer{id: 13})
+			m.RemoveObserver(&Observer{observerData: observerData{id: 13}})
 		})
 }
 

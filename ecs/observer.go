@@ -12,7 +12,6 @@ type Observer struct {
 	comps     []Comp
 	with      []Comp
 	without   []Comp
-	id        observerID
 	event     EventType
 	exclusive bool
 }
@@ -22,6 +21,7 @@ type observerData struct {
 	withMask    bitMask
 	withoutMask bitMask
 	callback    func(Entity)
+	id          observerID
 	hasComps    bool
 	hasWithout  bool
 	hasWith     bool
@@ -36,7 +36,9 @@ type observerData struct {
 func Observe(evt EventType) *Observer {
 	return &Observer{
 		event: evt,
-		id:    maxObserverID,
+		observerData: observerData{
+			id: maxObserverID,
+		},
 	}
 }
 

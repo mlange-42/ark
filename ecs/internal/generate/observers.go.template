@@ -33,8 +33,10 @@ func Observe{{.}}{{$generics}}(evt EventType) *Observer{{.}}{{$genericsShort}} {
 	return &Observer{{.}}{{$genericsShort}}{
 		observer: Observer{
 			event: evt,
-			id:    maxObserverID,
 			comps: comps,
+			observerData: observerData{
+				id:    maxObserverID,
+			},
 		},
 	}
 }

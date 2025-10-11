@@ -20,8 +20,10 @@ func Observe1[A any](evt EventType) *Observer1[A] {
 	return &Observer1[A]{
 		observer: Observer{
 			event: evt,
-			id:    maxObserverID,
 			comps: comps,
+			observerData: observerData{
+				id: maxObserverID,
+			},
 		},
 	}
 }
@@ -123,8 +125,10 @@ func Observe2[A any, B any](evt EventType) *Observer2[A, B] {
 	return &Observer2[A, B]{
 		observer: Observer{
 			event: evt,
-			id:    maxObserverID,
 			comps: comps,
+			observerData: observerData{
+				id: maxObserverID,
+			},
 		},
 	}
 }
@@ -239,8 +243,10 @@ func Observe3[A any, B any, C any](evt EventType) *Observer3[A, B, C] {
 	return &Observer3[A, B, C]{
 		observer: Observer{
 			event: evt,
-			id:    maxObserverID,
 			comps: comps,
+			observerData: observerData{
+				id: maxObserverID,
+			},
 		},
 	}
 }
@@ -358,8 +364,10 @@ func Observe4[A any, B any, C any, D any](evt EventType) *Observer4[A, B, C, D] 
 	return &Observer4[A, B, C, D]{
 		observer: Observer{
 			event: evt,
-			id:    maxObserverID,
 			comps: comps,
+			observerData: observerData{
+				id: maxObserverID,
+			},
 		},
 	}
 }
