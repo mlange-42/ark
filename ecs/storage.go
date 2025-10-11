@@ -433,6 +433,7 @@ func (s *storage) createArchetype(node *node) *archetype {
 }
 
 // createTable creates a new table in the given archetype, for the given relations.
+// May recycle a free table.
 func (s *storage) createTable(archetype *archetype, relations []relationID) *table {
 	targets := make([]Entity, len(archetype.components))
 
