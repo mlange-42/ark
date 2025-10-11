@@ -35,15 +35,16 @@ type cursor struct {
 type Query{{.}}{{$generics}} struct {
 	world      *World
 	filter     *filter
-	table      *table
 	cache      *cacheEntry
 	{{- range $upper}}
 	column{{.}}    *columnLayout
 	{{- end}}
+	entities   *entityColumn
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
 	cursor     cursor
+	tableID    tableID
 	lock       uint8
 	rareComp   uint8
 	{{if eq . 0 -}}
@@ -55,7 +56,7 @@ type Query{{.}}{{$generics}} struct {
 {{if . -}}
 // GetRelation returns the entity relation target of the component at the given index.
 func (q *Query{{.}}{{$genericsShort}}) GetRelation(index int) Entity {
-	return q.components[index].columns[q.table.id].target
+	return q.components[index].columns[q.tableID].target
 }
 {{- end}}
 
@@ -118,7 +119,8 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
-	q.table = nil
+	q.entities = nil
+	q.tableID = maxTableID
 	q.cache = nil
 	{{- range $i, $v := $upper}}
 	q.column{{$v}} = nil
@@ -201,12 +203,13 @@ func (q *Query{{.}}{{$genericsShort}}) nextTable(tables []tableID) bool {
 
 func (q *Query{{.}}{{$genericsShort}}) setTable(index int32, table *table) {
 	q.cursor.table = index
-	q.table = table
+	q.tableID = table.id
+	q.entities = &table.entities
 	{{- range $i, $v := $upper}}
-	q.column{{$v}} = q.components[{{$i}}].columns[q.table.id]
+	q.column{{$v}} = q.components[{{$i}}].columns[q.tableID]
 	{{- end}}
 	q.cursor.index = 0
-	q.cursor.maxIndex = int64(q.table.len - 1)
+	q.cursor.maxIndex = int64(table.len - 1)
 }
 
 {{end -}}
