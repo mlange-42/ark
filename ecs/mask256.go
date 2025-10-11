@@ -100,6 +100,7 @@ func (b *bitMask256) Equals(other *bitMask256) bool {
 	return b.bits == other.bits
 }
 
+// toTypes converts a mask to a list of component IDs.
 func (b *bitMask256) toTypes(reg *registry) []ID {
 	count := b.TotalBitsSet()
 	types := make([]ID, count)

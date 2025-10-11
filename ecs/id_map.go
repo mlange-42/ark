@@ -4,12 +4,13 @@ const (
 	idMapChunkSize = 16
 )
 
+// idMap is a fast mapping data structure for graph node neighbors.
 type idMap struct {
-	data []nodeID
-	used bitMask
+	data []nodeID // nodes, indexed by component added or removed
+	used bitMask  // bit-mask of used indices
 }
 
-// newIDMap creates a new idMap
+// newIDMap creates a new idMap.
 func newIDMap() idMap {
 	return idMap{
 		data: make([]nodeID, idMapChunkSize),

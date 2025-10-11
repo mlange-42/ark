@@ -7,11 +7,13 @@ import (
 	"github.com/mlange-42/ark/ecs/stats"
 )
 
+// archetype ID/index type.
 type archetypeID uint32
 
 // maxArchetypeID is used as unassigned archetype ID.
 const maxArchetypeID = math.MaxUint32
 
+// archetype struct.
 type archetype struct {
 	components     []ID                     // components IDs of the archetype in arbitrary order
 	itemSizes      []uint32                 // item size per component index
@@ -21,15 +23,16 @@ type archetype struct {
 	tables         tableIDs                 // all active tables
 	freeTables     []tableID                // all inactive/free tables
 	zeroValue      []byte                   // zero value with the size of the largest item type, for fast zeroing
-	mask           bitMask
-	id             archetypeID
-	node           nodeID
-	numRelations   uint8 // number of relation components
+	mask           bitMask                  // Bit mask for the archetype's components
+	id             archetypeID              // ID of the archetype
+	node           nodeID                   // Node ID of the archetype
+	numRelations   uint8                    // number of relation components
 }
 
+// tableIDs helper for faster search and remove operations.
 type tableIDs struct {
-	indices map[tableID]uint32
-	tables  []tableID
+	tables  []tableID          // List of tables
+	indices map[tableID]uint32 // Mapping from table ID to the index in the list
 }
 
 // Creates a new tableIDs.
@@ -45,11 +48,13 @@ func newTableIDs(tables ...tableID) tableIDs {
 	}
 }
 
+// Append a table ID.
 func (t *tableIDs) Append(id tableID) {
 	t.tables = append(t.tables, id)
 	t.indices[id] = uint32(len(t.tables) - 1)
 }
 
+// Remove a table ID.
 func (t *tableIDs) Remove(id tableID) bool {
 	index, ok := t.indices[id]
 	if !ok {
@@ -67,11 +72,13 @@ func (t *tableIDs) Remove(id tableID) bool {
 	return true
 }
 
+// Clear the list and the mapping.
 func (t *tableIDs) Clear() {
 	t.tables = t.tables[:0]
 	t.indices = map[tableID]uint32{}
 }
 
+// newArchetype creates a new archetype.
 func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
 	componentsMap := make([]int16, maskTotalBits)
 	for i := range maskTotalBits {
@@ -121,10 +128,15 @@ func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, t
 	}
 }
 
+// HasRelations returns whether the archetype has any relation components.
 func (a *archetype) HasRelations() bool {
 	return a.numRelations > 0
 }
 
+// GetTable returns the table that matches the given relations exactly,
+// and whether there is a matching table.
+//
+// Relations must be fully specified.
 func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, bool) {
 	if len(a.tables.tables) == 0 {
 		return nil, false
@@ -135,6 +147,7 @@ func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, 
 	return a.getTableSlowPath(storage, relations)
 }
 
+// slow path for GetTable for archetypes with relations.
 func (a *archetype) getTableSlowPath(storage *storage, relations []relationID) (*table, bool) {
 	if uint8(len(relations)) < a.numRelations {
 		panic("relation targets must be fully specified")
@@ -153,6 +166,10 @@ func (a *archetype) getTableSlowPath(storage *storage, relations []relationID) (
 	return nil, false
 }
 
+// GetTables return all tables matching the first given relation, if any.
+// Otherwise, returns all tables of the archetype.
+//
+// Relations do not need to be fully specified.
 func (a *archetype) GetTables(relations []relationID) []tableID {
 	if !a.HasRelations() || len(relations) == 0 {
 		return a.tables.tables
@@ -164,6 +181,8 @@ func (a *archetype) GetTables(relations []relationID) []tableID {
 	return nil
 }
 
+// GetFreeTable returns a free/unused table ID of the archetype,
+// and whether there is any free table.
 func (a *archetype) GetFreeTable() (tableID, bool) {
 	if len(a.freeTables) == 0 {
 		return 0, false
@@ -176,6 +195,12 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 	return table, true
 }
 
+// FreeTable frees the given table.
+//
+// Removes the table from the archetype's list of tables
+// and from the archetype's relation tables.
+//
+// Does not clear the table's content.
 func (a *archetype) FreeTable(table *table) {
 	_ = a.tables.Remove(table.id)
 	a.freeTables = append(a.freeTables, table.id)
@@ -194,6 +219,9 @@ func (a *archetype) FreeTable(table *table) {
 	}
 }
 
+// FreeAllTables frees all tables of the archetype.
+//
+// Does not clear the tables' contents.
 func (a *archetype) FreeAllTables(storage *storage) {
 	for _, table := range a.tables.tables {
 		storage.tables[table].isFree = true
@@ -206,6 +234,8 @@ func (a *archetype) FreeAllTables(storage *storage) {
 	}
 }
 
+// AddTable adds the given table to the archetype's list of tables,
+// and to the relation tables of there are any relations.
 func (a *archetype) AddTable(table *table) {
 	a.tables.Append(table.id)
 	if !a.HasRelations() {
@@ -229,6 +259,7 @@ func (a *archetype) AddTable(table *table) {
 	}
 }
 
+// RemoveTarget removes a relation target entity from the archetype's relation tables.
 func (a *archetype) RemoveTarget(entity Entity) {
 	for i := range a.relationTables {
 		if !a.isRelation[i] {
@@ -238,6 +269,7 @@ func (a *archetype) RemoveTarget(entity Entity) {
 	}
 }
 
+// Reset the archetype. Clears and frees all tables.
 func (a *archetype) Reset(storage *storage) {
 	if !a.HasRelations() {
 		storage.tables[a.tables.tables[0]].Reset()
@@ -247,7 +279,6 @@ func (a *archetype) Reset(storage *storage) {
 	for i := len(a.tables.tables) - 1; i >= 0; i-- {
 		table := &storage.tables[a.tables.tables[i]]
 		table.Reset()
-		storage.cache.removeTable(table)
 	}
 
 	a.FreeAllTables(storage)

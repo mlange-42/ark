@@ -2,8 +2,10 @@ package ecs
 
 import "fmt"
 
+// nodeID is the ID type for graph nodes.
 type nodeID uint32
 
+// node in the archetype graph.
 type node struct {
 	neighbors idMap
 	mask      bitMask
@@ -11,6 +13,9 @@ type node struct {
 	archetype archetypeID
 }
 
+// newNode creates a new node for the given archetype ID.
+//
+// The mask gets copied.
 func newNode(id nodeID, archetype archetypeID, mask *bitMask) node {
 	return node{
 		id:        id,
@@ -20,6 +25,7 @@ func newNode(id nodeID, archetype archetypeID, mask *bitMask) node {
 	}
 }
 
+// GetArchetype returns the archetype of the node, and whether the node has an archetype.
 func (n *node) GetArchetype() (archetypeID, bool) {
 	return n.archetype, n.archetype != maxArchetypeID
 }
@@ -29,6 +35,7 @@ type graph struct {
 	nodes []node
 }
 
+// newGraph creates a new empty graph.
 func newGraph() graph {
 	nodes := make([]node, 0, 128)
 	nodes = append(nodes, newNode(0, 0, &bitMask{}))
@@ -38,6 +45,9 @@ func newGraph() graph {
 	}
 }
 
+// Find the node for a given start node and components to add and remove.
+//
+// The bitMask argument gets modified and reflects the mask of the resulting node.
 func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *node {
 	startNode := &g.nodes[start]
 	curr := startNode
@@ -80,6 +90,9 @@ func (g *graph) Find(start nodeID, add []ID, remove []ID, outMask *bitMask) *nod
 	return curr
 }
 
+// FindAdd finds the node for a given start node and components to add.
+//
+// The bitMask argument gets modified and reflects the mask of the resulting node.
 func (g *graph) FindAdd(start nodeID, add []ID, outMask *bitMask) *node {
 	startNode := &g.nodes[start]
 	curr := startNode
@@ -103,6 +116,9 @@ func (g *graph) FindAdd(start nodeID, add []ID, outMask *bitMask) *node {
 	return curr
 }
 
+// FindRemove finds the node for a given start node and components to remove.
+//
+// The bitMask argument gets modified and reflects the mask of the resulting node.
 func (g *graph) FindRemove(start nodeID, remove []ID, outMask *bitMask) *node {
 	startNode := &g.nodes[start]
 	curr := startNode
@@ -126,6 +142,7 @@ func (g *graph) FindRemove(start nodeID, remove []ID, outMask *bitMask) *node {
 	return curr
 }
 
+// finds or creates a node if not reachable in the current graph.
 func (g *graph) findOrCreate(mask *bitMask) *node {
 	len := len(g.nodes)
 	for i := range len {

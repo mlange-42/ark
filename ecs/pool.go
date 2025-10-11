@@ -107,6 +107,7 @@ type bitPool struct {
 	available uint8
 }
 
+// newBitPool creates a new empty bitPool.
 func newBitPool() bitPool {
 	return bitPool{
 		bits: make([]uint8, mask64TotalBits),
@@ -205,11 +206,16 @@ func (p *intPool[T]) Reset() {
 	p.available = 0
 }
 
+// slicePool is a pool for slice re-use, to avoid allocations.
+//
+// It is required for parallel queries.
 type slicePool[E any] struct {
 	free     [][]E
 	sliceCap int
 }
 
+// newSlicePool creates a new slicePool, with the given number of slices
+// and a given capacity per slice.
 func newSlicePool[E any](size, sliceCap int) slicePool[E] {
 	free := make([][]E, 0, size)
 	for range size {
@@ -221,6 +227,7 @@ func newSlicePool[E any](size, sliceCap int) slicePool[E] {
 	}
 }
 
+// Get returns a new or recycled slice.
 func (p *slicePool[E]) Get() []E {
 	if len(p.free) == 0 {
 		return make([]E, 0, p.sliceCap)
@@ -231,6 +238,7 @@ func (p *slicePool[E]) Get() []E {
 	return v
 }
 
+// Recycle a slice. Sets slice length to zero.
 func (p *slicePool[E]) Recycle(s []E) {
 	s = s[:0]
 	p.free = append(p.free, s)

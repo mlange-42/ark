@@ -45,7 +45,7 @@ func TestComponentRegistryOverflow(t *testing.T) {
 func TestAddArchetype(t *testing.T) {
 	reg := newComponentRegistry()
 
-	expectEqual(t, 1, reg.generation, "initial generation should be 1")
+	expectEqual(t, 1, reg.version, "initial generation should be 1")
 
 	id0 := reg.registerComponent(reflect.TypeOf((*Position)(nil)).Elem(), maskTotalBits)
 	reg.registerComponent(reflect.TypeOf((*Velocity)(nil)).Elem(), maskTotalBits)
@@ -54,9 +54,9 @@ func TestAddArchetype(t *testing.T) {
 	reg.registerComponent(reflect.TypeOf((*ChildOf2)(nil)).Elem(), maskTotalBits)
 
 	reg.addArchetype(id0)
-	expectEqual(t, 2, reg.generation, "generation should be 2")
+	expectEqual(t, 2, reg.version, "generation should be 2")
 	reg.addArchetype(id2)
-	expectEqual(t, 3, reg.generation, "generation should be 3")
+	expectEqual(t, 3, reg.version, "generation should be 3")
 
 	expectEqual(t, maskTotalBits, len(reg.Archetypes))
 	expectSlicesEqual(t, []int{1, 0, 1, 0}, reg.Archetypes[:4])
