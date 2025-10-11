@@ -55,7 +55,11 @@ func (q *UnsafeQuery) Close() {
 	q.cursor.table = -2
 	q.tables = nil
 	q.table = nil
-	q.world.unlockSafe(q.lock)
+
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *UnsafeQuery) nextTableOrArchetype() bool {

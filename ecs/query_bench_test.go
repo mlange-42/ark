@@ -214,3 +214,17 @@ func BenchmarkCreateQuery2Cached(b *testing.B) {
 		query.Close()
 	}
 }
+
+func BenchmarkCreateQuery2Rel(b *testing.B) {
+	w := NewWorld()
+	parent := w.NewEntity()
+
+	builder := NewMap2[CompA, ChildOf](&w)
+	builder.NewBatchFn(100, nil, RelIdx(1, parent))
+	filter := NewFilter2[CompA, ChildOf](&w)
+
+	for b.Loop() {
+		query := filter.Query(RelIdx(1, parent))
+		query.Close()
+	}
+}

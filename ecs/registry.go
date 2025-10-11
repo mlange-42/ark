@@ -117,10 +117,6 @@ func (r *componentRegistry) addArchetype(id uint8) {
 	r.generation++
 }
 
-func (r *componentRegistry) getGeneration() uint32 {
-	return r.generation
-}
-
 // Returns the ID of the component present in the smallest number of archetypes.
 func (r *componentRegistry) rareComponent(ids []ID) ID {
 	minCount := math.MaxInt

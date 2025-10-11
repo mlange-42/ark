@@ -178,6 +178,8 @@ func queryCreate(b *testing.B) {
 	builder := ecs.NewMap1[comp1](&w)
 	builder.NewBatchFn(100, nil)
 	filter := ecs.NewFilter1[comp1](&w)
+	query := filter.Query()
+	query.Close()
 
 	for b.Loop() {
 		query := filter.Query()
@@ -191,6 +193,8 @@ func queryCreateCached(b *testing.B) {
 	builder := ecs.NewMap1[comp1](&w)
 	builder.NewBatchFn(100, nil)
 	filter := ecs.NewFilter1[comp1](&w).Register()
+	query := filter.Query()
+	query.Close()
 
 	for b.Loop() {
 		query := filter.Query()

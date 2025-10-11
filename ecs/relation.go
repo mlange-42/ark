@@ -106,18 +106,17 @@ func RelIdx(index int, target Entity) Relation {
 // Helper for converting relationSlice
 type relationSlice []Relation
 
-func (r relationSlice) ToRelations(world *World, mask *bitMask, ids []ID, out []relationID, copy bool) []relationID {
+func (r relationSlice) ToRelations(world *World, mask *bitMask, ids []ID, out []relationID, copyTo []relationID) []relationID {
 	if len(r) == 0 {
 		return out
 	}
-	return r.toRelationsSlowPath(world, mask, ids, out, copy)
+	return r.toRelationsSlowPath(world, mask, ids, out, copyTo)
 }
 
-func (r relationSlice) toRelationsSlowPath(world *World, mask *bitMask, ids []ID, out []relationID, copy bool) []relationID {
-	if copy {
-		temp := make([]relationID, 0, len(r)+len(out))
-		temp = append(temp, out...)
-		out = temp
+func (r relationSlice) toRelationsSlowPath(world *World, mask *bitMask, ids []ID, out []relationID, copyTo []relationID) []relationID {
+	if copyTo != nil {
+		copyTo = append(copyTo, out...)
+		out = copyTo
 	}
 	// Fast special case for a single relation (20% speedup)
 	if len(r) == 1 {
