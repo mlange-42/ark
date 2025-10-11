@@ -239,7 +239,7 @@ func (t *table) AddAll(from *table, count uint32) {
 	}
 }
 
-// AddAll adds all entities (without components) from another table to this table.
+// AddAllEntities adds all entities (without components) from another table to this table.
 func (t *table) AddAllEntities(from *table, count uint32) {
 	t.Alloc(count)
 	t.entities.CopyToEnd(&from.entities, t.len, count)
