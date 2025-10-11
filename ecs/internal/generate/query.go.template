@@ -122,7 +122,11 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	{{- range $i, $v := $upper}}
 	q.column{{$v}} = nil
 	{{- end}}
-	q.world.unlockSafe(q.lock)
+	
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {

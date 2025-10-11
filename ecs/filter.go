@@ -38,12 +38,17 @@ func (f UnsafeFilter) Exclusive() UnsafeFilter {
 
 // Query returns a new query matching this filter and the given entity relation targets.
 func (f UnsafeFilter) Query(relations ...Relation) UnsafeQuery {
-	rel := relationSlice(relations).ToRelationIDsForUnsafe(f.world, nil)
+	f.world.storage.mu.Lock()
+	lock := f.world.lock()
+	rel := f.world.storage.slices.relationsPool.Get()
+	f.world.storage.mu.Unlock()
+
+	rel = relationSlice(relations).ToRelationIDsForUnsafe(f.world, rel)
 	return UnsafeQuery{
 		world:     f.world,
 		filter:    f.filter,
 		relations: rel,
-		lock:      f.world.lockSafe(),
+		lock:      lock,
 		cursor: cursor{
 			archetype: -1,
 			table:     -1,

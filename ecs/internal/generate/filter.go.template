@@ -115,7 +115,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Exclusive() *Filter{{.}}{{$genericsShort
 // Can be called multiple times in chains, or once with multiple arguments.
 func (f *Filter{{.}}{{$genericsShort}}) Relations(rel ...Relation) *Filter{{.}}{{$genericsShort}} {
 	f.checkModify()
-	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
+	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], nil)
 	f.numRelations = uint8(len(f.relations))
 	return f
 }
@@ -146,8 +146,12 @@ func (f *Filter{{.}}{{$genericsShort}}) Unregister() {
 // Relation targets provided here are added to those specified with [Filter{{.}}.Relations].
 // Relation components must be in the filter's parameters or added via [Filter{{.}}.With] beforehand.
 func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$genericsShort}} {
-	relations := relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], true)
-
+	f.world.storage.mu.Lock()
+	lock := f.world.lock()
+	relations := f.world.storage.slices.relationsPool.Get()
+	f.world.storage.mu.Unlock()
+	relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], relations)
+	
 	var start uint8
 	var cache *cacheEntry
 	if f.filter.cache != maxCacheID {
@@ -169,7 +173,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 		filter:     &f.filter,
 		relations:  relations[start:],
 		cache:      cache,
-		lock:       f.world.lockSafe(),
+		lock:       lock,
 		components: f.components,
 		cursor: cursor{
 			archetype: -1,
@@ -194,7 +198,7 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 // Otherwise, changes to the origin filter or calls to [Filter{{.}}.Batch] or [Filter{{.}}.Query]
 // with different relationship targets may modify stored instances.
 func (f *Filter{{.}}{{$genericsShort}}) Batch(rel ...Relation) Batch {
-	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], false)
+	f.relations = relationSlice(rel).ToRelations(f.world, &f.filter.mask, f.ids, f.relations[:f.numRelations], nil)
 	var start uint8
 	if f.filter.cache != maxCacheID {
 		start = f.numRelations

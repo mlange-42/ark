@@ -154,15 +154,6 @@ func BenchmarkWorldLockUnlock(b *testing.B) {
 	}
 }
 
-func BenchmarkWorldLockUnlockSafe(b *testing.B) {
-	w := NewWorld()
-
-	for b.Loop() {
-		l := w.lockSafe()
-		w.unlockSafe(l)
-	}
-}
-
 func BenchmarkWorldStats4Arch(b *testing.B) {
 	w := NewWorld()
 

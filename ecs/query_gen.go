@@ -78,7 +78,11 @@ func (q *Query0) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.world.unlockSafe(q.lock)
+
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *Query0) nextTableOrArchetype() bool {
@@ -220,7 +224,11 @@ func (q *Query1[A]) Close() {
 	q.table = nil
 	q.cache = nil
 	q.columnA = nil
-	q.world.unlockSafe(q.lock)
+
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *Query1[A]) nextTableOrArchetype() bool {
@@ -354,7 +362,11 @@ func (q *Query2[A, B]) Close() {
 	q.cache = nil
 	q.columnA = nil
 	q.columnB = nil
-	q.world.unlockSafe(q.lock)
+
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *Query2[A, B]) nextTableOrArchetype() bool {
@@ -497,7 +509,11 @@ func (q *Query3[A, B, C]) Close() {
 	q.columnA = nil
 	q.columnB = nil
 	q.columnC = nil
-	q.world.unlockSafe(q.lock)
+
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *Query3[A, B, C]) nextTableOrArchetype() bool {
@@ -643,7 +659,11 @@ func (q *Query4[A, B, C, D]) Close() {
 	q.columnB = nil
 	q.columnC = nil
 	q.columnD = nil
-	q.world.unlockSafe(q.lock)
+
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *Query4[A, B, C, D]) nextTableOrArchetype() bool {
@@ -792,7 +812,11 @@ func (q *Query5[A, B, C, D, E]) Close() {
 	q.columnC = nil
 	q.columnD = nil
 	q.columnE = nil
-	q.world.unlockSafe(q.lock)
+
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *Query5[A, B, C, D, E]) nextTableOrArchetype() bool {
@@ -944,7 +968,11 @@ func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.columnD = nil
 	q.columnE = nil
 	q.columnF = nil
-	q.world.unlockSafe(q.lock)
+
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *Query6[A, B, C, D, E, F]) nextTableOrArchetype() bool {
@@ -1099,7 +1127,11 @@ func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.columnE = nil
 	q.columnF = nil
 	q.columnG = nil
-	q.world.unlockSafe(q.lock)
+
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *Query7[A, B, C, D, E, F, G]) nextTableOrArchetype() bool {
@@ -1257,7 +1289,11 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.columnF = nil
 	q.columnG = nil
 	q.columnH = nil
-	q.world.unlockSafe(q.lock)
+
+	q.world.storage.mu.Lock()
+	q.world.storage.slices.relationsPool.Recycle(q.relations)
+	q.world.unlock(q.lock)
+	q.world.storage.mu.Unlock()
 }
 
 func (q *Query8[A, B, C, D, E, F, G, H]) nextTableOrArchetype() bool {

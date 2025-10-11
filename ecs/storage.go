@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"fmt"
+	"sync"
 	"time"
 	"unsafe"
 )
@@ -23,6 +24,7 @@ type storage struct {
 	locks              lock               // World locks
 	observers          observerManager    // Observer/event manager
 	config             config             // Storage configuration (initial capacities)
+	mu                 sync.Mutex         // Mutex for parallel query startup/close
 }
 
 type componentStorage struct {
@@ -39,6 +41,8 @@ type slices struct {
 
 	entities        []Entity
 	entitiesCleanup []Entity
+
+	relationsPool slicePool[relationID]
 }
 
 func newSlices() slices {
@@ -52,6 +56,8 @@ func newSlices() slices {
 
 		entities:        make([]Entity, 0, 16),
 		entitiesCleanup: make([]Entity, 0, 256),
+
+		relationsPool: newSlicePool[relationID](8, 8),
 	}
 }
 
