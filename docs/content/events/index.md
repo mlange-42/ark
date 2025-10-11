@@ -4,10 +4,6 @@ type = "docs"
 weight = 80
 description = "Ark's event system and observers."
 +++
-> [!NOTE]
-> This feature is not yet released and is planned for Ark v0.6.0.
-> You can try it out on the `main` branch.
-
 Ark provides an event system with observers that allow an application to react on events,
 such as adding and removing components and entities.
 
