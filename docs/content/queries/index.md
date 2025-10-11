@@ -108,10 +108,6 @@ However, this is rarely required as (registered) filters are usually used over a
 
 ## Parallel queries
 
-> [!NOTE]
-> This feature is not yet released and is planned for Ark v0.6.0.
-> You can try it out on the `main` branch.
-
 Ark in general is not thread-safe (see chapter [Design](../design/), section [Limitations](../design#limitations)).
 However, it is possible to execute queries in parallel.
 This is especially useful for two scenarios:
