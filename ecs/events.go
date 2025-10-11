@@ -5,8 +5,10 @@ import (
 	"math"
 )
 
+// observerID is the observer ID type.
 type observerID uint32
 
+// maxObserverID is used as ID for unregistered observers.
 const maxObserverID = math.MaxUint32
 
 // EventType is the type for event identifiers.
@@ -20,6 +22,7 @@ type EventType uint8
 
 // Predefined event types.
 const (
+	// customEvent is the highest possible EventType for custom events.
 	customEvent EventType = iota + 248
 
 	// OnCreateEntity event.
@@ -59,7 +62,7 @@ const (
 // Using event types from multiple registries in the same [World]
 // leads to conflicts.
 type EventRegistry struct {
-	nextID EventType
+	nextID EventType // next EventType ID
 }
 
 // NewEventType creates a new EventType for custom events.
@@ -82,9 +85,9 @@ func (r *EventRegistry) NewEventType() EventType {
 // Create events using [World.Event].
 // Create custom event types using an [EventRegistry].
 type Event struct {
-	world     *World
-	eventType EventType
-	mask      bitMask
+	world     *World    // The associated world
+	eventType EventType // The event's type
+	mask      bitMask   // The event's component mask
 }
 
 // For sets the event's component types. Optional.
@@ -104,8 +107,9 @@ func (e Event) Emit(entity Entity) {
 	e.world.emitEvent(&e, entity)
 }
 
+// observerManager manages observers and distributes events.
 type observerManager struct {
-	observers    [][]*observerData
+	observers    [][]*observerData // Observers per event type
 	hasObservers []bool
 	allComps     []bitMask
 	allWith      []bitMask

@@ -40,11 +40,12 @@ func newCache() cache {
 	}
 }
 
+// getEntry returns the cache entry for the given ID.
 func (c *cache) getEntry(id cacheID) *cacheEntry {
 	return &c.filters[c.indices[id]]
 }
 
-// Register a filter.
+// register a filter.
 func (c *cache) register(storage *storage, filter *filter, relations []relationID) {
 	// TODO: prevent duplicate registration
 	id := c.intPool.Get()
@@ -61,6 +62,7 @@ func (c *cache) register(storage *storage, filter *filter, relations []relationI
 	c.indices[id] = index
 }
 
+// unregister a filter.
 func (c *cache) unregister(filter *filter) {
 	idx, ok := c.indices[filter.cache]
 	if !ok {
@@ -79,7 +81,7 @@ func (c *cache) unregister(filter *filter) {
 	c.filters = c.filters[:last]
 }
 
-// Adds a table.
+// addTable adds a table.
 //
 // Iterates over all filters and adds the node to the resp. entry where the filter matches.
 func (c *cache) addTable(storage *storage, table *table) {
@@ -107,7 +109,7 @@ func (c *cache) addTable(storage *storage, table *table) {
 	}
 }
 
-// Removes a table.
+// removeTable removes a table.
 //
 // Can only be used for tables that have a relation target.
 // Tables without a relation are never removed.
@@ -122,6 +124,8 @@ func (c *cache) removeTable(table *table) {
 	}
 }
 
+// Reset the cache.
+// Un-registers all filters.
 func (c *cache) Reset() {
 	if len(c.indices) == 0 {
 		return

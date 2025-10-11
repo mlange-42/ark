@@ -5,10 +5,16 @@ import (
 	"reflect"
 )
 
+// entityID is the type for entity IDs.
 type entityID uint32
 
+// runtime type of entities
 var entityType = reflect.TypeFor[Entity]()
+
+// memory size of an Entity
 var entitySize = entityType.Size()
+
+// memory size of an entityIndex
 var entityIndexSize = reflect.TypeFor[entityIndex]().Size()
 
 //var wildcard = Entity{1, 0}
@@ -28,6 +34,7 @@ type Entity struct {
 	gen uint32   // Entity generation
 }
 
+// newEntity creates a new entity with the given ID.
 func newEntity(id entityID) Entity {
 	return Entity{id, 0}
 }
