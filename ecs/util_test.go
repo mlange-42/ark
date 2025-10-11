@@ -82,6 +82,21 @@ func TestIsTrivial(t *testing.T) {
 	}]()))
 }
 
+func TestPagedSlice(t *testing.T) {
+	a := newPagesSlice[uint32](32)
+	expectEqual(t, 32, a.pageSize)
+
+	var i uint32
+	for i = 0; i < 66; i++ {
+		a.Add(i)
+		expectEqual(t, i, *a.Get(i))
+		expectEqual(t, i+1, a.Len())
+	}
+
+	a.Set(3, 100)
+	expectEqual(t, uint32(100), *a.Get(3))
+}
+
 func BenchmarkSizeOf(b *testing.B) {
 	tp := reflect.TypeFor[Position]()
 	for b.Loop() {
