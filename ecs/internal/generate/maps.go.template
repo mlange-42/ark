@@ -89,7 +89,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$fn_args}}), rel ...R
 		row := uintptr(index.row)
 		fn(
 			{{- range $upper}}
-			(*{{.}})(m.storage{{.}}.columns[index.table].Get(row)),
+			(*{{.}})(m.storage{{.}}.columns[index.table.id].Get(row)),
 			{{- end}}
 		)
 	}
@@ -122,7 +122,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...Relat
 func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn_args}}), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -133,9 +133,8 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
 		{{- range $upper}}
-		column{{.}} := m.storage{{.}}.columns[tableID]
+		column{{.}} := m.storage{{.}}.columns[table.id]
 		{{- end}}
 		for i := range count {
 			index := uintptr(start + i)
@@ -149,7 +148,6 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 	}
 	
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -160,7 +158,6 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -213,7 +210,7 @@ func (m *Map{{.}}{{$genericsShort}}) HasAll(entity Entity) bool {
 	}
 	index := m.world.storage.entities[entity.id]
 	return {{range $i, $v := $upper}}{{if $i}} &&
-		{{end}}m.storage{{$v}}.columns[index.table] != nil{{end}}
+		{{end}}m.storage{{$v}}.columns[index.table.id] != nil{{end}}
 }
 
 // Add the mapped components to the given entity.
@@ -243,7 +240,7 @@ func (m *Map{{.}}{{$genericsShort}}) AddFn(entity Entity, fn func({{$fn_args}}),
 		row := uintptr(index.row)
 		fn(
 			{{- range $upper}}
-			(*{{.}})(m.storage{{.}}.columns[index.table].Get(row)),
+			(*{{.}})(m.storage{{.}}.columns[index.table.id].Get(row)),
 			{{- end}}
 		)
 	}
@@ -273,11 +270,11 @@ func (m *Map{{.}}{{$genericsShort}}) Set(entity Entity, {{$args}}) {
 	row := uintptr(index.row)
 
 	{{- range $i, $v := $upper}}
-	*(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row)) = *{{index $lower $i}}
+	*(*{{$v}})(m.storage{{$v}}.columns[index.table.id].Get(row)) = *{{index $lower $i}}
 	{{- end}}
 	
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -304,12 +301,11 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatch(batch Batch, {{$args}}, rel ...Rel
 func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch Batch, fn func(Entity, {{$fn_args}}), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
+		process = func(table *table, start, len uint32) {
 			{{- range $upper}}
-			column{{.}} := m.storage{{.}}.columns[tableID]
+			column{{.}} := m.storage{{.}}.columns[table.id]
 			{{- end}}
 
 			for i := range len {

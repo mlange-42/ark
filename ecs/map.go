@@ -83,7 +83,7 @@ func (m *Map[T]) NewBatch(count int, comp *T, target ...Entity) {
 func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 	m.world.checkLocked()
 	m.relations = relationEntities(target).ToRelation(m.world, m.id, m.relations)
-	tableID, start := m.world.newEntities(count, m.ids[:], m.relations)
+	table, start := m.world.newEntities(count, m.ids[:], m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(target) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -94,8 +94,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		column := m.storage.columns[tableID]
+		column := m.storage.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -106,7 +105,6 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -118,7 +116,6 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 	}
 
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -175,7 +172,7 @@ func (m *Map[T]) Has(entity Entity) bool {
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) HasUnchecked(entity Entity) bool {
 	index := m.world.storage.entities[entity.id]
-	return m.storage.columns[index.table] != nil
+	return m.storage.columns[index.table.id] != nil
 }
 
 // Add the mapped component to the given entity.
@@ -226,10 +223,10 @@ func (m *Map[T]) Set(entity Entity, comp *T) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 
 	index := &m.world.storage.entities[entity.id]
-	*(*T)(m.storage.columns[index.table].Get(uintptr(index.row))) = *comp
+	*(*T)(m.storage.columns[index.table.id].Get(uintptr(index.row))) = *comp
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -254,11 +251,10 @@ func (m *Map[T]) AddBatch(batch Batch, comp *T, target ...Entity) {
 func (m *Map[T]) AddBatchFn(batch Batch, fn func(Entity, *T), target ...Entity) {
 	m.relations = relationEntities(target).ToRelation(m.world, m.id, m.relations)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			column := m.storage.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			column := m.storage.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)

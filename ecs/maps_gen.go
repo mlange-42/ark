@@ -62,7 +62,7 @@ func (m *Map1[A]) NewEntityFn(fn func(*A), rel ...Relation) Entity {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -92,7 +92,7 @@ func (m *Map1[A]) NewBatch(count int, a *A, rel ...Relation) {
 func (m *Map1[A]) NewBatchFn(count int, fn func(Entity, *A), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -103,8 +103,7 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(Entity, *A), rel ...Relation) {
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
+		columnA := m.storageA.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -115,7 +114,6 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(Entity, *A), rel ...Relation) {
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -126,7 +124,6 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(Entity, *A), rel ...Relation) {
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -176,7 +173,7 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -203,7 +200,7 @@ func (m *Map1[A]) AddFn(entity Entity, fn func(*A), rel ...Relation) {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -228,10 +225,10 @@ func (m *Map1[A]) Set(entity Entity, a *A) {
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -256,11 +253,10 @@ func (m *Map1[A]) AddBatch(batch Batch, a *A, rel ...Relation) {
 func (m *Map1[A]) AddBatchFn(batch Batch, fn func(Entity, *A), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -373,8 +369,8 @@ func (m *Map2[A, B]) NewEntityFn(fn func(*A, *B), rel ...Relation) Entity {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -405,7 +401,7 @@ func (m *Map2[A, B]) NewBatch(count int, a *A, b *B, rel ...Relation) {
 func (m *Map2[A, B]) NewBatchFn(count int, fn func(Entity, *A, *B), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -416,9 +412,8 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(Entity, *A, *B), rel ...Relat
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -430,7 +425,6 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(Entity, *A, *B), rel ...Relat
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -441,7 +435,6 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(Entity, *A, *B), rel ...Relat
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -491,8 +484,8 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -520,8 +513,8 @@ func (m *Map2[A, B]) AddFn(entity Entity, fn func(*A, *B), rel ...Relation) {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -547,11 +540,11 @@ func (m *Map2[A, B]) Set(entity Entity, a *A, b *B) {
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -577,12 +570,11 @@ func (m *Map2[A, B]) AddBatch(batch Batch, a *A, b *B, rel ...Relation) {
 func (m *Map2[A, B]) AddBatchFn(batch Batch, fn func(Entity, *A, *B), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -704,9 +696,9 @@ func (m *Map3[A, B, C]) NewEntityFn(fn func(*A, *B, *C), rel ...Relation) Entity
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -738,7 +730,7 @@ func (m *Map3[A, B, C]) NewBatch(count int, a *A, b *B, c *C, rel ...Relation) {
 func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(Entity, *A, *B, *C), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -749,10 +741,9 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(Entity, *A, *B, *C), rel .
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
+		columnC := m.storageC.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -765,7 +756,6 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(Entity, *A, *B, *C), rel .
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -776,7 +766,6 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(Entity, *A, *B, *C), rel .
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -826,9 +815,9 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil &&
+		m.storageC.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -857,9 +846,9 @@ func (m *Map3[A, B, C]) AddFn(entity Entity, fn func(*A, *B, *C), rel ...Relatio
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -886,12 +875,12 @@ func (m *Map3[A, B, C]) Set(entity Entity, a *A, b *B, c *C) {
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
+	*(*C)(m.storageC.columns[index.table.id].Get(row)) = *c
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -918,13 +907,12 @@ func (m *Map3[A, B, C]) AddBatch(batch Batch, a *A, b *B, c *C, rel ...Relation)
 func (m *Map3[A, B, C]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
+			columnC := m.storageC.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -1051,10 +1039,10 @@ func (m *Map4[A, B, C, D]) NewEntityFn(fn func(*A, *B, *C, *D), rel ...Relation)
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -1087,7 +1075,7 @@ func (m *Map4[A, B, C, D]) NewBatch(count int, a *A, b *B, c *C, d *D, rel ...Re
 func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -1098,11 +1086,10 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D)
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
+		columnC := m.storageC.columns[table.id]
+		columnD := m.storageD.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -1116,7 +1103,6 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D)
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -1127,7 +1113,6 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D)
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -1177,10 +1162,10 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil &&
+		m.storageC.columns[index.table.id] != nil &&
+		m.storageD.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1210,10 +1195,10 @@ func (m *Map4[A, B, C, D]) AddFn(entity Entity, fn func(*A, *B, *C, *D), rel ...
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -1241,13 +1226,13 @@ func (m *Map4[A, B, C, D]) Set(entity Entity, a *A, b *B, c *C, d *D) {
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
+	*(*C)(m.storageC.columns[index.table.id].Get(row)) = *c
+	*(*D)(m.storageD.columns[index.table.id].Get(row)) = *d
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -1275,14 +1260,13 @@ func (m *Map4[A, B, C, D]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, rel ...
 func (m *Map4[A, B, C, D]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
+			columnC := m.storageC.columns[table.id]
+			columnD := m.storageD.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -1414,11 +1398,11 @@ func (m *Map5[A, B, C, D, E]) NewEntityFn(fn func(*A, *B, *C, *D, *E), rel ...Re
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -1452,7 +1436,7 @@ func (m *Map5[A, B, C, D, E]) NewBatch(count int, a *A, b *B, c *C, d *D, e *E, 
 func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -1463,12 +1447,11 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, 
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
+		columnC := m.storageC.columns[table.id]
+		columnD := m.storageD.columns[table.id]
+		columnE := m.storageE.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -1483,7 +1466,6 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, 
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -1494,7 +1476,6 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, 
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -1544,11 +1525,11 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil &&
+		m.storageC.columns[index.table.id] != nil &&
+		m.storageD.columns[index.table.id] != nil &&
+		m.storageE.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1579,11 +1560,11 @@ func (m *Map5[A, B, C, D, E]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E), 
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -1612,14 +1593,14 @@ func (m *Map5[A, B, C, D, E]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E) {
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
+	*(*C)(m.storageC.columns[index.table.id].Get(row)) = *c
+	*(*D)(m.storageD.columns[index.table.id].Get(row)) = *d
+	*(*E)(m.storageE.columns[index.table.id].Get(row)) = *e
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -1648,15 +1629,14 @@ func (m *Map5[A, B, C, D, E]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e *E
 func (m *Map5[A, B, C, D, E]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
+			columnC := m.storageC.columns[table.id]
+			columnD := m.storageD.columns[table.id]
+			columnE := m.storageE.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -1793,12 +1773,12 @@ func (m *Map6[A, B, C, D, E, F]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F), re
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -1833,7 +1813,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatch(count int, a *A, b *B, c *C, d *D, e *
 func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -1844,13 +1824,12 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(Entity, *A, *B, *
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
+		columnC := m.storageC.columns[table.id]
+		columnD := m.storageD.columns[table.id]
+		columnE := m.storageE.columns[table.id]
+		columnF := m.storageF.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -1866,7 +1845,6 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(Entity, *A, *B, *
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -1877,7 +1855,6 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(Entity, *A, *B, *
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -1927,12 +1904,12 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil &&
+		m.storageC.columns[index.table.id] != nil &&
+		m.storageD.columns[index.table.id] != nil &&
+		m.storageE.columns[index.table.id] != nil &&
+		m.storageF.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1964,12 +1941,12 @@ func (m *Map6[A, B, C, D, E, F]) AddFn(entity Entity, fn func(*A, *B, *C, *D, *E
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -1999,15 +1976,15 @@ func (m *Map6[A, B, C, D, E, F]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
+	*(*C)(m.storageC.columns[index.table.id].Get(row)) = *c
+	*(*D)(m.storageD.columns[index.table.id].Get(row)) = *d
+	*(*E)(m.storageE.columns[index.table.id].Get(row)) = *e
+	*(*F)(m.storageF.columns[index.table.id].Get(row)) = *f
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -2037,16 +2014,15 @@ func (m *Map6[A, B, C, D, E, F]) AddBatch(batch Batch, a *A, b *B, c *C, d *D, e
 func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
+			columnC := m.storageC.columns[table.id]
+			columnD := m.storageD.columns[table.id]
+			columnE := m.storageE.columns[table.id]
+			columnF := m.storageF.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -2188,13 +2164,13 @@ func (m *Map7[A, B, C, D, E, F, G]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *F, 
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -2230,7 +2206,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatch(count int, a *A, b *B, c *C, d *D, 
 func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -2241,14 +2217,13 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(Entity, *A, *B
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
+		columnC := m.storageC.columns[table.id]
+		columnD := m.storageD.columns[table.id]
+		columnE := m.storageE.columns[table.id]
+		columnF := m.storageF.columns[table.id]
+		columnG := m.storageG.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -2265,7 +2240,6 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(Entity, *A, *B
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -2276,7 +2250,6 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(Entity, *A, *B
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -2326,13 +2299,13 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil &&
+		m.storageC.columns[index.table.id] != nil &&
+		m.storageD.columns[index.table.id] != nil &&
+		m.storageE.columns[index.table.id] != nil &&
+		m.storageF.columns[index.table.id] != nil &&
+		m.storageG.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -2365,13 +2338,13 @@ func (m *Map7[A, B, C, D, E, F, G]) AddFn(entity Entity, fn func(*A, *B, *C, *D,
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -2402,16 +2375,16 @@ func (m *Map7[A, B, C, D, E, F, G]) Set(entity Entity, a *A, b *B, c *C, d *D, e
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
+	*(*C)(m.storageC.columns[index.table.id].Get(row)) = *c
+	*(*D)(m.storageD.columns[index.table.id].Get(row)) = *d
+	*(*E)(m.storageE.columns[index.table.id].Get(row)) = *e
+	*(*F)(m.storageF.columns[index.table.id].Get(row)) = *f
+	*(*G)(m.storageG.columns[index.table.id].Get(row)) = *g
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -2442,17 +2415,16 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatch(batch Batch, a *A, b *B, c *C, d *D
 func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
+			columnC := m.storageC.columns[table.id]
+			columnD := m.storageD.columns[table.id]
+			columnE := m.storageE.columns[table.id]
+			columnF := m.storageF.columns[table.id]
+			columnG := m.storageG.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -2599,14 +2571,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewEntityFn(fn func(*A, *B, *C, *D, *E, *
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
-			(*H)(m.storageH.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
+			(*H)(m.storageH.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -2643,7 +2615,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatch(count int, a *A, b *B, c *C, d *
 func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -2654,15 +2626,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(Entity, *A,
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
-		columnH := m.storageH.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
+		columnC := m.storageC.columns[table.id]
+		columnD := m.storageD.columns[table.id]
+		columnE := m.storageE.columns[table.id]
+		columnF := m.storageF.columns[table.id]
+		columnG := m.storageG.columns[table.id]
+		columnH := m.storageH.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -2680,7 +2651,6 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(Entity, *A,
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -2691,7 +2661,6 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(Entity, *A,
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -2741,14 +2710,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil &&
+		m.storageC.columns[index.table.id] != nil &&
+		m.storageD.columns[index.table.id] != nil &&
+		m.storageE.columns[index.table.id] != nil &&
+		m.storageF.columns[index.table.id] != nil &&
+		m.storageG.columns[index.table.id] != nil &&
+		m.storageH.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -2782,14 +2751,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddFn(entity Entity, fn func(*A, *B, *C, 
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
-			(*H)(m.storageH.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
+			(*H)(m.storageH.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -2821,17 +2790,17 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Set(entity Entity, a *A, b *B, c *C, d *D
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
-	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
+	*(*C)(m.storageC.columns[index.table.id].Get(row)) = *c
+	*(*D)(m.storageD.columns[index.table.id].Get(row)) = *d
+	*(*E)(m.storageE.columns[index.table.id].Get(row)) = *e
+	*(*F)(m.storageF.columns[index.table.id].Get(row)) = *f
+	*(*G)(m.storageG.columns[index.table.id].Get(row)) = *g
+	*(*H)(m.storageH.columns[index.table.id].Get(row)) = *h
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -2863,18 +2832,17 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatch(batch Batch, a *A, b *B, c *C, d
 func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
-			columnH := m.storageH.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
+			columnC := m.storageC.columns[table.id]
+			columnD := m.storageD.columns[table.id]
+			columnE := m.storageE.columns[table.id]
+			columnF := m.storageF.columns[table.id]
+			columnG := m.storageG.columns[table.id]
+			columnH := m.storageH.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -3026,15 +2994,15 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewEntityFn(fn func(*A, *B, *C, *D, *E
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
-			(*H)(m.storageH.columns[index.table].Get(row)),
-			(*I)(m.storageI.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
+			(*H)(m.storageH.columns[index.table.id].Get(row)),
+			(*I)(m.storageI.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -3072,7 +3040,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatch(count int, a *A, b *B, c *C, 
 func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -3083,16 +3051,15 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(Entity, 
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
-		columnH := m.storageH.columns[tableID]
-		columnI := m.storageI.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
+		columnC := m.storageC.columns[table.id]
+		columnD := m.storageD.columns[table.id]
+		columnE := m.storageE.columns[table.id]
+		columnF := m.storageF.columns[table.id]
+		columnG := m.storageG.columns[table.id]
+		columnH := m.storageH.columns[table.id]
+		columnI := m.storageI.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -3111,7 +3078,6 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(Entity, 
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -3122,7 +3088,6 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(Entity, 
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -3172,15 +3137,15 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil &&
+		m.storageC.columns[index.table.id] != nil &&
+		m.storageD.columns[index.table.id] != nil &&
+		m.storageE.columns[index.table.id] != nil &&
+		m.storageF.columns[index.table.id] != nil &&
+		m.storageG.columns[index.table.id] != nil &&
+		m.storageH.columns[index.table.id] != nil &&
+		m.storageI.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -3215,15 +3180,15 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddFn(entity Entity, fn func(*A, *B, *
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
-			(*H)(m.storageH.columns[index.table].Get(row)),
-			(*I)(m.storageI.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
+			(*H)(m.storageH.columns[index.table.id].Get(row)),
+			(*I)(m.storageI.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -3256,18 +3221,18 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Set(entity Entity, a *A, b *B, c *C, d
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
-	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
-	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
+	*(*C)(m.storageC.columns[index.table.id].Get(row)) = *c
+	*(*D)(m.storageD.columns[index.table.id].Get(row)) = *d
+	*(*E)(m.storageE.columns[index.table.id].Get(row)) = *e
+	*(*F)(m.storageF.columns[index.table.id].Get(row)) = *f
+	*(*G)(m.storageG.columns[index.table.id].Get(row)) = *g
+	*(*H)(m.storageH.columns[index.table.id].Get(row)) = *h
+	*(*I)(m.storageI.columns[index.table.id].Get(row)) = *i
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -3300,19 +3265,18 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatch(batch Batch, a *A, b *B, c *C
 func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
-			columnH := m.storageH.columns[tableID]
-			columnI := m.storageI.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
+			columnC := m.storageC.columns[table.id]
+			columnD := m.storageD.columns[table.id]
+			columnE := m.storageE.columns[table.id]
+			columnF := m.storageF.columns[table.id]
+			columnG := m.storageG.columns[table.id]
+			columnH := m.storageH.columns[table.id]
+			columnI := m.storageI.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -3469,16 +3433,16 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewEntityFn(fn func(*A, *B, *C, *D
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
-			(*H)(m.storageH.columns[index.table].Get(row)),
-			(*I)(m.storageI.columns[index.table].Get(row)),
-			(*J)(m.storageJ.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
+			(*H)(m.storageH.columns[index.table.id].Get(row)),
+			(*I)(m.storageI.columns[index.table.id].Get(row)),
+			(*J)(m.storageJ.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -3517,7 +3481,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatch(count int, a *A, b *B, c 
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -3528,17 +3492,16 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(Enti
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
-		columnH := m.storageH.columns[tableID]
-		columnI := m.storageI.columns[tableID]
-		columnJ := m.storageJ.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
+		columnC := m.storageC.columns[table.id]
+		columnD := m.storageD.columns[table.id]
+		columnE := m.storageE.columns[table.id]
+		columnF := m.storageF.columns[table.id]
+		columnG := m.storageG.columns[table.id]
+		columnH := m.storageH.columns[table.id]
+		columnI := m.storageI.columns[table.id]
+		columnJ := m.storageJ.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -3558,7 +3521,6 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(Enti
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -3569,7 +3531,6 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(Enti
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -3619,16 +3580,16 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil &&
-		m.storageJ.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil &&
+		m.storageC.columns[index.table.id] != nil &&
+		m.storageD.columns[index.table.id] != nil &&
+		m.storageE.columns[index.table.id] != nil &&
+		m.storageF.columns[index.table.id] != nil &&
+		m.storageG.columns[index.table.id] != nil &&
+		m.storageH.columns[index.table.id] != nil &&
+		m.storageI.columns[index.table.id] != nil &&
+		m.storageJ.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -3664,16 +3625,16 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddFn(entity Entity, fn func(*A, *
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
-			(*H)(m.storageH.columns[index.table].Get(row)),
-			(*I)(m.storageI.columns[index.table].Get(row)),
-			(*J)(m.storageJ.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
+			(*H)(m.storageH.columns[index.table.id].Get(row)),
+			(*I)(m.storageI.columns[index.table.id].Get(row)),
+			(*J)(m.storageJ.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -3707,19 +3668,19 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Set(entity Entity, a *A, b *B, c *
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
-	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
-	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
-	*(*J)(m.storageJ.columns[index.table].Get(row)) = *j
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
+	*(*C)(m.storageC.columns[index.table.id].Get(row)) = *c
+	*(*D)(m.storageD.columns[index.table.id].Get(row)) = *d
+	*(*E)(m.storageE.columns[index.table.id].Get(row)) = *e
+	*(*F)(m.storageF.columns[index.table.id].Get(row)) = *f
+	*(*G)(m.storageG.columns[index.table.id].Get(row)) = *g
+	*(*H)(m.storageH.columns[index.table.id].Get(row)) = *h
+	*(*I)(m.storageI.columns[index.table.id].Get(row)) = *i
+	*(*J)(m.storageJ.columns[index.table.id].Get(row)) = *j
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -3753,20 +3714,19 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatch(batch Batch, a *A, b *B, 
 func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
-			columnH := m.storageH.columns[tableID]
-			columnI := m.storageI.columns[tableID]
-			columnJ := m.storageJ.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
+			columnC := m.storageC.columns[table.id]
+			columnD := m.storageD.columns[table.id]
+			columnE := m.storageE.columns[table.id]
+			columnF := m.storageF.columns[table.id]
+			columnG := m.storageG.columns[table.id]
+			columnH := m.storageH.columns[table.id]
+			columnI := m.storageI.columns[table.id]
+			columnJ := m.storageJ.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -3928,17 +3888,17 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewEntityFn(fn func(*A, *B, *C,
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
-			(*H)(m.storageH.columns[index.table].Get(row)),
-			(*I)(m.storageI.columns[index.table].Get(row)),
-			(*J)(m.storageJ.columns[index.table].Get(row)),
-			(*K)(m.storageK.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
+			(*H)(m.storageH.columns[index.table.id].Get(row)),
+			(*I)(m.storageI.columns[index.table.id].Get(row)),
+			(*J)(m.storageJ.columns[index.table.id].Get(row)),
+			(*K)(m.storageK.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -3978,7 +3938,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatch(count int, a *A, b *B,
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -3989,18 +3949,17 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(E
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
-		columnH := m.storageH.columns[tableID]
-		columnI := m.storageI.columns[tableID]
-		columnJ := m.storageJ.columns[tableID]
-		columnK := m.storageK.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
+		columnC := m.storageC.columns[table.id]
+		columnD := m.storageD.columns[table.id]
+		columnE := m.storageE.columns[table.id]
+		columnF := m.storageF.columns[table.id]
+		columnG := m.storageG.columns[table.id]
+		columnH := m.storageH.columns[table.id]
+		columnI := m.storageI.columns[table.id]
+		columnJ := m.storageJ.columns[table.id]
+		columnK := m.storageK.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -4021,7 +3980,6 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(E
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -4032,7 +3990,6 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(E
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -4082,17 +4039,17 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil &&
-		m.storageJ.columns[index.table] != nil &&
-		m.storageK.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil &&
+		m.storageC.columns[index.table.id] != nil &&
+		m.storageD.columns[index.table.id] != nil &&
+		m.storageE.columns[index.table.id] != nil &&
+		m.storageF.columns[index.table.id] != nil &&
+		m.storageG.columns[index.table.id] != nil &&
+		m.storageH.columns[index.table.id] != nil &&
+		m.storageI.columns[index.table.id] != nil &&
+		m.storageJ.columns[index.table.id] != nil &&
+		m.storageK.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -4129,17 +4086,17 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddFn(entity Entity, fn func(*A
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
-			(*H)(m.storageH.columns[index.table].Get(row)),
-			(*I)(m.storageI.columns[index.table].Get(row)),
-			(*J)(m.storageJ.columns[index.table].Get(row)),
-			(*K)(m.storageK.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
+			(*H)(m.storageH.columns[index.table.id].Get(row)),
+			(*I)(m.storageI.columns[index.table.id].Get(row)),
+			(*J)(m.storageJ.columns[index.table.id].Get(row)),
+			(*K)(m.storageK.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -4174,20 +4131,20 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Set(entity Entity, a *A, b *B, 
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
-	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
-	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
-	*(*J)(m.storageJ.columns[index.table].Get(row)) = *j
-	*(*K)(m.storageK.columns[index.table].Get(row)) = *k
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
+	*(*C)(m.storageC.columns[index.table.id].Get(row)) = *c
+	*(*D)(m.storageD.columns[index.table.id].Get(row)) = *d
+	*(*E)(m.storageE.columns[index.table.id].Get(row)) = *e
+	*(*F)(m.storageF.columns[index.table.id].Get(row)) = *f
+	*(*G)(m.storageG.columns[index.table.id].Get(row)) = *g
+	*(*H)(m.storageH.columns[index.table.id].Get(row)) = *h
+	*(*I)(m.storageI.columns[index.table.id].Get(row)) = *i
+	*(*J)(m.storageJ.columns[index.table.id].Get(row)) = *j
+	*(*K)(m.storageK.columns[index.table.id].Get(row)) = *k
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -4222,21 +4179,20 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatch(batch Batch, a *A, b *
 func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
-			columnH := m.storageH.columns[tableID]
-			columnI := m.storageI.columns[tableID]
-			columnJ := m.storageJ.columns[tableID]
-			columnK := m.storageK.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
+			columnC := m.storageC.columns[table.id]
+			columnD := m.storageD.columns[table.id]
+			columnE := m.storageE.columns[table.id]
+			columnF := m.storageF.columns[table.id]
+			columnG := m.storageG.columns[table.id]
+			columnH := m.storageH.columns[table.id]
+			columnI := m.storageI.columns[table.id]
+			columnJ := m.storageJ.columns[table.id]
+			columnK := m.storageK.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -4403,18 +4359,18 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewEntityFn(fn func(*A, *B, 
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
-			(*H)(m.storageH.columns[index.table].Get(row)),
-			(*I)(m.storageI.columns[index.table].Get(row)),
-			(*J)(m.storageJ.columns[index.table].Get(row)),
-			(*K)(m.storageK.columns[index.table].Get(row)),
-			(*L)(m.storageL.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
+			(*H)(m.storageH.columns[index.table.id].Get(row)),
+			(*I)(m.storageI.columns[index.table.id].Get(row)),
+			(*J)(m.storageJ.columns[index.table.id].Get(row)),
+			(*K)(m.storageK.columns[index.table.id].Get(row)),
+			(*L)(m.storageL.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireCreateEntityIfHas(entity, mask)
@@ -4455,7 +4411,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatch(count int, a *A, b 
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	table, start := m.world.newEntities(count, m.ids, m.relations)
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)
@@ -4466,19 +4422,18 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn fun
 	}
 
 	if fn != nil {
-		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
-		columnH := m.storageH.columns[tableID]
-		columnI := m.storageI.columns[tableID]
-		columnJ := m.storageJ.columns[tableID]
-		columnK := m.storageK.columns[tableID]
-		columnL := m.storageL.columns[tableID]
+		columnA := m.storageA.columns[table.id]
+		columnB := m.storageB.columns[table.id]
+		columnC := m.storageC.columns[table.id]
+		columnD := m.storageD.columns[table.id]
+		columnE := m.storageE.columns[table.id]
+		columnF := m.storageF.columns[table.id]
+		columnG := m.storageG.columns[table.id]
+		columnH := m.storageH.columns[table.id]
+		columnI := m.storageI.columns[table.id]
+		columnJ := m.storageJ.columns[table.id]
+		columnK := m.storageK.columns[table.id]
+		columnL := m.storageL.columns[table.id]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -4500,7 +4455,6 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn fun
 	}
 
 	if hasCreateObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -4511,7 +4465,6 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn fun
 		}
 	}
 	if hasRelObs {
-		table := &m.world.storage.tables[tableID]
 		earlyOut := true
 		for i := range count {
 			index := uintptr(start + i)
@@ -4561,18 +4514,18 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil &&
-		m.storageJ.columns[index.table] != nil &&
-		m.storageK.columns[index.table] != nil &&
-		m.storageL.columns[index.table] != nil
+	return m.storageA.columns[index.table.id] != nil &&
+		m.storageB.columns[index.table.id] != nil &&
+		m.storageC.columns[index.table.id] != nil &&
+		m.storageD.columns[index.table.id] != nil &&
+		m.storageE.columns[index.table.id] != nil &&
+		m.storageF.columns[index.table.id] != nil &&
+		m.storageG.columns[index.table.id] != nil &&
+		m.storageH.columns[index.table.id] != nil &&
+		m.storageI.columns[index.table.id] != nil &&
+		m.storageJ.columns[index.table.id] != nil &&
+		m.storageK.columns[index.table.id] != nil &&
+		m.storageL.columns[index.table.id] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -4610,18 +4563,18 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddFn(entity Entity, fn func
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
 		fn(
-			(*A)(m.storageA.columns[index.table].Get(row)),
-			(*B)(m.storageB.columns[index.table].Get(row)),
-			(*C)(m.storageC.columns[index.table].Get(row)),
-			(*D)(m.storageD.columns[index.table].Get(row)),
-			(*E)(m.storageE.columns[index.table].Get(row)),
-			(*F)(m.storageF.columns[index.table].Get(row)),
-			(*G)(m.storageG.columns[index.table].Get(row)),
-			(*H)(m.storageH.columns[index.table].Get(row)),
-			(*I)(m.storageI.columns[index.table].Get(row)),
-			(*J)(m.storageJ.columns[index.table].Get(row)),
-			(*K)(m.storageK.columns[index.table].Get(row)),
-			(*L)(m.storageL.columns[index.table].Get(row)),
+			(*A)(m.storageA.columns[index.table.id].Get(row)),
+			(*B)(m.storageB.columns[index.table.id].Get(row)),
+			(*C)(m.storageC.columns[index.table.id].Get(row)),
+			(*D)(m.storageD.columns[index.table.id].Get(row)),
+			(*E)(m.storageE.columns[index.table.id].Get(row)),
+			(*F)(m.storageF.columns[index.table.id].Get(row)),
+			(*G)(m.storageG.columns[index.table.id].Get(row)),
+			(*H)(m.storageH.columns[index.table.id].Get(row)),
+			(*I)(m.storageI.columns[index.table.id].Get(row)),
+			(*J)(m.storageJ.columns[index.table.id].Get(row)),
+			(*K)(m.storageK.columns[index.table.id].Get(row)),
+			(*L)(m.storageL.columns[index.table.id].Get(row)),
 		)
 	}
 	m.world.storage.observers.FireAddIfHas(OnAddComponents, entity, oldMask, newMask)
@@ -4657,21 +4610,21 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Set(entity Entity, a *A, b *
 
 	index := &m.world.storage.entities[entity.id]
 	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
-	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
-	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
-	*(*J)(m.storageJ.columns[index.table].Get(row)) = *j
-	*(*K)(m.storageK.columns[index.table].Get(row)) = *k
-	*(*L)(m.storageL.columns[index.table].Get(row)) = *l
+	*(*A)(m.storageA.columns[index.table.id].Get(row)) = *a
+	*(*B)(m.storageB.columns[index.table.id].Get(row)) = *b
+	*(*C)(m.storageC.columns[index.table.id].Get(row)) = *c
+	*(*D)(m.storageD.columns[index.table.id].Get(row)) = *d
+	*(*E)(m.storageE.columns[index.table.id].Get(row)) = *e
+	*(*F)(m.storageF.columns[index.table.id].Get(row)) = *f
+	*(*G)(m.storageG.columns[index.table.id].Get(row)) = *g
+	*(*H)(m.storageH.columns[index.table.id].Get(row)) = *h
+	*(*I)(m.storageI.columns[index.table.id].Get(row)) = *i
+	*(*J)(m.storageJ.columns[index.table.id].Get(row)) = *j
+	*(*K)(m.storageK.columns[index.table.id].Get(row)) = *k
+	*(*L)(m.storageL.columns[index.table.id].Get(row)) = *l
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
-		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
+		newMask := &m.world.storage.archetypes[index.table.archetype].mask
 		m.world.storage.observers.FireSet(entity, &m.mask, newMask)
 	}
 }
@@ -4707,22 +4660,21 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatch(batch Batch, a *A, 
 func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *D, *E, *F, *G, *H, *I, *J, *K, *L), rel ...Relation) {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], nil)
 
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
-			columnH := m.storageH.columns[tableID]
-			columnI := m.storageI.columns[tableID]
-			columnJ := m.storageJ.columns[tableID]
-			columnK := m.storageK.columns[tableID]
-			columnL := m.storageL.columns[tableID]
+		process = func(table *table, start, len uint32) {
+			columnA := m.storageA.columns[table.id]
+			columnB := m.storageB.columns[table.id]
+			columnC := m.storageC.columns[table.id]
+			columnD := m.storageD.columns[table.id]
+			columnE := m.storageE.columns[table.id]
+			columnF := m.storageF.columns[table.id]
+			columnG := m.storageG.columns[table.id]
+			columnH := m.storageH.columns[table.id]
+			columnI := m.storageI.columns[table.id]
+			columnJ := m.storageJ.columns[table.id]
+			columnK := m.storageK.columns[table.id]
+			columnL := m.storageL.columns[table.id]
 
 			for i := range len {
 				index := uintptr(start + i)

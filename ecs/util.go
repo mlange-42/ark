@@ -20,7 +20,7 @@ func capPow2(required uint32) uint32 {
 }
 
 func get[T any](storage *componentStorage, index *entityIndex) *T {
-	col := storage.columns[index.table]
+	col := storage.columns[index.table.id]
 	if col == nil {
 		return nil
 	}

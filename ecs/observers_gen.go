@@ -94,7 +94,7 @@ func (o *Observer1[A]) Register(w *World) *Observer1[A] {
 		row := uintptr(index.row)
 		o.callback(
 			e,
-			(*A)(storageA.columns[index.table].Get(row)),
+			(*A)(storageA.columns[index.table.id].Get(row)),
 		)
 	}
 
@@ -221,8 +221,8 @@ func (o *Observer2[A, B]) Register(w *World) *Observer2[A, B] {
 		row := uintptr(index.row)
 		o.callback(
 			e,
-			(*A)(storageA.columns[index.table].Get(row)),
-			(*B)(storageB.columns[index.table].Get(row)),
+			(*A)(storageA.columns[index.table.id].Get(row)),
+			(*B)(storageB.columns[index.table.id].Get(row)),
 		)
 	}
 
@@ -351,9 +351,9 @@ func (o *Observer3[A, B, C]) Register(w *World) *Observer3[A, B, C] {
 		row := uintptr(index.row)
 		o.callback(
 			e,
-			(*A)(storageA.columns[index.table].Get(row)),
-			(*B)(storageB.columns[index.table].Get(row)),
-			(*C)(storageC.columns[index.table].Get(row)),
+			(*A)(storageA.columns[index.table.id].Get(row)),
+			(*B)(storageB.columns[index.table.id].Get(row)),
+			(*C)(storageC.columns[index.table.id].Get(row)),
 		)
 	}
 
@@ -484,10 +484,10 @@ func (o *Observer4[A, B, C, D]) Register(w *World) *Observer4[A, B, C, D] {
 		row := uintptr(index.row)
 		o.callback(
 			e,
-			(*A)(storageA.columns[index.table].Get(row)),
-			(*B)(storageB.columns[index.table].Get(row)),
-			(*C)(storageC.columns[index.table].Get(row)),
-			(*D)(storageD.columns[index.table].Get(row)),
+			(*A)(storageA.columns[index.table.id].Get(row)),
+			(*B)(storageB.columns[index.table.id].Get(row)),
+			(*C)(storageC.columns[index.table.id].Get(row)),
+			(*D)(storageD.columns[index.table.id].Get(row)),
 		)
 	}
 

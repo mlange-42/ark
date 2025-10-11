@@ -1,11 +1,9 @@
 package ecs
 
 func removeBatch(world *World, batch *Batch, ids []ID, fn func(entity Entity)) {
-	var process func(tableID tableID, start, len uint32)
+	var process func(table *table, start, len uint32)
 	if fn != nil {
-		process = func(tableID tableID, start, len uint32) {
-			table := world.storage.tables[tableID]
-
+		process = func(table *table, start, len uint32) {
 			for i := range len {
 				index := uintptr(start + i)
 				fn(table.GetEntity(index))
@@ -16,11 +14,9 @@ func removeBatch(world *World, batch *Batch, ids []ID, fn func(entity Entity)) {
 }
 
 func setRelationsBatch(world *World, batch *Batch, fn func(entity Entity), relations []relationID) {
-	var process func(tableID tableID, start, len int)
+	var process func(table *table, start, len int)
 	if fn != nil {
-		process = func(tableID tableID, start, len int) {
-			table := world.storage.tables[tableID]
-
+		process = func(table *table, start, len int) {
 			for i := range len {
 				index := uintptr(start + i)
 				fn(table.GetEntity(index))

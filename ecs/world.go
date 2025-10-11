@@ -42,7 +42,7 @@ func (w *World) NewEntity() Entity {
 // The callback function can be nil.
 func (w *World) NewEntities(count int, fn func(entity Entity)) {
 	w.checkLocked()
-	tableID, start := w.newEntities(count, nil, nil)
+	table, start := w.newEntities(count, nil, nil)
 
 	hasObs := w.storage.observers.HasObservers(OnCreateEntity)
 	shouldLock := hasObs || fn != nil
@@ -52,7 +52,6 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 	}
 
 	if fn != nil {
-		table := &w.storage.tables[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -62,7 +61,6 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 	}
 
 	if hasObs {
-		table := &w.storage.tables[tableID]
 		mask := &w.storage.archetypes[table.archetype].mask
 		earlyOut := true
 		for i := range count {
@@ -109,8 +107,7 @@ func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 	tables := w.storage.getTables(&batch)
 
 	if fn != nil {
-		for _, tableID := range tables {
-			table := &w.storage.tables[tableID]
+		for _, table := range tables {
 			len := uintptr(table.Len())
 			var i uintptr
 			for i = range len {
@@ -121,8 +118,7 @@ func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 
 	if hasEntityObs || hasRelationObs {
 		if hasEntityObs {
-			for _, tableID := range tables {
-				table := &w.storage.tables[tableID]
+			for _, table := range tables {
 				mask := &w.storage.archetypes[table.archetype].mask
 				len := uintptr(table.Len())
 				var i uintptr
@@ -136,8 +132,7 @@ func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 			}
 		}
 		if hasRelationObs {
-			for _, tableID := range tables {
-				table := &w.storage.tables[tableID]
+			for _, table := range tables {
 				if !table.HasRelations() {
 					continue
 				}
@@ -156,8 +151,7 @@ func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 	}
 
 	cleanup := w.storage.slices.entitiesCleanup
-	for _, tableID := range tables {
-		table := &w.storage.tables[tableID]
+	for _, table := range tables {
 		len := uintptr(table.Len())
 		var i uintptr
 		for i = range len {
@@ -165,7 +159,7 @@ func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 			if w.storage.isTarget[entity.id] {
 				cleanup = append(cleanup, entity)
 			}
-			w.storage.entities[entity.id].table = maxTableID
+			w.storage.entities[entity.id].table = nil
 			w.storage.entityPool.Recycle(entity)
 		}
 		table.Reset()

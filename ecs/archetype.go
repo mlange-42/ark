@@ -19,7 +19,7 @@ type archetype struct {
 	isRelation     []bool                   // whether columns are relations components, indexed by column index
 	relationTables []map[entityID]*tableIDs // lookup for relation targets of tables, indexed by column index
 	tables         tableIDs                 // all active tables
-	freeTables     []tableID                // all inactive/free tables
+	freeTables     []*table                 // all inactive/free tables
 	zeroValue      []byte                   // zero value with the size of the largest item type, for fast zeroing
 	mask           bitMask
 	id             archetypeID
@@ -29,15 +29,15 @@ type archetype struct {
 
 type tableIDs struct {
 	indices map[tableID]uint32
-	tables  []tableID
+	tables  []*table
 }
 
 // Creates a new tableIDs.
 // The passed tables slice is used directly, so it should not be modified or stored afterwards.
-func newTableIDs(tables ...tableID) tableIDs {
+func newTableIDs(tables ...*table) tableIDs {
 	indices := make(map[tableID]uint32, len(tables))
 	for i, t := range tables {
-		indices[t] = uint32(i)
+		indices[t.id] = uint32(i)
 	}
 	return tableIDs{
 		tables:  tables,
@@ -45,9 +45,9 @@ func newTableIDs(tables ...tableID) tableIDs {
 	}
 }
 
-func (t *tableIDs) Append(id tableID) {
-	t.tables = append(t.tables, id)
-	t.indices[id] = uint32(len(t.tables) - 1)
+func (t *tableIDs) Append(table *table) {
+	t.tables = append(t.tables, table)
+	t.indices[table.id] = uint32(len(t.tables) - 1)
 }
 
 func (t *tableIDs) Remove(id tableID) bool {
@@ -59,7 +59,7 @@ func (t *tableIDs) Remove(id tableID) bool {
 	last := uint32(len(t.tables) - 1)
 	if index != last {
 		t.tables[index], t.tables[last] = t.tables[last], t.tables[index]
-		t.indices[t.tables[index]] = index
+		t.indices[t.tables[index].id] = index
 	}
 	t.tables = t.tables[:last]
 	delete(t.indices, id)
@@ -72,7 +72,7 @@ func (t *tableIDs) Clear() {
 	t.indices = map[tableID]uint32{}
 }
 
-func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
+func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, tables []*table, reg *componentRegistry) archetype {
 	componentsMap := make([]int16, maskTotalBits)
 	for i := range maskTotalBits {
 		componentsMap[i] = -1
@@ -130,7 +130,7 @@ func (a *archetype) GetTable(storage *storage, relations []relationID) (*table, 
 		return nil, false
 	}
 	if !a.HasRelations() {
-		return &storage.tables[a.tables.tables[0]], true
+		return a.tables.tables[0], true
 	}
 	return a.getTableSlowPath(storage, relations)
 }
@@ -145,15 +145,14 @@ func (a *archetype) getTableSlowPath(storage *storage, relations []relationID) (
 		return nil, false
 	}
 	for _, t := range tables.tables {
-		table := &storage.tables[t]
-		if table.MatchesExact(relations) {
-			return table, true
+		if t.MatchesExact(relations) {
+			return t, true
 		}
 	}
 	return nil, false
 }
 
-func (a *archetype) GetTables(relations []relationID) []tableID {
+func (a *archetype) GetTables(relations []relationID) []*table {
 	if !a.HasRelations() || len(relations) == 0 {
 		return a.tables.tables
 	}
@@ -164,9 +163,9 @@ func (a *archetype) GetTables(relations []relationID) []tableID {
 	return nil
 }
 
-func (a *archetype) GetFreeTable() (tableID, bool) {
+func (a *archetype) GetFreeTable() (*table, bool) {
 	if len(a.freeTables) == 0 {
-		return 0, false
+		return nil, false
 	}
 	last := len(a.freeTables) - 1
 	table := a.freeTables[last]
@@ -178,7 +177,7 @@ func (a *archetype) GetFreeTable() (tableID, bool) {
 
 func (a *archetype) FreeTable(table *table) {
 	_ = a.tables.Remove(table.id)
-	a.freeTables = append(a.freeTables, table.id)
+	a.freeTables = append(a.freeTables, table)
 	table.isFree = true
 
 	if a.numRelations <= 1 {
@@ -196,7 +195,7 @@ func (a *archetype) FreeTable(table *table) {
 
 func (a *archetype) FreeAllTables(storage *storage) {
 	for _, table := range a.tables.tables {
-		storage.tables[table].isFree = true
+		table.isFree = true
 	}
 	a.freeTables = append(a.freeTables, a.tables.tables...)
 	a.tables.Clear()
@@ -207,7 +206,7 @@ func (a *archetype) FreeAllTables(storage *storage) {
 }
 
 func (a *archetype) AddTable(table *table) {
-	a.tables.Append(table.id)
+	a.tables.Append(table)
 	if !a.HasRelations() {
 		return
 	}
@@ -221,9 +220,9 @@ func (a *archetype) AddTable(table *table) {
 		relations := a.relationTables[i]
 
 		if tables, ok := relations[target.id]; ok {
-			tables.Append(table.id)
+			tables.Append(table)
 		} else {
-			tables := newTableIDs(table.id)
+			tables := newTableIDs(table)
 			relations[target.id] = &tables
 		}
 	}
@@ -240,12 +239,12 @@ func (a *archetype) RemoveTarget(entity Entity) {
 
 func (a *archetype) Reset(storage *storage) {
 	if !a.HasRelations() {
-		storage.tables[a.tables.tables[0]].Reset()
+		a.tables.tables[0].Reset()
 		return
 	}
 
 	for i := len(a.tables.tables) - 1; i >= 0; i-- {
-		table := &storage.tables[a.tables.tables[i]]
+		table := a.tables.tables[i]
 		table.Reset()
 		storage.cache.removeTable(table)
 	}
@@ -276,8 +275,7 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 	memory := 0
 	memoryUsed := 0
 	tableStats := make([]stats.Table, len(a.tables.tables))
-	for i, id := range a.tables.tables {
-		table := &storage.tables[id]
+	for i, table := range a.tables.tables {
 		tableStats[i] = table.Stats(memPerEntity)
 		stats := &tableStats[i]
 		cap += stats.Capacity
@@ -285,8 +283,7 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 		memory += stats.Memory
 		memoryUsed += stats.MemoryUsed
 	}
-	for _, id := range a.freeTables {
-		table := &storage.tables[id]
+	for _, table := range a.freeTables {
 		cap += int(table.cap)
 		memory += memPerEntity * int(table.cap)
 	}
@@ -324,7 +321,7 @@ func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
 	var i int32
 	for i := range cntOld {
 		tableStats := &stats.Tables[i]
-		table := &storage.tables[tables.tables[i]]
+		table := tables.tables[i]
 		table.UpdateStats(stats.MemoryPerEntity, tableStats)
 		cap += tableStats.Capacity
 		count += tableStats.Size
@@ -332,7 +329,7 @@ func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
 		memoryUsed += tableStats.MemoryUsed
 	}
 	for i = cntOld; i < cntNew; i++ {
-		table := &storage.tables[tables.tables[i]]
+		table := tables.tables[i]
 		tableStats := table.Stats(stats.MemoryPerEntity)
 		stats.Tables = append(stats.Tables, tableStats)
 		cap += tableStats.Capacity
@@ -340,8 +337,7 @@ func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
 		memory += tableStats.Memory
 		memoryUsed += tableStats.MemoryUsed
 	}
-	for _, id := range a.freeTables {
-		table := &storage.tables[id]
+	for _, table := range a.freeTables {
 		cap += int(table.cap)
 		memory += stats.MemoryPerEntity * int(table.cap)
 	}

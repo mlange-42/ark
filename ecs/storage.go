@@ -16,7 +16,7 @@ type storage struct {
 	allArchetypes      []archetypeID      // list of all archetype IDs to simplify usage of componentIndex
 	componentIndex     [][]archetypeID    // Archetypes indexed by components IDs; each archetype appears under all its component IDs
 	relationArchetypes []archetypeID      // All archetypes with relationships
-	tables             []table            // All tables
+	tables             pagedSlice[table]  // All tables
 	components         []componentStorage // Component storages for fast random/world access
 	cache              cache              // Filter cache
 	entityPool         entityPool         // Entity pool for creation and recycling
@@ -33,7 +33,7 @@ type componentStorage struct {
 
 type slices struct {
 	batches []batchTable
-	tables  []tableID
+	tables  []*table
 	ints    []uint32
 
 	relations        []relationID
@@ -48,7 +48,7 @@ type slices struct {
 func newSlices() slices {
 	return slices{
 		batches: make([]batchTable, 0, 32),
-		tables:  make([]tableID, 0, 32),
+		tables:  make([]*table, 0, 32),
 		ints:    make([]uint32, 0, 32),
 
 		relations:        make([]relationID, 0, 8),
@@ -69,7 +69,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	isTarget := make([]bool, reservedEntities, config.initialCapacity+reservedEntities)
 	// Reserved zero and wildcard entities
 	for i := range reservedEntities {
-		entities[i] = entityIndex{table: maxTableID, row: 0}
+		entities[i] = entityIndex{table: nil, row: 0}
 	}
 	componentsMap := make([]int16, maskTotalBits)
 	for i := range maskTotalBits {
@@ -77,9 +77,11 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 
 	archetypes := make([]archetype, 0, numArchetypes)
-	archetypes = append(archetypes, newArchetype(0, 0, &bitMask{}, nil, []tableID{0}, &reg))
-	tables := make([]table, 0, numArchetypes)
-	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, nil, nil))
+	archetypes = append(archetypes, newArchetype(0, 0, &bitMask{}, nil, []*table{}, &reg))
+	tables := newPagesSlice[table](32)
+	tables.Add(newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, nil, nil))
+
+	archetypes[0].tables = newTableIDs(tables.Get(0))
 	return storage{
 		config:         config,
 		registry:       reg,
@@ -225,7 +227,7 @@ func (s *storage) AddComponent(id uint8) {
 	if len(s.components) != int(id) {
 		panic("components can only be added to a storage sequentially")
 	}
-	s.components = append(s.components, componentStorage{columns: make([]*columnLayout, len(s.tables))})
+	s.components = append(s.components, componentStorage{columns: make([]*columnLayout, s.tables.Len())})
 	s.componentIndex = append(s.componentIndex, []archetypeID{})
 }
 
@@ -235,7 +237,7 @@ func (s *storage) RemoveEntity(entity Entity) {
 		panic("can't remove a dead entity")
 	}
 	index := &s.entities[entity.id]
-	table := &s.tables[index.table]
+	table := index.table
 
 	hasEntityObs := s.observers.HasObservers(OnRemoveEntity)
 	hasRelationObs := table.HasRelations() && s.observers.HasObservers(OnRemoveRelations)
@@ -260,7 +262,7 @@ func (s *storage) RemoveEntity(entity Entity) {
 		swapEntity := table.GetEntity(uintptr(index.row))
 		s.entities[swapEntity.id].row = index.row
 	}
-	index.table = maxTableID
+	index.table = nil
 
 	if s.isTarget[entity.id] {
 		s.cleanupArchetypes(entity)
@@ -291,7 +293,7 @@ func (s *storage) get(entity Entity, component ID) unsafe.Pointer {
 func (s *storage) getUnchecked(entity Entity, component ID) unsafe.Pointer {
 	s.checkHasComponent(entity, component)
 	index := s.entities[entity.id]
-	return s.tables[index.table].Get(component, uintptr(index.row))
+	return index.table.Get(component, uintptr(index.row))
 }
 
 func (s *storage) has(entity Entity, component ID) bool {
@@ -303,7 +305,7 @@ func (s *storage) has(entity Entity, component ID) bool {
 
 func (s *storage) hasUnchecked(entity Entity, component ID) bool {
 	index := s.entities[entity.id]
-	return s.tables[index.table].Has(component)
+	return index.table.Has(component)
 }
 
 func (s *storage) getRelation(entity Entity, comp ID) Entity {
@@ -311,12 +313,12 @@ func (s *storage) getRelation(entity Entity, comp ID) Entity {
 		panic("can't get relation for a dead entity")
 	}
 	s.checkHasComponent(entity, comp)
-	return s.tables[s.entities[entity.id].table].GetRelation(comp)
+	return s.entities[entity.id].table.GetRelation(comp)
 }
 
 func (s *storage) getRelationUnchecked(entity Entity, comp ID) Entity {
 	s.checkHasComponent(entity, comp)
-	return s.tables[s.entities[entity.id].table].GetRelation(comp)
+	return s.entities[entity.id].table.GetRelation(comp)
 }
 
 func (s *storage) registerTargets(relations []relationID) {
@@ -337,10 +339,11 @@ func (s *storage) getRegisteredFilter(id cacheID) *cacheEntry {
 	return s.cache.getEntry(id)
 }
 
-func (s *storage) createEntity(table tableID) (Entity, uint32) {
+func (s *storage) createEntity(tableID tableID) (Entity, uint32) {
 	entity := s.entityPool.Get()
 
-	idx := s.tables[table].Add(entity)
+	table := s.tables.Get(uint32(tableID))
+	idx := table.Add(entity)
 	if int(entity.id) == len(s.entities) {
 		s.entities = append(s.entities, entityIndex{table: table, row: idx})
 		s.isTarget = append(s.isTarget, false)
@@ -361,11 +364,11 @@ func (s *storage) createEntities(table *table, count int) {
 		table.SetEntity(index, entity)
 
 		if int(entity.id) == len {
-			s.entities = append(s.entities, entityIndex{table: table.id, row: index})
+			s.entities = append(s.entities, entityIndex{table: table, row: index})
 			s.isTarget = append(s.isTarget, false)
 			len++
 		} else {
-			s.entities[entity.id] = entityIndex{table: table.id, row: index}
+			s.entities[entity.id] = entityIndex{table: table, row: index}
 		}
 	}
 }
@@ -404,39 +407,40 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 		s.checkRelationTarget(rel.target)
 	}
 
-	var newTableID tableID
+	var newTab *table
 	recycled := false
-	if id, ok := archetype.GetFreeTable(); ok {
-		newTableID = id
-		s.tables[newTableID].Recycle(targets, relations)
+	if tab, ok := archetype.GetFreeTable(); ok {
+		newTab = tab
+		newTab.Recycle(targets, relations)
 		recycled = true
 	} else {
-		newTableID = tableID(len(s.tables))
 		cap := s.config.initialCapacity
 		if archetype.HasRelations() {
 			cap = s.config.initialCapacityRelations
 		}
-		s.tables = append(s.tables, newTable(
-			newTableID, archetype, uint32(cap), &s.registry,
+		newID := s.tables.Len()
+		s.tables.Add(newTable(
+			tableID(newID), archetype, uint32(cap), &s.registry,
 			targets, relations))
-	}
-	archetype.AddTable(&s.tables[newTableID])
+		newTab = s.tables.Get(newID)
 
-	table := &s.tables[newTableID]
+	}
+	archetype.AddTable(newTab)
+
 	if !recycled {
 		for i := range s.components {
 			id := ID{id: uint8(i)}
 			comps := &s.components[i]
 			if archetype.mask.Get(id.id) {
-				comps.columns = append(comps.columns, &table.Column(id).columnLayout)
+				comps.columns = append(comps.columns, &newTab.Column(id).columnLayout)
 			} else {
 				comps.columns = append(comps.columns, nil)
 			}
 		}
 	}
 
-	s.cache.addTable(s, table)
-	return table
+	s.cache.addTable(s, newTab)
+	return newTab
 }
 
 // Removes empty archetypes that have a target relation to the given entity.
@@ -446,7 +450,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 		archetype := &s.archetypes[arch]
 		ln := len(archetype.tables.tables)
 		for i := ln - 1; i >= 0; i-- {
-			table := &s.tables[archetype.tables.tables[i]]
+			table := archetype.tables.tables[i]
 
 			foundTarget := false
 			for _, rel := range table.relationIDs {
@@ -467,8 +471,6 @@ func (s *storage) cleanupArchetypes(target Entity) {
 					tableRelations := make([]relationID, len(allRelations))
 					copy(tableRelations, allRelations)
 					newTable = s.createTable(archetype, tableRelations)
-					// Get the old table again, as pointers may have changed.
-					table = &s.tables[table.id]
 				}
 				s.slices.relations = allRelations[:0]
 				s.moveEntities(table, newTable, uint32(table.Len()))
@@ -489,10 +491,9 @@ func (s *storage) moveEntities(src, dst *table, count uint32) {
 	dst.AddAll(src, count)
 
 	newLen := dst.Len()
-	newTable := dst.id
 	for i := oldLen; i < newLen; i++ {
 		entity := dst.GetEntity(uintptr(i))
-		s.entities[entity.id] = entityIndex{table: newTable, row: uint32(i)}
+		s.entities[entity.id] = entityIndex{table: dst, row: uint32(i)}
 	}
 	src.Reset()
 }
@@ -565,20 +566,19 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, ma
 }
 
 // the returned slice comes from the pool and should be recycled.
-func (s *storage) getTables(batch *Batch) []tableID {
+func (s *storage) getTables(batch *Batch) []*table {
 	tables := s.slices.tables
 
 	if batch.filter.cache != maxCacheID {
 		cache := s.getRegisteredFilter(batch.filter.cache)
-		for _, tableID := range cache.tables.tables {
-			table := &s.tables[tableID]
+		for _, table := range cache.tables.tables {
 			if table.Len() == 0 {
 				continue
 			}
 			if !table.Matches(batch.relations) {
 				continue
 			}
-			tables = append(tables, tableID)
+			tables = append(tables, table)
 		}
 		return tables
 	}
@@ -590,15 +590,14 @@ func (s *storage) getTables(batch *Batch) []tableID {
 		}
 
 		if !archetype.HasRelations() {
-			table := &s.tables[archetype.tables.tables[0]]
-			tables = append(tables, table.id)
+			table := archetype.tables.tables[0]
+			tables = append(tables, table)
 			continue
 		}
 
 		tableIDs := archetype.GetTables(batch.relations)
 		for _, tab := range tableIDs {
-			table := &s.tables[tab]
-			if !table.Matches(batch.relations) {
+			if !tab.Matches(batch.relations) {
 				continue
 			}
 			tables = append(tables, tab)
@@ -607,8 +606,8 @@ func (s *storage) getTables(batch *Batch) []tableID {
 	return tables
 }
 
-func (s *storage) getTableIDs(filter *filter, relations []relationID) []tableID {
-	tables := []tableID{}
+func (s *storage) getTableIDs(filter *filter, relations []relationID) []*table {
+	tables := []*table{}
 
 	for i := range s.archetypes {
 		archetype := &s.archetypes[i]
@@ -622,12 +621,11 @@ func (s *storage) getTableIDs(filter *filter, relations []relationID) []tableID 
 		}
 
 		tableIDs := archetype.GetTables(relations)
-		for _, tab := range tableIDs {
-			table := &s.tables[tab]
+		for _, table := range tableIDs {
 			if !table.Matches(relations) {
 				continue
 			}
-			tables = append(tables, tab)
+			tables = append(tables, table)
 		}
 	}
 	return tables
@@ -637,10 +635,11 @@ func (s *storage) getTableIDs(filter *filter, relations []relationID) []tableID 
 // See [World.Shrink] for details.
 func (s *storage) Shrink(stopAfter time.Duration) bool {
 	start := time.Now()
-	var tableIdx int
+	var tableIdx uint32
 	anyFound := false
-	for tableIdx = range s.tables {
-		table := &s.tables[tableIdx]
+	numTables := s.tables.Len()
+	for tableIdx = range numTables {
+		table := s.tables.Get(tableIdx)
 
 		if !table.HasRelations() {
 			if table.Shrink(uint32(s.config.initialCapacity)) {
@@ -662,8 +661,8 @@ func (s *storage) Shrink(stopAfter time.Duration) bool {
 	}
 
 	tableIdx++
-	for tableIdx < len(s.tables) {
-		table := &s.tables[tableIdx]
+	for tableIdx < numTables {
+		table := s.tables.Get(tableIdx)
 
 		if !table.HasRelations() {
 			if table.CanShrink(uint32(s.config.initialCapacity)) {
