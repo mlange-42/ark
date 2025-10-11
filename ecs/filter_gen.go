@@ -129,9 +129,9 @@ func (f *Filter0) Query(rel ...Relation) Query0 {
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
-	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.generation {
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.version {
 		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
-		f.generation = f.world.storage.registry.generation
+		f.generation = f.world.storage.registry.version
 	}
 	f.world.storage.mu.Unlock()
 
@@ -323,9 +323,9 @@ func (f *Filter1[A]) Query(rel ...Relation) Query1[A] {
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
-	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.generation {
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.version {
 		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
-		f.generation = f.world.storage.registry.generation
+		f.generation = f.world.storage.registry.version
 	}
 	f.world.storage.mu.Unlock()
 
@@ -515,9 +515,9 @@ func (f *Filter2[A, B]) Query(rel ...Relation) Query2[A, B] {
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
-	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.generation {
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.version {
 		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
-		f.generation = f.world.storage.registry.generation
+		f.generation = f.world.storage.registry.version
 	}
 	f.world.storage.mu.Unlock()
 
@@ -713,9 +713,9 @@ func (f *Filter3[A, B, C]) Query(rel ...Relation) Query3[A, B, C] {
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
-	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.generation {
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.version {
 		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
-		f.generation = f.world.storage.registry.generation
+		f.generation = f.world.storage.registry.version
 	}
 	f.world.storage.mu.Unlock()
 
@@ -913,9 +913,9 @@ func (f *Filter4[A, B, C, D]) Query(rel ...Relation) Query4[A, B, C, D] {
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
-	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.generation {
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.version {
 		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
-		f.generation = f.world.storage.registry.generation
+		f.generation = f.world.storage.registry.version
 	}
 	f.world.storage.mu.Unlock()
 
@@ -1115,9 +1115,9 @@ func (f *Filter5[A, B, C, D, E]) Query(rel ...Relation) Query5[A, B, C, D, E] {
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
-	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.generation {
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.version {
 		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
-		f.generation = f.world.storage.registry.generation
+		f.generation = f.world.storage.registry.version
 	}
 	f.world.storage.mu.Unlock()
 
@@ -1319,9 +1319,9 @@ func (f *Filter6[A, B, C, D, E, F]) Query(rel ...Relation) Query6[A, B, C, D, E,
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
-	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.generation {
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.version {
 		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
-		f.generation = f.world.storage.registry.generation
+		f.generation = f.world.storage.registry.version
 	}
 	f.world.storage.mu.Unlock()
 
@@ -1525,9 +1525,9 @@ func (f *Filter7[A, B, C, D, E, F, G]) Query(rel ...Relation) Query7[A, B, C, D,
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
-	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.generation {
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.version {
 		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
-		f.generation = f.world.storage.registry.generation
+		f.generation = f.world.storage.registry.version
 	}
 	f.world.storage.mu.Unlock()
 
@@ -1733,9 +1733,9 @@ func (f *Filter8[A, B, C, D, E, F, G, H]) Query(rel ...Relation) Query8[A, B, C,
 	if pooled {
 		relations = f.world.storage.slices.relationsPool.Get()
 	}
-	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.generation {
+	if f.filter.cache == maxCacheID && f.generation != f.world.storage.registry.version {
 		f.rareComp = f.world.storage.registry.rareComponent(f.ids).id
-		f.generation = f.world.storage.registry.generation
+		f.generation = f.world.storage.registry.version
 	}
 	f.world.storage.mu.Unlock()
 

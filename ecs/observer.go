@@ -16,6 +16,7 @@ type Observer struct {
 	exclusive bool
 }
 
+// observerData contains the observer data that is required by the observerManager.
 type observerData struct {
 	compsMask   bitMask
 	withMask    bitMask

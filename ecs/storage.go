@@ -27,10 +27,12 @@ type storage struct {
 	mu                 sync.Mutex         // Mutex for parallel query startup/close
 }
 
+// componentStorage is an index for faster access of table columns by component ID.
 type componentStorage struct {
 	columns []*columnLayout
 }
 
+// slices for re-use, to avoid allocations.
 type slices struct {
 	batches []batchTable
 	tables  []tableID

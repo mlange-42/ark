@@ -81,6 +81,7 @@ func (b *bitMask64) Equals(other *bitMask64) bool {
 	return b.bits == other.bits
 }
 
+// toTypes converts a mask to a list of component IDs.
 func (b *bitMask64) toTypes(reg *registry) []ID {
 	if b.bits == 0 {
 		return nil

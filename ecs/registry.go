@@ -57,6 +57,7 @@ func (r *registry) registerComponent(tp reflect.Type, totalBits int) uint8 {
 	return newID
 }
 
+// unregisterLastComponent unregistered the component type that was registered last.
 func (r *registry) unregisterLastComponent() {
 	newID := uint8(len(r.Components) - 1)
 	id := id8(newID)
@@ -75,7 +76,7 @@ type componentRegistry struct {
 	IsRelation []bool
 	IsTrivial  []bool
 	Archetypes []int  // Number of archetypes for each component.
-	generation uint32 // Generation to indicate changes to archetype count per component.
+	version    uint32 // Generation to indicate changes to archetype count per component.
 }
 
 // newComponentRegistry creates a new ComponentRegistry.
@@ -85,7 +86,7 @@ func newComponentRegistry() componentRegistry {
 		IsRelation: make([]bool, maskTotalBits),
 		IsTrivial:  make([]bool, maskTotalBits),
 		Archetypes: make([]int, maskTotalBits),
-		generation: 1,
+		version:    1,
 	}
 }
 
@@ -106,15 +107,18 @@ func (r *componentRegistry) registerComponent(tp reflect.Type, totalBits int) ui
 	return newID
 }
 
+// unregisterLastComponent unregistered the component type that was registered last.
 func (r *componentRegistry) unregisterLastComponent() {
 	newID := uint8(len(r.Components) - 1)
 	r.registry.unregisterLastComponent()
 	r.IsRelation[newID] = false
 }
 
+// addArchetype increments the archetype counter for an entity
+// and the registry's version number.
 func (r *componentRegistry) addArchetype(id uint8) {
 	r.Archetypes[id]++
-	r.generation++
+	r.version++
 }
 
 // Returns the ID of the component present in the smallest number of archetypes.
