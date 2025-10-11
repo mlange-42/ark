@@ -15,6 +15,7 @@ type column struct {
 	isTrivial  bool          // Whether the column's type is trivial , i.e. without pointers.
 }
 
+// columnLayout contains the minimal necessary information for column.Get.
 type columnLayout struct {
 	pointer  unsafe.Pointer // pointer to the first element
 	itemSize uintptr        // memory size of items
@@ -101,6 +102,7 @@ func (c *column) ZeroRange(start, len uint32, zero unsafe.Pointer) {
 	}
 }
 
+// Reset the column. Zeroes the memory.
 func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
 	if ownLen == 0 {
 		return

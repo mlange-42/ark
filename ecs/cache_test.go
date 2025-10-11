@@ -20,8 +20,8 @@ func TestFilterCache(t *testing.T) {
 	expectEqual(t, 0, int(filter2.filter.cache))
 	expectEqual(t, 1, int(filter3.filter.cache))
 
-	expectEqual(t, 2, len(world.storage.getTableIDs(&filter2.filter, filter2.relations)))
-	expectEqual(t, 1, len(world.storage.getTableIDs(&filter3.filter, filter3.relations)))
+	expectEqual(t, 2, len(world.storage.getCacheTables(&filter2.filter, filter2.relations)))
+	expectEqual(t, 1, len(world.storage.getCacheTables(&filter3.filter, filter3.relations)))
 
 	expectPanicsWithValue(t, "filter is already registered, can't register", func() { filter2.Register() })
 

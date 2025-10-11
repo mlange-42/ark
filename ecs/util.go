@@ -6,6 +6,7 @@ import (
 	"unsafe"
 )
 
+// capPow2 calculated the next power-of-2 capacity value.
 func capPow2(required uint32) uint32 {
 	if required == 0 {
 		return 1
@@ -19,6 +20,9 @@ func capPow2(required uint32) uint32 {
 	return required + 1
 }
 
+// get the component for an entity from a component storage.
+//
+// Returns nil if the entity does not have the component.
 func get[T any](storage *componentStorage, index *entityIndex) *T {
 	col := storage.columns[index.table]
 	if col == nil {
@@ -28,22 +32,30 @@ func get[T any](storage *componentStorage, index *entityIndex) *T {
 }
 
 // copyPtr copies from one pointer to another.
+// This is not GC-safe. Use only for trivial/value types.
 func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
 	dstSlice := (*[math.MaxInt32]byte)(dst)[:itemSize:itemSize]
 	srcSlice := (*[math.MaxInt32]byte)(src)[:itemSize:itemSize]
 	copy(dstSlice, srcSlice)
 }
 
+// copyValue copies an item between two reflect arrays.
+// This is GC-safe. Use for non-trivial types.
 func copyValue(src, dst reflect.Value, from, to int) {
 	dst.Index(to).Set(src.Index(from))
 }
 
+// copyRange copies a range of items from one reflect array to another.
+// Copies src[:count] to dst[start:].
+// This is GC-safe. Use for non-trivial types.
 func copyRange(src, dst reflect.Value, start, count int) {
 	srcSlice := src.Slice(0, count)
 	dstSlice := dst.Slice(start, start+count)
 	reflect.Copy(dstSlice, srcSlice)
 }
 
+// Zeroes an item in a reflect array.
+// This is GC-safe. Use for non-trivial types.
 func zeroValueAt(v reflect.Value, index int) {
 	elem := v.Index(index)
 	elem.SetZero()
@@ -55,7 +67,7 @@ func isRelation(tp reflect.Type) bool {
 		return false
 	}
 	field := tp.Field(0)
-	return field.Type == relationTp && field.Name == relationTp.Name()
+	return field.Type == relationType && field.Name == relationType.Name()
 }
 
 // isTrivial checks if a type is "trivial" (contains no pointers, slices, maps, strings, or channels).

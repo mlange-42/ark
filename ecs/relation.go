@@ -5,7 +5,8 @@ import (
 	"reflect"
 )
 
-var relationTp = reflect.TypeFor[RelationMarker]()
+// relationType is the runtime type of RelationMarker
+var relationType = reflect.TypeFor[RelationMarker]()
 
 // RelationMarker is a marker for entity relation components.
 // It must be embedded as first field of a component that represent an entity relationship
@@ -15,6 +16,7 @@ var relationTp = reflect.TypeFor[RelationMarker]()
 // E.g. to iterate over all entities that are the child of a certain parent entity.
 type RelationMarker struct{}
 
+// relationID is a pair of relation component type and relation target.
 type relationID struct {
 	target    Entity
 	component ID
@@ -27,12 +29,18 @@ type relationID struct {
 //   - [RelIdx] is fast but more error-prone.
 //   - [RelID] is used in the [Unsafe] API.
 type Relation struct {
-	componentType reflect.Type
-	target        Entity
-	component     ID
-	index         uint8
+	componentType reflect.Type // Component type of the relation
+	target        Entity       // Target entity of the relation
+	component     ID           // Component ID of the relation
+	index         uint8        // Component index of the relation in a mapper or query
 }
 
+// relationIDForUnsafe converts the Relation to a relationID.
+//
+// Relation must use ID or component type.
+// Panics if used with an index Relation.
+//
+// Modifies the Relation to use an ID.
 func (r *Relation) relationIDForUnsafe(world *World) relationID {
 	if r.index < 255 {
 		panic("relations created with RelIdx can't be used in the unsafe API, use RelID or Rel instead")
@@ -106,6 +114,7 @@ func RelIdx(index int, target Entity) Relation {
 // Helper for converting relationSlice
 type relationSlice []Relation
 
+// ToRelations converts a slice of Relation items to relationIDs.
 func (r relationSlice) ToRelations(world *World, mask *bitMask, ids []ID, out []relationID, copyTo []relationID) []relationID {
 	if len(r) == 0 {
 		return out
@@ -113,6 +122,7 @@ func (r relationSlice) ToRelations(world *World, mask *bitMask, ids []ID, out []
 	return r.toRelationsSlowPath(world, mask, ids, out, copyTo)
 }
 
+// toRelationsSlowPath is the slow path of ToRelations for more than zero relations.
 func (r relationSlice) toRelationsSlowPath(world *World, mask *bitMask, ids []ID, out []relationID, copyTo []relationID) []relationID {
 	if copyTo != nil {
 		copyTo = append(copyTo, out...)
@@ -142,6 +152,7 @@ func (r relationSlice) toRelationsSlowPath(world *World, mask *bitMask, ids []ID
 	return out
 }
 
+// ToRelationIDsForUnsafe converts a slice of Relation items from the unsafe API to relationIDs.
 func (r relationSlice) ToRelationIDsForUnsafe(world *World, out []relationID) []relationID {
 	for _, rel := range r {
 		out = append(out, rel.relationIDForUnsafe(world))
@@ -149,7 +160,8 @@ func (r relationSlice) ToRelationIDsForUnsafe(world *World, out []relationID) []
 	return out
 }
 
-func (e Entity) toRelation(world *World, id ID, out []relationID) []relationID {
+// toRelation converts an entity and a component ID to relationIDs.
+func toRelation(world *World, e Entity, id ID, out []relationID) []relationID {
 	world.storage.checkRelationTarget(e)
 	world.storage.checkRelationComponent(id)
 	out = out[:0]
@@ -160,6 +172,7 @@ func (e Entity) toRelation(world *World, id ID, out []relationID) []relationID {
 // Helper for converting relations
 type relationEntities []Entity
 
+// ToRelation converts a slice of entities to relationIDs.
 func (r relationEntities) ToRelation(world *World, id ID, out []relationID) []relationID {
 	out = out[:0]
 	if len(r) == 0 {

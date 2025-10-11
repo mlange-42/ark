@@ -58,6 +58,7 @@ func (f UnsafeFilter) Query(relations ...Relation) UnsafeQuery {
 	}
 }
 
+// filter is an mask filter for component presence and optional absence.
 type filter struct {
 	mask       bitMask
 	without    bitMask
@@ -65,6 +66,7 @@ type filter struct {
 	hasWithout bool
 }
 
+// newFilter creates a new filter for presence of the given components.
 func newFilter(ids ...ID) filter {
 	return filter{
 		mask:  newMask(ids...),
@@ -72,6 +74,7 @@ func newFilter(ids ...ID) filter {
 	}
 }
 
+// matches this filter against a (archetype) mask.
 func (f *filter) matches(mask *bitMask) bool {
 	return mask.Contains(&f.mask) && (!f.hasWithout || !mask.ContainsAny(&f.without))
 }

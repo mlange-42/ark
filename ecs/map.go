@@ -300,12 +300,12 @@ func (m *Map[T]) GetRelationUnchecked(entity Entity) Entity {
 
 // SetRelation sets the relation target for the entity and the mapped component.
 func (m *Map[T]) SetRelation(entity Entity, target Entity) {
-	m.relations = target.toRelation(m.world, m.id, m.relations)
+	m.relations = toRelation(m.world, target, m.id, m.relations)
 	m.world.setRelations(entity, m.relations)
 }
 
 // SetRelationBatch sets the relation target for all entities matching the given batch filter.
 func (m *Map[T]) SetRelationBatch(batch Batch, target Entity, fn func(entity Entity)) {
-	m.relations = target.toRelation(m.world, m.id, m.relations)
+	m.relations = toRelation(m.world, target, m.id, m.relations)
 	setRelationsBatch(m.world, &batch, fn, m.relations)
 }

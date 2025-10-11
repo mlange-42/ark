@@ -9,9 +9,9 @@ import (
 
 // World is the central type holding entity and component data, as well as resources.
 type World struct {
-	stats     *stats.World
-	resources Resources
-	storage   storage
+	stats     *stats.World // World statistics, for re-use
+	resources Resources    // Registered resources
+	storage   storage      // The world's storage
 }
 
 // NewWorld creates a new [World].
@@ -106,7 +106,7 @@ func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 		lock = w.lock()
 	}
 
-	tables := w.storage.getTables(&batch)
+	tables := w.storage.getBatchTables(&batch)
 
 	if fn != nil {
 		for _, tableID := range tables {

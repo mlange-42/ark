@@ -5,8 +5,10 @@ import (
 	"math"
 )
 
+// observerID is the observer ID type.
 type observerID uint32
 
+// maxObserverID is used as ID for unregistered observers.
 const maxObserverID = math.MaxUint32
 
 // EventType is the type for event identifiers.
@@ -20,6 +22,7 @@ type EventType uint8
 
 // Predefined event types.
 const (
+	// customEvent is the highest possible EventType for custom events.
 	customEvent EventType = iota + 248
 
 	// OnCreateEntity event.
@@ -59,7 +62,7 @@ const (
 // Using event types from multiple registries in the same [World]
 // leads to conflicts.
 type EventRegistry struct {
-	nextID EventType
+	nextID EventType // next EventType ID
 }
 
 // NewEventType creates a new EventType for custom events.
@@ -82,9 +85,9 @@ func (r *EventRegistry) NewEventType() EventType {
 // Create events using [World.Event].
 // Create custom event types using an [EventRegistry].
 type Event struct {
-	world     *World
-	eventType EventType
-	mask      bitMask
+	world     *World    // The associated world
+	eventType EventType // The event's type
+	mask      bitMask   // The event's component mask
 }
 
 // For sets the event's component types. Optional.
@@ -104,24 +107,21 @@ func (e Event) Emit(entity Entity) {
 	e.world.emitEvent(&e, entity)
 }
 
+// observerManager manages observers and distributes events.
 type observerManager struct {
-	observers    [][]*observerData
-	hasObservers []bool
-	allComps     []bitMask
-	allWith      []bitMask
-	anyNoComps   []bool
-	anyNoWith    []bool
-	pool         intPool[observerID]
-	indices      map[observerID]observerIndex
-	totalCount   uint32
-	maxEventType EventType
+	observers    [][]*observerData     // Observers per event type
+	hasObservers []bool                // Presence of any observers per event type
+	allComps     []bitMask             // Union of all observed components per event type
+	allWith      []bitMask             // Union of all "with"-components per event type
+	anyNoComps   []bool                // Presence of wildcard component observers per event type
+	anyNoWith    []bool                // Presence of wildcard "with" observers per event type
+	pool         intPool[observerID]   // Pool for observer IDs
+	indices      map[observerID]uint32 // Mapping for observer locations for fast removal
+	totalCount   uint32                // Total number of observers
+	maxEventType EventType             // Highest event type ID present in registered observers
 }
 
-type observerIndex struct {
-	idx   uint32
-	event EventType
-}
-
+// newObserverManager creates anew empty observerManager.
 func newObserverManager() observerManager {
 	maxEvents := math.MaxUint8 + 1
 	return observerManager{
@@ -132,10 +132,11 @@ func newObserverManager() observerManager {
 		allComps:     make([]bitMask, maxEvents),
 		allWith:      make([]bitMask, maxEvents),
 		pool:         newIntPool[observerID](32),
-		indices:      map[observerID]observerIndex{},
+		indices:      map[observerID]uint32{},
 	}
 }
 
+// AddObserver adds an observer.
 func (m *observerManager) AddObserver(o *Observer, w *World) {
 	if o.id != maxObserverID {
 		panic("observer is already registered")
@@ -188,7 +189,7 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 		}
 	}
 
-	m.indices[o.id] = observerIndex{idx: uint32(len(m.observers[o.event])), event: o.event}
+	m.indices[o.id] = uint32(len(m.observers[o.event]))
 	m.observers[o.event] = append(m.observers[o.event], &o.observerData)
 	m.hasObservers[o.event] = true
 	if o.event > m.maxEventType {
@@ -213,6 +214,7 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 	}
 }
 
+// RemoveObserver removes an observer.
 func (m *observerManager) RemoveObserver(o *Observer) {
 	if o.id == maxObserverID {
 		panic("observer is not registered")
@@ -225,12 +227,12 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 	delete(m.indices, o.id)
 
 	observers := m.observers[o.event]
-	observers[idx.idx].id = maxObserverID
+	observers[idx].id = maxObserverID
 
 	last := uint32(len(observers) - 1)
-	if idx.idx != last {
-		observers[idx.idx], observers[last] = observers[last], observers[idx.idx]
-		m.indices[observers[idx.idx].id] = idx
+	if idx != last {
+		observers[idx], observers[last] = observers[last], observers[idx]
+		m.indices[observers[idx].id] = idx
 	}
 	observers[last] = nil
 	m.observers[o.event] = observers[:last]
@@ -264,6 +266,7 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 	m.allComps[o.event] = allComps
 }
 
+// HasObservers returns whether there is any registered observer for the given event type.
 func (m *observerManager) HasObservers(evt EventType) bool {
 	return m.hasObservers[evt]
 }
@@ -515,17 +518,18 @@ func (m *observerManager) doFireCustom(evt EventType, e Entity, mask, entityMask
 	}
 }
 
+// Reset the observer manager.
 func (m *observerManager) Reset() {
 	if len(m.indices) == 0 {
 		m.maxEventType = 0
 		return
 	}
 
-	for _, idx := range m.indices {
-		m.observers[idx.event][idx.idx].id = maxObserverID
-	}
-
 	for i := range m.maxEventType + 1 {
+		obs := m.observers[i]
+		for _, o := range obs {
+			o.id = maxObserverID
+		}
 		m.observers[i] = m.observers[i][:0]
 		m.hasObservers[i] = false
 		m.allComps[i].Reset()
@@ -534,7 +538,7 @@ func (m *observerManager) Reset() {
 		m.anyNoWith[i] = false
 	}
 
-	m.indices = map[observerID]observerIndex{}
+	m.indices = map[observerID]uint32{}
 	m.pool.Reset()
 	m.totalCount = 0
 	m.maxEventType = 0

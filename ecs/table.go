@@ -9,11 +9,14 @@ import (
 	"github.com/mlange-42/ark/ecs/stats"
 )
 
+// tableID is the type of table IDs.
 type tableID uint32
 
 // maxTableID is used as table ID for unused entities.
 const maxTableID = math.MaxUint32
 
+// table stores entities and components of an archetype,
+// or of a certain combination of relations inside an archetype.
 type table struct {
 	entities    entityColumn   // column for entities
 	zeroPointer unsafe.Pointer // pointer to the zero value, for fast zeroing
@@ -21,13 +24,14 @@ type table struct {
 	ids         []ID           // components IDs in the same order as in the archetype
 	columns     []column       // columns in dense order
 	relationIDs []relationID   // all relation IDs and targets of the table
-	id          tableID
-	archetype   archetypeID
-	len         uint32
-	cap         uint32
-	isFree      bool
+	id          tableID        // ID of the table
+	archetype   archetypeID    // ID of the table's archetype
+	len         uint32         // length of the table (number of rows)
+	cap         uint32         // capacity of the table (number of rows)
+	isFree      bool           // Whether the table is currently free
 }
 
+// newTable creates a new table.
 func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentRegistry, targets []Entity, relationIDs []relationID) table {
 	entities := newEntityColumn(capacity)
 	columns := make([]column, len(archetype.components))
@@ -57,6 +61,7 @@ func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentR
 	}
 }
 
+// Recycle the table, using the given relations and targets, indexed by column index.
 func (t *table) Recycle(targets []Entity, relationIDs []relationID) {
 	t.relationIDs = relationIDs
 	for i := range t.columns {
@@ -65,10 +70,13 @@ func (t *table) Recycle(targets []Entity, relationIDs []relationID) {
 	t.isFree = false
 }
 
+// HasRelations returns whether the table contains any relation components.
 func (t *table) HasRelations() bool {
 	return len(t.relationIDs) > 0
 }
 
+// Add an entity to the table.
+// Returns the entity's new row index.
 func (t *table) Add(entity Entity) uint32 {
 	idx := t.len
 	t.Alloc(1)
@@ -76,30 +84,37 @@ func (t *table) Add(entity Entity) uint32 {
 	return idx
 }
 
+// Get a pointer to the given component at the given index.
 func (t *table) Get(component ID, index uintptr) unsafe.Pointer {
 	return t.components[component.id].Get(index)
 }
 
-func (t *table) Column(component ID) *column {
-	return t.components[component.id]
-}
-
+// Has returns whether the table has a column for the given component.
 func (t *table) Has(component ID) bool {
 	return t.components[component.id] != nil
 }
 
+// GetEntity returns the entity at the given row index.
 func (t *table) GetEntity(index uintptr) Entity {
 	return t.entities.GetEntity(index)
 }
 
+// GetRelation returns the target entity for the given relation component.
 func (t *table) GetRelation(component ID) Entity {
 	return t.components[component.id].target
 }
 
+// Column returns the column pointer for the given component ID.
+func (t *table) Column(component ID) *column {
+	return t.components[component.id]
+}
+
+// Set the value of a component at the given row index from a column from another table.
 func (t *table) Set(component ID, index uint32, src *column, srcIndex int) {
 	t.components[component.id].Set(index, src, srcIndex)
 }
 
+// SetEntity sets the entity at the given row index.
 func (t *table) SetEntity(index uint32, entity Entity) {
 	t.entities.Set(index, unsafe.Pointer(&entity))
 }
@@ -137,6 +152,8 @@ func (t *table) Shrink(minCapacity uint32) bool {
 	return true
 }
 
+// adjustCapacity changes the capacity of all columns.
+// Does not check whether the change is necessary or feasible.
 func (t *table) adjustCapacity(cap uint32) {
 	t.cap = cap
 
@@ -204,6 +221,8 @@ func (t *table) Remove(index uint32) bool {
 	return swapped
 }
 
+// Reset the table.
+// Clears all columns and sets the number of rows to zero.
 func (t *table) Reset() {
 	for c := range t.columns {
 		t.columns[c].Reset(t.len, t.zeroPointer)
@@ -211,6 +230,7 @@ func (t *table) Reset() {
 	t.len = 0
 }
 
+// AddAll adds all entities with components from another table to this table.
 func (t *table) AddAll(from *table, count uint32) {
 	t.Alloc(count)
 	t.entities.CopyToEnd(&from.entities, t.len, count)
@@ -219,11 +239,14 @@ func (t *table) AddAll(from *table, count uint32) {
 	}
 }
 
+// AddAllEntities adds all entities (without components) from another table to this table.
 func (t *table) AddAllEntities(from *table, count uint32) {
 	t.Alloc(count)
 	t.entities.CopyToEnd(&from.entities, t.len, count)
 }
 
+// MatchesExact returns whether this table matches the given relations exactly and exhaustively.
+// Unspecified relations are not allowed.
 func (t *table) MatchesExact(relations []relationID) bool {
 	if len(relations) < len(t.relationIDs) {
 		panic("relation targets must be fully specified")
@@ -248,6 +271,8 @@ func (t *table) MatchesExact(relations []relationID) bool {
 	return true
 }
 
+// Matches returns whether this table matches the given relations.
+// Unspecified relations are allowed.
 func (t *table) Matches(relations []relationID) bool {
 	if len(relations) == 0 || !t.HasRelations() {
 		return true
@@ -263,6 +288,7 @@ func (t *table) Matches(relations []relationID) bool {
 	return true
 }
 
+// Len returns the length of the table (number of rows).
 func (t *table) Len() int {
 	return int(t.len)
 }

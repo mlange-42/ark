@@ -7,6 +7,9 @@ import (
 	"unsafe"
 )
 
+// storage is the central storage for entities and components.
+//
+// Also manages the query cache and observers.
 type storage struct {
 	entities           []entityIndex      // Entity positions in archetypes, indexed by entity ID
 	isTarget           []bool             // Whether each entity is a target of a relationship
@@ -27,10 +30,12 @@ type storage struct {
 	mu                 sync.Mutex         // Mutex for parallel query startup/close
 }
 
+// componentStorage is an index for faster access of table columns by component ID.
 type componentStorage struct {
 	columns []*columnLayout
 }
 
+// slices for re-use, to avoid allocations.
 type slices struct {
 	batches []batchTable
 	tables  []tableID
@@ -45,6 +50,7 @@ type slices struct {
 	relationsPool slicePool[relationID]
 }
 
+// newSlices creates a new slices.
 func newSlices() slices {
 	return slices{
 		batches: make([]batchTable, 0, 32),
@@ -61,6 +67,8 @@ func newSlices() slices {
 	}
 }
 
+// newStorage creates a new storage with the given initial number of archetypes
+// and the given initial entities capacity.
 func newStorage(numArchetypes int, capacity ...int) storage {
 	config := newConfig(capacity...)
 
@@ -99,6 +107,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 }
 
+// findOrCreateTable finds or creates the table resulting from a given table and component additions and removals.
 func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, relations []relationID, outMask *bitMask) (*table, *archetype, bool) {
 	startNode := s.archetypes[oldTable.archetype].node
 
@@ -108,7 +117,6 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 		arch = &s.archetypes[archID]
 	} else {
 		arch = s.createArchetype(node)
-		node.archetype = arch.id
 	}
 
 	relationRemoved := false
@@ -150,6 +158,7 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 	return table, arch, relationRemoved
 }
 
+// findOrCreateTable finds or creates the table resulting from a given table and component additions.
 func (s *storage) findOrCreateTableAdd(oldTable *table, add []ID, relations []relationID, outMask *bitMask) (*table, *archetype) {
 	startNode := s.archetypes[oldTable.archetype].node
 
@@ -159,7 +168,6 @@ func (s *storage) findOrCreateTableAdd(oldTable *table, add []ID, relations []re
 		arch = &s.archetypes[archID]
 	} else {
 		arch = s.createArchetype(node)
-		node.archetype = arch.id
 	}
 
 	allRelations := s.slices.relations
@@ -189,6 +197,7 @@ func (s *storage) findOrCreateTableAdd(oldTable *table, add []ID, relations []re
 	return table, arch
 }
 
+// findOrCreateTable finds or creates the table resulting from a given table and component removals.
 func (s *storage) findOrCreateTableRemove(oldTable *table, remove []ID, outMask *bitMask) (*table, *archetype, bool) {
 	startNode := s.archetypes[oldTable.archetype].node
 
@@ -198,7 +207,6 @@ func (s *storage) findOrCreateTableRemove(oldTable *table, remove []ID, outMask 
 		arch = &s.archetypes[archID]
 	} else {
 		arch = s.createArchetype(node)
-		node.archetype = arch.id
 	}
 
 	relationRemoved := false
@@ -221,6 +229,7 @@ func (s *storage) findOrCreateTableRemove(oldTable *table, remove []ID, outMask 
 	return table, arch, relationRemoved
 }
 
+// AddComponent adds a component ID to the storage
 func (s *storage) AddComponent(id uint8) {
 	if len(s.components) != int(id) {
 		panic("components can only be added to a storage sequentially")
@@ -268,6 +277,7 @@ func (s *storage) RemoveEntity(entity Entity) {
 	}
 }
 
+// Reset the storage.
 func (s *storage) Reset() {
 	s.entities = s.entities[:reservedEntities]
 	s.entityPool.Reset()
@@ -281,6 +291,9 @@ func (s *storage) Reset() {
 	}
 }
 
+// get returns a pointer to the component of given ID for the given entity.
+//
+// Checks whether the entity is alive.
 func (s *storage) get(entity Entity, component ID) unsafe.Pointer {
 	if !s.entityPool.Alive(entity) {
 		panic("can't get component of a dead entity")
@@ -288,12 +301,18 @@ func (s *storage) get(entity Entity, component ID) unsafe.Pointer {
 	return s.getUnchecked(entity, component)
 }
 
+// get returns a pointer to the component of given ID for the given entity.
+//
+// Does NOT check whether the entity is alive.
 func (s *storage) getUnchecked(entity Entity, component ID) unsafe.Pointer {
 	s.checkHasComponent(entity, component)
 	index := s.entities[entity.id]
 	return s.tables[index.table].Get(component, uintptr(index.row))
 }
 
+// get returns whether the given entity has the given component.
+//
+// Checks whether the entity is alive.
 func (s *storage) has(entity Entity, component ID) bool {
 	if !s.entityPool.Alive(entity) {
 		panic("can't check component of a dead entity")
@@ -301,11 +320,19 @@ func (s *storage) has(entity Entity, component ID) bool {
 	return s.hasUnchecked(entity, component)
 }
 
+// get returns whether the given entity has the given component.
+//
+// Does NOT check whether the entity is alive.
 func (s *storage) hasUnchecked(entity Entity, component ID) bool {
 	index := s.entities[entity.id]
 	return s.tables[index.table].Has(component)
 }
 
+// getRelation returns the relation target target of the given entity for the given component.
+//
+// Checks whether the entity is alive.
+// Also checks whether the entity has the component.
+// Returns the zero entity if the component is not a relation.
 func (s *storage) getRelation(entity Entity, comp ID) Entity {
 	if !s.entityPool.Alive(entity) {
 		panic("can't get relation for a dead entity")
@@ -314,29 +341,43 @@ func (s *storage) getRelation(entity Entity, comp ID) Entity {
 	return s.tables[s.entities[entity.id].table].GetRelation(comp)
 }
 
+// getRelationUnchecked returns the relation target target of the given entity for the given component.
+//
+// Does NOT check whether the entity is alive.
+// Also checks whether the entity has the component.
+// Returns the zero entity if the component is not a relation.
 func (s *storage) getRelationUnchecked(entity Entity, comp ID) Entity {
 	s.checkHasComponent(entity, comp)
 	return s.tables[s.entities[entity.id].table].GetRelation(comp)
 }
 
+// registerTargets registers the target entities of the given relations
+// as relation targets.
+//
+// Required for cleanup when relation target entities are removed from the world.
 func (s *storage) registerTargets(relations []relationID) {
 	for _, rel := range relations {
 		s.isTarget[rel.target.id] = true
 	}
 }
 
+// registerFilter registers a filter and relations.
 func (s *storage) registerFilter(filter *filter, relations []relationID) {
 	s.cache.register(s, filter, relations)
 }
 
+// unregisterFilter un-registers a filter.
 func (s *storage) unregisterFilter(filter *filter) {
 	s.cache.unregister(filter)
 }
 
+// getRegisteredFilter returns the cache entry for a cacheID.
 func (s *storage) getRegisteredFilter(id cacheID) *cacheEntry {
 	return s.cache.getEntry(id)
 }
 
+// createEntity creates an entity in the given table.
+// Returns the entity and its table row.
 func (s *storage) createEntity(table tableID) (Entity, uint32) {
 	entity := s.entityPool.Get()
 
@@ -350,6 +391,7 @@ func (s *storage) createEntity(table tableID) (Entity, uint32) {
 	return entity, idx
 }
 
+// createEntities creates multiple entities in the given table.
 func (s *storage) createEntities(table *table, count int) {
 	startIdx := table.Len()
 	table.Alloc(uint32(count))
@@ -370,11 +412,13 @@ func (s *storage) createEntities(table *table, count int) {
 	}
 }
 
+// createArchetype creates an archetype for the given node and adds it to the storage.
 func (s *storage) createArchetype(node *node) *archetype {
 	comps := node.mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
 	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, &s.registry))
 	archetype := &s.archetypes[index]
+	node.archetype = archetype.id
 
 	s.allArchetypes = append(s.allArchetypes, archetype.id)
 	for _, id := range archetype.components {
@@ -388,6 +432,8 @@ func (s *storage) createArchetype(node *node) *archetype {
 	return archetype
 }
 
+// createTable creates a new table in the given archetype, for the given relations.
+// May recycle a free table.
 func (s *storage) createTable(archetype *archetype, relations []relationID) *table {
 	targets := make([]Entity, len(archetype.components))
 
@@ -497,7 +543,11 @@ func (s *storage) moveEntities(src, dst *table, count uint32) {
 	src.Reset()
 }
 
-// the result should be recycled!
+// getExchangeTargetsUnchecked returns the relations resulting from changing relations on a table.
+//
+// Does not check validity of relations.
+//
+// The returned slice comes from the pool and should be recycled.
 func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relationID) []relationID {
 	targets := s.slices.entities
 	for i := range oldTable.columns {
@@ -526,6 +576,9 @@ func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relat
 	return result
 }
 
+// getExchangeTargets returns the relations resulting from changing relations on a table.
+//
+// Checks validity of relations.
 func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, mask *bitMask) ([]relationID, bool) {
 	changed := false
 	targets := s.slices.entities
@@ -564,8 +617,10 @@ func (s *storage) getExchangeTargets(oldTable *table, relations []relationID, ma
 	return result, true
 }
 
-// the returned slice comes from the pool and should be recycled.
-func (s *storage) getTables(batch *Batch) []tableID {
+// getBatchTables returns the IDs of all tables that match the given batch.
+//
+// The returned slice comes from the pool and should be recycled.
+func (s *storage) getBatchTables(batch *Batch) []tableID {
 	tables := s.slices.tables
 
 	if batch.filter.cache != maxCacheID {
@@ -607,7 +662,8 @@ func (s *storage) getTables(batch *Batch) []tableID {
 	return tables
 }
 
-func (s *storage) getTableIDs(filter *filter, relations []relationID) []tableID {
+// getCacheTables returns the IDs of all tables matching the given filter and relations.
+func (s *storage) getCacheTables(filter *filter, relations []relationID) []tableID {
 	tables := []tableID{}
 
 	for i := range s.archetypes {

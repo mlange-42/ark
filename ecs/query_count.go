@@ -2,6 +2,7 @@ package ecs
 
 import "fmt"
 
+// entityAtCache return the entity at a specific index in a query, for cached queries.
 func entityAtCache(storage *storage, cache *cacheEntry, relations []relationID, index uint32) Entity {
 	count := uint32(0)
 	for _, tableID := range cache.tables.tables {
@@ -21,6 +22,7 @@ func entityAtCache(storage *storage, cache *cacheEntry, relations []relationID, 
 	panic(fmt.Sprintf("entity index %d out of bounds for query with %d entities", index, count))
 }
 
+// entityAtCache return the entity at a specific index in a query, for uncached queries.
 func entityAt(storage *storage, filter *filter, relations []relationID, archetypes []archetypeID, index uint32) Entity {
 	count := uint32(0)
 	for _, arch := range archetypes {
@@ -55,6 +57,7 @@ func entityAt(storage *storage, filter *filter, relations []relationID, archetyp
 	panic(fmt.Sprintf("entity index %d out of bounds for query with %d entities", index, count))
 }
 
+// countQueryCache returns the number of entities in a query, for cached queries.
 func countQueryCache(storage *storage, cache *cacheEntry, relations []relationID) int {
 	count := 0
 	for _, tableID := range cache.tables.tables {
@@ -70,6 +73,7 @@ func countQueryCache(storage *storage, cache *cacheEntry, relations []relationID
 	return count
 }
 
+// countQueryCache returns the number of entities in a query, for uncached queries.
 func countQuery(storage *storage, filter *filter, relations []relationID, archetypes []archetypeID) int {
 	count := 0
 	for _, arch := range archetypes {

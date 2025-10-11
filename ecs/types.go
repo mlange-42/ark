@@ -8,10 +8,12 @@ type ID struct {
 	id uint8
 }
 
+// id creates a component ID from an int value. For testing.
 func id(id int) ID {
 	return ID{uint8(id)}
 }
 
+// id creates a component ID from an uint8 value. For testing.
 func id8(id uint8) ID {
 	return ID{id}
 }
@@ -26,6 +28,7 @@ type IDs struct {
 	data []ID
 }
 
+// newIDs returns a new immutable list of [ID] values.
 func newIDs(ids []ID) IDs {
 	return IDs{
 		data: ids,
