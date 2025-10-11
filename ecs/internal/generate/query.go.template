@@ -38,7 +38,7 @@ type Query{{.}}{{$generics}} struct {
 	table      *table
 	cache      *cacheEntry
 	{{- range $upper}}
-	column{{.}}    *column
+	column{{.}}    *columnLayout
 	{{- end}}
 	relations  []relationID
 	tables     []tableID
