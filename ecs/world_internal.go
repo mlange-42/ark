@@ -4,6 +4,16 @@ import (
 	"reflect"
 )
 
+// batchTable is a helper struct for collecting tables for batch processing.
+type batchTable struct {
+	oldTable tableID
+	newTable tableID
+	start    uint32
+	len      uint32
+}
+
+// newEntity creates a new entity.
+// Returns the entity and its bit.mask.
 func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 	w.checkLocked()
 	mask := bitMask{}
@@ -14,6 +24,8 @@ func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 	return entity, &newArch.mask
 }
 
+// newEntities creates multiple new entities.
+// Returns the table containing the entities, and their start index in the table.
 func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableID, int) {
 	mask := bitMask{}
 	newTable, _ := w.storage.findOrCreateTableAdd(&w.storage.tables[0], ids, relations, &mask)
@@ -23,6 +35,8 @@ func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableI
 	return newTable.id, startIdx
 }
 
+// add components to an entity.
+// Returns the entity's old and new bit-mask.
 func (w *World) add(entity Entity, add []ID, relations []relationID) (*bitMask, *bitMask) {
 	w.checkLocked()
 
@@ -64,6 +78,7 @@ func (w *World) add(entity Entity, add []ID, relations []relationID) (*bitMask, 
 	return &oldArchetype.mask, &newArch.mask
 }
 
+// remove components from an entity.
 func (w *World) remove(entity Entity, rem []ID) {
 	w.checkLocked()
 
@@ -114,6 +129,8 @@ func (w *World) remove(entity Entity, rem []ID) {
 	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
 }
 
+// remove components on an entity.
+// Returns the entity's old and new bit-mask.
 func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relationID) (*bitMask, *bitMask) {
 	w.checkLocked()
 
@@ -170,13 +187,8 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 	return &oldArchetype.mask, &newArch.mask
 }
 
-type batchTable struct {
-	oldTable tableID
-	newTable tableID
-	start    uint32
-	len      uint32
-}
-
+// exchangeBatch batch-exchanges components on entities.
+//
 //nolint:gocyclo
 func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	relations []relationID, fn func(table tableID, start, len uint32)) {
@@ -290,6 +302,8 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 	w.unlock(lock)
 }
 
+// exchangeTable performs batch-exchange on a single table.
+// Returns the start index of the entities in the new table and number of entities.
 func (w *World) exchangeTable(oldTableID, newTableID tableID, relations []relationID) (uint32, uint32) {
 	oldTable := &w.storage.tables[oldTableID]
 
@@ -390,6 +404,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	}
 }
 
+// setRelationsBatch batch-changes entity relations.
 func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(table tableID, start, len int)) {
 	w.checkLocked()
 
@@ -425,6 +440,7 @@ func (w *World) setRelationsBatch(batch *Batch, relations []relationID, fn func(
 	w.unlock(lock)
 }
 
+// setRelationsTable batch-changes entity relations for a single table.
 func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relationID, fn func(table tableID, start, len int), hasObserver bool) {
 	var changeMask bitMask
 	var maskPointer *bitMask
@@ -479,6 +495,8 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 	}
 }
 
+// componentID returns the component ID for a runtime component type.
+// Registers the type if necessary, and adds it to the storage.
 func (w *World) componentID(tp reflect.Type) ID {
 	id, newID := w.storage.registry.ComponentID(tp)
 	if newID {
@@ -491,15 +509,19 @@ func (w *World) componentID(tp reflect.Type) ID {
 	return ID{id: id}
 }
 
+// resourceID returns the resource ID for a runtime resource type.
+// Registers the resource of necessary.
 func (w *World) resourceID(tp reflect.Type) ResID {
 	id, _ := w.resources.registry.ComponentID(tp)
 	return ResID{id: id}
 }
 
+// registerObserver adds an observer to the [observerManager].
 func (w *World) registerObserver(obs *Observer) {
 	w.storage.observers.AddObserver(obs, w)
 }
 
+// unregisterObserver removes an observer from the [observerManager].
 func (w *World) unregisterObserver(obs *Observer) {
 	w.storage.observers.RemoveObserver(obs)
 }
@@ -521,6 +543,7 @@ func (w *World) checkLocked() {
 	}
 }
 
+// emitEvent distributes an event to the [observerManager].
 func (w *World) emitEvent(e *Event, entity Entity) {
 	var mask *bitMask
 	if entity.IsZero() {

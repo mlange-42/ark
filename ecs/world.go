@@ -9,9 +9,9 @@ import (
 
 // World is the central type holding entity and component data, as well as resources.
 type World struct {
-	stats     *stats.World
-	resources Resources
-	storage   storage
+	stats     *stats.World // World statistics, for re-use
+	resources Resources    // Registered resources
+	storage   storage      // The world's storage
 }
 
 // NewWorld creates a new [World].
