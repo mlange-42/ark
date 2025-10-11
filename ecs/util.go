@@ -55,7 +55,7 @@ func isRelation(tp reflect.Type) bool {
 		return false
 	}
 	field := tp.Field(0)
-	return field.Type == relationTp && field.Name == relationTp.Name()
+	return field.Type == relationType && field.Name == relationType.Name()
 }
 
 // isTrivial checks if a type is "trivial" (contains no pointers, slices, maps, strings, or channels).
