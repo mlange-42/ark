@@ -77,7 +77,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 
 	archetypes := make([]archetype, 0, numArchetypes)
-	archetypes = append(archetypes, newArchetype(0, 0, &bitMask{}, nil, []*table{}, &reg))
+	archetypes = append(archetypes, newArchetype(0, 0, &bitMask{}, nil, &reg))
 	tables := newPagesSlice[table](32)
 	tables.Add(newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, nil, nil))
 
@@ -376,7 +376,7 @@ func (s *storage) createEntities(table *table, count int) {
 func (s *storage) createArchetype(node *node) *archetype {
 	comps := node.mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
-	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, &s.registry))
+	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, &s.registry))
 	archetype := &s.archetypes[index]
 
 	s.allArchetypes = append(s.allArchetypes, archetype.id)

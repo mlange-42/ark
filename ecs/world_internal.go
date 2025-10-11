@@ -347,8 +347,6 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	newTable, ok := oldArch.GetTable(&w.storage, newRelations)
 	if !ok {
 		newTable = w.storage.createTable(oldArch, newRelations)
-		// Get the old table again, as pointers may have changed.
-		oldTable = oldTable
 	}
 
 	if w.storage.observers.HasObservers(OnRemoveRelations) {

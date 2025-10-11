@@ -12,7 +12,7 @@ func TestNewWorld(t *testing.T) {
 	w := NewWorld(1024)
 
 	expectEqual(t, 2, len(w.storage.entities))
-	expectEqual(t, 1, len(w.storage.tables))
+	expectEqual(t, 1, w.storage.tables.Len())
 	expectEqual(t, 1, len(w.storage.archetypes))
 	expectEqual(t, 1, len(w.storage.archetypes[0].tables.tables))
 }
@@ -30,7 +30,7 @@ func TestWorldNewEntity(t *testing.T) {
 	expectEqual(t, 12, len(w.storage.entities))
 
 	idx := w.storage.entities[4]
-	expectEqual(t, 0, idx.table)
+	expectEqual(t, 0, idx.table.id)
 	expectEqual(t, 2, idx.row)
 }
 
@@ -347,6 +347,7 @@ func TestWorldSetRelations(t *testing.T) {
 
 func TestWorldRelationRemoveTarget(t *testing.T) {
 	w := NewWorld(16)
+	st := &w.storage
 
 	_ = ComponentID[CompA](&w)
 	_ = ComponentID[CompB](&w)
@@ -373,15 +374,15 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 	}
 
 	archetype := &w.storage.archetypes[1]
-	expectSlicesEqual(t, []tableID{3, 2}, archetype.tables.tables)
-	expectSlicesEqual(t, []tableID{1}, archetype.freeTables)
+	expectSlicesEqual(t, []*table{st.tables.Get(3), st.tables.Get(2)}, archetype.tables.tables)
+	expectSlicesEqual(t, []*table{st.tables.Get(1)}, archetype.freeTables)
 
 	for _, e := range entities {
 		childMap.SetRelation(e, parent3)
 		expectEqual(t, parent3, childMap.GetRelation(e))
 	}
-	expectSlicesEqual(t, []tableID{3, 2, 1}, archetype.tables.tables)
-	expectSlicesEqual(t, []tableID{}, archetype.freeTables)
+	expectSlicesEqual(t, []*table{st.tables.Get(3), st.tables.Get(2), st.tables.Get(1)}, archetype.tables.tables)
+	expectSlicesEqual(t, []*table{}, archetype.freeTables)
 
 	filter := NewFilter2[Position, ChildOf](&w)
 	query := filter.Query(RelIdx(1, parent3))
@@ -448,8 +449,8 @@ func TestWorldReset(t *testing.T) {
 
 	world.Reset()
 
-	expectEqual(t, 0, world.storage.tables[0].Len())
-	expectEqual(t, 0, world.storage.tables[1].Len())
+	expectEqual(t, 0, world.storage.tables.Get(0).Len())
+	expectEqual(t, 0, world.storage.tables.Get(1).Len())
 	expectEqual(t, 0, world.storage.entityPool.Len())
 	expectEqual(t, 2, len(world.storage.entities))
 	expectEqual(t, 2, len(world.storage.isTarget))
@@ -739,13 +740,13 @@ func TestWorldShrinkSimple(t *testing.T) {
 		})
 
 	w.NewEntities(1024, nil)
-	expectEqual(t, 1024, w.storage.tables[0].cap)
+	expectEqual(t, 1024, w.storage.tables.Get(0).cap)
 
 	filter := NewFilter0(&w)
 	w.RemoveEntities(filter.Batch(), nil)
 
 	w.Shrink(time.Second)
-	expectEqual(t, 128, w.storage.tables[0].cap)
+	expectEqual(t, 128, w.storage.tables.Get(0).cap)
 }
 
 func TestWorldShrinkRelations(t *testing.T) {
@@ -765,33 +766,33 @@ func TestWorldShrinkRelations(t *testing.T) {
 		toRemove = append(toRemove, entity)
 	}, Rel[ChildOf](parent3))
 
-	expectEqual(t, 64, w.storage.tables[0].cap)
-	expectEqual(t, 128, w.storage.tables[1].cap)
-	expectEqual(t, 128, w.storage.tables[2].cap)
-	expectEqual(t, 128, w.storage.tables[3].cap)
+	expectEqual(t, 64, w.storage.tables.Get(0).cap)
+	expectEqual(t, 128, w.storage.tables.Get(1).cap)
+	expectEqual(t, 128, w.storage.tables.Get(2).cap)
+	expectEqual(t, 128, w.storage.tables.Get(3).cap)
 
 	w.RemoveEntities(childFilter.Batch(Rel[ChildOf](parent1)), nil)
 	w.RemoveEntity(parent1)
-	expectTrue(t, w.storage.tables[1].isFree)
-	expectEqual(t, 128, w.storage.tables[1].cap)
+	expectTrue(t, w.storage.tables.Get(1).isFree)
+	expectEqual(t, 128, w.storage.tables.Get(1).cap)
 
 	w.RemoveEntities(childFilter.Batch(Rel[ChildOf](parent2)), nil)
-	expectFalse(t, w.storage.tables[2].isFree)
-	expectEqual(t, 128, w.storage.tables[2].cap)
+	expectFalse(t, w.storage.tables.Get(2).isFree)
+	expectEqual(t, 128, w.storage.tables.Get(2).cap)
 
 	for i := 64; i < len(toRemove); i++ {
 		w.RemoveEntity(toRemove[i])
 	}
-	expectFalse(t, w.storage.tables[3].isFree)
-	expectEqual(t, 128, w.storage.tables[3].cap)
+	expectFalse(t, w.storage.tables.Get(3).isFree)
+	expectEqual(t, 128, w.storage.tables.Get(3).cap)
 
 	w.Shrink()
-	expectTrue(t, w.storage.tables[1].isFree)
-	expectEqual(t, 32, w.storage.tables[1].cap)
-	expectTrue(t, w.storage.tables[2].isFree)
-	expectEqual(t, 32, w.storage.tables[2].cap)
-	expectFalse(t, w.storage.tables[3].isFree)
-	expectEqual(t, 64, w.storage.tables[3].cap)
+	expectTrue(t, w.storage.tables.Get(1).isFree)
+	expectEqual(t, 32, w.storage.tables.Get(1).cap)
+	expectTrue(t, w.storage.tables.Get(2).isFree)
+	expectEqual(t, 32, w.storage.tables.Get(2).cap)
+	expectFalse(t, w.storage.tables.Get(3).isFree)
+	expectEqual(t, 64, w.storage.tables.Get(3).cap)
 }
 
 func TestWorldShrinkTime(t *testing.T) {
