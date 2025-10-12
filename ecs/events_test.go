@@ -22,7 +22,7 @@ func TestNewEventType(t *testing.T) {
 		}
 	}
 
-	expectPanicsWithValue(t, "reached maximum number of 248 custom event types",
+	expectPanicsWithValue(t, "reached maximum number of 249 custom event types",
 		func() { reg.NewEventType() })
 }
 
