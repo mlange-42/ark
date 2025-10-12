@@ -71,7 +71,7 @@ func (w *World) add(entity Entity, add []ID, relations []relationID) (*bitMask, 
 
 	for _, id := range oldArchetype.components {
 		if mask.Get(id.id) {
-			newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
+			newTable.Set(id, newIndex, oldTable.Column(id), index.row)
 		}
 	}
 
@@ -126,7 +126,7 @@ func (w *World) remove(entity Entity, rem []ID) {
 
 	for _, id := range oldArchetype.components {
 		if mask.Get(id.id) {
-			newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
+			newTable.Set(id, newIndex, oldTable.Column(id), index.row)
 		}
 	}
 
@@ -180,7 +180,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 
 	for _, id := range oldArchetype.components {
 		if mask.Get(id.id) {
-			newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
+			newTable.Set(id, newIndex, oldTable.Column(id), index.row)
 		}
 	}
 
@@ -395,7 +395,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	newIndex := newTable.Add(entity)
 
 	for _, id := range oldArch.components {
-		newTable.Set(id, newIndex, oldTable.Column(id), int(index.row))
+		newTable.Set(id, newIndex, oldTable.Column(id), index.row)
 	}
 
 	swapped := oldTable.Remove(index.row)

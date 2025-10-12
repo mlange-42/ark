@@ -110,8 +110,14 @@ func (t *table) Column(component ID) *column {
 }
 
 // Set the value of a component at the given row index from a column from another table.
-func (t *table) Set(component ID, index uint32, src *column, srcIndex int) {
+func (t *table) Set(component ID, index uint32, src *column, srcIndex uint32) {
 	t.components[component.id].Set(index, src, srcIndex)
+}
+
+// Copy the value of a component to the given row index from another index in the same column.
+func (t *table) Copy(component ID, index uint32, srcIndex uint32) {
+	column := t.components[component.id]
+	column.Set(index, column, srcIndex)
 }
 
 // SetEntity sets the entity at the given row index.
