@@ -34,6 +34,24 @@ func TestWorldNewEntity(t *testing.T) {
 	expectEqual(t, 2, idx.row)
 }
 
+func TestWorldCopyEntity(t *testing.T) {
+	w := NewWorld(8)
+	mapper := NewMap3[Position, Velocity, Heading](&w)
+
+	e := mapper.NewEntity(&Position{1, 2}, &Velocity{3, 4}, &Heading{5})
+	w.RemoveEntity(w.NewEntity())
+
+	for i := range 10 {
+		e2 := w.CopyEntity(e)
+		expectEqual(t, i+3, int(e2.ID()))
+
+		pos, vel, head := mapper.Get(e2)
+		expectEqual(t, Position{1, 2}, *pos)
+		expectEqual(t, Velocity{3, 4}, *vel)
+		expectEqual(t, Heading{5}, *head)
+	}
+}
+
 func TestWorldExchange(t *testing.T) {
 	w := NewWorld(2)
 
