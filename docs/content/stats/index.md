@@ -25,7 +25,7 @@ All these types have a method `String()` to bring them into a compact, human-rea
 Which prints:
 
 ```text
-World     -- Components: 2, Archetypes: 2, Filters: 0, Memory: 56.0 kB, Locked: false
+World     -- Components: 2, Archetypes: 2, Filters: 0, Observers: 0, Memory: 4.7/56.0 kB, Locked: false
              Components: Position, Heading
 Entities  -- Used: 100, Recycled: 0, Total: 100, Capacity: 1026
 Archetype -- Tables:    1, Comps:  0, Entities:      0, Cap:   1024, Mem:     8.0 kB, Per entity:    8 B
