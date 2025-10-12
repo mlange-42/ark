@@ -17,13 +17,13 @@ We don't see it in the generic API, but we can use it for more flexibility in th
 IDs can be obtained by the function {{< api ecs ComponentID >}}.
 If a component is not yet registered, it gets registered upon first use.
 
-{{< code-func unsafe_test.go TestUnsafeIDs >}}
+{{< code-func unsafe_test.go TestUnsafeIDs 0 4 >}}
 
 ## Creating entities
 
 Entities are created with {{< api ecs Unsafe.NewEntity >}}, giving the desired component IDs:
 
-{{< code-func unsafe_test.go TestUnsafeNewEntity >}}
+{{< code-func unsafe_test.go TestUnsafeNewEntity 0 1 >}}
 
 ## Filters and queries
 
@@ -40,7 +40,7 @@ Filters and queries work similar to the generic API, but also component IDs inst
 
 Components of entities can be accessed outside queries using {{< api ecs Unsafe.Get >}}/{{< api ecs Unsafe.Has >}}:
 
-{{< code-func unsafe_test.go TestUnsafeGet >}}
+{{< code-func unsafe_test.go TestUnsafeGet 0 3 >}}
 
 > [!IMPORTANT]
 > Again, note the type cast! See above for details.

@@ -28,7 +28,7 @@ It is a dedicated mapper for a single component and provides a few additional me
 
 Component mappers are also used to access components for specific entities:
 
-{{< code-func operations_test.go TestComponentMapperGet >}}
+{{< code-func operations_test.go TestComponentMapperGet 0 12 >}}
 
 > [!IMPORTANT]
 > The component pointers obtained should never be stored

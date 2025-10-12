@@ -27,7 +27,7 @@ and changes are reflected in code that retrieves the resource from the world (se
 
 Resources can be retrieved from the world by their type, with {{< api ecs GetResource >}}:
 
-{{< code-func resources_test.go TestResourceWorld >}}
+{{< code-func resources_test.go TestResourceWorld 0 2 >}}
 
 However, this method has an overhead of approx. 20ns for the type lookup.
 It is sufficient for one-time use of a resource.
@@ -38,7 +38,7 @@ When accessing a resource regularly, [Resource mappers](#resource-mappers) shoul
 Resource mappers are a more efficient way for retrieving a resource repeatedly.
 To use them, create an {{< api ecs Resource >}}, store it, and use it for retrieval:
 
-{{< code-func resources_test.go TestResourceMapper >}}
+{{< code-func resources_test.go TestResourceMapper 0 6 >}}
 
 This way, resource access takes less than 1ns.
 
