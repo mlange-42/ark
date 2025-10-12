@@ -13,11 +13,11 @@ It manages and stores entities ({{< api ecs Entity >}}), their [components](#com
 
 To create a world with default settings, use {{< api ecs NewWorld >}}:
 
-{{< code-func concepts_test.go TestWorldSimple >}}
+{{< code-func concepts_test.go TestWorldSimple 0 1 >}}
 
 A world can also be configured with an initial capacity for [archetypes](../architecture), the entity list, etc:
 
-{{< code-func concepts_test.go TestWorldConfig >}}
+{{< code-func concepts_test.go TestWorldConfig 0 1 >}}
 
 For systematic simulations, it is possible to reset a populated world for reuse:
 
@@ -31,7 +31,7 @@ to [components](#components) associated to it.
 
 Entities without any components can be created through the ({{< api ecs World >}}):
 
-{{< code-func concepts_test.go TestCreateEntitySimple >}}
+{{< code-func concepts_test.go TestCreateEntitySimple 0 1 >}}
 
 For creating entities with components, [component mappers](../components#component-mappers) are used.
 Entities can be removed or deleted like this:
@@ -116,7 +116,7 @@ or an acceleration structure for spatial indexing.
 
 As with [components](#components), resources are Go structs that can contain any types of variables.
 
-{{< code-func concepts_test.go TestResource >}}
+{{< code-func concepts_test.go TestResource 0 7 >}}
 
 See chapter [Resources](../resources) for more details.
 

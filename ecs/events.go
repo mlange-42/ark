@@ -68,12 +68,12 @@ type EventRegistry struct {
 // NewEventType creates a new EventType for custom events.
 // Custom event types should be stored in global variables.
 //
-// The maximum number of event types is limited to 255, with 7 predefined and 248 potential custom types.
+// The maximum number of event types is limited to 256, with 7 predefined and 249 potential custom types.
 //
 // See [Event] and [World.Event] for using custom events.
 func (r *EventRegistry) NewEventType() EventType {
 	if r.nextID > customEvent {
-		panic(fmt.Sprintf("reached maximum number of %d custom event types", customEvent))
+		panic(fmt.Sprintf("reached maximum number of %d custom event types", customEvent+1))
 	}
 	id := r.nextID
 	r.nextID++
@@ -526,8 +526,12 @@ func (m *observerManager) Reset() {
 	}
 
 	for i := range m.maxEventType + 1 {
+		if !m.hasObservers[i] {
+			continue
+		}
 		obs := m.observers[i]
 		for _, o := range obs {
+			delete(m.indices, o.id)
 			o.id = maxObserverID
 		}
 		m.observers[i] = m.observers[i][:0]
@@ -538,7 +542,6 @@ func (m *observerManager) Reset() {
 		m.anyNoWith[i] = false
 	}
 
-	m.indices = map[observerID]uint32{}
 	m.pool.Reset()
 	m.totalCount = 0
 	m.maxEventType = 0

@@ -110,6 +110,17 @@ func TestNewEventType(t *testing.T) {
 	_, _, _, _ = OnCollisionDetected, OnInputReceived, OnLevelLoaded, OnTimerElapsed
 }
 
+func TestNewEventTypeIota(t *testing.T) {
+	const (
+		OnCollisionDetected ecs.EventType = iota
+		OnInputReceived
+		OnLevelLoaded
+		OnTimerElapsed
+	)
+
+	_, _, _, _ = OnCollisionDetected, OnInputReceived, OnLevelLoaded, OnTimerElapsed
+}
+
 func TestEventEmit(t *testing.T) {
 	// Create an event registry
 	var registry = ecs.EventRegistry{}

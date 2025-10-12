@@ -1,20 +1,33 @@
 {{ $file := .Get 0 }}
 {{ $func := .Get 1 }}
+{{ $startLine := 0 }}
+{{ $endLine := 9999 }}
+{{ with .Get 2 }}{{ if ne . "" }}
+    {{ $startLine = int . }}
+{{ end }}{{ end }}
+{{ with .Get 3 }}{{ if ne . "" }}
+    {{ $endLine = int . }}
+{{ end }}{{ end }}
 {{ $startPrefix := printf "func %s(" $func }}
 {{ $endPrefix := "}" }}
+
 {{ with .Page.Resources.Get $file }}
   {{ $s := .Content }}
   {{ $t := split $s "\n" }}
   {{ $code := "" }}
   {{ $started := false }}
+  {{ $lineCount := 0 }}
   {{ range $t }}
     {{ if and ($started) (strings.HasPrefix . $endPrefix) }}
       {{ break }}
     {{ end }}
     {{ if $started }}
-      {{ $trim := strings.TrimPrefix "\t" . }}
-      {{ $code = printf "%s%s\n" $code $trim }}
-    {{end}}
+      {{ if and (ge $lineCount $startLine) (lt $lineCount $endLine) }}
+        {{ $trim := strings.TrimPrefix "\t" . }}
+        {{ $code = printf "%s%s\n" $code $trim }}
+      {{ end }}
+      {{ $lineCount = add $lineCount 1 }}
+    {{ end }}
     {{ if and (not $started) (strings.HasPrefix . $startPrefix) }}
       {{ $started = true }}
     {{ end }}

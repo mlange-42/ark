@@ -91,7 +91,7 @@ Note that, due to Go's limitations on generics, the slow generic way is not poss
 For a simpler syntax and when only a single relation component is accessed,
 {{< api ecs Map >}} can be used alternatively:
 
-{{< code-func relations_test.go TestMap >}}
+{{< code-func relations_test.go TestMap 0 17 >}}
 
 ## Batch operations
 
@@ -106,12 +106,12 @@ Both ways can be combined.
 
 Relation targets given via {{< api ecs Filter2.Relations >}} when building a filter are best used for permanent or long-lived targets.
 
-{{< code-func relations_test.go TestFilter1 >}}
+{{< code-func relations_test.go TestFilter1 0 6 >}}
 
 With [cached filters](../queries#filter-caching), the targets specified this way are included in the cache.
 For short-lived targets, it is better to pass them when building a query with {{< api ecs Filter2.Query >}}
 
-{{< code-func relations_test.go TestFilter2 >}}
+{{< code-func relations_test.go TestFilter2 0 5 >}}
 
 These targets are not cached, but the same filter can be used for different targets.
 

@@ -8,11 +8,20 @@ var registry = ecs.EventRegistry{}
 // Create event types
 var OnCollisionDetected = registry.NewEventType()
 var OnInputReceived = registry.NewEventType()
-var OnLevelLoaded = registry.NewEventType()
-var OnTimerElapsed = registry.NewEventType()
+
+// If all custom events are defined in a single place, this is also possible:
+const (
+	OnLevelLoaded ecs.EventType = iota
+	OnTimerElapsed
+)
 
 func ExampleEventRegistry() {
-	_, _, _, _ = OnCollisionDetected, OnInputReceived, OnLevelLoaded, OnTimerElapsed
+	_, _ = OnCollisionDetected, OnInputReceived
+	// Output:
+}
+
+func ExampleEventRegistry_iota() {
+	_, _ = OnLevelLoaded, OnTimerElapsed
 	// Output:
 }
 

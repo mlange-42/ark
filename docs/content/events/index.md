@@ -120,9 +120,13 @@ These events support the same filtering and observer mechanisms as built-in even
 
 Define custom event types using {{< api ecs EventRegistry.NewEventType >}}:
 
-{{< code-func events_test.go TestNewEventType >}}
+{{< code-func events_test.go TestNewEventType 0 8 >}}
 
 Ideally, custom event types are stored as global variables of the applications.
+
+Alteratively, if all custom events are defined in one place, constants can be used like this:
+
+{{< code-func events_test.go TestNewEventTypeIota 0 6 >}}
 
 Use custom events like this:
 

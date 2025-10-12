@@ -22,7 +22,7 @@ func TestNewEventType(t *testing.T) {
 		}
 	}
 
-	expectPanicsWithValue(t, "reached maximum number of 248 custom event types",
+	expectPanicsWithValue(t, "reached maximum number of 249 custom event types",
 		func() { reg.NewEventType() })
 }
 
@@ -153,5 +153,29 @@ func BenchmarkEventCreateForEmit(b *testing.B) {
 
 	for b.Loop() {
 		w.Event(CustomEvent).For(C[Position]()).Emit(e)
+	}
+}
+
+func BenchmarkObserversReset(b *testing.B) {
+	w := NewWorld()
+
+	obs := Observe(OnCreateEntity).For(C[Position]()).Do(func(e Entity) {})
+
+	for b.Loop() {
+		w.storage.observers.AddObserver(obs, &w)
+		w.storage.observers.Reset()
+	}
+}
+
+func BenchmarkObserversResetCustom(b *testing.B) {
+	w := NewWorld()
+
+	reg := EventRegistry{}
+	MyEvent := reg.NewEventType()
+	obs := Observe(MyEvent).For(C[Position]()).Do(func(e Entity) {})
+
+	for b.Loop() {
+		w.storage.observers.AddObserver(obs, &w)
+		w.storage.observers.Reset()
 	}
 }

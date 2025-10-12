@@ -27,12 +27,12 @@ func NewGrid(sx, sy int) Grid {
 
 func TestWorldSimple(t *testing.T) {
 	world := ecs.NewWorld()
-	_ = world
+	_ = &world
 }
 
 func TestWorldConfig(t *testing.T) {
 	world := ecs.NewWorld(1024)
-	_ = world
+	_ = &world
 }
 
 func TestWorldReset(t *testing.T) {
