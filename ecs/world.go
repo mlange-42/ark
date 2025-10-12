@@ -86,8 +86,26 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 func (w *World) CopyEntity(e Entity) Entity {
 	w.checkLocked()
 
-	entity, mask := w.storage.copyEntity(e)
-	w.storage.observers.FireCreateEntityIfHas(entity, mask)
+	s := &w.storage
+	entity := s.entityPool.Get()
+
+	index := s.entities[e.id]
+	table := &s.tables[index.table]
+
+	idx := table.Add(entity)
+	if int(entity.id) == len(s.entities) {
+		s.entities = append(s.entities, entityIndex{table: index.table, row: idx})
+		s.isTarget = append(s.isTarget, false)
+	} else {
+		s.entities[entity.id] = entityIndex{table: index.table, row: idx}
+	}
+
+	archetype := &s.archetypes[table.archetype]
+
+	for _, id := range archetype.components {
+		table.Set(id, idx, table.Column(id), int(index.row))
+	}
+	w.storage.observers.FireCreateEntityIfHas(entity, &archetype.mask)
 	return entity
 }
 

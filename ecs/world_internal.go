@@ -16,9 +16,19 @@ type batchTable struct {
 // Returns the entity and its bit.mask.
 func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 	w.checkLocked()
+	s := &w.storage
 	mask := bitMask{}
-	newTable, newArch := w.storage.findOrCreateTableAdd(&w.storage.tables[0], ids, relations, &mask)
-	entity, _ := w.storage.createEntity(newTable.id)
+	newTable, newArch := s.findOrCreateTableAdd(&s.tables[0], ids, relations, &mask)
+
+	entity := s.entityPool.Get()
+	idx := s.tables[newTable.id].Add(entity)
+	if int(entity.id) == len(s.entities) {
+		s.entities = append(s.entities, entityIndex{table: newTable.id, row: idx})
+		s.isTarget = append(s.isTarget, false)
+	} else {
+		s.entities[entity.id] = entityIndex{table: newTable.id, row: idx}
+	}
+
 	w.storage.registerTargets(relations)
 
 	return entity, &newArch.mask
