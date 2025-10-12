@@ -166,3 +166,16 @@ func BenchmarkObserversReset(b *testing.B) {
 		w.storage.observers.Reset()
 	}
 }
+
+func BenchmarkObserversResetCustom(b *testing.B) {
+	w := NewWorld()
+
+	reg := EventRegistry{}
+	MyEvent := reg.NewEventType()
+	obs := Observe(MyEvent).For(C[Position]()).Do(func(e Entity) {})
+
+	for b.Loop() {
+		w.storage.observers.AddObserver(obs, &w)
+		w.storage.observers.Reset()
+	}
+}

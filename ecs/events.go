@@ -531,6 +531,7 @@ func (m *observerManager) Reset() {
 		}
 		obs := m.observers[i]
 		for _, o := range obs {
+			delete(m.indices, o.id)
 			o.id = maxObserverID
 		}
 		m.observers[i] = m.observers[i][:0]
@@ -541,7 +542,6 @@ func (m *observerManager) Reset() {
 		m.anyNoWith[i] = false
 	}
 
-	m.indices = map[observerID]uint32{}
 	m.pool.Reset()
 	m.totalCount = 0
 	m.maxEventType = 0
