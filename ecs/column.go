@@ -61,7 +61,7 @@ func (c *column) CopyToEnd(from *column, ownLen uint32, count uint32) {
 }
 
 // Set overwrites the component at the given index.
-func (c *column) Set(index uint32, src *column, srcIndex int) {
+func (c *column) Set(index uint32, src *column, srcIndex uint32) {
 	if c.itemSize == 0 {
 		return
 	}
@@ -71,7 +71,7 @@ func (c *column) Set(index uint32, src *column, srcIndex int) {
 		copyPtr(comp, dst, c.itemSize)
 		return
 	}
-	copyValue(src.data, c.data, srcIndex, int(index))
+	copyValue(src.data, c.data, int(srcIndex), int(index))
 }
 
 // Zero resets the memory at the given index.
