@@ -155,3 +155,14 @@ func BenchmarkEventCreateForEmit(b *testing.B) {
 		w.Event(CustomEvent).For(C[Position]()).Emit(e)
 	}
 }
+
+func BenchmarkObserversReset(b *testing.B) {
+	w := NewWorld()
+
+	obs := Observe(OnCreateEntity).For(C[Position]()).Do(func(e Entity) {})
+
+	for b.Loop() {
+		w.storage.observers.AddObserver(obs, &w)
+		w.storage.observers.Reset()
+	}
+}
