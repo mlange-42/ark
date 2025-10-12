@@ -78,6 +78,19 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 	}
 }
 
+// CopyEntity copies an entity with all its components.
+//
+// Creates a new entity and copies the memory of all components.
+// Note that pointer-like fields in components (incl. slices and maps)
+// are copied shallow. I.e. they will point to the same address as the original.
+func (w *World) CopyEntity(e Entity) Entity {
+	w.checkLocked()
+
+	entity, mask := w.storage.copyEntity(e)
+	w.storage.observers.FireCreateEntityIfHas(entity, mask)
+	return entity
+}
+
 // Alive return whether the given entity is alive.
 //
 // In Ark, entities are returned to a pool when they are removed from the world.

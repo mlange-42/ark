@@ -391,6 +391,29 @@ func (s *storage) createEntity(table tableID) (Entity, uint32) {
 	return entity, idx
 }
 
+func (s *storage) copyEntity(e Entity) (Entity, *bitMask) {
+	entity := s.entityPool.Get()
+
+	index := s.entities[e.id]
+	table := &s.tables[index.table]
+
+	idx := table.Add(entity)
+	if int(entity.id) == len(s.entities) {
+		s.entities = append(s.entities, entityIndex{table: index.table, row: idx})
+		s.isTarget = append(s.isTarget, false)
+	} else {
+		s.entities[entity.id] = entityIndex{table: index.table, row: idx}
+	}
+
+	archetype := &s.archetypes[table.archetype]
+
+	for _, id := range archetype.components {
+		table.Set(id, idx, table.Column(id), int(index.row))
+	}
+
+	return entity, &archetype.mask
+}
+
 // createEntities creates multiple entities in the given table.
 func (s *storage) createEntities(table *table, count int) {
 	startIdx := table.Len()

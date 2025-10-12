@@ -48,6 +48,33 @@ func BenchmarkCreateEntity1Comp_1000(b *testing.B) {
 	}
 }
 
+func BenchmarkCopyEntity1Comp_1000(b *testing.B) {
+	w := NewWorld()
+	builder := NewMap1[Position](&w)
+	filter := NewFilter0(&w)
+
+	builder.NewBatchFn(1001, nil)
+	w.RemoveEntities(filter.Batch(), nil)
+
+	var e Entity
+
+	loop := func() {
+		for range 1000 {
+			_ = w.CopyEntity(e)
+		}
+	}
+
+	for b.Loop() {
+		b.StopTimer()
+		e = builder.NewEntityFn(nil)
+		b.StartTimer()
+		loop()
+		b.StopTimer()
+		w.RemoveEntities(filter.Batch(), nil)
+		b.StartTimer()
+	}
+}
+
 func BenchmarkCreateEntitiesAlloc(b *testing.B) {
 	w := NewWorld()
 	builder := NewMap1[Position](&w)
