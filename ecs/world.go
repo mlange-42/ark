@@ -326,12 +326,18 @@ func (w *World) Stats() *stats.World {
 // but never below the initial capacities specified during world initialization.
 // Further, it frees empty tables of archetypes with relations.
 //
-// Stops as soon as the time limit given by stopAfter is exceeded.
-// Returns whether there are any further shrink operations possible that were
-// not performed within the time limit.
+// The optional stopAfter argument sets a time limit for the shrink operation.
+// This allows the method to terminate early if the time budget is exceeded,
+// which is especially useful in real-time environments (e.g., games or simulations)
+// where maintaining frame rate is critical.
+//
+// If the time limit is reached before all shrink operations are completed,
+// the method returns true to indicate that further shrink work remains.
+// This enables incremental cleanup across multiple frames or update cycles.
 //
 // Note that timer resolution is limited, particularly on Windows.
-// So is will most likely not be possible to stop after microseconds or shorter.
+// On Windows, the shortest effective time limit should be around 0.5ms,
+// while it is in the range of microseconds on Unix systems.
 //
 // This method should not be used regularly!
 // Usually, memory should stay allocated for reuse when new entities are created or
