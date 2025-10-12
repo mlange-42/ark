@@ -526,6 +526,9 @@ func (m *observerManager) Reset() {
 	}
 
 	for i := range m.maxEventType + 1 {
+		if !m.hasObservers[i] {
+			continue
+		}
 		obs := m.observers[i]
 		for _, o := range obs {
 			o.id = maxObserverID
