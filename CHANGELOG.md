@@ -34,6 +34,7 @@
 - Optimizes adding/removing components by improved method inlining (#369, #376)
 - Speeds up archetype graph by 30% by removing indirections in neighbors mapping (#386)
 - Speeds up component addition and removal by separating logic for add/remove/replace (#387)
+- Optimizes entity creation by method inlining (#416)
 
 ### Documentation
 
