@@ -33,13 +33,13 @@ See [below](#combining-multiple-types) for how to react on multiple different ty
 - **OnAddComponents** &mdash; Emitted after components are added to an existing entity.
 - **OnRemoveComponents** &mdash; Emitted before components are removed from an entity.
 - **OnSetComponents** &mdash; Emitted after existing components are set from an entity.
-- **OnAddRelations** &mdash; Emitted after relation targets are added to an entity.**
-- **OnRemoveRelations** &mdash; Emitted before relation targets are removed from an entity.**
+- **OnAddRelations** &mdash; Emitted after relation targets are added to an entity.*
+- **OnRemoveRelations** &mdash; Emitted before relation targets are removed from an entity.*
 
 If multiple components are added/removed/set for an entity,
 one event is emitted for the entire operation.
 
-** *Relation events are emitted when entities with relations are created or removed, when relation components are added or removed, as well as when targets are set without changing components.*
+\* *Relation events are emitted when entities with relations are created or removed, when relation components are added or removed, as well as when targets are set without changing components.*
 
 ## Combining multiple types
 
