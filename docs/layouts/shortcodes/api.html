@@ -1,9 +1,14 @@
 {{- $pkg := .Get 0 -}}
-{{- $text := (replace $pkg "/" ".") -}}
+{{- $text := (replace $pkg "ecs/" "") -}}
+{{- $text := (replace $text "ecs" "") -}}
 {{- $link := $pkg -}}
 {{- if .Get 1 -}}
     {{- $mem := .Get 1 -}}
-    {{- $text = printf "%s.%s" $text $mem -}}
+    {{- if $text -}}
+      {{- $text = printf "%s.%s" $text $mem -}}
+    {{- else -}}
+      {{- $text = $mem -}}
+    {{- end -}}
     {{- $link = printf "%s#%s" $link $mem -}}
     {{- if .Get 2 -}}
         {{- $text = .Get 2 -}}

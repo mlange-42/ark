@@ -36,25 +36,25 @@ Archetype -- Tables:    1, Comps:  2, Entities:    100, Cap:   1024, Mem:    32.
 
 ## World stats
 
-{{< api "ecs/stats" World stats.World >}} provides world information like a list of all component types
+{{< api "ecs/stats" World >}} provides world information like a list of all component types
 and the total memory reserved for entities and components.
-Further, it contains {{< api "ecs/stats" Entities stats.Entities >}} and
-a {{< api "ecs/stats" Archetype stats.Archetype >}} for each archetype.
+Further, it contains {{< api "ecs/stats" Entities >}} and
+a {{< api "ecs/stats" Archetype >}} for each archetype.
 
 ## Entity stats
 
-{{< api "ecs/stats" Entities stats.Entities >}} contains information about the entity pool,
+{{< api "ecs/stats" Entities >}} contains information about the entity pool,
 like capacity, alive entities and available entities for recycling.
 
 ## Archetype stats
 
-{{< api "ecs/stats" Archetype stats.Archetype >}} provides information about an archetype, like its components,
+{{< api "ecs/stats" Archetype >}} provides information about an archetype, like its components,
 memory in total and per entity, and more state information.
 
-Further, it contains a {{< api "ecs/stats" Table stats.Table >}} for each table.
+Further, it contains a {{< api "ecs/stats" Table >}} for each table.
 
 ## Table stats
 
-{{< api "ecs/stats" Table stats.Table >}} contains size, capacity and memory information for a table.
+{{< api "ecs/stats" Table >}} contains size, capacity and memory information for a table.
 Tables are used to represent sub-archetypes with the same components, but a different combination
 of [relationship](../relations) targets.
