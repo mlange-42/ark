@@ -2,7 +2,6 @@ package ecs
 
 import (
 	"fmt"
-	"sync"
 	"time"
 	"unsafe"
 )
@@ -27,7 +26,6 @@ type storage struct {
 	locks              lock               // World locks
 	observers          observerManager    // Observer/event manager
 	config             config             // Storage configuration (initial capacities)
-	mu                 sync.Mutex         // Mutex for parallel query startup/close
 }
 
 // componentStorage is an index for faster access of table columns by component ID.
