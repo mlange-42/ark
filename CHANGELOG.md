@@ -1,6 +1,6 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.5.2...main)
+## [[v0.6.0]](https://github.com/mlange-42/ark/compare/v0.5.2...v0.6.0)
 
 ### Breaking changed
 
