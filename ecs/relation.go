@@ -25,14 +25,55 @@ type relationID struct {
 // Relation is the common type for specifying relationship targets.
 // It can be created with [Rel], [RelIdx] and [RelID].
 //
-//   - [Rel] is safe, but has some run-time overhead for component [ID] lookup.
-//   - [RelIdx] is fast but more error-prone.
-//   - [RelID] is used in the [Unsafe] API.
+//   - [Rel] uses a generic type parameter to identify the component.
+//     It is safe, but has some run-time overhead for component [ID] lookup on first usage.
+//   - [RelIdx] uses an index to identify the component. It is fast but more error-prone.
+//   - [RelID] uses a component ID. It is for use with the [Unsafe] API.
 type Relation struct {
 	componentType reflect.Type // Component type of the relation
 	target        Entity       // Target entity of the relation
 	component     ID           // Component ID of the relation
 	index         uint8        // Component index of the relation in a mapper or query
+}
+
+// Rel creates a new [Relation] for a component type.
+//
+// It can be used as a safer but slower alternative to [RelIdx].
+// Requires a component ID lookup when used the first time.
+// On reuse, it is as fast as [RelIdx].
+func Rel[C any](target Entity) Relation {
+	return Relation{
+		target:        target,
+		componentType: reflect.TypeFor[C](),
+		index:         255,
+	}
+}
+
+// RelIdx creates a new [Relation] for a component index.
+// The index refers to the position of the component in the generics
+// of e.g. a [Map2] or [Filter2].
+// For filters, components specified by [Filter2.With] are also covered by the index.
+//
+// It can be used as faster but less safe alternative to [Rel].
+//
+// Note that the index should not be confused with a component [ID] as obtained by [ComponentID]!
+// For component IDs, use [RelID].
+func RelIdx(index int, target Entity) Relation {
+	return Relation{
+		index:  uint8(index),
+		target: target,
+	}
+}
+
+// RelID creates a new [Relation] for a component ID.
+//
+// It is used in Ark's unsafe, ID-based API.
+func RelID(id ID, target Entity) Relation {
+	return Relation{
+		target:    target,
+		component: id,
+		index:     255,
+	}
 }
 
 // relationIDForUnsafe converts the Relation to a relationID.
@@ -55,7 +96,7 @@ func (r *Relation) relationIDForUnsafe(world *World) relationID {
 	}
 }
 
-// id returns the component ID of this RelationID.
+// id returns the component ID of this Relation.
 func (r *Relation) id(ids []ID, world *World) ID {
 	if r.index < 255 {
 		return ids[r.index]
@@ -67,48 +108,9 @@ func (r *Relation) id(ids []ID, world *World) ID {
 	return r.component
 }
 
-// targetEntity returns the target [Entity] of this RelationID.
+// targetEntity returns the target [Entity] of this Relation.
 func (r *Relation) targetEntity() Entity {
 	return r.target
-}
-
-// RelID creates a new [Relation] for a component ID.
-//
-// It is used in Ark's unsafe, ID-based API.
-func RelID(id ID, target Entity) Relation {
-	return Relation{
-		target:    target,
-		component: id,
-		index:     255,
-	}
-}
-
-// Rel creates a new [Relation] for a component type.
-//
-// It can be used as a safer but slower alternative to [RelIdx].
-// Required a component ID lookup when used the first time.
-// Un reuse, it is as fast as [RelIdx].
-func Rel[C any](target Entity) Relation {
-	return Relation{
-		target:        target,
-		componentType: reflect.TypeFor[C](),
-		index:         255,
-	}
-}
-
-// RelIdx creates a new [Relation] for a component index.
-//
-// It can be used as faster but less safe alternative to [Rel].
-//
-// Note that the index refers to the position of the component in the generics
-// of e.g. a [Map2] or [Filter2].
-// This should not be confused with component [ID] as obtained by [ComponentID]!
-// For component IDs, use [RelationID].
-func RelIdx(index int, target Entity) Relation {
-	return Relation{
-		index:  uint8(index),
-		target: target,
-	}
 }
 
 // Helper for converting relationSlice

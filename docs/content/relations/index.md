@@ -34,7 +34,7 @@ for relations with different target entities.
 
 ## Relation components
 
-To use entity relations, create components that have *embedded* an {{< api ecs RelationMarker >}} as their first member:
+To use entity relations, create components that have *embedded* a {{< api ecs RelationMarker >}} as their first member:
 
 ```go
 type ChildOf struct {
@@ -48,11 +48,12 @@ The component can contain further variables, but the marker must be the first on
 ## Creating relations
 
 Most methods of `MapX` (e.g. {{< api ecs Map2 >}}) provide var-args for specifying relationship targets.
-These are of type {{< api Relation >}}, which is an interface with multiple implementations:
+These are of type {{< api ecs Relation >}}, which specifies a component type and a target entity.
+There are multiple constructors for {{< api ecs Relation >}}:
 
-{{< api Rel >}} is safe, but has some run-time overhead for component ID lookup.
-
-{{< api RelIdx >}} is fast but more error-prone.
+- {{< api ecs Rel >}} uses a generic type parameter to identify the component. It is safe, but has some run-time overhead for component ID lookup on first usage.
+- {{< api ecs RelIdx >}} uses an index to identify the component. It is fast but more error-prone.
+- {{< api ecs RelID >}} uses a component ID. It is for use with the [unsafe API](../unsafe/).
 
 See the examples below for their usage.
 
@@ -62,10 +63,10 @@ When creating entities, we can use a `MapX` (e.g. {{< api ecs Map2.NewEntity >}}
 
 {{< code-func relations_test.go TestNewEntity >}}
 
-For the faster variant {{< api RelIdx >}}, note that the first argument
+For the faster variant {{< api ecs RelIdx >}}, note that the first argument
 is the zero-based index of the relation component in the {{< api ecs Map2 >}}'s generic parameters.
 
-If there are multiple relation components, multiple {{< api Rel >}}/{{< api RelIdx >}} arguments can (and must) be used.
+If there are multiple relation components, multiple {{< api ecs Rel >}}/{{< api ecs RelIdx >}} arguments can (and must) be used.
 
 ### When adding components
 
@@ -115,9 +116,9 @@ For short-lived targets, it is better to pass them when building a query with {{
 
 These targets are not cached, but the same filter can be used for different targets.
 
-Filters also support both {{< api Rel >}} and {{< api RelIdx >}}.
-In the filter examples above, we used the slow but safe {{< api Rel >}} when building the filter.
-When getting the query, we use the faster {{< api RelIdx >}},
+Filters also support both {{< api ecs Rel >}} and {{< api ecs RelIdx >}}.
+In the filter examples above, we used the slow but safe {{< api ecs Rel >}} when building the filter.
+When getting the query, we use the faster {{< api ecs RelIdx >}},
 because in real-world use cases this is called more frequently than the one-time filter construction.
 
 Relation targets not specified by the filter are treated as wildcard.
@@ -180,4 +181,4 @@ to represent animals of different species in multiple farms.
 {{< code relations_example_test.go >}}
 
 Note that this examples uses the safe and clear, but slower generic variant to specify relationship targets.
-As an optimization, {{< api RelIdx >}} could be used instead of {{< api Rel >}}, particularly for queries.
+As an optimization, {{< api ecs RelIdx >}} could be used instead of {{< api ecs Rel >}}, particularly for queries.
