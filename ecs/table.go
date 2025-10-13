@@ -96,7 +96,7 @@ func (t *table) Has(component ID) bool {
 
 // GetEntity returns the entity at the given row index.
 func (t *table) GetEntity(index uintptr) Entity {
-	return t.entities.GetEntity(index)
+	return *(*Entity)(t.entities.Get(index))
 }
 
 // GetRelation returns the target entity for the given relation component.
