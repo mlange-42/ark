@@ -30,7 +30,7 @@ type storage struct {
 
 // componentStorage is an index for faster access of table columns by component ID.
 type componentStorage struct {
-	columns []*column
+	columns []*columnLayout
 }
 
 // slices for re-use, to avoid allocations.
@@ -228,7 +228,7 @@ func (s *storage) AddComponent(id uint8) {
 	if len(s.components) != int(id) {
 		panic("components can only be added to a storage sequentially")
 	}
-	s.components = append(s.components, componentStorage{columns: make([]*column, len(s.tables))})
+	s.components = append(s.components, componentStorage{columns: make([]*columnLayout, len(s.tables))})
 	s.componentIndex = append(s.componentIndex, []archetypeID{})
 }
 
@@ -467,7 +467,7 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 			id := ID{id: uint8(i)}
 			comps := &s.components[i]
 			if archetype.mask.Get(id.id) {
-				comps.columns = append(comps.columns, table.Column(id))
+				comps.columns = append(comps.columns, &table.Column(id).columnLayout)
 			} else {
 				comps.columns = append(comps.columns, nil)
 			}

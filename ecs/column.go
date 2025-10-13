@@ -7,14 +7,19 @@ import (
 
 // column storage for components in an table.
 type column struct {
-	data       reflect.Value  // data buffer
-	pointer    unsafe.Pointer // pointer to the first element
-	itemSize   uintptr        // memory size of items
-	elemType   reflect.Type   // element type of the column
-	target     Entity         // target entity if for a relation component
-	index      uint32         // index of the column in the containing table
-	isRelation bool           // whether this column is for a relation component
-	isTrivial  bool           // Whether the column's type is trivial , i.e. without pointers.
+	columnLayout
+	data       reflect.Value // data buffer
+	elemType   reflect.Type  // element type of the column
+	index      uint32        // index of the column in the containing table
+	isRelation bool          // whether this column is for a relation component
+	isTrivial  bool          // Whether the column's type is trivial , i.e. without pointers.
+}
+
+// columnLayout contains the minimal necessary information for column.Get.
+type columnLayout struct {
+	pointer  unsafe.Pointer // pointer to the first element
+	itemSize uintptr        // memory size of items
+	target   Entity         // target entity if for a relation component
 }
 
 // newColumn creates a new column for a given type and capacity.
@@ -24,9 +29,11 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 	pointer := data.Addr().UnsafePointer()
 
 	return column{
-		pointer:    pointer,
-		itemSize:   itemSize,
-		target:     target,
+		columnLayout: columnLayout{
+			pointer:  pointer,
+			itemSize: itemSize,
+			target:   target,
+		},
 		index:      index,
 		data:       data,
 		isRelation: isRelation,
@@ -36,7 +43,7 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 }
 
 // Get returns a pointer to the component at the given index.
-func (c *column) Get(index uintptr) unsafe.Pointer {
+func (c *columnLayout) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*c.itemSize)
 }
 

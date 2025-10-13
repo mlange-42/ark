@@ -162,7 +162,7 @@ type Query1[A any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
+	columnA    *columnLayout
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
@@ -298,8 +298,8 @@ type Query2[A any, B any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
-	columnB    *column
+	columnA    *columnLayout
+	columnB    *columnLayout
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
@@ -435,9 +435,9 @@ type Query3[A any, B any, C any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
-	columnB    *column
-	columnC    *column
+	columnA    *columnLayout
+	columnB    *columnLayout
+	columnC    *columnLayout
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
@@ -579,10 +579,10 @@ type Query4[A any, B any, C any, D any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
-	columnB    *column
-	columnC    *column
-	columnD    *column
+	columnA    *columnLayout
+	columnB    *columnLayout
+	columnC    *columnLayout
+	columnD    *columnLayout
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
@@ -726,11 +726,11 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
-	columnB    *column
-	columnC    *column
-	columnD    *column
-	columnE    *column
+	columnA    *columnLayout
+	columnB    *columnLayout
+	columnC    *columnLayout
+	columnD    *columnLayout
+	columnE    *columnLayout
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
@@ -876,12 +876,12 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
-	columnB    *column
-	columnC    *column
-	columnD    *column
-	columnE    *column
-	columnF    *column
+	columnA    *columnLayout
+	columnB    *columnLayout
+	columnC    *columnLayout
+	columnD    *columnLayout
+	columnE    *columnLayout
+	columnF    *columnLayout
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
@@ -1029,13 +1029,13 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
-	columnB    *column
-	columnC    *column
-	columnD    *column
-	columnE    *column
-	columnF    *column
-	columnG    *column
+	columnA    *columnLayout
+	columnB    *columnLayout
+	columnC    *columnLayout
+	columnD    *columnLayout
+	columnE    *columnLayout
+	columnF    *columnLayout
+	columnG    *columnLayout
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
@@ -1185,14 +1185,14 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
-	columnB    *column
-	columnC    *column
-	columnD    *column
-	columnE    *column
-	columnF    *column
-	columnG    *column
-	columnH    *column
+	columnA    *columnLayout
+	columnB    *columnLayout
+	columnC    *columnLayout
+	columnD    *columnLayout
+	columnE    *columnLayout
+	columnF    *columnLayout
+	columnG    *columnLayout
+	columnH    *columnLayout
 	relations  []relationID
 	tables     []tableID
 	components []*componentStorage
