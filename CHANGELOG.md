@@ -15,7 +15,7 @@
 - Adds method `World.Shrink` for freeing memory that exceeds current requirements (#323, #417)
 - World lock and filters are concurrency-safe, allowing for concurrent query execution (#360. #405)
 - Adds methods `ObserverX.New`, `Map.New` and `Resource.New` as shortcuts to avoid repeated parameter listing (#393, #394. #395)
-- Adds method `World.CopyEntity` for entity duplication (#415, #418)
+- Adds method `World.CopyEntity` for entity duplication (#415, #418, #420)
 
 ### Performance
 
