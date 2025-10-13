@@ -102,9 +102,8 @@ func (w *World) CopyEntity(e Entity) Entity {
 
 	archetype := &s.archetypes[table.archetype]
 
-	for _, id := range archetype.components {
-		table.Copy(id, idx, index.row)
-	}
+	table.CopyAll(table, idx, index.row)
+
 	w.storage.observers.FireCreateEntityIfHas(entity, &archetype.mask)
 	return entity
 }

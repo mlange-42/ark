@@ -394,9 +394,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 
 	newIndex := newTable.Add(entity)
 
-	for _, id := range oldArch.components {
-		newTable.Set(id, newIndex, oldTable.Column(id), index.row)
-	}
+	newTable.CopyAll(oldTable, newIndex, index.row)
 
 	swapped := oldTable.Remove(index.row)
 

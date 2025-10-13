@@ -114,10 +114,11 @@ func (t *table) Set(component ID, index uint32, src *column, srcIndex uint32) {
 	t.components[component.id].Set(index, src, srcIndex)
 }
 
-// Copy the value of a component to the given row index from another index in the same column.
-func (t *table) Copy(component ID, index uint32, srcIndex uint32) {
-	column := t.components[component.id]
-	column.Set(index, column, srcIndex)
+// CopyAll copies all component values from a row of another table with the same layout into this table.
+func (t *table) CopyAll(table *table, index uint32, srcIndex uint32) {
+	for i := range t.columns {
+		t.columns[i].Set(index, &table.columns[i], srcIndex)
+	}
 }
 
 // SetEntity sets the entity at the given row index.
@@ -236,7 +237,7 @@ func (t *table) Reset() {
 	t.len = 0
 }
 
-// AddAll adds all entities with components from another table to this table.
+// AddAll adds all entities with components from another table with the same layout to this table.
 func (t *table) AddAll(from *table, count uint32) {
 	t.Alloc(count)
 	t.entities.CopyToEnd(&from.entities, t.len, count)
