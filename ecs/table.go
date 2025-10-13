@@ -77,9 +77,9 @@ func (t *table) HasRelations() bool {
 
 // Add an entity to the table.
 // Returns the entity's new row index.
-func (t *table) Add(entity Entity) uint32 {
+func (t *table) Add(entity Entity, comps []componentStorage) uint32 {
 	idx := t.len
-	t.Alloc(1)
+	t.Alloc(1, comps)
 	t.entities.Set(idx, unsafe.Pointer(&entity))
 	return idx
 }
@@ -127,20 +127,20 @@ func (t *table) SetEntity(index uint32, entity Entity) {
 }
 
 // Alloc allocates memory for the given number of entities.
-func (t *table) Alloc(n uint32) {
-	t.Extend(n)
+func (t *table) Alloc(n uint32, comps []componentStorage) {
+	t.Extend(n, comps)
 	t.len += n
 }
 
 // Extend the table to be able to store the given number of additional entities.
 // Has no effect if the table's capacity is already sufficient.
 // If the capacity needs to be increased, it will be doubled until it is sufficient.
-func (t *table) Extend(by uint32) {
+func (t *table) Extend(by uint32, comps []componentStorage) {
 	required := t.len + by
 	if t.cap >= required {
 		return
 	}
-	t.adjustCapacity(capPow2(required))
+	t.adjustCapacity(capPow2(required), comps)
 }
 
 // CanShrink returns whether the table's capacity exceeds the next power-of-2 of what is required.
@@ -150,18 +150,18 @@ func (t *table) CanShrink(minCapacity uint32) bool {
 }
 
 // Shrink the table's capacity to the next power-of-2 of what is required.
-func (t *table) Shrink(minCapacity uint32) bool {
+func (t *table) Shrink(minCapacity uint32, comps []componentStorage) bool {
 	target := max(capPow2(t.len), minCapacity)
 	if t.cap <= target {
 		return false
 	}
-	t.adjustCapacity(target)
+	t.adjustCapacity(target, comps)
 	return true
 }
 
 // adjustCapacity changes the capacity of all columns.
 // Does not check whether the change is necessary or feasible.
-func (t *table) adjustCapacity(cap uint32) {
+func (t *table) adjustCapacity(cap uint32, comps []componentStorage) {
 	t.cap = cap
 
 	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), entityType)).Elem()
@@ -187,6 +187,7 @@ func (t *table) adjustCapacity(cap uint32) {
 				reflect.Copy(column.data, old)
 			}
 		}
+		comps[t.ids[i].id].columns[t.id].pointer = column.pointer
 	}
 }
 
@@ -238,8 +239,8 @@ func (t *table) Reset() {
 }
 
 // AddAll adds all entities with components from another table with the same layout to this table.
-func (t *table) AddAll(from *table, count uint32) {
-	t.Alloc(count)
+func (t *table) AddAll(from *table, count uint32, comps []componentStorage) {
+	t.Alloc(count, comps)
 	t.entities.CopyToEnd(&from.entities, t.len, count)
 	for c := range t.columns {
 		t.columns[c].CopyToEnd(&from.columns[c], t.len, count)
@@ -247,8 +248,8 @@ func (t *table) AddAll(from *table, count uint32) {
 }
 
 // AddAllEntities adds all entities (without components) from another table to this table.
-func (t *table) AddAllEntities(from *table, count uint32) {
-	t.Alloc(count)
+func (t *table) AddAllEntities(from *table, count uint32, comps []componentStorage) {
+	t.Alloc(count, comps)
 	t.entities.CopyToEnd(&from.entities, t.len, count)
 }
 

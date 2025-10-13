@@ -95,7 +95,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		column := m.storage.columns[tableID]
+		column := &m.storage.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -175,7 +175,7 @@ func (m *Map[T]) Has(entity Entity) bool {
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) HasUnchecked(entity Entity) bool {
 	index := m.world.storage.entities[entity.id]
-	return m.storage.columns[index.table] != nil
+	return m.storage.columns[index.table].pointer != nil
 }
 
 // Add the mapped component to the given entity.
@@ -258,7 +258,7 @@ func (m *Map[T]) AddBatchFn(batch Batch, fn func(Entity, *T), target ...Entity) 
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			column := m.storage.columns[tableID]
+			column := &m.storage.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)

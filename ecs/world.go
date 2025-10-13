@@ -92,7 +92,7 @@ func (w *World) CopyEntity(e Entity) Entity {
 	index := s.entities[e.id]
 	table := &s.tables[index.table]
 
-	idx := table.Add(entity)
+	idx := table.Add(entity, w.storage.components)
 	if int(entity.id) == len(s.entities) {
 		s.entities = append(s.entities, entityIndex{table: index.table, row: idx})
 		s.isTarget = append(s.isTarget, false)

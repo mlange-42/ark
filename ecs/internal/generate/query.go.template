@@ -196,7 +196,7 @@ func (q *Query{{.}}{{$genericsShort}}) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	{{- range $i, $v := $upper}}
-	q.column{{$v}} = q.components[{{$i}}].columns[q.table.id]
+	q.column{{$v}} = &q.components[{{$i}}].columns[q.table.id]
 	{{- end}}
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)

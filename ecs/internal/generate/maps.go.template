@@ -135,7 +135,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
 		{{- range $upper}}
-		column{{.}} := m.storage{{.}}.columns[tableID]
+		column{{.}} := &m.storage{{.}}.columns[tableID]
 		{{- end}}
 		for i := range count {
 			index := uintptr(start + i)
@@ -213,7 +213,7 @@ func (m *Map{{.}}{{$genericsShort}}) HasAll(entity Entity) bool {
 	}
 	index := m.world.storage.entities[entity.id]
 	return {{range $i, $v := $upper}}{{if $i}} &&
-		{{end}}m.storage{{$v}}.columns[index.table] != nil{{end}}
+		{{end}}m.storage{{$v}}.columns[index.table].pointer != nil{{end}}
 }
 
 // Add the mapped components to the given entity.
@@ -309,7 +309,7 @@ func (m *Map{{.}}{{$genericsShort}}) AddBatchFn(batch Batch, fn func(Entity, {{$
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
 			{{- range $upper}}
-			column{{.}} := m.storage{{.}}.columns[tableID]
+			column{{.}} := &m.storage{{.}}.columns[tableID]
 			{{- end}}
 
 			for i := range len {

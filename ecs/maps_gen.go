@@ -104,7 +104,7 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(Entity, *A), rel ...Relation) {
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -176,7 +176,7 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -260,7 +260,7 @@ func (m *Map1[A]) AddBatchFn(batch Batch, fn func(Entity, *A), rel ...Relation) 
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -417,8 +417,8 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(Entity, *A, *B), rel ...Relat
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -491,8 +491,8 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -581,8 +581,8 @@ func (m *Map2[A, B]) AddBatchFn(batch Batch, fn func(Entity, *A, *B), rel ...Rel
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -750,9 +750,9 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(Entity, *A, *B, *C), rel .
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
+		columnC := &m.storageC.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -826,9 +826,9 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil &&
+		m.storageC.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -922,9 +922,9 @@ func (m *Map3[A, B, C]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C), rel
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
+			columnC := &m.storageC.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -1099,10 +1099,10 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D)
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
+		columnC := &m.storageC.columns[tableID]
+		columnD := &m.storageD.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -1177,10 +1177,10 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil &&
+		m.storageC.columns[index.table].pointer != nil &&
+		m.storageD.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1279,10 +1279,10 @@ func (m *Map4[A, B, C, D]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C, *
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
+			columnC := &m.storageC.columns[tableID]
+			columnD := &m.storageD.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -1464,11 +1464,11 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, 
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
+		columnC := &m.storageC.columns[tableID]
+		columnD := &m.storageD.columns[tableID]
+		columnE := &m.storageE.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -1544,11 +1544,11 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil &&
+		m.storageC.columns[index.table].pointer != nil &&
+		m.storageD.columns[index.table].pointer != nil &&
+		m.storageE.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1652,11 +1652,11 @@ func (m *Map5[A, B, C, D, E]) AddBatchFn(batch Batch, fn func(Entity, *A, *B, *C
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
+			columnC := &m.storageC.columns[tableID]
+			columnD := &m.storageD.columns[tableID]
+			columnE := &m.storageE.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -1845,12 +1845,12 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(Entity, *A, *B, *
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
+		columnC := &m.storageC.columns[tableID]
+		columnD := &m.storageD.columns[tableID]
+		columnE := &m.storageE.columns[tableID]
+		columnF := &m.storageF.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -1927,12 +1927,12 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil &&
+		m.storageC.columns[index.table].pointer != nil &&
+		m.storageD.columns[index.table].pointer != nil &&
+		m.storageE.columns[index.table].pointer != nil &&
+		m.storageF.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -2041,12 +2041,12 @@ func (m *Map6[A, B, C, D, E, F]) AddBatchFn(batch Batch, fn func(Entity, *A, *B,
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
+			columnC := &m.storageC.columns[tableID]
+			columnD := &m.storageD.columns[tableID]
+			columnE := &m.storageE.columns[tableID]
+			columnF := &m.storageF.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -2242,13 +2242,13 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(Entity, *A, *B
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
+		columnC := &m.storageC.columns[tableID]
+		columnD := &m.storageD.columns[tableID]
+		columnE := &m.storageE.columns[tableID]
+		columnF := &m.storageF.columns[tableID]
+		columnG := &m.storageG.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -2326,13 +2326,13 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil &&
+		m.storageC.columns[index.table].pointer != nil &&
+		m.storageD.columns[index.table].pointer != nil &&
+		m.storageE.columns[index.table].pointer != nil &&
+		m.storageF.columns[index.table].pointer != nil &&
+		m.storageG.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -2446,13 +2446,13 @@ func (m *Map7[A, B, C, D, E, F, G]) AddBatchFn(batch Batch, fn func(Entity, *A, 
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
+			columnC := &m.storageC.columns[tableID]
+			columnD := &m.storageD.columns[tableID]
+			columnE := &m.storageE.columns[tableID]
+			columnF := &m.storageF.columns[tableID]
+			columnG := &m.storageG.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -2655,14 +2655,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(Entity, *A,
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
-		columnH := m.storageH.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
+		columnC := &m.storageC.columns[tableID]
+		columnD := &m.storageD.columns[tableID]
+		columnE := &m.storageE.columns[tableID]
+		columnF := &m.storageF.columns[tableID]
+		columnG := &m.storageG.columns[tableID]
+		columnH := &m.storageH.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -2741,14 +2741,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil &&
+		m.storageC.columns[index.table].pointer != nil &&
+		m.storageD.columns[index.table].pointer != nil &&
+		m.storageE.columns[index.table].pointer != nil &&
+		m.storageF.columns[index.table].pointer != nil &&
+		m.storageG.columns[index.table].pointer != nil &&
+		m.storageH.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -2867,14 +2867,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) AddBatchFn(batch Batch, fn func(Entity, *
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
-			columnH := m.storageH.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
+			columnC := &m.storageC.columns[tableID]
+			columnD := &m.storageD.columns[tableID]
+			columnE := &m.storageE.columns[tableID]
+			columnF := &m.storageF.columns[tableID]
+			columnG := &m.storageG.columns[tableID]
+			columnH := &m.storageH.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -3084,15 +3084,15 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(Entity, 
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
-		columnH := m.storageH.columns[tableID]
-		columnI := m.storageI.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
+		columnC := &m.storageC.columns[tableID]
+		columnD := &m.storageD.columns[tableID]
+		columnE := &m.storageE.columns[tableID]
+		columnF := &m.storageF.columns[tableID]
+		columnG := &m.storageG.columns[tableID]
+		columnH := &m.storageH.columns[tableID]
+		columnI := &m.storageI.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -3172,15 +3172,15 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil &&
+		m.storageC.columns[index.table].pointer != nil &&
+		m.storageD.columns[index.table].pointer != nil &&
+		m.storageE.columns[index.table].pointer != nil &&
+		m.storageF.columns[index.table].pointer != nil &&
+		m.storageG.columns[index.table].pointer != nil &&
+		m.storageH.columns[index.table].pointer != nil &&
+		m.storageI.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -3304,15 +3304,15 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) AddBatchFn(batch Batch, fn func(Entity
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
-			columnH := m.storageH.columns[tableID]
-			columnI := m.storageI.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
+			columnC := &m.storageC.columns[tableID]
+			columnD := &m.storageD.columns[tableID]
+			columnE := &m.storageE.columns[tableID]
+			columnF := &m.storageF.columns[tableID]
+			columnG := &m.storageG.columns[tableID]
+			columnH := &m.storageH.columns[tableID]
+			columnI := &m.storageI.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -3529,16 +3529,16 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(Enti
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
-		columnH := m.storageH.columns[tableID]
-		columnI := m.storageI.columns[tableID]
-		columnJ := m.storageJ.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
+		columnC := &m.storageC.columns[tableID]
+		columnD := &m.storageD.columns[tableID]
+		columnE := &m.storageE.columns[tableID]
+		columnF := &m.storageF.columns[tableID]
+		columnG := &m.storageG.columns[tableID]
+		columnH := &m.storageH.columns[tableID]
+		columnI := &m.storageI.columns[tableID]
+		columnJ := &m.storageJ.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -3619,16 +3619,16 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil &&
-		m.storageJ.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil &&
+		m.storageC.columns[index.table].pointer != nil &&
+		m.storageD.columns[index.table].pointer != nil &&
+		m.storageE.columns[index.table].pointer != nil &&
+		m.storageF.columns[index.table].pointer != nil &&
+		m.storageG.columns[index.table].pointer != nil &&
+		m.storageH.columns[index.table].pointer != nil &&
+		m.storageI.columns[index.table].pointer != nil &&
+		m.storageJ.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -3757,16 +3757,16 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) AddBatchFn(batch Batch, fn func(En
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
-			columnH := m.storageH.columns[tableID]
-			columnI := m.storageI.columns[tableID]
-			columnJ := m.storageJ.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
+			columnC := &m.storageC.columns[tableID]
+			columnD := &m.storageD.columns[tableID]
+			columnE := &m.storageE.columns[tableID]
+			columnF := &m.storageF.columns[tableID]
+			columnG := &m.storageG.columns[tableID]
+			columnH := &m.storageH.columns[tableID]
+			columnI := &m.storageI.columns[tableID]
+			columnJ := &m.storageJ.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -3990,17 +3990,17 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(E
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
-		columnH := m.storageH.columns[tableID]
-		columnI := m.storageI.columns[tableID]
-		columnJ := m.storageJ.columns[tableID]
-		columnK := m.storageK.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
+		columnC := &m.storageC.columns[tableID]
+		columnD := &m.storageD.columns[tableID]
+		columnE := &m.storageE.columns[tableID]
+		columnF := &m.storageF.columns[tableID]
+		columnG := &m.storageG.columns[tableID]
+		columnH := &m.storageH.columns[tableID]
+		columnI := &m.storageI.columns[tableID]
+		columnJ := &m.storageJ.columns[tableID]
+		columnK := &m.storageK.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -4082,17 +4082,17 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil &&
-		m.storageJ.columns[index.table] != nil &&
-		m.storageK.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil &&
+		m.storageC.columns[index.table].pointer != nil &&
+		m.storageD.columns[index.table].pointer != nil &&
+		m.storageE.columns[index.table].pointer != nil &&
+		m.storageF.columns[index.table].pointer != nil &&
+		m.storageG.columns[index.table].pointer != nil &&
+		m.storageH.columns[index.table].pointer != nil &&
+		m.storageI.columns[index.table].pointer != nil &&
+		m.storageJ.columns[index.table].pointer != nil &&
+		m.storageK.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -4226,17 +4226,17 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) AddBatchFn(batch Batch, fn func
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
-			columnH := m.storageH.columns[tableID]
-			columnI := m.storageI.columns[tableID]
-			columnJ := m.storageJ.columns[tableID]
-			columnK := m.storageK.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
+			columnC := &m.storageC.columns[tableID]
+			columnD := &m.storageD.columns[tableID]
+			columnE := &m.storageE.columns[tableID]
+			columnF := &m.storageF.columns[tableID]
+			columnG := &m.storageG.columns[tableID]
+			columnH := &m.storageH.columns[tableID]
+			columnI := &m.storageI.columns[tableID]
+			columnJ := &m.storageJ.columns[tableID]
+			columnK := &m.storageK.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)
@@ -4467,18 +4467,18 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn fun
 
 	if fn != nil {
 		table := &m.world.storage.tables[tableID]
-		columnA := m.storageA.columns[tableID]
-		columnB := m.storageB.columns[tableID]
-		columnC := m.storageC.columns[tableID]
-		columnD := m.storageD.columns[tableID]
-		columnE := m.storageE.columns[tableID]
-		columnF := m.storageF.columns[tableID]
-		columnG := m.storageG.columns[tableID]
-		columnH := m.storageH.columns[tableID]
-		columnI := m.storageI.columns[tableID]
-		columnJ := m.storageJ.columns[tableID]
-		columnK := m.storageK.columns[tableID]
-		columnL := m.storageL.columns[tableID]
+		columnA := &m.storageA.columns[tableID]
+		columnB := &m.storageB.columns[tableID]
+		columnC := &m.storageC.columns[tableID]
+		columnD := &m.storageD.columns[tableID]
+		columnE := &m.storageE.columns[tableID]
+		columnF := &m.storageF.columns[tableID]
+		columnG := &m.storageG.columns[tableID]
+		columnH := &m.storageH.columns[tableID]
+		columnI := &m.storageI.columns[tableID]
+		columnJ := &m.storageJ.columns[tableID]
+		columnK := &m.storageK.columns[tableID]
+		columnL := &m.storageL.columns[tableID]
 		for i := range count {
 			index := uintptr(start + i)
 			fn(
@@ -4561,18 +4561,18 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) HasAll(entity Entity) bool {
 		panic("can't check components of a dead entity")
 	}
 	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil &&
-		m.storageJ.columns[index.table] != nil &&
-		m.storageK.columns[index.table] != nil &&
-		m.storageL.columns[index.table] != nil
+	return m.storageA.columns[index.table].pointer != nil &&
+		m.storageB.columns[index.table].pointer != nil &&
+		m.storageC.columns[index.table].pointer != nil &&
+		m.storageD.columns[index.table].pointer != nil &&
+		m.storageE.columns[index.table].pointer != nil &&
+		m.storageF.columns[index.table].pointer != nil &&
+		m.storageG.columns[index.table].pointer != nil &&
+		m.storageH.columns[index.table].pointer != nil &&
+		m.storageI.columns[index.table].pointer != nil &&
+		m.storageJ.columns[index.table].pointer != nil &&
+		m.storageK.columns[index.table].pointer != nil &&
+		m.storageL.columns[index.table].pointer != nil
 }
 
 // Add the mapped components to the given entity.
@@ -4711,18 +4711,18 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) AddBatchFn(batch Batch, fn f
 	if fn != nil {
 		process = func(tableID tableID, start, len uint32) {
 			table := &m.world.storage.tables[tableID]
-			columnA := m.storageA.columns[tableID]
-			columnB := m.storageB.columns[tableID]
-			columnC := m.storageC.columns[tableID]
-			columnD := m.storageD.columns[tableID]
-			columnE := m.storageE.columns[tableID]
-			columnF := m.storageF.columns[tableID]
-			columnG := m.storageG.columns[tableID]
-			columnH := m.storageH.columns[tableID]
-			columnI := m.storageI.columns[tableID]
-			columnJ := m.storageJ.columns[tableID]
-			columnK := m.storageK.columns[tableID]
-			columnL := m.storageL.columns[tableID]
+			columnA := &m.storageA.columns[tableID]
+			columnB := &m.storageB.columns[tableID]
+			columnC := &m.storageC.columns[tableID]
+			columnD := &m.storageD.columns[tableID]
+			columnE := &m.storageE.columns[tableID]
+			columnF := &m.storageF.columns[tableID]
+			columnG := &m.storageG.columns[tableID]
+			columnH := &m.storageH.columns[tableID]
+			columnI := &m.storageI.columns[tableID]
+			columnJ := &m.storageJ.columns[tableID]
+			columnK := &m.storageK.columns[tableID]
+			columnL := &m.storageL.columns[tableID]
 
 			for i := range len {
 				index := uintptr(start + i)

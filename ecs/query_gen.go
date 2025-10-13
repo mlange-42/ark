@@ -284,7 +284,7 @@ func (q *Query1[A]) nextTable(tables []tableID) bool {
 func (q *Query1[A]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
+	q.columnA = &q.components[0].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -418,8 +418,8 @@ func (q *Query2[A, B]) nextTable(tables []tableID) bool {
 func (q *Query2[A, B]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
+	q.columnA = &q.components[0].columns[q.table.id]
+	q.columnB = &q.components[1].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -561,9 +561,9 @@ func (q *Query3[A, B, C]) nextTable(tables []tableID) bool {
 func (q *Query3[A, B, C]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
+	q.columnA = &q.components[0].columns[q.table.id]
+	q.columnB = &q.components[1].columns[q.table.id]
+	q.columnC = &q.components[2].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -707,10 +707,10 @@ func (q *Query4[A, B, C, D]) nextTable(tables []tableID) bool {
 func (q *Query4[A, B, C, D]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnD = q.components[3].columns[q.table.id]
+	q.columnA = &q.components[0].columns[q.table.id]
+	q.columnB = &q.components[1].columns[q.table.id]
+	q.columnC = &q.components[2].columns[q.table.id]
+	q.columnD = &q.components[3].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -856,11 +856,11 @@ func (q *Query5[A, B, C, D, E]) nextTable(tables []tableID) bool {
 func (q *Query5[A, B, C, D, E]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnE = q.components[4].columns[q.table.id]
+	q.columnA = &q.components[0].columns[q.table.id]
+	q.columnB = &q.components[1].columns[q.table.id]
+	q.columnC = &q.components[2].columns[q.table.id]
+	q.columnD = &q.components[3].columns[q.table.id]
+	q.columnE = &q.components[4].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -1008,12 +1008,12 @@ func (q *Query6[A, B, C, D, E, F]) nextTable(tables []tableID) bool {
 func (q *Query6[A, B, C, D, E, F]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnE = q.components[4].columns[q.table.id]
-	q.columnF = q.components[5].columns[q.table.id]
+	q.columnA = &q.components[0].columns[q.table.id]
+	q.columnB = &q.components[1].columns[q.table.id]
+	q.columnC = &q.components[2].columns[q.table.id]
+	q.columnD = &q.components[3].columns[q.table.id]
+	q.columnE = &q.components[4].columns[q.table.id]
+	q.columnF = &q.components[5].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -1163,13 +1163,13 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable(tables []tableID) bool {
 func (q *Query7[A, B, C, D, E, F, G]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnE = q.components[4].columns[q.table.id]
-	q.columnF = q.components[5].columns[q.table.id]
-	q.columnG = q.components[6].columns[q.table.id]
+	q.columnA = &q.components[0].columns[q.table.id]
+	q.columnB = &q.components[1].columns[q.table.id]
+	q.columnC = &q.components[2].columns[q.table.id]
+	q.columnD = &q.components[3].columns[q.table.id]
+	q.columnE = &q.components[4].columns[q.table.id]
+	q.columnF = &q.components[5].columns[q.table.id]
+	q.columnG = &q.components[6].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -1321,14 +1321,14 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable(tables []tableID) bool {
 func (q *Query8[A, B, C, D, E, F, G, H]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnE = q.components[4].columns[q.table.id]
-	q.columnF = q.components[5].columns[q.table.id]
-	q.columnG = q.components[6].columns[q.table.id]
-	q.columnH = q.components[7].columns[q.table.id]
+	q.columnA = &q.components[0].columns[q.table.id]
+	q.columnB = &q.components[1].columns[q.table.id]
+	q.columnC = &q.components[2].columns[q.table.id]
+	q.columnD = &q.components[3].columns[q.table.id]
+	q.columnE = &q.components[4].columns[q.table.id]
+	q.columnF = &q.components[5].columns[q.table.id]
+	q.columnG = &q.components[6].columns[q.table.id]
+	q.columnH = &q.components[7].columns[q.table.id]
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
