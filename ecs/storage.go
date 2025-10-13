@@ -2,7 +2,6 @@ package ecs
 
 import (
 	"fmt"
-	"sync"
 	"time"
 	"unsafe"
 )
@@ -27,12 +26,11 @@ type storage struct {
 	locks              lock               // World locks
 	observers          observerManager    // Observer/event manager
 	config             config             // Storage configuration (initial capacities)
-	mu                 sync.Mutex         // Mutex for parallel query startup/close
 }
 
 // componentStorage is an index for faster access of table columns by component ID.
 type componentStorage struct {
-	columns []*columnLayout
+	columns []*column
 }
 
 // slices for re-use, to avoid allocations.
@@ -46,8 +44,6 @@ type slices struct {
 
 	entities        []Entity
 	entitiesCleanup []Entity
-
-	relationsPool slicePool[relationID]
 }
 
 // newSlices creates a new slices.
@@ -62,8 +58,6 @@ func newSlices() slices {
 
 		entities:        make([]Entity, 0, 16),
 		entitiesCleanup: make([]Entity, 0, 256),
-
-		relationsPool: newSlicePool[relationID](8, 8),
 	}
 }
 
@@ -234,7 +228,7 @@ func (s *storage) AddComponent(id uint8) {
 	if len(s.components) != int(id) {
 		panic("components can only be added to a storage sequentially")
 	}
-	s.components = append(s.components, componentStorage{columns: make([]*columnLayout, len(s.tables))})
+	s.components = append(s.components, componentStorage{columns: make([]*column, len(s.tables))})
 	s.componentIndex = append(s.componentIndex, []archetypeID{})
 }
 
@@ -473,7 +467,7 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 			id := ID{id: uint8(i)}
 			comps := &s.components[i]
 			if archetype.mask.Get(id.id) {
-				comps.columns = append(comps.columns, &table.Column(id).columnLayout)
+				comps.columns = append(comps.columns, table.Column(id))
 			} else {
 				comps.columns = append(comps.columns, nil)
 			}

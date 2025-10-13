@@ -123,7 +123,6 @@ func TestTypeSizes(t *testing.T) {
 	printTypeSize[table]()
 	printTypeSize[tableIDs]()
 	printTypeSize[column]()
-	printTypeSize[columnLayout]()
 	printTypeSize[entityColumn]()
 	printTypeSize[cacheEntry]()
 	printTypeSize[cursor]()
