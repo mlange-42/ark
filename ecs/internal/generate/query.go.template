@@ -50,7 +50,6 @@ type Query{{.}}{{$generics}} struct {
 	{{if eq . 0 -}}
 	hasRareComp bool
 	{{- end}}
-	isPooled    bool
 }
 
 {{if . -}}
@@ -125,13 +124,7 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	{{- range $i, $v := $upper}}
 	q.column{{$v}} = nil
 	{{- end}}
-	
-	q.world.storage.mu.Lock()
-	q.world.storage.unlock(q.lock)
-	if q.isPooled {
-		q.world.storage.slices.relationsPool.Recycle(q.relations)
-	}
-	q.world.storage.mu.Unlock()
+	q.world.unlockSafe(q.lock)
 }
 
 func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {

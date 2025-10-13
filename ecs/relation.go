@@ -117,18 +117,19 @@ func (r *Relation) targetEntity() Entity {
 type relationSlice []Relation
 
 // ToRelations converts a slice of Relation items to relationIDs.
-func (r relationSlice) ToRelations(world *World, mask *bitMask, ids []ID, out []relationID, copyTo []relationID) []relationID {
+func (r relationSlice) ToRelations(world *World, mask *bitMask, ids []ID, out []relationID, copy bool) []relationID {
 	if len(r) == 0 {
 		return out
 	}
-	return r.toRelationsSlowPath(world, mask, ids, out, copyTo)
+	return r.toRelationsSlowPath(world, mask, ids, out, copy)
 }
 
 // toRelationsSlowPath is the slow path of ToRelations for more than zero relations.
-func (r relationSlice) toRelationsSlowPath(world *World, mask *bitMask, ids []ID, out []relationID, copyTo []relationID) []relationID {
-	if copyTo != nil {
-		copyTo = append(copyTo, out...)
-		out = copyTo
+func (r relationSlice) toRelationsSlowPath(world *World, mask *bitMask, ids []ID, out []relationID, copy bool) []relationID {
+	if copy {
+		temp := make([]relationID, 0, len(r)+len(out))
+		temp = append(temp, out...)
+		out = temp
 	}
 	// Fast special case for a single relation (20% speedup)
 	if len(r) == 1 {

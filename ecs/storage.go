@@ -46,8 +46,6 @@ type slices struct {
 
 	entities        []Entity
 	entitiesCleanup []Entity
-
-	relationsPool slicePool[relationID]
 }
 
 // newSlices creates a new slices.
@@ -62,8 +60,6 @@ func newSlices() slices {
 
 		entities:        make([]Entity, 0, 16),
 		entitiesCleanup: make([]Entity, 0, 256),
-
-		relationsPool: newSlicePool[relationID](8, 8),
 	}
 }
 
