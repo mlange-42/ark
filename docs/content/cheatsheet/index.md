@@ -212,10 +212,6 @@ API: {{< api ecs Resource >}}, {{< api ecs Resource.Get >}}
 
 {{< details-buttons group="events" >}}
 
-> [!NOTE]
-> This feature is not yet released and is planned for Ark v0.6.0.
-> You can try it out on the `main` branch.
-
 Observers allow to react to ECS lifecycle events, like entity creation or component addition.
 
 {{% details closed="true" group="events" title="👀 **Create and register** observers for ECS lifecycle events" %}}
