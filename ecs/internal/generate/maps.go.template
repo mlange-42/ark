@@ -182,7 +182,7 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn
 //
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) Get(entity Entity) {{$returnTypes}} {
-	if !m.world.Alive(entity) {
+	if !m.world.storage.entityPool.Alive(entity) {
 		panic("can't get components of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
@@ -211,9 +211,9 @@ func (m *Map{{.}}{{$genericsShort}}) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
+	table := m.world.storage.entities[entity.id].table
 	return {{range $i, $v := $upper}}{{if $i}} &&
-		{{end}}m.storage{{$v}}.columns[index.table] != nil{{end}}
+		{{end}}m.storage{{$v}}.columns[table] != nil{{end}}
 }
 
 // Add the mapped components to the given entity.
@@ -339,7 +339,7 @@ func (m *Map{{.}}{{$genericsShort}}) RemoveBatch(batch Batch, fn func(entity Ent
 
 // GetRelation returns the relation target of an entity for the component at the given index.
 func (m *Map{{.}}{{$genericsShort}}) GetRelation(entity Entity, index int) Entity {
-	if !m.world.Alive(entity) {
+	if !m.world.storage.entityPool.Alive(entity) {
 		panic("can't get entity relation target for a dead entity")
 	}
 	return m.GetRelationUnchecked(entity, index)
