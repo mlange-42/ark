@@ -122,9 +122,9 @@ type observerManager struct {
 }
 
 // newObserverManager creates anew empty observerManager.
-func newObserverManager() observerManager {
+func newObserverManager() *observerManager {
 	maxEvents := math.MaxUint8 + 1
-	return observerManager{
+	return &observerManager{
 		observers:    make([][]*observerData, maxEvents),
 		hasObservers: make([]bool, maxEvents),
 		anyNoComps:   make([]bool, maxEvents),

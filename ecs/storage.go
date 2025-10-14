@@ -13,7 +13,6 @@ type storage struct {
 	entities           []entityIndex      // Entity positions in archetypes, indexed by entity ID
 	isTarget           []bool             // Whether each entity is a target of a relationship
 	graph              graph              // Graph for fast archetype traversal
-	slices             slices             // Slices for internal re-use
 	archetypes         []archetype        // All archetypes
 	allArchetypes      []archetypeID      // list of all archetype IDs to simplify usage of componentIndex
 	componentIndex     [][]archetypeID    // Archetypes indexed by components IDs; each archetype appears under all its component IDs
@@ -24,8 +23,9 @@ type storage struct {
 	entityPool         entityPool         // Entity pool for creation and recycling
 	registry           componentRegistry  // Component registry
 	locks              lock               // World locks
-	observers          observerManager    // Observer/event manager
 	config             config             // Storage configuration (initial capacities)
+	slices             *slices            // Slices for internal re-use
+	observers          *observerManager   // Observer/event manager
 }
 
 // componentStorage is an index for faster access of table columns by component ID.
@@ -47,8 +47,8 @@ type slices struct {
 }
 
 // newSlices creates a new slices.
-func newSlices() slices {
-	return slices{
+func newSlices() *slices {
+	return &slices{
 		batches: make([]batchTable, 0, 32),
 		tables:  make([]tableID, 0, 32),
 		ints:    make([]uint32, 0, 32),
