@@ -140,7 +140,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 //
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) Get(entity Entity) *T {
-	if !m.world.Alive(entity) {
+	if !m.world.storage.entityPool.Alive(entity) {
 		panic("can't get a component of a dead entity")
 	}
 	index := &m.world.storage.entities[entity.id]
@@ -164,7 +164,7 @@ func (m *Map[T]) GetUnchecked(entity Entity) *T {
 // Using [Map.Get] and checking for nil pointer may be faster
 // than calling [Map.Has] and [Map.Get] subsequently.
 func (m *Map[T]) Has(entity Entity) bool {
-	if !m.world.Alive(entity) {
+	if !m.world.storage.entityPool.Alive(entity) {
 		panic("can't get a component of a dead entity")
 	}
 	return m.HasUnchecked(entity)
@@ -195,7 +195,7 @@ func (m *Map[T]) Add(entity Entity, comp *T, target ...Entity) {
 //
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) AddFn(entity Entity, fn func(*T), target ...Entity) {
-	if !m.world.Alive(entity) {
+	if !m.world.storage.entityPool.Alive(entity) {
 		panic("can't add a component to a dead entity")
 	}
 	m.relations = relationEntities(target).ToRelation(m.world, m.id, m.relations)
@@ -219,7 +219,7 @@ func (m *Map[T]) AddFn(entity Entity, fn func(*T), target ...Entity) {
 //
 // This is not a component operation, so it can be performed on a locked world.
 func (m *Map[T]) Set(entity Entity, comp *T) {
-	if !m.world.Alive(entity) {
+	if !m.world.storage.entityPool.Alive(entity) {
 		panic("can't set component of a dead entity")
 	}
 	m.world.storage.checkHasComponent(entity, m.ids[0])
@@ -273,7 +273,7 @@ func (m *Map[T]) AddBatchFn(batch Batch, fn func(Entity, *T), target ...Entity) 
 
 // Remove the mapped component from the given entity.
 func (m *Map[T]) Remove(entity Entity) {
-	if !m.world.Alive(entity) {
+	if !m.world.storage.entityPool.Alive(entity) {
 		panic("can't remove a component from a dead entity")
 	}
 	m.world.remove(entity, m.ids[:])
