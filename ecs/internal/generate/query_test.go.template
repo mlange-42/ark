@@ -167,8 +167,15 @@ func TestQuery{{.}}Empty(t *testing.T) {
 	query := filter.Query()
 	expectEqual(t, 0, query.Count())
 	
-	expectPanics(t, func() { query.Get() })
 	expectPanics(t, func() { query.Entity() })
+	if isDebug {
+		expectPanics(t, func() { query.Get() })
+	} else {
+		{{$comps}} := query.Get()
+		{{- range $i, $v := $lower}}
+		expectNil(t, {{$v}})
+		{{- end}}
+	}
 
 	cnt := 0
 	for query.Next() {
@@ -176,9 +183,16 @@ func TestQuery{{.}}Empty(t *testing.T) {
 	}
 	expectEqual(t, 0, cnt)
 
-	expectPanics(t, func() { query.Get() })
 	expectPanics(t, func() { query.Entity() })
 	expectPanics(t, func() { query.Next() })
+	if isDebug {
+		expectPanics(t, func() { query.Get() })
+	} else {
+		{{$comps}} := query.Get()
+		{{- range $i, $v := $lower}}
+		expectNil(t, {{$v}})
+		{{- end}}
+	}
 }
 
 func TestQuery{{.}}Relations(t *testing.T) {

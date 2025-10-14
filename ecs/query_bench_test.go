@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func BenchmarkPosVelQuery_1000(b *testing.B) {
+func BenchmarkPosVelQueryInline_1000(b *testing.B) {
 	n := 1000
 	world := NewWorld(1024)
 
@@ -13,7 +13,7 @@ func BenchmarkPosVelQuery_1000(b *testing.B) {
 	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
 
 	filter := NewFilter2[Position, Velocity](&world)
-	for b.Loop() {
+	loop := func(filter *Filter2[Position, Velocity]) {
 		query := filter.Query()
 		for query.Next() {
 			pos, vel := query.Get()
@@ -21,17 +21,21 @@ func BenchmarkPosVelQuery_1000(b *testing.B) {
 			pos.Y += vel.Y
 		}
 	}
+
+	for b.Loop() {
+		loop(filter)
+	}
 }
 
-func BenchmarkPosVelQueryCached_1000(b *testing.B) {
-	n := 1000
+func BenchmarkPosVelQueryInline_100k(b *testing.B) {
+	n := 100_000
 	world := NewWorld(1024)
 
 	mapper := NewMap2[Position, Velocity](&world)
 	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
 
-	filter := NewFilter2[Position, Velocity](&world).Register()
-	for b.Loop() {
+	filter := NewFilter2[Position, Velocity](&world)
+	loop := func(filter *Filter2[Position, Velocity]) {
 		query := filter.Query()
 		for query.Next() {
 			pos, vel := query.Get()
@@ -39,27 +43,9 @@ func BenchmarkPosVelQueryCached_1000(b *testing.B) {
 			pos.Y += vel.Y
 		}
 	}
-}
 
-func BenchmarkPosVelQueryUnsafe_1000(b *testing.B) {
-	n := 1000
-	world := NewWorld(1024)
-
-	posID := ComponentID[Position](&world)
-	velID := ComponentID[Velocity](&world)
-
-	mapper := NewMap2[Position, Velocity](&world)
-	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
-
-	filter := NewUnsafeFilter(&world, posID, velID)
 	for b.Loop() {
-		query := filter.Query()
-		for query.Next() {
-			pos := (*Position)(query.Get(posID))
-			vel := (*Velocity)(query.Get(velID))
-			pos.X += vel.X
-			pos.Y += vel.Y
-		}
+		loop(filter)
 	}
 }
 
@@ -117,6 +103,46 @@ func BenchmarkPosVelQueryParallel4_100k(b *testing.B) {
 			go task(t, &wg)
 		}
 		wg.Wait()
+	}
+}
+
+func BenchmarkPosVelQueryCached_1000(b *testing.B) {
+	n := 1000
+	world := NewWorld(1024)
+
+	mapper := NewMap2[Position, Velocity](&world)
+	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
+
+	filter := NewFilter2[Position, Velocity](&world).Register()
+	for b.Loop() {
+		query := filter.Query()
+		for query.Next() {
+			pos, vel := query.Get()
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
+	}
+}
+
+func BenchmarkPosVelQueryUnsafe_1000(b *testing.B) {
+	n := 1000
+	world := NewWorld(1024)
+
+	posID := ComponentID[Position](&world)
+	velID := ComponentID[Velocity](&world)
+
+	mapper := NewMap2[Position, Velocity](&world)
+	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
+
+	filter := NewUnsafeFilter(&world, posID, velID)
+	for b.Loop() {
+		query := filter.Query()
+		for query.Next() {
+			pos := (*Position)(query.Get(posID))
+			vel := (*Velocity)(query.Get(velID))
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
 	}
 }
 
