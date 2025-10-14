@@ -123,7 +123,8 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	q.table = nil
 	q.cache = nil
 	{{- range $i, $v := $upper}}
-	q.columnPtr{{$v}} = nil
+	q.columnPtr{{$v}} = unsafe.Pointer(nilDummy)
+	q.itemSize{{$v}} = 0
 	{{- end}}
 	q.world.unlockSafe(q.lock)
 }

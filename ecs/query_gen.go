@@ -222,7 +222,8 @@ func (q *Query1[A]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnPtrA = nil
+	q.columnPtrA = unsafe.Pointer(nilDummy)
+	q.itemSizeA = 0
 	q.world.unlockSafe(q.lock)
 }
 
@@ -359,8 +360,10 @@ func (q *Query2[A, B]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnPtrA = nil
-	q.columnPtrB = nil
+	q.columnPtrA = unsafe.Pointer(nilDummy)
+	q.itemSizeA = 0
+	q.columnPtrB = unsafe.Pointer(nilDummy)
+	q.itemSizeB = 0
 	q.world.unlockSafe(q.lock)
 }
 
@@ -508,9 +511,12 @@ func (q *Query3[A, B, C]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnPtrA = nil
-	q.columnPtrB = nil
-	q.columnPtrC = nil
+	q.columnPtrA = unsafe.Pointer(nilDummy)
+	q.itemSizeA = 0
+	q.columnPtrB = unsafe.Pointer(nilDummy)
+	q.itemSizeB = 0
+	q.columnPtrC = unsafe.Pointer(nilDummy)
+	q.itemSizeC = 0
 	q.world.unlockSafe(q.lock)
 }
 
@@ -663,10 +669,14 @@ func (q *Query4[A, B, C, D]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnPtrA = nil
-	q.columnPtrB = nil
-	q.columnPtrC = nil
-	q.columnPtrD = nil
+	q.columnPtrA = unsafe.Pointer(nilDummy)
+	q.itemSizeA = 0
+	q.columnPtrB = unsafe.Pointer(nilDummy)
+	q.itemSizeB = 0
+	q.columnPtrC = unsafe.Pointer(nilDummy)
+	q.itemSizeC = 0
+	q.columnPtrD = unsafe.Pointer(nilDummy)
+	q.itemSizeD = 0
 	q.world.unlockSafe(q.lock)
 }
 
@@ -824,11 +834,16 @@ func (q *Query5[A, B, C, D, E]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnPtrA = nil
-	q.columnPtrB = nil
-	q.columnPtrC = nil
-	q.columnPtrD = nil
-	q.columnPtrE = nil
+	q.columnPtrA = unsafe.Pointer(nilDummy)
+	q.itemSizeA = 0
+	q.columnPtrB = unsafe.Pointer(nilDummy)
+	q.itemSizeB = 0
+	q.columnPtrC = unsafe.Pointer(nilDummy)
+	q.itemSizeC = 0
+	q.columnPtrD = unsafe.Pointer(nilDummy)
+	q.itemSizeD = 0
+	q.columnPtrE = unsafe.Pointer(nilDummy)
+	q.itemSizeE = 0
 	q.world.unlockSafe(q.lock)
 }
 
@@ -991,12 +1006,18 @@ func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnPtrA = nil
-	q.columnPtrB = nil
-	q.columnPtrC = nil
-	q.columnPtrD = nil
-	q.columnPtrE = nil
-	q.columnPtrF = nil
+	q.columnPtrA = unsafe.Pointer(nilDummy)
+	q.itemSizeA = 0
+	q.columnPtrB = unsafe.Pointer(nilDummy)
+	q.itemSizeB = 0
+	q.columnPtrC = unsafe.Pointer(nilDummy)
+	q.itemSizeC = 0
+	q.columnPtrD = unsafe.Pointer(nilDummy)
+	q.itemSizeD = 0
+	q.columnPtrE = unsafe.Pointer(nilDummy)
+	q.itemSizeE = 0
+	q.columnPtrF = unsafe.Pointer(nilDummy)
+	q.itemSizeF = 0
 	q.world.unlockSafe(q.lock)
 }
 
@@ -1164,13 +1185,20 @@ func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnPtrA = nil
-	q.columnPtrB = nil
-	q.columnPtrC = nil
-	q.columnPtrD = nil
-	q.columnPtrE = nil
-	q.columnPtrF = nil
-	q.columnPtrG = nil
+	q.columnPtrA = unsafe.Pointer(nilDummy)
+	q.itemSizeA = 0
+	q.columnPtrB = unsafe.Pointer(nilDummy)
+	q.itemSizeB = 0
+	q.columnPtrC = unsafe.Pointer(nilDummy)
+	q.itemSizeC = 0
+	q.columnPtrD = unsafe.Pointer(nilDummy)
+	q.itemSizeD = 0
+	q.columnPtrE = unsafe.Pointer(nilDummy)
+	q.itemSizeE = 0
+	q.columnPtrF = unsafe.Pointer(nilDummy)
+	q.itemSizeF = 0
+	q.columnPtrG = unsafe.Pointer(nilDummy)
+	q.itemSizeG = 0
 	q.world.unlockSafe(q.lock)
 }
 
@@ -1343,14 +1371,22 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnPtrA = nil
-	q.columnPtrB = nil
-	q.columnPtrC = nil
-	q.columnPtrD = nil
-	q.columnPtrE = nil
-	q.columnPtrF = nil
-	q.columnPtrG = nil
-	q.columnPtrH = nil
+	q.columnPtrA = unsafe.Pointer(nilDummy)
+	q.itemSizeA = 0
+	q.columnPtrB = unsafe.Pointer(nilDummy)
+	q.itemSizeB = 0
+	q.columnPtrC = unsafe.Pointer(nilDummy)
+	q.itemSizeC = 0
+	q.columnPtrD = unsafe.Pointer(nilDummy)
+	q.itemSizeD = 0
+	q.columnPtrE = unsafe.Pointer(nilDummy)
+	q.itemSizeE = 0
+	q.columnPtrF = unsafe.Pointer(nilDummy)
+	q.itemSizeF = 0
+	q.columnPtrG = unsafe.Pointer(nilDummy)
+	q.itemSizeG = 0
+	q.columnPtrH = unsafe.Pointer(nilDummy)
+	q.itemSizeH = 0
 	q.world.unlockSafe(q.lock)
 }
 
