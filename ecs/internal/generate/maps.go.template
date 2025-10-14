@@ -211,9 +211,9 @@ func (m *Map{{.}}{{$genericsShort}}) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
+	table := m.world.storage.entities[entity.id].table
 	return {{range $i, $v := $upper}}{{if $i}} &&
-		{{end}}m.storage{{$v}}.columns[index.table] != nil{{end}}
+		{{end}}m.storage{{$v}}.columns[table] != nil{{end}}
 }
 
 // Add the mapped components to the given entity.

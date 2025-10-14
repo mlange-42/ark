@@ -175,8 +175,8 @@ func (m *Map1[A]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -490,9 +490,9 @@ func (m *Map2[A, B]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -825,10 +825,10 @@ func (m *Map3[A, B, C]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil &&
+		m.storageC.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1176,11 +1176,11 @@ func (m *Map4[A, B, C, D]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil &&
+		m.storageC.columns[table] != nil &&
+		m.storageD.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1543,12 +1543,12 @@ func (m *Map5[A, B, C, D, E]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil &&
+		m.storageC.columns[table] != nil &&
+		m.storageD.columns[table] != nil &&
+		m.storageE.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -1926,13 +1926,13 @@ func (m *Map6[A, B, C, D, E, F]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil &&
+		m.storageC.columns[table] != nil &&
+		m.storageD.columns[table] != nil &&
+		m.storageE.columns[table] != nil &&
+		m.storageF.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -2325,14 +2325,14 @@ func (m *Map7[A, B, C, D, E, F, G]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil &&
+		m.storageC.columns[table] != nil &&
+		m.storageD.columns[table] != nil &&
+		m.storageE.columns[table] != nil &&
+		m.storageF.columns[table] != nil &&
+		m.storageG.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -2740,15 +2740,15 @@ func (m *Map8[A, B, C, D, E, F, G, H]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil &&
+		m.storageC.columns[table] != nil &&
+		m.storageD.columns[table] != nil &&
+		m.storageE.columns[table] != nil &&
+		m.storageF.columns[table] != nil &&
+		m.storageG.columns[table] != nil &&
+		m.storageH.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -3171,16 +3171,16 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil &&
+		m.storageC.columns[table] != nil &&
+		m.storageD.columns[table] != nil &&
+		m.storageE.columns[table] != nil &&
+		m.storageF.columns[table] != nil &&
+		m.storageG.columns[table] != nil &&
+		m.storageH.columns[table] != nil &&
+		m.storageI.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -3618,17 +3618,17 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil &&
-		m.storageJ.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil &&
+		m.storageC.columns[table] != nil &&
+		m.storageD.columns[table] != nil &&
+		m.storageE.columns[table] != nil &&
+		m.storageF.columns[table] != nil &&
+		m.storageG.columns[table] != nil &&
+		m.storageH.columns[table] != nil &&
+		m.storageI.columns[table] != nil &&
+		m.storageJ.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -4081,18 +4081,18 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil &&
-		m.storageJ.columns[index.table] != nil &&
-		m.storageK.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil &&
+		m.storageC.columns[table] != nil &&
+		m.storageD.columns[table] != nil &&
+		m.storageE.columns[table] != nil &&
+		m.storageF.columns[table] != nil &&
+		m.storageG.columns[table] != nil &&
+		m.storageH.columns[table] != nil &&
+		m.storageI.columns[table] != nil &&
+		m.storageJ.columns[table] != nil &&
+		m.storageK.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.
@@ -4560,19 +4560,19 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) HasAll(entity Entity) bool {
 	if !m.world.Alive(entity) {
 		panic("can't check components of a dead entity")
 	}
-	index := m.world.storage.entities[entity.id]
-	return m.storageA.columns[index.table] != nil &&
-		m.storageB.columns[index.table] != nil &&
-		m.storageC.columns[index.table] != nil &&
-		m.storageD.columns[index.table] != nil &&
-		m.storageE.columns[index.table] != nil &&
-		m.storageF.columns[index.table] != nil &&
-		m.storageG.columns[index.table] != nil &&
-		m.storageH.columns[index.table] != nil &&
-		m.storageI.columns[index.table] != nil &&
-		m.storageJ.columns[index.table] != nil &&
-		m.storageK.columns[index.table] != nil &&
-		m.storageL.columns[index.table] != nil
+	table := m.world.storage.entities[entity.id].table
+	return m.storageA.columns[table] != nil &&
+		m.storageB.columns[table] != nil &&
+		m.storageC.columns[table] != nil &&
+		m.storageD.columns[table] != nil &&
+		m.storageE.columns[table] != nil &&
+		m.storageF.columns[table] != nil &&
+		m.storageG.columns[table] != nil &&
+		m.storageH.columns[table] != nil &&
+		m.storageI.columns[table] != nil &&
+		m.storageJ.columns[table] != nil &&
+		m.storageK.columns[table] != nil &&
+		m.storageL.columns[table] != nil
 }
 
 // Add the mapped components to the given entity.

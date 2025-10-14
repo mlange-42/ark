@@ -174,8 +174,7 @@ func (m *Map[T]) Has(entity Entity) bool {
 // In contrast to [Map.Has], it does not check whether the entity is alive.
 // Can be used as an optimization when it is certain that the entity is alive.
 func (m *Map[T]) HasUnchecked(entity Entity) bool {
-	index := m.world.storage.entities[entity.id]
-	return m.storage.columns[index.table] != nil
+	return m.storage.columns[m.world.storage.entities[entity.id].table] != nil
 }
 
 // Add the mapped component to the given entity.
