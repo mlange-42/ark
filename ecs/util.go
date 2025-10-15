@@ -6,9 +6,6 @@ import (
 	"unsafe"
 )
 
-// nilDummy is used to create nil pointers from unsafe.Pointer
-var nilDummy *struct{} = nil
-
 // capPow2 calculated the next power-of-2 capacity value.
 func capPow2(required uint32) uint32 {
 	if required == 0 {

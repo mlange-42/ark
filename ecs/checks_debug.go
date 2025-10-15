@@ -2,8 +2,6 @@
 
 package ecs
 
-const isDebug = true
-
 func (c *cursor) checkQueryNext() {
 	if c.table < -1 {
 		panic("query iteration already finished. Create a new query to iterate again")
