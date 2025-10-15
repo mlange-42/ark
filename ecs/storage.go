@@ -31,6 +31,7 @@ type storage struct {
 // componentStorage is an index for faster access of table columns by component ID.
 type componentStorage struct {
 	columns []*column
+	layouts []columnLayout
 }
 
 // slices for re-use, to avoid allocations.
@@ -228,7 +229,10 @@ func (s *storage) AddComponent(id uint8) {
 	if len(s.components) != int(id) {
 		panic("components can only be added to a storage sequentially")
 	}
-	s.components = append(s.components, componentStorage{columns: make([]*column, len(s.tables))})
+	s.components = append(s.components, componentStorage{
+		columns: make([]*column, len(s.tables)),
+		layouts: make([]columnLayout, len(s.tables)),
+	})
 	s.componentIndex = append(s.componentIndex, []archetypeID{})
 }
 
@@ -374,7 +378,7 @@ func (s *storage) getRegisteredFilter(id cacheID) *cacheEntry {
 // Returns the entity and its table row.
 func (s *storage) createEntity(table tableID) (Entity, uint32) {
 	entity := s.entityPool.Get()
-	idx := s.tables[table].Add(entity)
+	idx := s.tables[table].Add(s, entity)
 	if int(entity.id) == len(s.entities) {
 		s.entities = append(s.entities, entityIndex{table: table, row: idx})
 		s.isTarget = append(s.isTarget, false)
@@ -387,7 +391,7 @@ func (s *storage) createEntity(table tableID) (Entity, uint32) {
 // createEntities creates multiple entities in the given table.
 func (s *storage) createEntities(table *table, count int) {
 	startIdx := table.Len()
-	table.Alloc(uint32(count))
+	table.Alloc(s, uint32(count))
 
 	len := len(s.entities)
 	for i := range count {
@@ -468,8 +472,10 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 			comps := &s.components[i]
 			if archetype.mask.Get(id.id) {
 				comps.columns = append(comps.columns, table.Column(id))
+				comps.layouts = append(comps.layouts, table.Column(id).columnLayout)
 			} else {
 				comps.columns = append(comps.columns, nil)
+				comps.layouts = append(comps.layouts, columnLayout{pointer: unsafe.Pointer(nilDummy)})
 			}
 		}
 	}
@@ -525,7 +531,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 // moveEntities moves all entities from src to dst.
 func (s *storage) moveEntities(src, dst *table, count uint32) {
 	oldLen := dst.Len()
-	dst.AddAll(src, count)
+	dst.AddAll(s, src, count)
 
 	newLen := dst.Len()
 	newTable := dst.id
@@ -692,11 +698,11 @@ func (s *storage) Shrink(stopAfter time.Duration) bool {
 		table := &s.tables[tableIdx]
 
 		if !table.HasRelations() {
-			if table.Shrink(uint32(s.config.initialCapacity)) {
+			if table.Shrink(s, uint32(s.config.initialCapacity)) {
 				anyFound = true
 			}
 		} else {
-			if table.Shrink(uint32(s.config.initialCapacityRelations)) {
+			if table.Shrink(s, uint32(s.config.initialCapacityRelations)) {
 				anyFound = true
 			}
 			if !table.isFree && table.Len() == 0 {
