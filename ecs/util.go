@@ -9,6 +9,9 @@ import (
 // nilDummy is used to create nil pointers from unsafe.Pointer
 var nilDummy *struct{} = nil
 
+// columnLayoutSize is the memory size of a columnLayout for unsafe indexing.
+var columnLayoutSize = reflect.TypeFor[columnLayout]().Size()
+
 // capPow2 calculated the next power-of-2 capacity value.
 func capPow2(required uint32) uint32 {
 	if required == 0 {
@@ -27,11 +30,12 @@ func capPow2(required uint32) uint32 {
 //
 // Returns nil if the entity does not have the component.
 func get[T any](storage *componentStorage, index *entityIndex) *T {
-	col := storage.columns[index.table]
-	if col == nil {
-		return nil
-	}
-	return (*T)(col.Get(uintptr(index.row)))
+	return (*T)(storage.Get(index.table).Get(uintptr(index.row)))
+}
+
+// set the component for an entity using a component storage.
+func set[T any](storage *componentStorage, index *entityIndex, value *T) {
+	*(*T)(storage.Get(index.table).Get(uintptr(index.row))) = *value
 }
 
 // copyPtr copies from one pointer to another.

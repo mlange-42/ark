@@ -270,10 +270,8 @@ func (m *Map{{.}}{{$genericsShort}}) Set(entity Entity, {{$args}}) {
 	{{- end}}
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-
 	{{- range $i, $v := $upper}}
-	*(*{{$v}})(m.storage{{$v}}.columns[index.table].Get(row)) = *{{index $lower $i}}
+	set(m.storage{{$v}}, index, {{index $lower $i}})
 	{{- end}}
 	
 	if m.world.storage.observers.HasObservers(OnSetComponents) {

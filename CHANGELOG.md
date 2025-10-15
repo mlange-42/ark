@@ -1,12 +1,18 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.6.1...main)
+
+### Performance
+
+- Stores column layouts separately, speeding up `MapX.Get` by &approx;15% (#430)
+
 ## [[v0.6.1]](https://github.com/mlange-42/ark/compare/v0.6.0...v0.6.1)
 
 ### Performance
 
 - Undo slice pooling in query creation (#405) to avoid weird query performance degradation (#422)
-- Reduce memory size of the central storage by allocating slice pool and observer manager on the heap (#425)
-- Pre-fetch column pointers to speed up queries by 20-30% (#426)
+- Reduces memory size of the central storage by allocating slice pool and observer manager on the heap (#425)
+- Pre-fetches column pointers to speed up queries by 20-30% (#426)
 
 ## [[v0.6.0]](https://github.com/mlange-42/ark/compare/v0.5.2...v0.6.0)
 
