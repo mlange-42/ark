@@ -162,6 +162,7 @@ func (t *table) Shrink(storage *storage, minCapacity uint32) bool {
 // adjustCapacity changes the capacity of all columns.
 // Does not check whether the change is necessary or feasible.
 func (t *table) adjustCapacity(storage *storage, cap uint32) {
+	// TODO: find a more clean way to update pointers in the storage.
 	t.cap = cap
 
 	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), entityType)).Elem()
