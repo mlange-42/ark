@@ -484,6 +484,7 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 				comps.columns = append(comps.columns, nil)
 				comps.layouts = append(comps.layouts, columnLayout{pointer: unsafe.Pointer(nilDummy)})
 			}
+			comps.pointer = unsafe.Pointer(&comps.layouts[0])
 		}
 	}
 
