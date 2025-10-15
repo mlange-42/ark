@@ -155,12 +155,7 @@ func TestQuery1Empty(t *testing.T) {
 	expectEqual(t, 0, query.Count())
 
 	expectPanics(t, func() { query.Entity() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a := query.Get()
-		expectNil(t, a)
-	}
+	expectPanics(t, func() { query.Get() })
 
 	cnt := 0
 	for query.Next() {
@@ -170,12 +165,7 @@ func TestQuery1Empty(t *testing.T) {
 
 	expectPanics(t, func() { query.Entity() })
 	expectPanics(t, func() { query.Next() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a := query.Get()
-		expectNil(t, a)
-	}
+	expectPanics(t, func() { query.Get() })
 }
 
 func TestQuery1Relations(t *testing.T) {
@@ -505,13 +495,7 @@ func TestQuery2Empty(t *testing.T) {
 	expectEqual(t, 0, query.Count())
 
 	expectPanics(t, func() { query.Entity() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-	}
+	expectPanics(t, func() { query.Get() })
 
 	cnt := 0
 	for query.Next() {
@@ -521,13 +505,7 @@ func TestQuery2Empty(t *testing.T) {
 
 	expectPanics(t, func() { query.Entity() })
 	expectPanics(t, func() { query.Next() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-	}
+	expectPanics(t, func() { query.Get() })
 }
 
 func TestQuery2Relations(t *testing.T) {
@@ -857,14 +835,7 @@ func TestQuery3Empty(t *testing.T) {
 	expectEqual(t, 0, query.Count())
 
 	expectPanics(t, func() { query.Entity() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-	}
+	expectPanics(t, func() { query.Get() })
 
 	cnt := 0
 	for query.Next() {
@@ -874,14 +845,7 @@ func TestQuery3Empty(t *testing.T) {
 
 	expectPanics(t, func() { query.Entity() })
 	expectPanics(t, func() { query.Next() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-	}
+	expectPanics(t, func() { query.Get() })
 }
 
 func TestQuery3Relations(t *testing.T) {
@@ -1211,15 +1175,7 @@ func TestQuery4Empty(t *testing.T) {
 	expectEqual(t, 0, query.Count())
 
 	expectPanics(t, func() { query.Entity() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c, d := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-		expectNil(t, d)
-	}
+	expectPanics(t, func() { query.Get() })
 
 	cnt := 0
 	for query.Next() {
@@ -1229,15 +1185,7 @@ func TestQuery4Empty(t *testing.T) {
 
 	expectPanics(t, func() { query.Entity() })
 	expectPanics(t, func() { query.Next() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c, d := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-		expectNil(t, d)
-	}
+	expectPanics(t, func() { query.Get() })
 }
 
 func TestQuery4Relations(t *testing.T) {
@@ -1567,16 +1515,7 @@ func TestQuery5Empty(t *testing.T) {
 	expectEqual(t, 0, query.Count())
 
 	expectPanics(t, func() { query.Entity() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c, d, e := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-		expectNil(t, d)
-		expectNil(t, e)
-	}
+	expectPanics(t, func() { query.Get() })
 
 	cnt := 0
 	for query.Next() {
@@ -1586,16 +1525,7 @@ func TestQuery5Empty(t *testing.T) {
 
 	expectPanics(t, func() { query.Entity() })
 	expectPanics(t, func() { query.Next() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c, d, e := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-		expectNil(t, d)
-		expectNil(t, e)
-	}
+	expectPanics(t, func() { query.Get() })
 }
 
 func TestQuery5Relations(t *testing.T) {
@@ -1925,17 +1855,7 @@ func TestQuery6Empty(t *testing.T) {
 	expectEqual(t, 0, query.Count())
 
 	expectPanics(t, func() { query.Entity() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c, d, e, f := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-		expectNil(t, d)
-		expectNil(t, e)
-		expectNil(t, f)
-	}
+	expectPanics(t, func() { query.Get() })
 
 	cnt := 0
 	for query.Next() {
@@ -1945,17 +1865,7 @@ func TestQuery6Empty(t *testing.T) {
 
 	expectPanics(t, func() { query.Entity() })
 	expectPanics(t, func() { query.Next() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c, d, e, f := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-		expectNil(t, d)
-		expectNil(t, e)
-		expectNil(t, f)
-	}
+	expectPanics(t, func() { query.Get() })
 }
 
 func TestQuery6Relations(t *testing.T) {
@@ -2285,18 +2195,7 @@ func TestQuery7Empty(t *testing.T) {
 	expectEqual(t, 0, query.Count())
 
 	expectPanics(t, func() { query.Entity() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c, d, e, f, g := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-		expectNil(t, d)
-		expectNil(t, e)
-		expectNil(t, f)
-		expectNil(t, g)
-	}
+	expectPanics(t, func() { query.Get() })
 
 	cnt := 0
 	for query.Next() {
@@ -2306,18 +2205,7 @@ func TestQuery7Empty(t *testing.T) {
 
 	expectPanics(t, func() { query.Entity() })
 	expectPanics(t, func() { query.Next() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c, d, e, f, g := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-		expectNil(t, d)
-		expectNil(t, e)
-		expectNil(t, f)
-		expectNil(t, g)
-	}
+	expectPanics(t, func() { query.Get() })
 }
 
 func TestQuery7Relations(t *testing.T) {
@@ -2647,19 +2535,7 @@ func TestQuery8Empty(t *testing.T) {
 	expectEqual(t, 0, query.Count())
 
 	expectPanics(t, func() { query.Entity() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c, d, e, f, g, h := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-		expectNil(t, d)
-		expectNil(t, e)
-		expectNil(t, f)
-		expectNil(t, g)
-		expectNil(t, h)
-	}
+	expectPanics(t, func() { query.Get() })
 
 	cnt := 0
 	for query.Next() {
@@ -2669,19 +2545,7 @@ func TestQuery8Empty(t *testing.T) {
 
 	expectPanics(t, func() { query.Entity() })
 	expectPanics(t, func() { query.Next() })
-	if isDebug {
-		expectPanics(t, func() { query.Get() })
-	} else {
-		a, b, c, d, e, f, g, h := query.Get()
-		expectNil(t, a)
-		expectNil(t, b)
-		expectNil(t, c)
-		expectNil(t, d)
-		expectNil(t, e)
-		expectNil(t, f)
-		expectNil(t, g)
-		expectNil(t, h)
-	}
+	expectPanics(t, func() { query.Get() })
 }
 
 func TestQuery8Relations(t *testing.T) {

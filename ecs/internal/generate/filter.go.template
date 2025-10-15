@@ -5,7 +5,6 @@ package ecs
 
 import (
 	"sync"
-	"unsafe"
 )
 
 {{range makeRange 0 8}}
@@ -181,9 +180,6 @@ func (f *Filter{{.}}{{$genericsShort}}) Query(rel ...Relation) Query{{.}}{{$gene
 			maxIndex:  -1,
 		},
 		rareComp: f.rareComp,
-		{{- range $i, $v := $upper}}
-		columnPtr{{$v}}: unsafe.Pointer(nilDummy),
-		{{- end}}
 		{{if eq . 0 -}}
 		hasRareComp: len(f.ids) > 0,
 		{{- end}}
