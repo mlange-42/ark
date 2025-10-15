@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"reflect"
+	"runtime"
 	"testing"
 	"unsafe"
 )
@@ -93,4 +94,69 @@ func BenchmarkCapPow2(b *testing.B) {
 	for b.Loop() {
 		_ = capPow2(513)
 	}
+}
+
+func BenchmarkReflectArrayToSlice(b *testing.B) {
+	capacity := 100
+	typ := reflect.TypeFor[Position]()
+	data := reflect.New(reflect.ArrayOf(capacity, typ)).Elem()
+
+	for i := range data.Len() {
+		data.Index(i).Set(reflect.ValueOf(Position{X: 1, Y: 1}))
+	}
+
+	var slice []Position
+	loop := func() {
+		slice = data.Slice(0, data.Len()).Interface().([]Position)
+	}
+
+	for b.Loop() {
+		loop()
+	}
+
+	runtime.KeepAlive(slice)
+}
+
+func BenchmarkReflectSliceToSlice(b *testing.B) {
+	capacity := 100
+	typ := reflect.TypeFor[Position]()
+	data := reflect.MakeSlice(reflect.SliceOf(typ), capacity, capacity)
+
+	for i := range data.Len() {
+		data.Index(i).Set(reflect.ValueOf(Position{X: 1, Y: 1}))
+	}
+
+	var slice []Position
+	loop := func() {
+		slice = data.Interface().([]Position)
+	}
+
+	for b.Loop() {
+		loop()
+	}
+
+	runtime.KeepAlive(slice)
+}
+
+func BenchmarkReflectAnyToSlice(b *testing.B) {
+	capacity := 100
+	typ := reflect.TypeFor[Position]()
+	data := reflect.MakeSlice(reflect.SliceOf(typ), capacity, capacity)
+
+	for i := range data.Len() {
+		data.Index(i).Set(reflect.ValueOf(Position{X: 1, Y: 1}))
+	}
+
+	var anySlice any = data.Interface().([]Position)
+
+	var slice []Position
+	loop := func() {
+		slice = anySlice.([]Position)
+	}
+
+	for b.Loop() {
+		loop()
+	}
+
+	runtime.KeepAlive(slice)
 }
