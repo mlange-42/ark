@@ -30,6 +30,11 @@ func get[T any](storage *componentStorage, index *entityIndex) *T {
 	return (*T)(storage.layouts[index.table].Get(uintptr(index.row)))
 }
 
+// set the component for an entity using a component storage.
+func set[T any](storage *componentStorage, index *entityIndex, value *T) {
+	*(*T)(storage.layouts[index.table].Get(uintptr(index.row))) = *value
+}
+
 // copyPtr copies from one pointer to another.
 // This is not GC-safe. Use only for trivial/value types.
 func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {

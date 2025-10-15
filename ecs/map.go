@@ -225,7 +225,7 @@ func (m *Map[T]) Set(entity Entity, comp *T) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 
 	index := &m.world.storage.entities[entity.id]
-	*(*T)(m.storage.columns[index.table].Get(uintptr(index.row))) = *comp
+	set(m.storage, index, comp)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask

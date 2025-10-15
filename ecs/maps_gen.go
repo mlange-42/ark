@@ -227,8 +227,7 @@ func (m *Map1[A]) Set(entity Entity, a *A) {
 	m.world.storage.checkHasComponent(entity, m.ids[0])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
+	set(m.storageA, index, a)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -546,9 +545,8 @@ func (m *Map2[A, B]) Set(entity Entity, a *A, b *B) {
 	m.world.storage.checkHasComponent(entity, m.ids[1])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -885,10 +883,9 @@ func (m *Map3[A, B, C]) Set(entity Entity, a *A, b *B, c *C) {
 	m.world.storage.checkHasComponent(entity, m.ids[2])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
+	set(m.storageC, index, c)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -1240,11 +1237,10 @@ func (m *Map4[A, B, C, D]) Set(entity Entity, a *A, b *B, c *C, d *D) {
 	m.world.storage.checkHasComponent(entity, m.ids[3])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
+	set(m.storageC, index, c)
+	set(m.storageD, index, d)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -1611,12 +1607,11 @@ func (m *Map5[A, B, C, D, E]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E) {
 	m.world.storage.checkHasComponent(entity, m.ids[4])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
+	set(m.storageC, index, c)
+	set(m.storageD, index, d)
+	set(m.storageE, index, e)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -1998,13 +1993,12 @@ func (m *Map6[A, B, C, D, E, F]) Set(entity Entity, a *A, b *B, c *C, d *D, e *E
 	m.world.storage.checkHasComponent(entity, m.ids[5])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
+	set(m.storageC, index, c)
+	set(m.storageD, index, d)
+	set(m.storageE, index, e)
+	set(m.storageF, index, f)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -2401,14 +2395,13 @@ func (m *Map7[A, B, C, D, E, F, G]) Set(entity Entity, a *A, b *B, c *C, d *D, e
 	m.world.storage.checkHasComponent(entity, m.ids[6])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
+	set(m.storageC, index, c)
+	set(m.storageD, index, d)
+	set(m.storageE, index, e)
+	set(m.storageF, index, f)
+	set(m.storageG, index, g)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -2820,15 +2813,14 @@ func (m *Map8[A, B, C, D, E, F, G, H]) Set(entity Entity, a *A, b *B, c *C, d *D
 	m.world.storage.checkHasComponent(entity, m.ids[7])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
-	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
+	set(m.storageC, index, c)
+	set(m.storageD, index, d)
+	set(m.storageE, index, e)
+	set(m.storageF, index, f)
+	set(m.storageG, index, g)
+	set(m.storageH, index, h)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -3255,16 +3247,15 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) Set(entity Entity, a *A, b *B, c *C, d
 	m.world.storage.checkHasComponent(entity, m.ids[8])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
-	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
-	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
+	set(m.storageC, index, c)
+	set(m.storageD, index, d)
+	set(m.storageE, index, e)
+	set(m.storageF, index, f)
+	set(m.storageG, index, g)
+	set(m.storageH, index, h)
+	set(m.storageI, index, i)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -3706,17 +3697,16 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) Set(entity Entity, a *A, b *B, c *
 	m.world.storage.checkHasComponent(entity, m.ids[9])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
-	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
-	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
-	*(*J)(m.storageJ.columns[index.table].Get(row)) = *j
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
+	set(m.storageC, index, c)
+	set(m.storageD, index, d)
+	set(m.storageE, index, e)
+	set(m.storageF, index, f)
+	set(m.storageG, index, g)
+	set(m.storageH, index, h)
+	set(m.storageI, index, i)
+	set(m.storageJ, index, j)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -4173,18 +4163,17 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) Set(entity Entity, a *A, b *B, 
 	m.world.storage.checkHasComponent(entity, m.ids[10])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
-	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
-	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
-	*(*J)(m.storageJ.columns[index.table].Get(row)) = *j
-	*(*K)(m.storageK.columns[index.table].Get(row)) = *k
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
+	set(m.storageC, index, c)
+	set(m.storageD, index, d)
+	set(m.storageE, index, e)
+	set(m.storageF, index, f)
+	set(m.storageG, index, g)
+	set(m.storageH, index, h)
+	set(m.storageI, index, i)
+	set(m.storageJ, index, j)
+	set(m.storageK, index, k)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
@@ -4656,19 +4645,18 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) Set(entity Entity, a *A, b *
 	m.world.storage.checkHasComponent(entity, m.ids[11])
 
 	index := &m.world.storage.entities[entity.id]
-	row := uintptr(index.row)
-	*(*A)(m.storageA.columns[index.table].Get(row)) = *a
-	*(*B)(m.storageB.columns[index.table].Get(row)) = *b
-	*(*C)(m.storageC.columns[index.table].Get(row)) = *c
-	*(*D)(m.storageD.columns[index.table].Get(row)) = *d
-	*(*E)(m.storageE.columns[index.table].Get(row)) = *e
-	*(*F)(m.storageF.columns[index.table].Get(row)) = *f
-	*(*G)(m.storageG.columns[index.table].Get(row)) = *g
-	*(*H)(m.storageH.columns[index.table].Get(row)) = *h
-	*(*I)(m.storageI.columns[index.table].Get(row)) = *i
-	*(*J)(m.storageJ.columns[index.table].Get(row)) = *j
-	*(*K)(m.storageK.columns[index.table].Get(row)) = *k
-	*(*L)(m.storageL.columns[index.table].Get(row)) = *l
+	set(m.storageA, index, a)
+	set(m.storageB, index, b)
+	set(m.storageC, index, c)
+	set(m.storageD, index, d)
+	set(m.storageE, index, e)
+	set(m.storageF, index, f)
+	set(m.storageG, index, g)
+	set(m.storageH, index, h)
+	set(m.storageI, index, i)
+	set(m.storageJ, index, j)
+	set(m.storageK, index, k)
+	set(m.storageL, index, l)
 
 	if m.world.storage.observers.HasObservers(OnSetComponents) {
 		newMask := &m.world.storage.archetypes[m.world.storage.tables[index.table].archetype].mask
