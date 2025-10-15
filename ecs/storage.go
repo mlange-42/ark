@@ -32,6 +32,11 @@ type storage struct {
 type componentStorage struct {
 	columns []*column
 	layouts []columnLayout
+	pointer unsafe.Pointer
+}
+
+func (s *componentStorage) Get(table tableID) *columnLayout {
+	return (*columnLayout)(unsafe.Add(s.pointer, columnLayoutSize*uintptr(table)))
 }
 
 // slices for re-use, to avoid allocations.
@@ -229,9 +234,11 @@ func (s *storage) AddComponent(id uint8) {
 	if len(s.components) != int(id) {
 		panic("components can only be added to a storage sequentially")
 	}
+	layouts := make([]columnLayout, len(s.tables))
 	s.components = append(s.components, componentStorage{
 		columns: make([]*column, len(s.tables)),
-		layouts: make([]columnLayout, len(s.tables)),
+		layouts: layouts,
+		pointer: unsafe.Pointer(&layouts[0]),
 	})
 	s.componentIndex = append(s.componentIndex, []archetypeID{})
 }
