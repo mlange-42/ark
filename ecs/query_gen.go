@@ -285,7 +285,7 @@ func (q *Query1[A]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	columnA := q.components[0].columns[q.table.id]
-	q.columnA = columnA.data.Slice(0, columnA.data.Len()).Interface().([]A)
+	q.columnA = columnA.data.Interface().([]A)
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -420,9 +420,9 @@ func (q *Query2[A, B]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	columnA := q.components[0].columns[q.table.id]
-	q.columnA = columnA.data.Slice(0, columnA.data.Len()).Interface().([]A)
+	q.columnA = columnA.data.Interface().([]A)
 	columnB := q.components[1].columns[q.table.id]
-	q.columnB = columnB.data.Slice(0, columnB.data.Len()).Interface().([]B)
+	q.columnB = columnB.data.Interface().([]B)
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -565,11 +565,11 @@ func (q *Query3[A, B, C]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	columnA := q.components[0].columns[q.table.id]
-	q.columnA = columnA.data.Slice(0, columnA.data.Len()).Interface().([]A)
+	q.columnA = columnA.data.Interface().([]A)
 	columnB := q.components[1].columns[q.table.id]
-	q.columnB = columnB.data.Slice(0, columnB.data.Len()).Interface().([]B)
+	q.columnB = columnB.data.Interface().([]B)
 	columnC := q.components[2].columns[q.table.id]
-	q.columnC = columnC.data.Slice(0, columnC.data.Len()).Interface().([]C)
+	q.columnC = columnC.data.Interface().([]C)
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -714,13 +714,13 @@ func (q *Query4[A, B, C, D]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	columnA := q.components[0].columns[q.table.id]
-	q.columnA = columnA.data.Slice(0, columnA.data.Len()).Interface().([]A)
+	q.columnA = columnA.data.Interface().([]A)
 	columnB := q.components[1].columns[q.table.id]
-	q.columnB = columnB.data.Slice(0, columnB.data.Len()).Interface().([]B)
+	q.columnB = columnB.data.Interface().([]B)
 	columnC := q.components[2].columns[q.table.id]
-	q.columnC = columnC.data.Slice(0, columnC.data.Len()).Interface().([]C)
+	q.columnC = columnC.data.Interface().([]C)
 	columnD := q.components[3].columns[q.table.id]
-	q.columnD = columnD.data.Slice(0, columnD.data.Len()).Interface().([]D)
+	q.columnD = columnD.data.Interface().([]D)
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -867,15 +867,15 @@ func (q *Query5[A, B, C, D, E]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	columnA := q.components[0].columns[q.table.id]
-	q.columnA = columnA.data.Slice(0, columnA.data.Len()).Interface().([]A)
+	q.columnA = columnA.data.Interface().([]A)
 	columnB := q.components[1].columns[q.table.id]
-	q.columnB = columnB.data.Slice(0, columnB.data.Len()).Interface().([]B)
+	q.columnB = columnB.data.Interface().([]B)
 	columnC := q.components[2].columns[q.table.id]
-	q.columnC = columnC.data.Slice(0, columnC.data.Len()).Interface().([]C)
+	q.columnC = columnC.data.Interface().([]C)
 	columnD := q.components[3].columns[q.table.id]
-	q.columnD = columnD.data.Slice(0, columnD.data.Len()).Interface().([]D)
+	q.columnD = columnD.data.Interface().([]D)
 	columnE := q.components[4].columns[q.table.id]
-	q.columnE = columnE.data.Slice(0, columnE.data.Len()).Interface().([]E)
+	q.columnE = columnE.data.Interface().([]E)
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -1024,17 +1024,17 @@ func (q *Query6[A, B, C, D, E, F]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	columnA := q.components[0].columns[q.table.id]
-	q.columnA = columnA.data.Slice(0, columnA.data.Len()).Interface().([]A)
+	q.columnA = columnA.data.Interface().([]A)
 	columnB := q.components[1].columns[q.table.id]
-	q.columnB = columnB.data.Slice(0, columnB.data.Len()).Interface().([]B)
+	q.columnB = columnB.data.Interface().([]B)
 	columnC := q.components[2].columns[q.table.id]
-	q.columnC = columnC.data.Slice(0, columnC.data.Len()).Interface().([]C)
+	q.columnC = columnC.data.Interface().([]C)
 	columnD := q.components[3].columns[q.table.id]
-	q.columnD = columnD.data.Slice(0, columnD.data.Len()).Interface().([]D)
+	q.columnD = columnD.data.Interface().([]D)
 	columnE := q.components[4].columns[q.table.id]
-	q.columnE = columnE.data.Slice(0, columnE.data.Len()).Interface().([]E)
+	q.columnE = columnE.data.Interface().([]E)
 	columnF := q.components[5].columns[q.table.id]
-	q.columnF = columnF.data.Slice(0, columnF.data.Len()).Interface().([]F)
+	q.columnF = columnF.data.Interface().([]F)
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -1185,19 +1185,19 @@ func (q *Query7[A, B, C, D, E, F, G]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	columnA := q.components[0].columns[q.table.id]
-	q.columnA = columnA.data.Slice(0, columnA.data.Len()).Interface().([]A)
+	q.columnA = columnA.data.Interface().([]A)
 	columnB := q.components[1].columns[q.table.id]
-	q.columnB = columnB.data.Slice(0, columnB.data.Len()).Interface().([]B)
+	q.columnB = columnB.data.Interface().([]B)
 	columnC := q.components[2].columns[q.table.id]
-	q.columnC = columnC.data.Slice(0, columnC.data.Len()).Interface().([]C)
+	q.columnC = columnC.data.Interface().([]C)
 	columnD := q.components[3].columns[q.table.id]
-	q.columnD = columnD.data.Slice(0, columnD.data.Len()).Interface().([]D)
+	q.columnD = columnD.data.Interface().([]D)
 	columnE := q.components[4].columns[q.table.id]
-	q.columnE = columnE.data.Slice(0, columnE.data.Len()).Interface().([]E)
+	q.columnE = columnE.data.Interface().([]E)
 	columnF := q.components[5].columns[q.table.id]
-	q.columnF = columnF.data.Slice(0, columnF.data.Len()).Interface().([]F)
+	q.columnF = columnF.data.Interface().([]F)
 	columnG := q.components[6].columns[q.table.id]
-	q.columnG = columnG.data.Slice(0, columnG.data.Len()).Interface().([]G)
+	q.columnG = columnG.data.Interface().([]G)
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -1350,21 +1350,21 @@ func (q *Query8[A, B, C, D, E, F, G, H]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	columnA := q.components[0].columns[q.table.id]
-	q.columnA = columnA.data.Slice(0, columnA.data.Len()).Interface().([]A)
+	q.columnA = columnA.data.Interface().([]A)
 	columnB := q.components[1].columns[q.table.id]
-	q.columnB = columnB.data.Slice(0, columnB.data.Len()).Interface().([]B)
+	q.columnB = columnB.data.Interface().([]B)
 	columnC := q.components[2].columns[q.table.id]
-	q.columnC = columnC.data.Slice(0, columnC.data.Len()).Interface().([]C)
+	q.columnC = columnC.data.Interface().([]C)
 	columnD := q.components[3].columns[q.table.id]
-	q.columnD = columnD.data.Slice(0, columnD.data.Len()).Interface().([]D)
+	q.columnD = columnD.data.Interface().([]D)
 	columnE := q.components[4].columns[q.table.id]
-	q.columnE = columnE.data.Slice(0, columnE.data.Len()).Interface().([]E)
+	q.columnE = columnE.data.Interface().([]E)
 	columnF := q.components[5].columns[q.table.id]
-	q.columnF = columnF.data.Slice(0, columnF.data.Len()).Interface().([]F)
+	q.columnF = columnF.data.Interface().([]F)
 	columnG := q.components[6].columns[q.table.id]
-	q.columnG = columnG.data.Slice(0, columnG.data.Len()).Interface().([]G)
+	q.columnG = columnG.data.Interface().([]G)
 	columnH := q.components[7].columns[q.table.id]
-	q.columnH = columnH.data.Slice(0, columnH.data.Len()).Interface().([]H)
+	q.columnH = columnH.data.Interface().([]H)
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }

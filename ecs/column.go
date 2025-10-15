@@ -20,8 +20,8 @@ type column struct {
 // newColumn creates a new column for a given type and capacity.
 func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool, isTrivial bool, target Entity, capacity uint32) column {
 	// TODO: should we use a slice instead of an array here?
-	data := reflect.New(reflect.ArrayOf(int(capacity), tp)).Elem()
-	pointer := data.Addr().UnsafePointer()
+	data := reflect.MakeSlice(reflect.SliceOf(tp), int(capacity), int(capacity))
+	pointer := data.Index(0).Addr().UnsafePointer()
 
 	return column{
 		pointer:    pointer,
@@ -103,7 +103,9 @@ func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
 	if ownLen <= 64 && c.isTrivial { // A coarse estimate where manually zeroing is faster
 		c.ZeroRange(0, ownLen, zero)
 	} else {
-		c.data.SetZero()
+		for i := range ownLen {
+			zeroValueAt(c.data, int(i))
+		}
 	}
 }
 
