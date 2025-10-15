@@ -35,8 +35,8 @@ type componentStorage struct {
 	pointer unsafe.Pointer
 }
 
-func (s *componentStorage) Get(table tableID) *columnLayout {
-	return (*columnLayout)(unsafe.Add(s.pointer, columnLayoutSize*uintptr(table)))
+func (s *componentStorage) Get(table tableID) columnLayout {
+	return *(*columnLayout)(unsafe.Add(s.pointer, columnLayoutSize*uintptr(table)))
 }
 
 // slices for re-use, to avoid allocations.
