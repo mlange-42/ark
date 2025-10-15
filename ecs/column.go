@@ -42,7 +42,7 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 }
 
 // Get returns a pointer to the component at the given index.
-func (c *columnLayout) Get(index uintptr) unsafe.Pointer {
+func (c columnLayout) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*c.itemSize)
 }
 

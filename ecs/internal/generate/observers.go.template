@@ -121,11 +121,10 @@ func (o *Observer{{.}}{{$genericsShort}}) Register(w *World) *Observer{{.}}{{$ge
 	{{- end}}
 	o.observer.callback = func(e Entity) {
 		index := &w.storage.entities[e.id]
-		row := uintptr(index.row)
 		o.callback(
 			e,
 			{{- range $i, $v := $upper}}
-			(*{{$v}})(storage{{$v}}.columns[index.table].Get(row)),
+			get[{{$v}}](storage{{$v}}, index),
 			{{- end}}
 		)
 	}
