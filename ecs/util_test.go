@@ -83,8 +83,7 @@ func TestIsTrivial(t *testing.T) {
 }
 
 func TestPagedSlice(t *testing.T) {
-	a := pagedSlice[int32]{}
-
+	a := newPagedSlice[int32](32)
 	var i int32
 	for i = range 66 {
 		a.Add(i)

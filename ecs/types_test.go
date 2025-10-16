@@ -120,6 +120,7 @@ func TestTypeSizes(t *testing.T) {
 	printTypeSize[storage]()
 	printTypeSize[node]()
 	printTypeSize[archetype]()
+	printTypeSize[archetypeData]()
 	printTypeSize[table]()
 	printTypeSize[tableIDs]()
 	printTypeSize[column]()
