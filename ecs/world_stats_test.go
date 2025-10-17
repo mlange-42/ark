@@ -109,7 +109,7 @@ func TestWorldStatsSizeJSON(t *testing.T) {
 	for _, comps := range [...]int{2, 4, 6, 10} {
 		for _, flags := range [...]stats.Option{stats.All, stats.Archetypes, stats.None} {
 			w := createWorld(comps)
-			stats := w.Stats(stats.Option(flags))
+			stats := w.Stats(flags)
 			js, err := json.Marshal(&stats)
 			expectNil(t, err)
 			fmt.Printf("JSON size for stats (%s), %4d archetypes: %7.3f kB\n",
