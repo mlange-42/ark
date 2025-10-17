@@ -566,6 +566,11 @@ func (w *World) emitEvent(e *Event, entity Entity) {
 	if !w.storage.observers.HasObservers(e.eventType) {
 		return
 	}
+	w.emitEventSlowPath(e, entity)
+}
+
+// emitEventSlowPath is the slow path of emitEvent if there are observers for the event type.
+func (w *World) emitEventSlowPath(e *Event, entity Entity) {
 	var mask *bitMask
 	if entity.IsZero() {
 		mask = &w.storage.archetypes[0].mask
