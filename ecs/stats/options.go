@@ -4,12 +4,12 @@ package stats
 type Option uint8
 
 const (
-	// Archetypes included in stats.
-	Archetypes Option = 1 << iota
-	// Tables included in stats. Requires Archetypes.
-	Tables
 	// None discards all stats details.
-	None Option = 0
-	// All includes all stats details.
-	All Option = Archetypes | Tables
+	None Option = iota
+	// Archetypes included in stats.
+	Archetypes
+	// Tables and archetypes included in stats.
+	Tables
+	// All details included in stats. Currently equivalent to Tables.
+	All = Archetypes | Tables
 )

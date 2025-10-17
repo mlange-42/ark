@@ -307,7 +307,7 @@ func (w *World) Stats(flags ...stats.Option) *stats.World {
 	memoryUsed := w.storage.entityPool.Len() * int(entityIndexSize+entitySize)
 
 	includeTables := mask&stats.Tables != 0
-	if mask&stats.Archetypes != 0 {
+	if includeTables || mask&stats.Archetypes != 0 {
 		cntOld := int32(len(w.stats.Archetypes))
 		cntNew := int32(len(w.storage.archetypes))
 		var i int32
