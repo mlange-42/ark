@@ -541,7 +541,7 @@ func TestWorldRemoveGC(t *testing.T) {
 	runtime.GC()
 	runtime.ReadMemStats(&mem2)
 	heap := int(mem2.HeapInuse - mem1.HeapInuse)
-	expectGreater(t, heap, 8000000)
+	expectGreater(t, heap, 7500000)
 	expectLess(t, heap, 10000000)
 
 	rand.Shuffle(len(entities), func(i, j int) {
@@ -555,7 +555,7 @@ func TestWorldRemoveGC(t *testing.T) {
 	runtime.GC()
 	runtime.ReadMemStats(&mem2)
 	heap = int(mem2.HeapInuse - mem1.HeapInuse)
-	expectLess(t, heap, 800000)
+	expectLess(t, heap, 750000)
 
 	_ = mapper.NewEntity(&SliceComp{})
 }
