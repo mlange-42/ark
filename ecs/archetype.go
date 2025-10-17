@@ -292,7 +292,7 @@ func (a *archetype) Reset(storage *storage) {
 }
 
 // Stats generates statistics for an archetype.
-func (a *archetype) Stats(storage *storage) stats.Archetype {
+func (a *archetype) Stats(storage *storage, includeTables bool) stats.Archetype {
 	ids := a.components
 	aTypes := make([]reflect.Type, len(ids))
 	aTypeNames := make([]string, len(ids))
@@ -313,15 +313,27 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 	count := 0
 	memory := 0
 	memoryUsed := 0
-	tableStats := make([]stats.Table, len(a.tables.tables))
-	for i, id := range a.tables.tables {
-		table := &storage.tables[id]
-		tableStats[i] = table.Stats(memPerEntity)
-		stats := &tableStats[i]
-		cap += stats.Capacity
-		count += stats.Size
-		memory += stats.Memory
-		memoryUsed += stats.MemoryUsed
+
+	var tableStats []stats.Table
+	if includeTables {
+		tableStats = make([]stats.Table, len(a.tables.tables))
+		for i, id := range a.tables.tables {
+			table := &storage.tables[id]
+			tableStats[i] = table.Stats(memPerEntity)
+			stats := &tableStats[i]
+			cap += stats.Capacity
+			count += stats.Size
+			memory += stats.Memory
+			memoryUsed += stats.MemoryUsed
+		}
+	} else {
+		for _, id := range a.tables.tables {
+			table := &storage.tables[id]
+			cap += int(table.cap)
+			count += int(table.len)
+			memory += memPerEntity * int(table.cap)
+			memoryUsed += memPerEntity * int(table.len)
+		}
 	}
 	for _, id := range a.freeTables {
 		table := &storage.tables[id]
@@ -330,6 +342,7 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 	}
 
 	return stats.Archetype{
+		NumTables:          len(a.tables.tables),
 		FreeTables:         len(a.freeTables),
 		NumRelations:       int(a.numRelations),
 		ComponentIDs:       intIDs,
@@ -345,7 +358,7 @@ func (a *archetype) Stats(storage *storage) stats.Archetype {
 }
 
 // UpdateStats updates statistics for an archetype.
-func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
+func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage, includeTables bool) {
 	tables := a.tables
 
 	cap := 0
@@ -359,24 +372,36 @@ func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
 		stats.Tables = stats.Tables[:cntNew]
 		cntOld = cntNew
 	}
-	var i int32
-	for i := range cntOld {
-		tableStats := &stats.Tables[i]
-		table := &storage.tables[tables.tables[i]]
-		table.UpdateStats(stats.MemoryPerEntity, tableStats)
-		cap += tableStats.Capacity
-		count += tableStats.Size
-		memory += tableStats.Memory
-		memoryUsed += tableStats.MemoryUsed
-	}
-	for i = cntOld; i < cntNew; i++ {
-		table := &storage.tables[tables.tables[i]]
-		tableStats := table.Stats(stats.MemoryPerEntity)
-		stats.Tables = append(stats.Tables, tableStats)
-		cap += tableStats.Capacity
-		count += tableStats.Size
-		memory += tableStats.Memory
-		memoryUsed += tableStats.MemoryUsed
+
+	if includeTables {
+		var i int32
+		for i := range cntOld {
+			tableStats := &stats.Tables[i]
+			table := &storage.tables[tables.tables[i]]
+			table.UpdateStats(stats.MemoryPerEntity, tableStats)
+			cap += tableStats.Capacity
+			count += tableStats.Size
+			memory += tableStats.Memory
+			memoryUsed += tableStats.MemoryUsed
+		}
+		for i = cntOld; i < cntNew; i++ {
+			table := &storage.tables[tables.tables[i]]
+			tableStats := table.Stats(stats.MemoryPerEntity)
+			stats.Tables = append(stats.Tables, tableStats)
+			cap += tableStats.Capacity
+			count += tableStats.Size
+			memory += tableStats.Memory
+			memoryUsed += tableStats.MemoryUsed
+		}
+	} else {
+		stats.Tables = stats.Tables[:0]
+		for _, id := range a.tables.tables {
+			table := &storage.tables[id]
+			cap += int(table.cap)
+			count += int(table.len)
+			memory += stats.MemoryPerEntity * int(table.cap)
+			memoryUsed += stats.MemoryPerEntity * int(table.len)
+		}
 	}
 	for _, id := range a.freeTables {
 		table := &storage.tables[id]
@@ -384,9 +409,35 @@ func (a *archetype) UpdateStats(stats *stats.Archetype, storage *storage) {
 		memory += stats.MemoryPerEntity * int(table.cap)
 	}
 
+	stats.NumTables = len(a.tables.tables)
 	stats.FreeTables = len(a.freeTables)
 	stats.Capacity = cap
 	stats.Size = count
 	stats.Memory = memory
 	stats.MemoryUsed = memoryUsed
+}
+
+func (a *archetype) CountMemory(storage *storage) (int, int) {
+	tables := a.tables
+
+	memPerEntity := int(entitySize)
+	for j := range a.components {
+		memPerEntity += int(a.itemSizes[j])
+	}
+
+	memory := 0
+	memoryUsed := 0
+
+	for i := range len(tables.tables) {
+		table := &storage.tables[tables.tables[i]]
+		mem, used := int(table.cap)*memPerEntity, int(table.len)*memPerEntity
+		memory += mem
+		memoryUsed += used
+	}
+	for _, id := range a.freeTables {
+		table := &storage.tables[id]
+		memory += memPerEntity * int(table.cap)
+	}
+
+	return memory, memoryUsed
 }

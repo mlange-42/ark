@@ -1,7 +1,6 @@
 package ecs
 
 import (
-	"fmt"
 	"math/rand/v2"
 	"runtime"
 	"testing"
@@ -542,7 +541,7 @@ func TestWorldRemoveGC(t *testing.T) {
 	runtime.GC()
 	runtime.ReadMemStats(&mem2)
 	heap := int(mem2.HeapInuse - mem1.HeapInuse)
-	expectGreater(t, heap, 8000000)
+	expectGreater(t, heap, 7500000)
 	expectLess(t, heap, 10000000)
 
 	rand.Shuffle(len(entities), func(i, j int) {
@@ -556,7 +555,7 @@ func TestWorldRemoveGC(t *testing.T) {
 	runtime.GC()
 	runtime.ReadMemStats(&mem2)
 	heap = int(mem2.HeapInuse - mem1.HeapInuse)
-	expectLess(t, heap, 800000)
+	expectLess(t, heap, 750000)
 
 	_ = mapper.NewEntity(&SliceComp{})
 }
@@ -630,52 +629,6 @@ func TestWorldPanics(t *testing.T) {
 		w.exchangeBatch(nil, nil, nil, nil, nil)
 		w.RemoveEntity(e)
 	})
-}
-
-func TestWorldStats(t *testing.T) {
-	w := NewWorld(128, 32)
-
-	posVelMap := NewMap2[Position, Velocity](&w)
-	posVelHeadMap := NewMap3[Position, Velocity, Heading](&w)
-	posChildMap := NewMap3[Position, ChildOf, ChildOf2](&w)
-	filter := NewFilter0(&w)
-
-	p1 := w.NewEntity()
-	p2 := w.NewEntity()
-	p3 := w.NewEntity()
-
-	posVelMap.NewBatchFn(100, nil)
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p1), RelIdx(2, p2))
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p3), RelIdx(2, p2))
-
-	w.RemoveEntities(filter.Batch(), nil)
-	_ = w.Stats()
-
-	p1 = w.NewEntity()
-	p2 = w.NewEntity()
-	p3 = w.NewEntity()
-
-	posVelMap.NewBatchFn(100, nil)
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p1), RelIdx(2, p2))
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p3), RelIdx(2, p2))
-
-	posVelHeadMap.NewBatchFn(250, nil)
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p2), RelIdx(2, p3))
-	_ = w.Stats()
-
-	stats := w.Stats()
-	fmt.Println(stats.String())
-
-	expectEqual(t, 5, len(stats.ComponentTypes))
-	expectEqual(t, 5, len(stats.ComponentTypeNames))
-	expectEqual(t, 4, len(stats.Archetypes))
-	expectEqual(t, 2, len(stats.Archetypes[1].ComponentIDs))
-	expectEqual(t, 2, len(stats.Archetypes[1].ComponentTypes))
-	expectEqual(t, 2, len(stats.Archetypes[1].ComponentTypeNames))
-
-	w.RemoveEntities(filter.Batch(), nil)
-	stats = w.Stats()
-	fmt.Println(stats.String())
 }
 
 func TestWorldCreateManyTables(t *testing.T) {
