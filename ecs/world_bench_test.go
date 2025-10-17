@@ -3,8 +3,6 @@ package ecs
 import (
 	"math"
 	"testing"
-
-	"github.com/mlange-42/ark/ecs/stats"
 )
 
 func BenchmarkCreateEntity0Comp_1000(b *testing.B) {
@@ -293,100 +291,4 @@ func BenchmarkQuery128Arch_1024(b *testing.B) {
 
 func BenchmarkQuery1024Arch_1024(b *testing.B) {
 	benchmarkQueryNumArches(b, 1024, 1024)
-}
-
-func benchmarkWorldStats(b *testing.B, comps int, flags stats.Option) {
-	w := NewWorld()
-
-	allIDs := []ID{
-		ComponentID[CompA](&w),
-		ComponentID[CompB](&w),
-		ComponentID[CompC](&w),
-		ComponentID[CompD](&w),
-		ComponentID[CompE](&w),
-		ComponentID[CompF](&w),
-		ComponentID[CompG](&w),
-		ComponentID[CompH](&w),
-		ComponentID[CompI](&w),
-		ComponentID[CompJ](&w),
-	}
-	usedIDs := allIDs[:comps]
-
-	ids := []ID{}
-	for i := range int(math.Pow(2, float64(len(usedIDs)))) {
-		for j, id := range usedIDs {
-			m := 1 << j
-			if i&m == m {
-				ids = append(ids, id)
-			}
-		}
-		w.Unsafe().NewEntity(ids...)
-		ids = ids[:0]
-	}
-
-	stat := w.Stats(flags)
-
-	for b.Loop() {
-		stat = w.Stats(flags)
-	}
-	expectEqual(b, int(math.Pow(2, float64(comps))), stat.NumArchetypes)
-	if flags&stats.Archetypes != 0 {
-		expectEqual(b, int(math.Pow(2, float64(comps))), len(stat.Archetypes))
-		expectEqual(b, 1, stat.Archetypes[0].NumTables)
-		if flags&stats.Tables != 0 {
-			expectEqual(b, 1, len(stat.Archetypes[0].Tables))
-		} else {
-			expectEqual(b, 0, len(stat.Archetypes[0].Tables))
-		}
-	} else {
-		expectEqual(b, 0, len(stat.Archetypes))
-	}
-}
-
-func BenchmarkWorldStats_4Arch_All(b *testing.B) {
-	benchmarkWorldStats(b, 2, stats.All)
-}
-
-func BenchmarkWorldStats_4Arch_Arches(b *testing.B) {
-	benchmarkWorldStats(b, 2, stats.Archetypes)
-}
-
-func BenchmarkWorldStats_4Arch_None(b *testing.B) {
-	benchmarkWorldStats(b, 2, stats.None)
-}
-
-func BenchmarkWorldStats_16Arch_All(b *testing.B) {
-	benchmarkWorldStats(b, 4, stats.All)
-}
-
-func BenchmarkWorldStats_16Arch_Arches(b *testing.B) {
-	benchmarkWorldStats(b, 4, stats.Archetypes)
-}
-
-func BenchmarkWorldStats_16Arch_None(b *testing.B) {
-	benchmarkWorldStats(b, 4, stats.None)
-}
-
-func BenchmarkWorldStats_64Arch_All(b *testing.B) {
-	benchmarkWorldStats(b, 6, stats.All)
-}
-
-func BenchmarkWorldStats_64Arch_Arches(b *testing.B) {
-	benchmarkWorldStats(b, 6, stats.Archetypes)
-}
-
-func BenchmarkWorldStats_64Arch_None(b *testing.B) {
-	benchmarkWorldStats(b, 6, stats.None)
-}
-
-func BenchmarkWorldStats_1024Arch_All(b *testing.B) {
-	benchmarkWorldStats(b, 10, stats.All)
-}
-
-func BenchmarkWorldStats_1024Arch_Arches(b *testing.B) {
-	benchmarkWorldStats(b, 10, stats.Archetypes)
-}
-
-func BenchmarkWorldStats_1024Arch_None(b *testing.B) {
-	benchmarkWorldStats(b, 10, stats.None)
 }

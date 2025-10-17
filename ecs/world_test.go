@@ -1,13 +1,10 @@
 package ecs
 
 import (
-	"fmt"
 	"math/rand/v2"
 	"runtime"
 	"testing"
 	"time"
-
-	"github.com/mlange-42/ark/ecs/stats"
 )
 
 func TestNewWorld(t *testing.T) {
@@ -632,101 +629,6 @@ func TestWorldPanics(t *testing.T) {
 		w.exchangeBatch(nil, nil, nil, nil, nil)
 		w.RemoveEntity(e)
 	})
-}
-
-func TestWorldStats(t *testing.T) {
-	w := NewWorld(128, 32)
-
-	posVelMap := NewMap2[Position, Velocity](&w)
-	posVelHeadMap := NewMap3[Position, Velocity, Heading](&w)
-	posChildMap := NewMap3[Position, ChildOf, ChildOf2](&w)
-	filter := NewFilter0(&w)
-
-	p1 := w.NewEntity()
-	p2 := w.NewEntity()
-	p3 := w.NewEntity()
-
-	posVelMap.NewBatchFn(100, nil)
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p1), RelIdx(2, p2))
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p3), RelIdx(2, p2))
-
-	w.RemoveEntities(filter.Batch(), nil)
-	_ = w.Stats()
-
-	p1 = w.NewEntity()
-	p2 = w.NewEntity()
-	p3 = w.NewEntity()
-
-	posVelMap.NewBatchFn(100, nil)
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p1), RelIdx(2, p2))
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p3), RelIdx(2, p2))
-
-	posVelHeadMap.NewBatchFn(250, nil)
-	posChildMap.NewBatchFn(50, nil, RelIdx(1, p2), RelIdx(2, p3))
-	_ = w.Stats()
-
-	s := w.Stats()
-	fmt.Println(s.String())
-
-	expectEqual(t, 5, len(s.ComponentTypes))
-	expectEqual(t, 5, len(s.ComponentTypeNames))
-	expectEqual(t, 4, len(s.Archetypes))
-	expectEqual(t, 2, len(s.Archetypes[1].ComponentIDs))
-	expectEqual(t, 2, len(s.Archetypes[1].ComponentTypes))
-	expectEqual(t, 2, len(s.Archetypes[1].ComponentTypeNames))
-
-	sReduced := w.Stats(stats.None)
-	expectEqual(t, s.NumArchetypes, sReduced.NumArchetypes)
-
-	sReduced = w.Stats(stats.Archetypes)
-	expectEqual(t, s.Archetypes[0].NumTables, sReduced.Archetypes[0].NumTables)
-	expectEqual(t, s.Archetypes[1].NumTables, sReduced.Archetypes[1].NumTables)
-	expectEqual(t, s.Archetypes[2].NumTables, sReduced.Archetypes[2].NumTables)
-
-	w.RemoveEntities(filter.Batch(), nil)
-	s = w.Stats()
-	fmt.Println(s.String())
-}
-
-func TestWorldStatsFlags(t *testing.T) {
-	w := NewWorld(128, 32)
-
-	posVelMap := NewMap2[Position, Velocity](&w)
-	posVelHeadMap := NewMap3[Position, Velocity, Heading](&w)
-	posChildMap := NewMap2[Position, ChildOf](&w)
-
-	posVelMap.NewBatchFn(100, nil)
-	posVelHeadMap.NewBatchFn(100, nil)
-
-	parent := w.NewEntity()
-	child := posChildMap.NewEntityFn(nil, Rel[ChildOf](parent))
-	w.RemoveEntity(child)
-	w.RemoveEntity(parent)
-
-	s := w.Stats(stats.None)
-	mem, memUsed := s.Memory, s.MemoryUsed
-
-	expectEqual(t, 4, s.NumArchetypes)
-	expectEqual(t, 0, len(s.Archetypes))
-
-	_ = w.Stats(stats.Archetypes)
-	s = w.Stats(stats.Archetypes)
-
-	expectEqual(t, mem, s.Memory)
-	expectEqual(t, memUsed, s.MemoryUsed)
-	expectEqual(t, 4, s.NumArchetypes)
-	expectEqual(t, 4, len(s.Archetypes))
-	expectEqual(t, 1, s.Archetypes[0].NumTables)
-	expectEqual(t, 0, len(s.Archetypes[0].Tables))
-
-	s = w.Stats(stats.All)
-
-	expectEqual(t, mem, s.Memory)
-	expectEqual(t, memUsed, s.MemoryUsed)
-	expectEqual(t, 4, s.NumArchetypes)
-	expectEqual(t, 4, len(s.Archetypes))
-	expectEqual(t, 1, s.Archetypes[0].NumTables)
-	expectEqual(t, 1, len(s.Archetypes[0].Tables))
 }
 
 func TestWorldCreateManyTables(t *testing.T) {

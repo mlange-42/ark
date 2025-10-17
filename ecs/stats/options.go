@@ -9,7 +9,7 @@ const (
 	// Tables included in stats. Requires Archetypes.
 	Tables
 	// None discards all stats details.
-	None Option = iota
+	None Option = 0
 	// All includes all stats details.
 	All Option = Archetypes | Tables
 )
