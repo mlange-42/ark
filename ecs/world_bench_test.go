@@ -181,6 +181,118 @@ func BenchmarkWorldLockUnlock(b *testing.B) {
 	}
 }
 
+func BenchmarkRemoveTrivial_1000(b *testing.B) {
+	w := NewWorld()
+	builder := NewMap1[Heading](&w)
+
+	toRemove := []Entity{}
+	builder.NewBatchFn(1000, func(entity Entity, a *Heading) {
+		toRemove = append(toRemove, entity)
+	})
+	for _, e := range toRemove {
+		w.RemoveEntity(e)
+	}
+
+	for b.Loop() {
+		b.StopTimer()
+		toRemove = toRemove[:0]
+		builder.NewBatchFn(1000, func(entity Entity, a *Heading) {
+			toRemove = append(toRemove, entity)
+		})
+		b.StartTimer()
+		for _, e := range toRemove {
+			w.RemoveEntity(e)
+		}
+	}
+}
+
+func BenchmarkRemoveNonTrivial_1000(b *testing.B) {
+	w := NewWorld()
+	builder := NewMap1[PointerType](&w)
+
+	toRemove := []Entity{}
+	builder.NewBatchFn(1000, func(entity Entity, a *PointerType) {
+		toRemove = append(toRemove, entity)
+	})
+	for _, e := range toRemove {
+		w.RemoveEntity(e)
+	}
+
+	for b.Loop() {
+		b.StopTimer()
+		toRemove = toRemove[:0]
+		builder.NewBatchFn(1000, func(entity Entity, a *PointerType) {
+			toRemove = append(toRemove, entity)
+		})
+		b.StartTimer()
+		for _, e := range toRemove {
+			w.RemoveEntity(e)
+		}
+	}
+}
+
+func benchmarkQueryNumArches(b *testing.B, arches int, n int) {
+	world := NewWorld(1024)
+
+	posID := ComponentID[Position](&world)
+	velID := ComponentID[Velocity](&world)
+	allIDs := []ID{
+		ComponentID[CompA](&world),
+		ComponentID[CompB](&world),
+		ComponentID[CompC](&world),
+		ComponentID[CompD](&world),
+		ComponentID[CompE](&world),
+		ComponentID[CompF](&world),
+		ComponentID[CompG](&world),
+		ComponentID[CompH](&world),
+		ComponentID[CompI](&world),
+		ComponentID[CompJ](&world),
+	}
+
+	extraIDs := allIDs[:int(math.Log2(float64(arches)))]
+
+	ids := []ID{}
+	for i := range n {
+		ids = append(ids, posID, velID)
+		for j, id := range extraIDs {
+			m := 1 << j
+			if i&m == m {
+				ids = append(ids, id)
+			}
+		}
+		world.Unsafe().NewEntity(ids...)
+
+		ids = ids[:0]
+	}
+
+	filter := NewFilter2[Position, Velocity](&world)
+
+	for b.Loop() {
+		query := filter.Query()
+		for query.Next() {
+			pos, vel := query.Get()
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
+	}
+}
+
+func BenchmarkQuery1Arch_1024(b *testing.B) {
+	benchmarkQueryNumArches(b, 1, 1024)
+}
+
+func BenchmarkQuery32Arch_1024(b *testing.B) {
+	benchmarkQueryNumArches(b, 32, 1024)
+}
+
+func BenchmarkQuery128Arch_1024(b *testing.B) {
+	benchmarkQueryNumArches(b, 128, 1024)
+}
+
+func BenchmarkQuery1024Arch_1024(b *testing.B) {
+	benchmarkQueryNumArches(b, 1024, 1024)
+}
+
 func BenchmarkWorldStats4Arch(b *testing.B) {
 	w := NewWorld()
 
@@ -297,116 +409,4 @@ func BenchmarkWorldStats1024Arch(b *testing.B) {
 		stats = w.Stats()
 	}
 	expectEqual(b, 1024, len(stats.Archetypes))
-}
-
-func BenchmarkRemoveTrivial_1000(b *testing.B) {
-	w := NewWorld()
-	builder := NewMap1[Heading](&w)
-
-	toRemove := []Entity{}
-	builder.NewBatchFn(1000, func(entity Entity, a *Heading) {
-		toRemove = append(toRemove, entity)
-	})
-	for _, e := range toRemove {
-		w.RemoveEntity(e)
-	}
-
-	for b.Loop() {
-		b.StopTimer()
-		toRemove = toRemove[:0]
-		builder.NewBatchFn(1000, func(entity Entity, a *Heading) {
-			toRemove = append(toRemove, entity)
-		})
-		b.StartTimer()
-		for _, e := range toRemove {
-			w.RemoveEntity(e)
-		}
-	}
-}
-
-func BenchmarkRemoveNonTrivial_1000(b *testing.B) {
-	w := NewWorld()
-	builder := NewMap1[PointerType](&w)
-
-	toRemove := []Entity{}
-	builder.NewBatchFn(1000, func(entity Entity, a *PointerType) {
-		toRemove = append(toRemove, entity)
-	})
-	for _, e := range toRemove {
-		w.RemoveEntity(e)
-	}
-
-	for b.Loop() {
-		b.StopTimer()
-		toRemove = toRemove[:0]
-		builder.NewBatchFn(1000, func(entity Entity, a *PointerType) {
-			toRemove = append(toRemove, entity)
-		})
-		b.StartTimer()
-		for _, e := range toRemove {
-			w.RemoveEntity(e)
-		}
-	}
-}
-
-func benchmarkQueryNumArches(b *testing.B, arches int, n int) {
-	world := NewWorld(1024)
-
-	posID := ComponentID[Position](&world)
-	velID := ComponentID[Velocity](&world)
-	allIDs := []ID{
-		ComponentID[CompA](&world),
-		ComponentID[CompB](&world),
-		ComponentID[CompC](&world),
-		ComponentID[CompD](&world),
-		ComponentID[CompE](&world),
-		ComponentID[CompF](&world),
-		ComponentID[CompG](&world),
-		ComponentID[CompH](&world),
-		ComponentID[CompI](&world),
-		ComponentID[CompJ](&world),
-	}
-
-	extraIDs := allIDs[:int(math.Log2(float64(arches)))]
-
-	ids := []ID{}
-	for i := range n {
-		ids = append(ids, posID, velID)
-		for j, id := range extraIDs {
-			m := 1 << j
-			if i&m == m {
-				ids = append(ids, id)
-			}
-		}
-		world.Unsafe().NewEntity(ids...)
-
-		ids = ids[:0]
-	}
-
-	filter := NewFilter2[Position, Velocity](&world)
-
-	for b.Loop() {
-		query := filter.Query()
-		for query.Next() {
-			pos, vel := query.Get()
-			pos.X += vel.X
-			pos.Y += vel.Y
-		}
-	}
-}
-
-func BenchmarkQuery1Arch_1024(b *testing.B) {
-	benchmarkQueryNumArches(b, 1, 1024)
-}
-
-func BenchmarkQuery32Arch_1024(b *testing.B) {
-	benchmarkQueryNumArches(b, 32, 1024)
-}
-
-func BenchmarkQuery128Arch_1024(b *testing.B) {
-	benchmarkQueryNumArches(b, 128, 1024)
-}
-
-func BenchmarkQuery1024Arch_1024(b *testing.B) {
-	benchmarkQueryNumArches(b, 1024, 1024)
 }
