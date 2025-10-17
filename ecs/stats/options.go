@@ -1,6 +1,6 @@
 package stats
 
-// Option flags type
+// Option flags type.
 type Option uint8
 
 const (

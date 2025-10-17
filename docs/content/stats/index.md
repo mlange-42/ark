@@ -34,6 +34,8 @@ Archetype -- Tables:    1, Comps:  2, Entities:    100, Cap:   1024, Mem:    32.
              Components: Position, Heading
 ```
 
+The level of detail for the stats can be configured using the optional arguments of {{< api ecs World.Stats >}}.
+
 ## World stats
 
 {{< api "ecs/stats" World >}} provides world information like a list of all component types
