@@ -269,6 +269,9 @@ func (w *World) Reset() {
 
 // Stats reports statistics for inspecting the World.
 //
+// Flags are optional. If no flags are provided, all details are included.
+// Flags can be given as multiple arguments, or combined by bitwise OR (|).
+//
 // The underlying [stats.World] object is re-used and updated between calls.
 // The returned pointer should thus not be stored for later analysis.
 // Rather, the required data should be extracted immediately.

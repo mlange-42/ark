@@ -3,6 +3,8 @@ package ecs
 import (
 	"math"
 	"testing"
+
+	"github.com/mlange-42/ark/ecs/stats"
 )
 
 func BenchmarkCreateEntity0Comp_1000(b *testing.B) {
@@ -293,89 +295,7 @@ func BenchmarkQuery1024Arch_1024(b *testing.B) {
 	benchmarkQueryNumArches(b, 1024, 1024)
 }
 
-func BenchmarkWorldStats4Arch(b *testing.B) {
-	w := NewWorld()
-
-	idA := ComponentID[CompA](&w)
-	idB := ComponentID[CompB](&w)
-
-	u := w.Unsafe()
-	u.NewEntity()
-	u.NewEntity(idA)
-	u.NewEntity(idB)
-	u.NewEntity(idA, idB)
-
-	stats := w.Stats()
-
-	for b.Loop() {
-		stats = w.Stats()
-	}
-	expectEqual(b, 4, len(stats.Archetypes))
-}
-
-func BenchmarkWorldStats16Arch(b *testing.B) {
-	w := NewWorld()
-
-	allIDs := []ID{
-		ComponentID[CompA](&w),
-		ComponentID[CompB](&w),
-		ComponentID[CompC](&w),
-		ComponentID[CompD](&w),
-	}
-
-	ids := []ID{}
-	for i := range int(math.Pow(2, float64(len(allIDs)))) {
-		for j, id := range allIDs {
-			m := 1 << j
-			if i&m == m {
-				ids = append(ids, id)
-			}
-		}
-		w.Unsafe().NewEntity(ids...)
-		ids = ids[:0]
-	}
-
-	stats := w.Stats()
-
-	for b.Loop() {
-		stats = w.Stats()
-	}
-	expectEqual(b, 16, len(stats.Archetypes))
-}
-
-func BenchmarkWorldStats64Arch(b *testing.B) {
-	w := NewWorld()
-
-	allIDs := []ID{
-		ComponentID[CompA](&w),
-		ComponentID[CompB](&w),
-		ComponentID[CompC](&w),
-		ComponentID[CompD](&w),
-		ComponentID[CompE](&w),
-		ComponentID[CompF](&w),
-	}
-
-	ids := []ID{}
-	for i := range int(math.Pow(2, float64(len(allIDs)))) {
-		for j, id := range allIDs {
-			m := 1 << j
-			if i&m == m {
-				ids = append(ids, id)
-			}
-		}
-		w.Unsafe().NewEntity(ids...)
-		ids = ids[:0]
-	}
-
-	stats := w.Stats()
-
-	for b.Loop() {
-		stats = w.Stats()
-	}
-	expectEqual(b, 64, len(stats.Archetypes))
-}
-
-func BenchmarkWorldStats1024Arch(b *testing.B) {
+func benchmarkWorldStats(b *testing.B, comps int, flags stats.Option) {
 	w := NewWorld()
 
 	allIDs := []ID{
@@ -390,10 +310,11 @@ func BenchmarkWorldStats1024Arch(b *testing.B) {
 		ComponentID[CompI](&w),
 		ComponentID[CompJ](&w),
 	}
+	usedIDs := allIDs[:comps]
 
 	ids := []ID{}
-	for i := range int(math.Pow(2, float64(len(allIDs)))) {
-		for j, id := range allIDs {
+	for i := range int(math.Pow(2, float64(len(usedIDs)))) {
+		for j, id := range usedIDs {
 			m := 1 << j
 			if i&m == m {
 				ids = append(ids, id)
@@ -403,10 +324,69 @@ func BenchmarkWorldStats1024Arch(b *testing.B) {
 		ids = ids[:0]
 	}
 
-	stats := w.Stats()
+	stat := w.Stats(flags)
 
 	for b.Loop() {
-		stats = w.Stats()
+		stat = w.Stats(flags)
 	}
-	expectEqual(b, 1024, len(stats.Archetypes))
+	expectEqual(b, int(math.Pow(2, float64(comps))), stat.NumArchetypes)
+	if flags&stats.Archetypes != 0 {
+		expectEqual(b, int(math.Pow(2, float64(comps))), len(stat.Archetypes))
+		expectEqual(b, 1, stat.Archetypes[0].NumTables)
+		if flags&stats.Tables != 0 {
+			expectEqual(b, 1, len(stat.Archetypes[0].Tables))
+		} else {
+			expectEqual(b, 0, len(stat.Archetypes[0].Tables))
+		}
+	} else {
+		expectEqual(b, 0, len(stat.Archetypes))
+	}
+}
+
+func BenchmarkWorldStats_4Arch_All(b *testing.B) {
+	benchmarkWorldStats(b, 2, stats.All)
+}
+
+func BenchmarkWorldStats_4Arch_Arches(b *testing.B) {
+	benchmarkWorldStats(b, 2, stats.Archetypes)
+}
+
+func BenchmarkWorldStats_4Arch_None(b *testing.B) {
+	benchmarkWorldStats(b, 2, stats.None)
+}
+
+func BenchmarkWorldStats_16Arch_All(b *testing.B) {
+	benchmarkWorldStats(b, 4, stats.All)
+}
+
+func BenchmarkWorldStats_16Arch_Arches(b *testing.B) {
+	benchmarkWorldStats(b, 4, stats.Archetypes)
+}
+
+func BenchmarkWorldStats_16Arch_None(b *testing.B) {
+	benchmarkWorldStats(b, 4, stats.None)
+}
+
+func BenchmarkWorldStats_64Arch_All(b *testing.B) {
+	benchmarkWorldStats(b, 6, stats.All)
+}
+
+func BenchmarkWorldStats_64Arch_Arches(b *testing.B) {
+	benchmarkWorldStats(b, 6, stats.Archetypes)
+}
+
+func BenchmarkWorldStats_64Arch_None(b *testing.B) {
+	benchmarkWorldStats(b, 6, stats.None)
+}
+
+func BenchmarkWorldStats_1024Arch_All(b *testing.B) {
+	benchmarkWorldStats(b, 10, stats.All)
+}
+
+func BenchmarkWorldStats_1024Arch_Arches(b *testing.B) {
+	benchmarkWorldStats(b, 10, stats.Archetypes)
+}
+
+func BenchmarkWorldStats_1024Arch_None(b *testing.B) {
+	benchmarkWorldStats(b, 10, stats.None)
 }

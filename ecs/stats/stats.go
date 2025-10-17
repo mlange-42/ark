@@ -17,7 +17,7 @@ type World struct {
 	ComponentTypeNames []string
 	// Number of archetypes.
 	NumArchetypes int
-	// Archetype statistics.
+	// Archetype statistics, empty if archetypes flag is not used.
 	Archetypes []Archetype
 	// Entity statistics.
 	Entities Entities
@@ -57,7 +57,7 @@ type Archetype struct {
 	ComponentTypeNames []string
 	// Number of tables.
 	NumTables int
-	// Table statistics.
+	// Table statistics, empty if archetypes of tables flag is not used.
 	Tables []Table
 	// Number of entities in the tables of this archetype.
 	Size int
