@@ -15,18 +15,22 @@ const maxArchetypeID = math.MaxUint32
 
 // archetype struct.
 type archetype struct {
-	components     []ID                     // components IDs of the archetype in arbitrary order
-	itemSizes      []uint32                 // item size per component index
+	*archetypeData
 	componentsMap  []int16                  // mapping from component IDs to column indices; -1 indicates none
-	isRelation     []bool                   // whether columns are relations components, indexed by column index
 	relationTables []map[entityID]*tableIDs // lookup for relation targets of tables, indexed by column index
 	tables         tableIDs                 // all active tables
-	freeTables     []tableID                // all inactive/free tables
-	zeroValue      []byte                   // zero value with the size of the largest item type, for fast zeroing
 	mask           bitMask                  // Bit mask for the archetype's components
 	id             archetypeID              // ID of the archetype
-	node           nodeID                   // Node ID of the archetype
 	numRelations   uint8                    // number of relation components
+}
+
+type archetypeData struct {
+	components []ID      // components IDs of the archetype in arbitrary order
+	itemSizes  []uint32  // item size per component index
+	isRelation []bool    // whether columns are relations components, indexed by column index
+	freeTables []tableID // all inactive/free tables
+	zeroValue  []byte    // zero value with the size of the largest item type, for fast zeroing
+	node       nodeID    // Node ID of the archetype
 }
 
 // tableIDs helper for faster search and remove operations.
@@ -79,7 +83,9 @@ func (t *tableIDs) Clear() {
 }
 
 // newArchetype creates a new archetype.
-func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, tables []tableID, reg *componentRegistry) archetype {
+func newArchetype(
+	id archetypeID, node nodeID, mask *bitMask,
+	components []ID, tables []tableID, reg *componentRegistry) (archetype, archetypeData) {
 	componentsMap := make([]int16, maskTotalBits)
 	for i := range maskTotalBits {
 		componentsMap[i] = -1
@@ -114,18 +120,19 @@ func newArchetype(id archetypeID, node nodeID, mask *bitMask, components []ID, t
 	}
 	archTables := newTableIDs(tables...)
 	return archetype{
-		id:             id,
-		node:           node,
-		mask:           *mask,
-		components:     components,
-		itemSizes:      sizes,
-		componentsMap:  componentsMap,
-		isRelation:     isRelation,
-		tables:         archTables,
-		numRelations:   numRelations,
-		relationTables: relationTables,
-		zeroValue:      zeroValue,
-	}
+			id:             id,
+			mask:           *mask,
+			componentsMap:  componentsMap,
+			tables:         archTables,
+			numRelations:   numRelations,
+			relationTables: relationTables,
+		}, archetypeData{
+			node:       node,
+			components: components,
+			itemSizes:  sizes,
+			isRelation: isRelation,
+			zeroValue:  zeroValue,
+		}
 }
 
 // HasRelations returns whether the archetype has any relation components.

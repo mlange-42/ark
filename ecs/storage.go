@@ -10,22 +10,23 @@ import (
 //
 // Also manages the query cache and observers.
 type storage struct {
-	entities           []entityIndex      // Entity positions in archetypes, indexed by entity ID
-	isTarget           []bool             // Whether each entity is a target of a relationship
-	graph              graph              // Graph for fast archetype traversal
-	archetypes         []archetype        // All archetypes
-	allArchetypes      []archetypeID      // list of all archetype IDs to simplify usage of componentIndex
-	componentIndex     [][]archetypeID    // Archetypes indexed by components IDs; each archetype appears under all its component IDs
-	relationArchetypes []archetypeID      // All archetypes with relationships
-	tables             []table            // All tables
-	components         []componentStorage // Component storages for fast random/world access
-	cache              cache              // Filter cache
-	entityPool         entityPool         // Entity pool for creation and recycling
-	registry           componentRegistry  // Component registry
-	locks              lock               // World locks
-	config             config             // Storage configuration (initial capacities)
-	slices             *slices            // Slices for internal re-use
-	observers          *observerManager   // Observer/event manager
+	entities           []entityIndex             // Entity positions in archetypes, indexed by entity ID
+	isTarget           []bool                    // Whether each entity is a target of a relationship
+	graph              graph                     // Graph for fast archetype traversal
+	archetypes         []archetype               // All archetypes
+	archetypesData     pagedSlice[archetypeData] // Data for all archetypes
+	allArchetypes      []archetypeID             // list of all archetype IDs to simplify usage of componentIndex
+	componentIndex     [][]archetypeID           // Archetypes indexed by components IDs; each archetype appears under all its component IDs
+	relationArchetypes []archetypeID             // All archetypes with relationships
+	tables             []table                   // All tables
+	components         []componentStorage        // Component storages for fast random/world access
+	cache              cache                     // Filter cache
+	entityPool         entityPool                // Entity pool for creation and recycling
+	registry           componentRegistry         // Component registry
+	locks              lock                      // World locks
+	config             config                    // Storage configuration (initial capacities)
+	slices             *slices                   // Slices for internal re-use
+	observers          *observerManager          // Observer/event manager
 }
 
 // componentStorage is an index for faster access of table columns by component ID.
@@ -85,7 +86,12 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	}
 
 	archetypes := make([]archetype, 0, numArchetypes)
-	archetypes = append(archetypes, newArchetype(0, 0, &bitMask{}, nil, []tableID{0}, &reg))
+	archetypesData := newPagedSlice[archetypeData](32)
+	arch, data := newArchetype(0, 0, &bitMask{}, nil, []tableID{0}, &reg)
+	archetypesData.Add(data)
+	arch.archetypeData = archetypesData.Get(archetypesData.len - 1)
+	archetypes = append(archetypes, arch)
+
 	tables := make([]table, 0, numArchetypes)
 	tables = append(tables, newTable(0, &archetypes[0], uint32(config.initialCapacity), &reg, nil, nil))
 	return storage{
@@ -100,6 +106,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 		graph:          newGraph(),
 		slices:         newSlices(),
 		archetypes:     archetypes,
+		archetypesData: archetypesData,
 		allArchetypes:  []archetypeID{0},
 		componentIndex: make([][]archetypeID, 0, maskTotalBits),
 		tables:         tables,
@@ -420,7 +427,12 @@ func (s *storage) createEntities(table *table, count int) {
 func (s *storage) createArchetype(node *node) *archetype {
 	comps := node.mask.toTypes(&s.registry.registry)
 	index := len(s.archetypes)
-	s.archetypes = append(s.archetypes, newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, &s.registry))
+
+	arch, data := newArchetype(archetypeID(index), node.id, &node.mask, comps, nil, &s.registry)
+	s.archetypesData.Add(data)
+	arch.archetypeData = s.archetypesData.Get(s.archetypesData.len - 1)
+	s.archetypes = append(s.archetypes, arch)
+
 	archetype := &s.archetypes[index]
 	node.archetype = archetype.id
 
