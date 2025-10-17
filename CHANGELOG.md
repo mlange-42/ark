@@ -6,6 +6,7 @@
 
 - Stores column layouts separately, speeding up `MapX.Get` by &approx;15% (#430)
 - Splits out hot archetype data, stores less frequently used data separately (#433)
+- Optimizes emitting events if no observers for the event type are registered (#435)
 
 ## [[v0.6.1]](https://github.com/mlange-42/ark/compare/v0.6.0...v0.6.1)
 
