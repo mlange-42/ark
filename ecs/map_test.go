@@ -529,3 +529,49 @@ func BenchmarkMap4HasAll_1000(b *testing.B) {
 
 	runtime.KeepAlive(has)
 }
+
+func BenchmarkMap1Set_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap1[Position](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, p *Position) {
+		entities = append(entities, e)
+	})
+
+	pos := Position{1, 1}
+
+	loop := func() {
+		for _, e := range entities {
+			mapper.Set(e, &pos)
+		}
+	}
+	for b.Loop() {
+		loop()
+	}
+
+	runtime.KeepAlive(pos)
+}
+
+func BenchmarkMap1SetDeref_1000(b *testing.B) {
+	w := NewWorld()
+	mapper := NewMap1[Position](&w)
+
+	entities := make([]Entity, 0, 1000)
+	mapper.NewBatchFn(1000, func(e Entity, p *Position) {
+		entities = append(entities, e)
+	})
+
+	pos := Position{1, 1}
+
+	loop := func() {
+		for _, e := range entities {
+			*mapper.Get(e) = pos
+		}
+	}
+	for b.Loop() {
+		loop()
+	}
+
+	runtime.KeepAlive(pos)
+}
