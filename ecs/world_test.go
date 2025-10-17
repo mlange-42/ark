@@ -688,6 +688,47 @@ func TestWorldStats(t *testing.T) {
 	fmt.Println(s.String())
 }
 
+func TestWorldStatsFlags(t *testing.T) {
+	w := NewWorld(128, 32)
+
+	posVelMap := NewMap2[Position, Velocity](&w)
+	posVelHeadMap := NewMap3[Position, Velocity, Heading](&w)
+	posChildMap := NewMap2[Position, ChildOf](&w)
+
+	posVelMap.NewBatchFn(100, nil)
+	posVelHeadMap.NewBatchFn(100, nil)
+
+	parent := w.NewEntity()
+	child := posChildMap.NewEntityFn(nil, Rel[ChildOf](parent))
+	w.RemoveEntity(child)
+	w.RemoveEntity(parent)
+
+	s := w.Stats(stats.None)
+	mem, memUsed := s.Memory, s.MemoryUsed
+
+	expectEqual(t, 4, s.NumArchetypes)
+	expectEqual(t, 0, len(s.Archetypes))
+
+	_ = w.Stats(stats.Archetypes)
+	s = w.Stats(stats.Archetypes)
+
+	expectEqual(t, mem, s.Memory)
+	expectEqual(t, memUsed, s.MemoryUsed)
+	expectEqual(t, 4, s.NumArchetypes)
+	expectEqual(t, 4, len(s.Archetypes))
+	expectEqual(t, 1, s.Archetypes[0].NumTables)
+	expectEqual(t, 0, len(s.Archetypes[0].Tables))
+
+	s = w.Stats(stats.All)
+
+	expectEqual(t, mem, s.Memory)
+	expectEqual(t, memUsed, s.MemoryUsed)
+	expectEqual(t, 4, s.NumArchetypes)
+	expectEqual(t, 4, len(s.Archetypes))
+	expectEqual(t, 1, s.Archetypes[0].NumTables)
+	expectEqual(t, 1, len(s.Archetypes[0].Tables))
+}
+
 func TestWorldCreateManyTables(t *testing.T) {
 	n := 1000
 
