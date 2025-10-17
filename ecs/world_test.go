@@ -6,6 +6,8 @@ import (
 	"runtime"
 	"testing"
 	"time"
+
+	"github.com/mlange-42/ark/ecs/stats"
 )
 
 func TestNewWorld(t *testing.T) {
@@ -663,19 +665,27 @@ func TestWorldStats(t *testing.T) {
 	posChildMap.NewBatchFn(50, nil, RelIdx(1, p2), RelIdx(2, p3))
 	_ = w.Stats()
 
-	stats := w.Stats()
-	fmt.Println(stats.String())
+	s := w.Stats()
+	fmt.Println(s.String())
 
-	expectEqual(t, 5, len(stats.ComponentTypes))
-	expectEqual(t, 5, len(stats.ComponentTypeNames))
-	expectEqual(t, 4, len(stats.Archetypes))
-	expectEqual(t, 2, len(stats.Archetypes[1].ComponentIDs))
-	expectEqual(t, 2, len(stats.Archetypes[1].ComponentTypes))
-	expectEqual(t, 2, len(stats.Archetypes[1].ComponentTypeNames))
+	expectEqual(t, 5, len(s.ComponentTypes))
+	expectEqual(t, 5, len(s.ComponentTypeNames))
+	expectEqual(t, 4, len(s.Archetypes))
+	expectEqual(t, 2, len(s.Archetypes[1].ComponentIDs))
+	expectEqual(t, 2, len(s.Archetypes[1].ComponentTypes))
+	expectEqual(t, 2, len(s.Archetypes[1].ComponentTypeNames))
+
+	sReduced := w.Stats(stats.None)
+	expectEqual(t, s.NumArchetypes, sReduced.NumArchetypes)
+
+	sReduced = w.Stats(stats.Archetypes)
+	expectEqual(t, s.Archetypes[0].NumTables, sReduced.Archetypes[0].NumTables)
+	expectEqual(t, s.Archetypes[1].NumTables, sReduced.Archetypes[1].NumTables)
+	expectEqual(t, s.Archetypes[2].NumTables, sReduced.Archetypes[2].NumTables)
 
 	w.RemoveEntities(filter.Batch(), nil)
-	stats = w.Stats()
-	fmt.Println(stats.String())
+	s = w.Stats()
+	fmt.Println(s.String())
 }
 
 func TestWorldCreateManyTables(t *testing.T) {

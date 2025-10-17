@@ -91,7 +91,7 @@ func (w *World) String() string {
 	b := strings.Builder{}
 	fmt.Fprintf(
 		&b, "World     -- Components: %d, Archetypes: %d, Filters: %d, Observers: %d, Memory: %.1f/%.1f kB, Locked: %t\n",
-		len(w.ComponentTypeNames), len(w.Archetypes), w.CachedFilters, w.Observers, float64(w.MemoryUsed)/1024.0, float64(w.Memory)/1024.0, w.Locked,
+		len(w.ComponentTypeNames), w.NumArchetypes, w.CachedFilters, w.Observers, float64(w.MemoryUsed)/1024.0, float64(w.Memory)/1024.0, w.Locked,
 	)
 
 	fmt.Fprintf(&b, "             Components: %s\n", strings.Join(w.ComponentTypeNames, ", "))
@@ -109,7 +109,7 @@ func (e *Entities) String() string {
 func (a *Archetype) String() string {
 	return fmt.Sprintf(
 		"Archetype -- Tables: %4d, Comps: %2d, Entities: %6d, Cap: %6d, Mem: %7.1f kB, Per entity: %4d B\n             Components: %s\n",
-		len(a.Tables), len(a.ComponentIDs), a.Size, a.Capacity, float64(a.Memory)/1024.0, a.MemoryPerEntity, strings.Join(a.ComponentTypeNames, ", "),
+		a.NumTables, len(a.ComponentIDs), a.Size, a.Capacity, float64(a.Memory)/1024.0, a.MemoryPerEntity, strings.Join(a.ComponentTypeNames, ", "),
 	)
 }
 

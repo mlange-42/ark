@@ -273,11 +273,13 @@ func (w *World) Reset() {
 // The returned pointer should thus not be stored for later analysis.
 // Rather, the required data should be extracted immediately.
 func (w *World) Stats(flags ...stats.Option) *stats.World {
-	var mask bitMask64
+	var mask stats.Option
 	if len(flags) == 0 {
-		mask = newMaskFlags(stats.Archetypes, stats.Tables, stats.Filters, stats.Observers)
+		mask = stats.All
 	} else {
-		mask = newMaskFlags(flags...)
+		for _, f := range flags {
+			mask |= f
+		}
 	}
 
 	w.stats.Entities = stats.Entities{
@@ -301,8 +303,8 @@ func (w *World) Stats(flags ...stats.Option) *stats.World {
 	memory := cap(w.storage.entities)*int(entityIndexSize) + w.storage.entityPool.TotalCap()*int(entitySize)
 	memoryUsed := w.storage.entityPool.Len() * int(entityIndexSize+entitySize)
 
-	includeTables := mask.Get(uint8(stats.Tables))
-	if mask.Get(uint8(stats.Archetypes)) {
+	includeTables := mask&stats.Tables != 0
+	if mask&stats.Archetypes != 0 {
 		cntOld := int32(len(w.stats.Archetypes))
 		cntNew := int32(len(w.storage.archetypes))
 		var i int32
