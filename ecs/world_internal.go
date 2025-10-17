@@ -563,6 +563,9 @@ func (w *World) checkLocked() {
 
 // emitEvent distributes an event to the [observerManager].
 func (w *World) emitEvent(e *Event, entity Entity) {
+	if !w.storage.observers.HasObservers(e.eventType) {
+		return
+	}
 	var mask *bitMask
 	if entity.IsZero() {
 		mask = &w.storage.archetypes[0].mask

@@ -124,10 +124,27 @@ func TestCustomEventErrors(t *testing.T) {
 		})
 }
 
-func BenchmarkEventEmit(b *testing.B) {
+func BenchmarkEventEmitWithoutObs(b *testing.B) {
 	w := NewWorld()
 	builder := NewMap1[Position](&w)
 	e := builder.NewEntity(&Position{})
+
+	evt := w.Event(CustomEvent)
+
+	for b.Loop() {
+		evt.Emit(e)
+	}
+}
+
+func BenchmarkEventEmitWithObs(b *testing.B) {
+	w := NewWorld()
+	builder := NewMap1[Position](&w)
+	e := builder.NewEntity(&Position{})
+
+	Observe(CustomEvent).
+		For(C[Velocity]()).
+		Do(func(_ Entity) {}).
+		Register(&w)
 
 	evt := w.Event(CustomEvent)
 
