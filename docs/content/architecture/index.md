@@ -45,7 +45,7 @@ allowing queries to quickly determine which archetypes are relevant.
 
 Once matching archetypes are identified, queries can linearly iterate over their entities, a process that is both highly efficient and cache-friendly, thanks to the tight memory layout of archetype tables.
 
-Component access through queries is extremely fast, often achieving near-constant time performance (~1ns per component) due to predictable memory access patterns and minimal indirection.
+Component access through queries is extremely fast (below 1ns per component) due to predictable memory access patterns and minimal indirection.
 
 ## World entity access
 
@@ -53,7 +53,7 @@ To retrieve components for a specific entity outside of query execution,
 the World maintains a list indexed by entity ID (as shown leftmost in the diagram above).
 Each entry in this list points to the entity's archetype and the position within the archetype's table.
 
-This setup enables fast random access to component data, though slightly slower than query-based iteration (≈2ns vs. ≈1ns), due to the additional indirection.
+This setup enables fast random access to component data, though slightly slower than query-based iteration (≈2ns vs. <1ns), due to the additional indirection.
 
 Note that the entity list also contains entities that are currently not alive,
 because they were removed from the {{< api ecs World >}}.
@@ -76,7 +76,7 @@ and that different "incarnations" of same entity ID can be distinguished.
 Archetypes are primarily designed to maximize iteration speed by grouping entities with identical component sets into tightly packed memory layouts.
 This structure enables blazing-fast traversal and component access during queries.
 
-However, this optimization comes with a trade-off: Adding or removing components from an entity requires relocating it to a different archetype, essentially moving all of its component data. This operation typically costs ~10–20ns per involved component.
+However, this optimization comes with a trade-off: Adding or removing components from an entity requires relocating it to a different archetype, essentially moving all of its component data. This operation typically costs &approx;20ns per involved component.
 
 To reduce the number of archetype changes, it is recommended to add/remove/exchange multiple components at the same time rather than one after the other. Further, operations can be [batched](../batch) to manipulate many entities in a single command. See chapter [Performance tips](../performance) for more details.
 
