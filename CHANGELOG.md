@@ -1,6 +1,6 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.6.1...main)
+## [[v0.6.2]](https://github.com/mlange-42/ark/compare/v0.6.1...v0.6.2)
 
 ### Performance
 
