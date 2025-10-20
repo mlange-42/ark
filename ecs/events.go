@@ -490,13 +490,6 @@ func (m *observerManager) FireSetRelations(evt EventType, e Entity, mask *bitMas
 }
 
 func (m *observerManager) FireCustom(evt EventType, e Entity, mask, entityMask *bitMask) {
-	if !m.hasObservers[evt] {
-		return
-	}
-	m.doFireCustom(evt, e, mask, entityMask)
-}
-
-func (m *observerManager) doFireCustom(evt EventType, e Entity, mask, entityMask *bitMask) {
 	if !m.anyNoComps[evt] && !m.allComps[evt].ContainsAny(mask) {
 		return
 	}
