@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.6.3]](https://github.com/mlange-42/ark/compare/v0.6.2...v0.6.3)
+
+### Other
+
+- Merges `observerManagerData` back into `observerManager` (#437)
+
 ## [[v0.6.2]](https://github.com/mlange-42/ark/compare/v0.6.1...v0.6.2)
 
 ### Performance
