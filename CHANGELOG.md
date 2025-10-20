@@ -4,7 +4,7 @@
 
 ### Other
 
-- Merges `observerManagerData` back into `observerManager` (#437)
+- Merges `observerManagerData` back into `observerManager` (#438)
 
 ## [[v0.6.2]](https://github.com/mlange-42/ark/compare/v0.6.1...v0.6.2)
 
