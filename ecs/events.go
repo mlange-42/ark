@@ -109,15 +109,12 @@ func (e Event) Emit(entity Entity) {
 
 // observerManager manages observers and distributes events.
 type observerManager struct {
-	*observerManagerData
-	observers  [][]*observerData // Observers per event type
-	allComps   []bitMask         // Union of all observed components per event type
-	allWith    []bitMask         // Union of all "with"-components per event type
-	anyNoComps []bool            // Presence of wildcard component observers per event type
-	anyNoWith  []bool            // Presence of wildcard "with" observers per event type
-}
-
-type observerManagerData struct {
+	observers    [][]*observerData     // Observers per event type
+	hasObservers []bool                // Presence of any observers per event type
+	allComps     []bitMask             // Union of all observed components per event type
+	allWith      []bitMask             // Union of all "with"-components per event type
+	anyNoComps   []bool                // Presence of wildcard component observers per event type
+	anyNoWith    []bool                // Presence of wildcard "with" observers per event type
 	pool         intPool[observerID]   // Pool for observer IDs
 	indices      map[observerID]uint32 // Mapping for observer locations for fast removal
 	totalCount   uint32                // Total number of observers
@@ -128,15 +125,14 @@ type observerManagerData struct {
 func newObserverManager() *observerManager {
 	maxEvents := math.MaxUint8 + 1
 	return &observerManager{
-		observers:  make([][]*observerData, maxEvents),
-		anyNoComps: make([]bool, maxEvents),
-		anyNoWith:  make([]bool, maxEvents),
-		allComps:   make([]bitMask, maxEvents),
-		allWith:    make([]bitMask, maxEvents),
-		observerManagerData: &observerManagerData{
-			pool:    newIntPool[observerID](32),
-			indices: map[observerID]uint32{},
-		},
+		observers:    make([][]*observerData, maxEvents),
+		hasObservers: make([]bool, maxEvents),
+		anyNoComps:   make([]bool, maxEvents),
+		anyNoWith:    make([]bool, maxEvents),
+		allComps:     make([]bitMask, maxEvents),
+		allWith:      make([]bitMask, maxEvents),
+		pool:         newIntPool[observerID](32),
+		indices:      map[observerID]uint32{},
 	}
 }
 
@@ -195,6 +191,7 @@ func (m *observerManager) AddObserver(o *Observer, w *World) {
 
 	m.indices[o.id] = uint32(len(m.observers[o.event]))
 	m.observers[o.event] = append(m.observers[o.event], &o.observerData)
+	m.hasObservers[o.event] = true
 	if o.event > m.maxEventType {
 		m.maxEventType = o.event
 	}
@@ -239,6 +236,7 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 	}
 	observers[last] = nil
 	m.observers[o.event] = observers[:last]
+	m.hasObservers[o.event] = last > 0
 	m.totalCount--
 
 	var allWith bitMask
@@ -270,11 +268,11 @@ func (m *observerManager) RemoveObserver(o *Observer) {
 
 // HasObservers returns whether there is any registered observer for the given event type.
 func (m *observerManager) HasObservers(evt EventType) bool {
-	return len(m.observers[evt]) > 0
+	return m.hasObservers[evt]
 }
 
 func (m *observerManager) FireCreateEntityIfHas(e Entity, mask *bitMask) {
-	if !m.HasObservers(OnCreateEntity) {
+	if !m.hasObservers[OnCreateEntity] {
 		return
 	}
 	m.FireCreateEntity(e, mask, true)
@@ -300,7 +298,7 @@ func (m *observerManager) FireCreateEntity(e Entity, mask *bitMask, earlyOut boo
 }
 
 func (m *observerManager) FireCreateEntityRelIfHas(e Entity, mask *bitMask) {
-	if !m.HasObservers(OnAddRelations) {
+	if !m.hasObservers[OnAddRelations] {
 		return
 	}
 	m.FireCreateEntityRel(e, mask, true)
@@ -380,7 +378,7 @@ func (m *observerManager) FireRemoveEntityRel(e Entity, mask *bitMask, earlyOut 
 }
 
 func (m *observerManager) FireAddIfHas(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask) {
-	if !m.HasObservers(evt) {
+	if !m.hasObservers[evt] {
 		return
 	}
 	m.FireAdd(evt, e, oldMask, newMask, true)
@@ -521,7 +519,7 @@ func (m *observerManager) Reset() {
 	}
 
 	for i := range m.maxEventType + 1 {
-		if !m.HasObservers(i) {
+		if !m.hasObservers[i] {
 			continue
 		}
 		obs := m.observers[i]
@@ -530,6 +528,7 @@ func (m *observerManager) Reset() {
 			o.id = maxObserverID
 		}
 		m.observers[i] = m.observers[i][:0]
+		m.hasObservers[i] = false
 		m.allComps[i].Reset()
 		m.allWith[i].Reset()
 		m.anyNoComps[i] = false
