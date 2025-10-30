@@ -42,6 +42,6 @@ To use them, create an {{< api ecs Resource >}}, store it, and use it for retrie
 
 This way, resource access takes less than 1ns.
 
-Resource mappers can also be used the add and remove resources, and to check for their existence:
+Resource mappers can also be used to add and remove resources, and to check for their existence:
 
 {{< code-func resources_test.go TestResourceMapperAddRemove >}}
