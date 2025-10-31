@@ -1,6 +1,12 @@
 <div align="center" width="100%">
+<a href="https://github.com/mlange-42/ark">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/5f4d437d-7664-4706-8e35-ab81c0f65be0">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/353223ca-cdf8-4cdc-9d26-2fbbf8a63fcb">
+  <img alt="Ark Logo" src="https://github.com/user-attachments/assets/353223ca-cdf8-4cdc-9d26-2fbbf8a63fcb">
+</picture>
+</a>
 
-[![Ark (logo)](https://github.com/user-attachments/assets/4bbe57c6-2e16-43be-ad5e-0cf26c220f21)](https://github.com/mlange-42/ark)
 [![Test status](https://img.shields.io/github/actions/workflow/status/mlange-42/ark/tests.yml?branch=main&label=Tests&logo=github)](https://github.com/mlange-42/ark/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/github/mlange-42/ark/graph/badge.svg?token=YMYMFN2ESZ)](https://codecov.io/github/mlange-42/ark)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mlange-42/ark)](https://goreportcard.com/report/github.com/mlange-42/ark)
