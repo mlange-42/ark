@@ -1,9 +1,9 @@
 <div align="center" width="100%">
 <a href="https://github.com/mlange-42/ark">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/5f4d437d-7664-4706-8e35-ab81c0f65be0">
-  <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/353223ca-cdf8-4cdc-9d26-2fbbf8a63fcb">
-  <img alt="Ark Logo" src="https://github.com/user-attachments/assets/353223ca-cdf8-4cdc-9d26-2fbbf8a63fcb">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mlange-42/ark/refs/heads/main/docs/static/images/ark-logo-text-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mlange-42/ark/refs/heads/main/docs/static/images/ark-logo-text-light.svg">
+  <img alt="Ark Logo" src="https://raw.githubusercontent.com/mlange-42/ark/refs/heads/main/docs/static/images/ark-logo-text-light.svg">
 </picture>
 </a>
 
