@@ -573,6 +573,9 @@ func (w *World) emitEvent(e *Event, entity Entity) {
 func (w *World) emitEventSlowPath(e *Event, entity Entity) {
 	var mask *bitMask
 	if entity.IsZero() {
+		if !e.mask.IsZero() {
+			panic("can't emit event with components for the zero entity")
+		}
 		mask = &w.storage.archetypes[0].mask
 	} else {
 		if !w.Alive(entity) {
