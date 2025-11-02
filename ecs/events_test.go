@@ -112,6 +112,11 @@ func TestCustomEventErrors(t *testing.T) {
 			world.Event(OnCreateEntity)
 		})
 
+	expectPanicsWithValue(t, "can't emit event with components for the zero entity",
+		func() {
+			world.Event(CustomEvent).For(C[Position]()).Emit(Entity{})
+		})
+
 	expectPanicsWithValue(t, "entity does not have the required event components",
 		func() {
 			world.Event(CustomEvent).For(C[Position]()).Emit(e)

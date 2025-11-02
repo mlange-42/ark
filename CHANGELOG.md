@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.6.4]](https://github.com/mlange-42/ark/compare/v0.6.3...v0.6.4)
+
+### Bugfixes
+
+- Prevents emitting custom events with components for the zero entity (#444)
+
 ## [[v0.6.3]](https://github.com/mlange-42/ark/compare/v0.6.2...v0.6.3)
 
 ### Other
