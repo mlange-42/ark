@@ -1,7 +1,9 @@
 package ecs
 
 import (
+	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"reflect"
 )
 
@@ -79,6 +81,26 @@ func (e *Entity) UnmarshalJSON(data []byte) error {
 	e.id = entityID(arr[0])
 	e.gen = arr[1]
 
+	return nil
+}
+
+// MarshalBinary returns a binary representation of the entity, for serialization and networking purposes.
+func (e *Entity) MarshalBinary() []byte {
+	buf := make([]byte, 8)
+	binary.BigEndian.PutUint32(buf[0:4], uint32(e.id))
+	binary.BigEndian.PutUint32(buf[4:8], e.gen)
+	return buf
+}
+
+// UnmarshalBinary into an entity.
+//
+// For serialization and networking purposes only. Do not use this to create entities!
+func (e *Entity) UnmarshalBinary(data []byte) error {
+	if len(data) != 8 {
+		return fmt.Errorf("invalid data length: expected 8 bytes, got %d", len(data))
+	}
+	e.id = entityID(binary.BigEndian.Uint32(data[0:4]))
+	e.gen = binary.BigEndian.Uint32(data[4:8])
 	return nil
 }
 

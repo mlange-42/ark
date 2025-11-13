@@ -50,3 +50,23 @@ func TestEntityMarshal(t *testing.T) {
 	err = e2.UnmarshalJSON([]byte("pft"))
 	expectNotNil(t, err)
 }
+
+func TestEntityMarshalBinary(t *testing.T) {
+	e := Entity{2, 3}
+
+	binData, err := json.Marshal(&e)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	e2 := Entity{}
+	err = json.Unmarshal(binData, &e2)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expectEqual(t, e2, e)
+
+	err = e2.UnmarshalJSON(make([]byte, 9))
+	expectNotNil(t, err)
+}
