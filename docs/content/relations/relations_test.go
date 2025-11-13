@@ -25,7 +25,7 @@ type ChildOf struct {
 
 func TestNewEntity(t *testing.T) {
 	// Create a component Mapper
-	mapper := ecs.NewMap2[Position, ChildOf](&world)
+	mapper := ecs.NewMap2[Position, ChildOf](world)
 
 	// Create a parent entity.
 	parent := world.NewEntity()
@@ -38,7 +38,7 @@ func TestNewEntity(t *testing.T) {
 
 func TestAdd(t *testing.T) {
 	// Create a component Mapper
-	mapper := ecs.NewMap2[Position, ChildOf](&world)
+	mapper := ecs.NewMap2[Position, ChildOf](world)
 
 	// Create a parent entity.
 	parent := world.NewEntity()
@@ -55,7 +55,7 @@ func TestAdd(t *testing.T) {
 
 func TestSetRelations(t *testing.T) {
 	// Create a component Mapper
-	mapper := ecs.NewMap2[Position, ChildOf](&world)
+	mapper := ecs.NewMap2[Position, ChildOf](world)
 
 	// Create parent entities.
 	parent1 := world.NewEntity()
@@ -73,7 +73,7 @@ func TestSetRelations(t *testing.T) {
 
 func TestGetRelation(t *testing.T) {
 	// Create a component Mapper
-	mapper := ecs.NewMap2[Position, ChildOf](&world)
+	mapper := ecs.NewMap2[Position, ChildOf](world)
 
 	// Create a parent entity.
 	parent := world.NewEntity()
@@ -87,7 +87,7 @@ func TestGetRelation(t *testing.T) {
 
 func TestMap(t *testing.T) {
 	// Create a component Mapper
-	childMap := ecs.NewMap[ChildOf](&world)
+	childMap := ecs.NewMap[ChildOf](world)
 
 	// Create parent entities.
 	parent1 := world.NewEntity()
@@ -108,7 +108,7 @@ func TestMap(t *testing.T) {
 
 func TestFilter1(t *testing.T) {
 	// Create a filter with a relation target.
-	filter := ecs.NewFilter2[Position, ChildOf](&world).
+	filter := ecs.NewFilter2[Position, ChildOf](world).
 		Relations(ecs.Rel[ChildOf](parent))
 
 	// Get a query for iteration.
@@ -118,7 +118,7 @@ func TestFilter1(t *testing.T) {
 
 func TestFilter2(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter2[Position, ChildOf](&world)
+	filter := ecs.NewFilter2[Position, ChildOf](world)
 
 	// Get a query with a relation target.
 	query := filter.Query(ecs.RelIdx(1, parent))

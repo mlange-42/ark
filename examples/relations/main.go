@@ -27,13 +27,13 @@ func main() {
 	// ####################### Preparations ###########################
 	world := ecs.NewWorld()
 	// Create a component mapper for farms.
-	farmMap := ecs.NewMap1[Farm](&world)
+	farmMap := ecs.NewMap1[Farm](world)
 	// Create a component mapper for farm animals.
-	animalMap := ecs.NewMap3[Weight, IsInFarm, IsOfSpecies](&world)
+	animalMap := ecs.NewMap3[Weight, IsInFarm, IsOfSpecies](world)
 	// Create a filter for farms.
-	farmFilter := ecs.NewFilter1[Farm](&world)
+	farmFilter := ecs.NewFilter1[Farm](world)
 	// Create a filter for farm animals.
-	animalFilter := ecs.NewFilter3[Weight, IsInFarm, IsOfSpecies](&world)
+	animalFilter := ecs.NewFilter3[Weight, IsInFarm, IsOfSpecies](world)
 
 	// ####################### Initialization ###########################
 

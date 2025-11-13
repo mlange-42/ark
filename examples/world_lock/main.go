@@ -24,7 +24,7 @@ func main() {
 	world := ecs.NewWorld()
 
 	// Create a mapper to build entities with Position and Energy components.
-	builder := ecs.NewMap2[Position, Energy](&world)
+	builder := ecs.NewMap2[Position, Energy](world)
 
 	// Create 1000 entities with random positions and energy values.
 	builder.NewBatchFn(1000, func(entity ecs.Entity, p *Position, e *Energy) {
@@ -34,7 +34,7 @@ func main() {
 	})
 
 	// Run the simulation.
-	run(&world)
+	run(world)
 }
 
 func run(world *ecs.World) {

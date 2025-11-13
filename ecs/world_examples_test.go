@@ -9,14 +9,14 @@ import (
 func ExampleNewWorld() {
 	// Create a world with default setting
 	world := ecs.NewWorld()
-	_ = &world
+	_ = world
 	// Output:
 }
 
 func ExampleNewWorld_capacity() {
 	// Create a world with an initial capacity
 	world := ecs.NewWorld(2048)
-	_ = &world
+	_ = world
 	// Output:
 }
 
@@ -24,7 +24,7 @@ func ExampleNewWorld_relationCapacity() {
 	// Create a world with an initial capacity
 	// and a lower capacity for tables with relations
 	world := ecs.NewWorld(2048, 256)
-	_ = &world
+	_ = world
 	// Output:
 }
 

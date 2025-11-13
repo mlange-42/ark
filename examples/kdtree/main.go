@@ -21,7 +21,7 @@ func main() {
 	world := ecs.NewWorld()
 
 	// Create a mapper to build entities.
-	builder := ecs.NewMap1[Position](&world)
+	builder := ecs.NewMap1[Position](world)
 
 	// Create a list of points for the kd-tree.
 	points := kdPoints{}

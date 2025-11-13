@@ -39,7 +39,7 @@ func main() {
 
 	// Create a builder for entities
 	// Entities have a relation InProcess to assign them to processes/queries
-	builder := ecs.NewMap3[Position, Velocity, InProcess](&world)
+	builder := ecs.NewMap3[Position, Velocity, InProcess](world)
 
 	// Create entities
 	processes := []ecs.Entity{}
@@ -58,7 +58,7 @@ func main() {
 	}
 
 	// Create a filter. The filter can be shared between queries
-	filter := ecs.NewFilter2[Position, Velocity](&world). // Filter for the usual components
+	filter := ecs.NewFilter2[Position, Velocity](world). // Filter for the usual components
 								With(ecs.C[InProcess]()) // Relation required, but not accessed
 
 	// Take starting time

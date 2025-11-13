@@ -27,12 +27,12 @@ func NewGrid(sx, sy int) Grid {
 
 func TestWorldSimple(t *testing.T) {
 	world := ecs.NewWorld()
-	_ = &world
+	_ = world
 }
 
 func TestWorldConfig(t *testing.T) {
 	world := ecs.NewWorld(1024)
-	_ = &world
+	_ = world
 }
 
 func TestWorldReset(t *testing.T) {
@@ -61,7 +61,7 @@ func TestEntityAlive(t *testing.T) {
 
 func TestQuery(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter2[Position, Velocity](&world)
+	filter := ecs.NewFilter2[Position, Velocity](world)
 	// Obtain a query.
 	query := filter.Query()
 	// Iterate the query.
@@ -76,9 +76,9 @@ func TestResource(t *testing.T) {
 	// Create a resource.
 	var worldGrid Grid = NewGrid(100, 100)
 	// Add it to the world.
-	ecs.AddResource(&world, &worldGrid)
+	ecs.AddResource(world, &worldGrid)
 
 	// Elsewhere, get the resource from the world.
-	grid := ecs.GetResource[Grid](&world)
+	grid := ecs.GetResource[Grid](world)
 	_ = grid
 }

@@ -7,8 +7,8 @@ import (
 )
 
 var world = ecs.NewWorld()
-var posID = ecs.ComponentID[Position](&world)
-var velID = ecs.ComponentID[Velocity](&world)
+var posID = ecs.ComponentID[Position](world)
+var velID = ecs.ComponentID[Velocity](world)
 
 type Position struct {
 	X float64
@@ -23,8 +23,8 @@ type Velocity struct {
 func TestUnsafeIDs(t *testing.T) {
 	world := ecs.NewWorld()
 
-	posID := ecs.ComponentID[Position](&world)
-	velID := ecs.ComponentID[Velocity](&world)
+	posID := ecs.ComponentID[Position](world)
+	velID := ecs.ComponentID[Velocity](world)
 
 	_, _ = posID, velID
 }
@@ -35,7 +35,7 @@ func TestUnsafeNewEntity(t *testing.T) {
 }
 
 func TestUnsafeQuery(t *testing.T) {
-	filter := ecs.NewUnsafeFilter(&world, posID, velID)
+	filter := ecs.NewUnsafeFilter(world, posID, velID)
 
 	query := filter.Query()
 	for query.Next() {

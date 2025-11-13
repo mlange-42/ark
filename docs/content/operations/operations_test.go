@@ -25,7 +25,7 @@ type Altitude struct {
 
 func TestComponentMapper(t *testing.T) {
 	// Create a component mapper.
-	mapper := ecs.NewMap2[Position, Velocity](&world)
+	mapper := ecs.NewMap2[Position, Velocity](world)
 
 	// Create an entity with components.
 	entity1 := mapper.NewEntity(
@@ -51,7 +51,7 @@ func TestComponentMapper(t *testing.T) {
 
 func TestComponentMapperGet(t *testing.T) {
 	// Create a component mapper.
-	mapper := ecs.NewMap2[Position, Velocity](&world)
+	mapper := ecs.NewMap2[Position, Velocity](world)
 
 	// Create an entity with components.
 	entity1 := mapper.NewEntity(
@@ -67,11 +67,11 @@ func TestComponentMapperGet(t *testing.T) {
 
 func TestExchange(t *testing.T) {
 	// Create an entity with components.
-	mapper := ecs.NewMap2[Position, Velocity](&world)
+	mapper := ecs.NewMap2[Position, Velocity](world)
 	entity := mapper.NewEntity(&Position{}, &Velocity{})
 
 	// Create an exchange helper.
-	exchange := ecs.NewExchange1[Altitude](&world).
+	exchange := ecs.NewExchange1[Altitude](world).
 		Removes(ecs.C[Position](), ecs.C[Velocity]())
 
 	exchange.Exchange(entity, &Altitude{Z: 100})
