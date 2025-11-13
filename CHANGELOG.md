@@ -1,6 +1,10 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.6.4...v0.6.5)
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.6.4...main)
+
+### Breaking changes
+
+- World constructor `NewWorld` returns a pointer instead of a value (#448)
 
 ### Features
 
