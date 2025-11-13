@@ -34,9 +34,9 @@ func run(rounds, iters, numEntities int) {
 	for range rounds {
 		w := ecs.NewWorld(1024)
 
-		ex1 := ecs.NewExchange1[comp1](&w).Removes(ecs.C[comp2]())
-		ex2 := ecs.NewExchange1[comp2](&w).Removes(ecs.C[comp1]())
-		builder := ecs.NewMap1[comp1](&w)
+		ex1 := ecs.NewExchange1[comp1](w).Removes(ecs.C[comp2]())
+		ex2 := ecs.NewExchange1[comp2](w).Removes(ecs.C[comp1]())
+		builder := ecs.NewMap1[comp1](w)
 
 		entities := make([]ecs.Entity, 0, numEntities)
 		builder.NewBatchFn(numEntities, func(entity ecs.Entity, a *comp1) {

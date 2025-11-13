@@ -49,7 +49,7 @@ func worker(jobs <-chan int, results chan<- int) {
 	// Process incoming jobs.
 	for j := range jobs {
 		// Run the model.
-		runSimulation(&w)
+		runSimulation(w)
 		// Send done message. Does not block due to buffered channel.
 		results <- j
 	}

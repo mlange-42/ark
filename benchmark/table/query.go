@@ -28,7 +28,7 @@ func queryIter100k(b *testing.B) {
 	w := ecs.NewWorld()
 
 	w.NewEntities(100_000, nil)
-	filter := ecs.NewFilter0(&w)
+	filter := ecs.NewFilter0(w)
 
 	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
@@ -45,10 +45,10 @@ func queryIter100k(b *testing.B) {
 func queryIterGet1Comp100k(b *testing.B) {
 	w := ecs.NewWorld()
 
-	builder := ecs.NewMap1[comp1](&w)
+	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(100_000, nil)
 
-	filter := ecs.NewFilter1[comp1](&w)
+	filter := ecs.NewFilter1[comp1](w)
 
 	var c1 *comp1
 
@@ -69,10 +69,10 @@ func queryIterGet1Comp100k(b *testing.B) {
 func queryIterGet2Comp100k(b *testing.B) {
 	w := ecs.NewWorld()
 
-	builder := ecs.NewMap2[comp1, comp2](&w)
+	builder := ecs.NewMap2[comp1, comp2](w)
 	builder.NewBatchFn(100_000, nil)
 
-	filter := ecs.NewFilter2[comp1, comp2](&w)
+	filter := ecs.NewFilter2[comp1, comp2](w)
 
 	var c1 *comp1
 	var c2 *comp2
@@ -95,10 +95,10 @@ func queryIterGet2Comp100k(b *testing.B) {
 func queryIterGet5Comp100k(b *testing.B) {
 	w := ecs.NewWorld()
 
-	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
 	builder.NewBatchFn(100_000, nil)
 
-	filter := ecs.NewFilter5[comp1, comp2, comp3, comp4, comp5](&w)
+	filter := ecs.NewFilter5[comp1, comp2, comp3, comp4, comp5](w)
 
 	var c1 *comp1
 	var c2 *comp2
@@ -128,9 +128,9 @@ func queryIterGet5Comp100k(b *testing.B) {
 func queryIterEntity100k(b *testing.B) {
 	w := ecs.NewWorld()
 
-	builder := ecs.NewMap1[comp1](&w)
+	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(100_000, nil)
-	filter := ecs.NewFilter1[comp1](&w)
+	filter := ecs.NewFilter1[comp1](w)
 
 	var e ecs.Entity
 
@@ -152,9 +152,9 @@ func queryRelation100k(b *testing.B) {
 	w := ecs.NewWorld()
 	parent := w.NewEntity()
 
-	builder := ecs.NewMap1[relComp1](&w)
+	builder := ecs.NewMap1[relComp1](w)
 	builder.NewBatchFn(100_000, nil, ecs.Rel[relComp1](parent))
-	filter := ecs.NewFilter1[relComp1](&w)
+	filter := ecs.NewFilter1[relComp1](w)
 
 	var par ecs.Entity
 
@@ -175,9 +175,9 @@ func queryRelation100k(b *testing.B) {
 func queryCreate(b *testing.B) {
 	w := ecs.NewWorld()
 
-	builder := ecs.NewMap1[comp1](&w)
+	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(100, nil)
-	filter := ecs.NewFilter1[comp1](&w)
+	filter := ecs.NewFilter1[comp1](w)
 	query := filter.Query()
 	query.Close()
 
@@ -190,9 +190,9 @@ func queryCreate(b *testing.B) {
 func queryCreateCached(b *testing.B) {
 	w := ecs.NewWorld()
 
-	builder := ecs.NewMap1[comp1](&w)
+	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(100, nil)
-	filter := ecs.NewFilter1[comp1](&w).Register()
+	filter := ecs.NewFilter1[comp1](w).Register()
 	query := filter.Query()
 	query.Close()
 

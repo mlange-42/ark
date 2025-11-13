@@ -26,9 +26,9 @@ func benchesWorld() []benchmark.Benchmark {
 func worldGet1000(b *testing.B) {
 	w := ecs.NewWorld()
 
-	mapper := ecs.NewMap[comp1](&w)
+	mapper := ecs.NewMap[comp1](w)
 	entities := make([]ecs.Entity, 0, 1000)
-	builder := ecs.NewMap1[comp1](&w)
+	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
 		entities = append(entities, entity)
 	})
@@ -53,9 +53,9 @@ func worldGet1000(b *testing.B) {
 func worldGetUnchecked1000(b *testing.B) {
 	w := ecs.NewWorld()
 
-	mapper := ecs.NewMap[comp1](&w)
+	mapper := ecs.NewMap[comp1](w)
 	entities := make([]ecs.Entity, 0, 1000)
-	builder := ecs.NewMap1[comp1](&w)
+	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
 		entities = append(entities, entity)
 	})
@@ -79,9 +79,9 @@ func worldGetUnchecked1000(b *testing.B) {
 func worldHas1000(b *testing.B) {
 	w := ecs.NewWorld()
 
-	mapper := ecs.NewMap[comp1](&w)
+	mapper := ecs.NewMap[comp1](w)
 	entities := make([]ecs.Entity, 0, 1000)
-	builder := ecs.NewMap1[comp1](&w)
+	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
 		entities = append(entities, entity)
 	})
@@ -105,9 +105,9 @@ func worldHas1000(b *testing.B) {
 func worldHasUnchecked1000(b *testing.B) {
 	w := ecs.NewWorld()
 
-	mapper := ecs.NewMap[comp1](&w)
+	mapper := ecs.NewMap[comp1](w)
 	entities := make([]ecs.Entity, 0, 1000)
-	builder := ecs.NewMap1[comp1](&w)
+	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
 		entities = append(entities, entity)
 	})
@@ -132,7 +132,7 @@ func worldGet5_1000(b *testing.B) {
 	w := ecs.NewWorld()
 
 	entities := make([]ecs.Entity, 0, 1000)
-	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
+	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
 	mapper.NewBatchFn(1000, func(entity ecs.Entity, a *comp1, b *comp2, c *comp3, d *comp4, e *comp5) {
 		entities = append(entities, entity)
 	})
@@ -165,7 +165,7 @@ func worldHasAll5_1000(b *testing.B) {
 	w := ecs.NewWorld()
 
 	entities := make([]ecs.Entity, 0, 1000)
-	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
+	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
 	mapper.NewBatchFn(1000, func(entity ecs.Entity, a *comp1, b *comp2, c *comp3, d *comp4, e *comp5) {
 		entities = append(entities, entity)
 	})
@@ -190,7 +190,7 @@ func worldAlive1000(b *testing.B) {
 	w := ecs.NewWorld()
 
 	entities := make([]ecs.Entity, 0, 1000)
-	builder := ecs.NewMap1[comp1](&w)
+	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
 		entities = append(entities, entity)
 	})
@@ -215,9 +215,9 @@ func worldRelation1000(b *testing.B) {
 	w := ecs.NewWorld()
 	parent := w.NewEntity()
 
-	mapper := ecs.NewMap[relComp1](&w)
+	mapper := ecs.NewMap[relComp1](w)
 	entities := make([]ecs.Entity, 0, 1000)
-	builder := ecs.NewMap1[relComp1](&w)
+	builder := ecs.NewMap1[relComp1](w)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *relComp1) {
 		entities = append(entities, entity)
 	}, ecs.Rel[relComp1](parent))
@@ -242,9 +242,9 @@ func worldRelationUnchecked1000(b *testing.B) {
 	w := ecs.NewWorld()
 	parent := w.NewEntity()
 
-	mapper := ecs.NewMap[relComp1](&w)
+	mapper := ecs.NewMap[relComp1](w)
 	entities := make([]ecs.Entity, 0, 1000)
-	builder := ecs.NewMap1[relComp1](&w)
+	builder := ecs.NewMap1[relComp1](w)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *relComp1) {
 		entities = append(entities, entity)
 	}, ecs.Rel[relComp1](parent))
