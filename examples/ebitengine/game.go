@@ -19,7 +19,7 @@ type RenderSystem interface {
 
 // Game is the main game type.
 type Game struct {
-	World         ecs.World      // The ECS world as data store.
+	World         *ecs.World     // The ECS world as data store.
 	LogicSystems  []LogicSystem  // Systems for game logic.
 	RenderSystems []RenderSystem // Systems for rendering.
 }
@@ -32,7 +32,7 @@ func NewGame() *Game {
 	}
 
 	// Add "global" resources (like game settings, a grid, ...).
-	ecs.AddResource(&g.World, &Settings{
+	ecs.AddResource(g.World, &Settings{
 		ScreenWidth:  640,
 		ScreenHeight: 480,
 		Scale:        64,
@@ -54,11 +54,11 @@ func NewGame() *Game {
 
 	// Initialize logic systems.
 	for _, s := range g.LogicSystems {
-		s.Initialize(&g.World)
+		s.Initialize(g.World)
 	}
 	// Initialize render systems.
 	for _, s := range g.RenderSystems {
-		s.Initialize(&g.World)
+		s.Initialize(g.World)
 	}
 
 	return &g
@@ -68,7 +68,7 @@ func NewGame() *Game {
 func (g *Game) Update() error {
 	// Update all logic systems.
 	for _, s := range g.LogicSystems {
-		s.Update(&g.World)
+		s.Update(g.World)
 	}
 	return nil
 }
@@ -77,12 +77,12 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Update/draw all render systems.
 	for _, s := range g.RenderSystems {
-		s.Draw(&g.World, screen)
+		s.Draw(g.World, screen)
 	}
 }
 
 // Layout the game's screen.
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	set := ecs.GetResource[Settings](&g.World)
+	set := ecs.GetResource[Settings](g.World)
 	return int(set.ScreenWidth), int(set.ScreenHeight)
 }
