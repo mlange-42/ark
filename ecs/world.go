@@ -21,8 +21,8 @@ type World struct {
 // The second argument is the initial capacity of relation archetypes.
 // If only one argument is provided, it is used for both capacities.
 // If no arguments are provided, the defaults are 1024 and 128, respectively.
-func NewWorld(initialCapacity ...int) World {
-	return World{
+func NewWorld(initialCapacity ...int) *World {
+	return &World{
 		storage:   newStorage(16, initialCapacity...),
 		resources: newResources(),
 		stats:     &stats.World{},
