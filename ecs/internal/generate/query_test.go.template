@@ -21,10 +21,10 @@ func TestQuery{{.}}(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
-	posMapper := NewMap[Position](&w)
-	mapper := NewMap{{.}}{{$generics}}(&w)
-	compMapper := NewMap[CompA](&w)
-	posVelMapper := NewMap2[Position, Velocity](&w)
+	posMapper := NewMap[Position](w)
+	mapper := NewMap{{.}}{{$generics}}(w)
+	compMapper := NewMap[CompA](w)
+	posVelMapper := NewMap2[Position, Velocity](w)
 
 	for range n {
 		_ = mapper.NewEntity({{$mapArgs}})
@@ -40,7 +40,7 @@ func TestQuery{{.}}(t *testing.T) {
 
 	// normal filter
 	var filter *Filter{{.}}{{$generics}}
-	filter = filter.New(&w).Without()
+	filter = filter.New(w).Without()
 	query := filter.Query()
 	expectEqual(t, 2*n, query.Count())
 
@@ -57,7 +57,7 @@ func TestQuery{{.}}(t *testing.T) {
 	expectEqual(t, 2*n, cnt)
 
 	// filter without
-	filter = NewFilter{{.}}{{$generics}}(&w).Without(C[Position]())
+	filter = NewFilter{{.}}{{$generics}}(w).Without(C[Position]())
 	query = filter.Query()
 	expectEqual(t, n, query.Count())
 
@@ -70,7 +70,7 @@ func TestQuery{{.}}(t *testing.T) {
 	expectEqual(t, n, cnt)
 	
 	// filter exclusive
-	filter = NewFilter{{.}}{{$generics}}(&w).Exclusive()
+	filter = NewFilter{{.}}{{$generics}}(w).Exclusive()
 	query = filter.Query()
 	expectEqual(t, n, query.Count())
 
@@ -83,7 +83,7 @@ func TestQuery{{.}}(t *testing.T) {
 	expectEqual(t, n, cnt)
 	
 	// filter with
-	filter = NewFilter{{.}}{{$generics}}(&w).With(C[Position]())
+	filter = NewFilter{{.}}{{$generics}}(w).With(C[Position]())
 	query = filter.Query()
 	expectEqual(t, n, query.Count())
 
@@ -102,10 +102,10 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
-	posMapper := NewMap[Position](&w)
-	mapper := NewMap{{.}}{{$generics}}(&w)
-	compMapper := NewMap[CompA](&w)
-	compBMapper := NewMap[CompB](&w)
+	posMapper := NewMap[Position](w)
+	mapper := NewMap{{.}}{{$generics}}(w)
+	compMapper := NewMap[CompA](w)
+	compBMapper := NewMap[CompB](w)
 
 	for range n {
 		e := mapper.NewEntity({{$mapArgs}})
@@ -123,7 +123,7 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 
 	// Normal filter
 	var filter *Filter{{.}}{{$generics}}
-	filter = filter.New(&w)
+	filter = filter.New(w)
 	query := filter.Query()
 	count := query.Count()
 	expectEqual(t, 2*n, count)
@@ -136,7 +136,7 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 	expectPanicsWithValue(t, "entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
 
 	// Registered filter
-	filter = filter.New(&w)
+	filter = filter.New(w)
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
@@ -153,8 +153,8 @@ func TestQuery{{.}}EntityAt(t *testing.T) {
 func TestQuery{{.}}Empty(t *testing.T) {
 	w := NewWorld(4)
 
-	posMap := NewMap[Position](&w)
-	mapper := NewMap{{.}}{{$generics}}(&w)
+	posMap := NewMap[Position](w)
+	mapper := NewMap{{.}}{{$generics}}(w)
 
 	for range 10 {
 		e1 := w.NewEntity()
@@ -163,7 +163,7 @@ func TestQuery{{.}}Empty(t *testing.T) {
 
 	w.RemoveEntity(mapper.NewEntityFn(nil))
 
-	filter := NewFilter{{.}}{{$generics}}(&w)
+	filter := NewFilter{{.}}{{$generics}}(w)
 	query := filter.Query()
 	expectEqual(t, 0, query.Count())
 	
@@ -203,7 +203,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 
-	mapper := NewMap{{.}}{{$genericsRel}}(&w)
+	mapper := NewMap{{.}}{{$genericsRel}}(w)
 
 	for range n {
 		_ = mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent1))
@@ -213,7 +213,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	}
 
 	// normal filter
-	filter := NewFilter{{.}}{{$genericsRel}}(&w)
+	filter := NewFilter{{.}}{{$genericsRel}}(w)
 	query := filter.Query()
 	count := query.Count()
 	expectEqual(t, 2*n, count)
@@ -230,7 +230,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	expectEqual(t, 2*n, cnt)
 
 	// relation filter 1
-	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2))
+	filter = NewFilter{{.}}{{$genericsRel}}(w).Relations(RelIdx(0, parent2))
 	query = filter.Query()
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -248,7 +248,7 @@ func TestQuery{{.}}Relations(t *testing.T) {
 	expectEqual(t, n, cnt)
 
 	// relation filter 2
-	filter = NewFilter{{.}}{{$genericsRel}}(&w)
+	filter = NewFilter{{.}}{{$genericsRel}}(w)
 	query = filter.Query(RelIdx(0, parent2))
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -274,7 +274,7 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 
-	mapper := NewMap{{.}}{{$genericsRel}}(&w)
+	mapper := NewMap{{.}}{{$genericsRel}}(w)
 
 	for range n {
 		_ = mapper.NewEntity({{$mapArgsRel}}, RelIdx(0, parent1))
@@ -284,7 +284,7 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	}
 
 	// normal filter
-	filter := NewFilter{{.}}{{$genericsRel}}(&w).Register()
+	filter := NewFilter{{.}}{{$genericsRel}}(w).Register()
 	query := filter.Query()
 	count := query.Count()
 	expectEqual(t, 2*n, count)
@@ -307,7 +307,7 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 1
-	filter = NewFilter{{.}}{{$genericsRel}}(&w).Relations(RelIdx(0, parent2)).Register()
+	filter = NewFilter{{.}}{{$genericsRel}}(w).Relations(RelIdx(0, parent2)).Register()
 	query = filter.Query()
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -331,7 +331,7 @@ func TestQuery{{.}}Registered(t *testing.T) {
 	filter.Unregister()
 
 	// relation filter 2
-	filter = NewFilter{{.}}{{$genericsRel}}(&w)
+	filter = NewFilter{{.}}{{$genericsRel}}(w)
 
 	// dummy query
 	query = filter.Query(RelIdx(0, parent1))
@@ -377,8 +377,8 @@ func TestQuery0(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
-	posMapper := NewMap[Position](&w)
-	posVelMapper := NewMap2[Position, Velocity](&w)
+	posMapper := NewMap[Position](w)
+	posVelMapper := NewMap2[Position, Velocity](w)
 
 	for range n {
 		_ = w.NewEntity()
@@ -389,7 +389,7 @@ func TestQuery0(t *testing.T) {
 
 	// normal filter
 	var filter *Filter0
-	filter = filter.New(&w).Without()
+	filter = filter.New(w).Without()
 	query := filter.Query()
 	expectEqual(t, 2*n, query.Count())
 
@@ -405,7 +405,7 @@ func TestQuery0(t *testing.T) {
 	expectEqual(t, 2*n, cnt)
 
 	// filter without
-	filter = NewFilter0(&w).Without(C[Position]())
+	filter = NewFilter0(w).Without(C[Position]())
 	query = filter.Query()
 	expectEqual(t, n, query.Count())
 
@@ -417,7 +417,7 @@ func TestQuery0(t *testing.T) {
 	expectEqual(t, n, cnt)
 
 	// filter exclusive
-	filter = NewFilter0(&w).Exclusive()
+	filter = NewFilter0(w).Exclusive()
 	query = filter.Query()
 	expectEqual(t, n, query.Count())
 
@@ -429,7 +429,7 @@ func TestQuery0(t *testing.T) {
 	expectEqual(t, n, cnt)
 	
 	// filter with
-	filter = NewFilter0(&w).With(C[Position]())
+	filter = NewFilter0(w).With(C[Position]())
 	query = filter.Query()
 	expectEqual(t, n, query.Count())
 
@@ -445,8 +445,8 @@ func TestQuery0EntityAt(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
-	posMapper := NewMap[Position](&w)
-	compMapper := NewMap[CompA](&w)
+	posMapper := NewMap[Position](w)
+	compMapper := NewMap[CompA](w)
 
 	for range n {
 		_ = w.NewEntity()
@@ -459,7 +459,7 @@ func TestQuery0EntityAt(t *testing.T) {
 
 	// Normal filter
 	var filter *Filter0
-	filter = filter.New(&w)
+	filter = filter.New(w)
 	query := filter.Query()
 	count := query.Count()
 	expectEqual(t, 2*n, count)
@@ -472,7 +472,7 @@ func TestQuery0EntityAt(t *testing.T) {
 	expectPanicsWithValue(t, "entity index 20 out of bounds for query with 20 entities", func() { query.EntityAt(count) })
 
 	// Registered filter
-	filter = filter.New(&w)
+	filter = filter.New(w)
 	filter.Register()
 	query = filter.Query()
 	count = query.Count()
@@ -489,19 +489,19 @@ func TestQuery0EntityAt(t *testing.T) {
 func TestQuery0Empty(t *testing.T) {
 	w := NewWorld(4)
 
-	posMap := NewMap[Position](&w)
+	posMap := NewMap[Position](w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		posMap.Add(e1, &Position{})
 	}
 	
-	filter := NewFilter0(&w)
+	filter := NewFilter0(w)
 	query := filter.Query()
 	expectEqual(t, 10, query.Count())
 	query.Close()
 
-	filter = NewFilter0(&w).Without(C[Position]())
+	filter = NewFilter0(w).Without(C[Position]())
 	query = filter.Query()
 	expectEqual(t, 0, query.Count())
 
@@ -525,7 +525,7 @@ func TestQuery0Relations(t *testing.T) {
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 
-	childMapper := NewMap[ChildOf](&w)
+	childMapper := NewMap[ChildOf](w)
 
 	for range n {
 		e := w.NewEntity()
@@ -539,7 +539,7 @@ func TestQuery0Relations(t *testing.T) {
 	}
 
 	// normal filter
-	filter := NewFilter0(&w).With(C[ChildOf]()).Relations(RelIdx(0, parent1))
+	filter := NewFilter0(w).With(C[ChildOf]()).Relations(RelIdx(0, parent1))
 	query := filter.Query()
 	expectEqual(t, n, query.Count())
 	
@@ -554,7 +554,7 @@ func TestQuery0Relations(t *testing.T) {
 	expectEqual(t, cnt, n)
 
 	// relation query
-	filter = NewFilter0(&w).With(C[ChildOf]())
+	filter = NewFilter0(w).With(C[ChildOf]())
 	query = filter.Query(RelIdx(0, parent1))
 	expectEqual(t, n, query.Count())
 	
@@ -569,7 +569,7 @@ func TestQuery0Relations(t *testing.T) {
 	expectEqual(t, cnt, n)
 	
 	// registered filter
-	filter = NewFilter0(&w).Register()
+	filter = NewFilter0(w).Register()
 	query = filter.Query()
 	expectEqual(t, 3*n+3, query.Count())
 
@@ -597,7 +597,7 @@ func TestQuery0Registered(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
 
-	builder := NewMap1[Position](&w)
+	builder := NewMap1[Position](w)
 
 	for range n {
 		w.NewEntity()
@@ -605,7 +605,7 @@ func TestQuery0Registered(t *testing.T) {
 	}
 	w.RemoveEntity(builder.NewEntity(&Position{}))
 
-	filter := NewFilter0(&w).Register()
+	filter := NewFilter0(w).Register()
 	query := filter.Query()
 	expectEqual(t, 2*n, query.Count())
 

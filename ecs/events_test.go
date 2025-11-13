@@ -28,13 +28,13 @@ func TestNewEventType(t *testing.T) {
 
 func TestCustomEvent(t *testing.T) {
 	world := NewWorld()
-	builder := NewMap2[Position, Velocity](&world)
+	builder := NewMap2[Position, Velocity](world)
 
 	callCount := 0
 	Observe(CustomEvent).
 		For(C[Position]()).
 		Do(func(e Entity) { callCount++ }).
-		Register(&world)
+		Register(world)
 
 	e := builder.NewEntity(&Position{1, 2}, &Velocity{3, 4})
 
@@ -54,7 +54,7 @@ func TestCustomEventZero(t *testing.T) {
 	callCount := 0
 	Observe(CustomEvent).
 		Do(func(e Entity) { callCount++ }).
-		Register(&world)
+		Register(world)
 
 	evt := world.Event(CustomEvent)
 	evt.Emit(Entity{})
@@ -63,7 +63,7 @@ func TestCustomEventZero(t *testing.T) {
 
 func TestCustomEventGeneric(t *testing.T) {
 	world := NewWorld()
-	builder := NewMap2[Position, Velocity](&world)
+	builder := NewMap2[Position, Velocity](world)
 
 	callCount := 0
 	Observe1[Position](CustomEvent).
@@ -71,7 +71,7 @@ func TestCustomEventGeneric(t *testing.T) {
 			callCount++
 			fmt.Printf("%#v", pos)
 		}).
-		Register(&world)
+		Register(world)
 
 	e := builder.NewEntity(&Position{1, 2}, &Velocity{3, 4})
 
@@ -82,14 +82,14 @@ func TestCustomEventGeneric(t *testing.T) {
 
 func TestCustomEventEmpty(t *testing.T) {
 	world := NewWorld()
-	builder := NewMap2[Position, Velocity](&world)
+	builder := NewMap2[Position, Velocity](world)
 
 	callCount := 0
 	Observe(CustomEvent).
 		Do(func(e Entity) {
 			callCount++
 		}).
-		Register(&world)
+		Register(world)
 
 	e := builder.NewEntity(&Position{1, 2}, &Velocity{3, 4})
 
@@ -103,7 +103,7 @@ func TestCustomEventErrors(t *testing.T) {
 
 	Observe1[Position](CustomEvent).
 		Do(func(e Entity, p *Position) {}).
-		Register(&world)
+		Register(world)
 
 	e := world.NewEntity()
 
@@ -131,7 +131,7 @@ func TestCustomEventErrors(t *testing.T) {
 
 func BenchmarkEventEmitWithoutObs(b *testing.B) {
 	w := NewWorld()
-	builder := NewMap1[Position](&w)
+	builder := NewMap1[Position](w)
 	e := builder.NewEntity(&Position{})
 
 	evt := w.Event(CustomEvent)
@@ -143,13 +143,13 @@ func BenchmarkEventEmitWithoutObs(b *testing.B) {
 
 func BenchmarkEventEmitWithObs(b *testing.B) {
 	w := NewWorld()
-	builder := NewMap1[Position](&w)
+	builder := NewMap1[Position](w)
 	e := builder.NewEntity(&Position{})
 
 	Observe(CustomEvent).
 		For(C[Velocity]()).
 		Do(func(_ Entity) {}).
-		Register(&w)
+		Register(w)
 
 	evt := w.Event(CustomEvent)
 
@@ -160,7 +160,7 @@ func BenchmarkEventEmitWithObs(b *testing.B) {
 
 func BenchmarkEventCreateEmit(b *testing.B) {
 	w := NewWorld()
-	builder := NewMap1[Position](&w)
+	builder := NewMap1[Position](w)
 	e := builder.NewEntity(&Position{})
 
 	for b.Loop() {
@@ -170,7 +170,7 @@ func BenchmarkEventCreateEmit(b *testing.B) {
 
 func BenchmarkEventCreateForEmit(b *testing.B) {
 	w := NewWorld()
-	builder := NewMap1[Position](&w)
+	builder := NewMap1[Position](w)
 	e := builder.NewEntity(&Position{})
 
 	for b.Loop() {
@@ -184,7 +184,7 @@ func BenchmarkObserversReset(b *testing.B) {
 	obs := Observe(OnCreateEntity).For(C[Position]()).Do(func(e Entity) {})
 
 	for b.Loop() {
-		w.storage.observers.AddObserver(obs, &w)
+		w.storage.observers.AddObserver(obs, w)
 		w.storage.observers.Reset()
 	}
 }
@@ -197,7 +197,7 @@ func BenchmarkObserversResetCustom(b *testing.B) {
 	obs := Observe(MyEvent).For(C[Position]()).Do(func(e Entity) {})
 
 	for b.Loop() {
-		w.storage.observers.AddObserver(obs, &w)
+		w.storage.observers.AddObserver(obs, w)
 		w.storage.observers.Reset()
 	}
 }

@@ -9,11 +9,11 @@ func ExampleResource() {
 	// Create a resource.
 	gridResource := NewGrid(100, 100)
 	// Add it to the world.
-	ecs.AddResource(&world, &gridResource)
+	ecs.AddResource(world, &gridResource)
 
 	// Resource access in systems.
 	// Create and store a resource accessor.
-	gridAccess := ecs.NewResource[Grid](&world)
+	gridAccess := ecs.NewResource[Grid](world)
 
 	// Use the resource.
 	grid := gridAccess.Get()
@@ -30,6 +30,6 @@ func ExampleResource_New() {
 	var gridAccess ecs.Resource[Grid]
 
 	// Construct the accessor elsewhere, e.g. in the constructor.
-	gridAccess = gridAccess.New(&world)
+	gridAccess = gridAccess.New(world)
 	// Output:
 }

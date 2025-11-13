@@ -19,7 +19,7 @@ func ExampleRelationMarker() {
 	parent2 := world.NewEntity()
 
 	// Create a mapper for one or more components.
-	mapper := ecs.NewMap1[ChildOf](&world)
+	mapper := ecs.NewMap1[ChildOf](world)
 
 	// Create a child entity with a relation to a parent.
 	child1 := mapper.NewEntity(&ChildOf{}, ecs.RelIdx(0, parent1))
@@ -31,7 +31,7 @@ func ExampleRelationMarker() {
 	mapper.SetRelations(child1, ecs.RelIdx(0, parent2))
 
 	// Filter for the relation with a given target.
-	filter := ecs.NewFilter1[ChildOf](&world)
+	filter := ecs.NewFilter1[ChildOf](world)
 	query := filter.Query(ecs.RelIdx(0, parent2))
 	for query.Next() {
 		fmt.Println(
@@ -51,7 +51,7 @@ func ExampleRel() {
 	parent2 := world.NewEntity()
 
 	// Create a component mapper.
-	mapper := ecs.NewMap2[Position, ChildOf](&world)
+	mapper := ecs.NewMap2[Position, ChildOf](world)
 
 	// Create an entity, setting a relation target.
 	entity := mapper.NewEntity(&Position{}, &ChildOf{}, ecs.Rel[ChildOf](parent1))
@@ -69,7 +69,7 @@ func ExampleRelIdx() {
 	parent2 := world.NewEntity()
 
 	// Create a component mapper.
-	mapper := ecs.NewMap2[Position, ChildOf](&world)
+	mapper := ecs.NewMap2[Position, ChildOf](world)
 
 	// Create an entity, setting a relation target.
 	entity := mapper.NewEntity(&Position{}, &ChildOf{}, ecs.RelIdx(1, parent1))

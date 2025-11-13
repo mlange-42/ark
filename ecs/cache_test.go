@@ -7,15 +7,15 @@ import (
 func TestFilterCache(t *testing.T) {
 	world := NewWorld()
 
-	mapper2 := NewMap2[Position, Velocity](&world)
-	mapper3 := NewMap3[Position, Velocity, Heading](&world)
+	mapper2 := NewMap2[Position, Velocity](world)
+	mapper3 := NewMap3[Position, Velocity, Heading](world)
 
 	world.NewEntity()
 	mapper2.NewEntity(&Position{}, &Velocity{})
 	mapper3.NewEntity(&Position{}, &Velocity{}, &Heading{})
 
-	filter2 := NewFilter2[Position, Velocity](&world).Register()
-	filter3 := NewFilter3[Position, Velocity, Heading](&world).Register()
+	filter2 := NewFilter2[Position, Velocity](world).Register()
+	filter3 := NewFilter3[Position, Velocity, Heading](world).Register()
 
 	expectEqual(t, 0, int(filter2.filter.cache))
 	expectEqual(t, 1, int(filter3.filter.cache))
@@ -35,19 +35,19 @@ func TestFilterCache(t *testing.T) {
 func TestFilterCacheRelation(t *testing.T) {
 	world := NewWorld()
 
-	posMap := NewMap1[Position](&world)
-	childMap := NewMap1[ChildOf](&world)
-	child2Map := NewMap1[ChildOf2](&world)
-	posChildMap := NewMap2[Position, ChildOf](&world)
+	posMap := NewMap1[Position](world)
+	childMap := NewMap1[ChildOf](world)
+	child2Map := NewMap1[ChildOf2](world)
+	posChildMap := NewMap2[Position, ChildOf](world)
 
 	target1 := world.NewEntity()
 	target2 := world.NewEntity()
 	target3 := world.NewEntity()
 	target4 := world.NewEntity()
 
-	f1 := NewFilter1[ChildOf](&world).Register()
-	f2 := NewFilter1[ChildOf](&world).Relations(RelIdx(0, target1)).Register()
-	f3 := NewFilter1[ChildOf](&world).Relations(RelIdx(0, target2)).Register()
+	f1 := NewFilter1[ChildOf](world).Register()
+	f2 := NewFilter1[ChildOf](world).Relations(RelIdx(0, target1)).Register()
+	f3 := NewFilter1[ChildOf](world).Relations(RelIdx(0, target2)).Register()
 
 	c1 := world.storage.getRegisteredFilter(f1.filter.cache)
 	c2 := world.storage.getRegisteredFilter(f2.filter.cache)
@@ -82,7 +82,7 @@ func TestFilterCacheRelation(t *testing.T) {
 	expectEqual(t, 5, len(c1.tables.tables))
 	expectEqual(t, 2, len(c3.tables.tables))
 
-	world.RemoveEntities(NewFilter0(&world).Batch(), nil)
+	world.RemoveEntities(NewFilter0(world).Batch(), nil)
 	expectEqual(t, 0, len(c1.tables.tables))
 	expectEqual(t, 0, len(c2.tables.tables))
 }

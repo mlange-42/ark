@@ -21,15 +21,15 @@ func ExampleFilter2() {
 	world := ecs.NewWorld()
 
 	// A simple filter for components (non-exclusive).
-	simpleFilter := ecs.NewFilter2[Position, Velocity](&world)
+	simpleFilter := ecs.NewFilter2[Position, Velocity](world)
 
 	// A simple filter with an additional (unused) and an excluded component.
-	complexFilter := ecs.NewFilter2[Position, Velocity](&world).
+	complexFilter := ecs.NewFilter2[Position, Velocity](world).
 		With(ecs.C[Altitude]()).
 		Without(ecs.C[ChildOf]())
 
 	// A cached/registered filter, with an additional (unused) component.
-	cachedFilter := ecs.NewFilter2[Position, Velocity](&world).
+	cachedFilter := ecs.NewFilter2[Position, Velocity](world).
 		With(ecs.C[Altitude]()).
 		Register()
 
@@ -50,7 +50,7 @@ func ExampleFilter2_New() {
 	var filter *ecs.Filter2[Position, Velocity]
 
 	// Construct the filter, avoiding repeated listing of generics.
-	filter = filter.New(&world)
+	filter = filter.New(world)
 	// Output:
 }
 
@@ -58,7 +58,7 @@ func ExampleQuery2() {
 	world := ecs.NewWorld()
 
 	// A simple filter.
-	filter := ecs.NewFilter2[Position, Velocity](&world)
+	filter := ecs.NewFilter2[Position, Velocity](world)
 
 	// Create a fresh query before iterating.
 	query := filter.Query()
@@ -77,7 +77,7 @@ func ExampleQuery2_Count() {
 	world := ecs.NewWorld()
 
 	// Create a filter.
-	filter := ecs.NewFilter2[Position, Velocity](&world)
+	filter := ecs.NewFilter2[Position, Velocity](world)
 
 	// Query the filter
 	query := filter.Query()
@@ -97,11 +97,11 @@ func ExampleQuery2_EntityAt() {
 	world := ecs.NewWorld()
 
 	// Create entities.
-	builder := ecs.NewMap2[Position, Velocity](&world)
+	builder := ecs.NewMap2[Position, Velocity](world)
 	builder.NewBatch(100, &Position{}, &Velocity{})
 
 	// Create a filter.
-	filter := ecs.NewFilter2[Position, Velocity](&world)
+	filter := ecs.NewFilter2[Position, Velocity](world)
 
 	// Query the filter
 	query := filter.Query()
@@ -126,7 +126,7 @@ func ExampleMap() {
 	world := ecs.NewWorld()
 
 	// Create a component mapper.
-	mapper := ecs.NewMap[Position](&world)
+	mapper := ecs.NewMap[Position](world)
 
 	// Create an entity.
 	entity := mapper.NewEntity(&Position{X: 100, Y: 100})
@@ -145,7 +145,7 @@ func ExampleMap_New() {
 	var mapper *ecs.Map[Position]
 
 	// Construct the mapper, avoiding repeated generics.
-	mapper = mapper.New(&world)
+	mapper = mapper.New(world)
 	// Output:
 }
 
@@ -153,7 +153,7 @@ func ExampleMap2() {
 	world := ecs.NewWorld()
 
 	// Create a component mapper.
-	mapper := ecs.NewMap2[Position, Velocity](&world)
+	mapper := ecs.NewMap2[Position, Velocity](world)
 
 	// Create an entity.
 	entity := mapper.NewEntity(&Position{X: 100, Y: 100}, &Velocity{X: 1, Y: -1})
@@ -172,7 +172,7 @@ func ExampleMap2_New() {
 	var mapper *ecs.Map2[Position, Velocity]
 
 	// Construct the mapper, avoiding repeated listing of generics.
-	mapper = mapper.New(&world)
+	mapper = mapper.New(world)
 	// Output:
 }
 
@@ -180,11 +180,11 @@ func ExampleExchange2() {
 	world := ecs.NewWorld()
 
 	// Create a component mapper.
-	mapper := ecs.NewMap[Altitude](&world)
+	mapper := ecs.NewMap[Altitude](world)
 
 	// Create an exchange helper.
 	// Adds Position and Velocity, removes Altitude.
-	exchange := ecs.NewExchange2[Position, Velocity](&world).
+	exchange := ecs.NewExchange2[Position, Velocity](world).
 		Removes(ecs.C[Altitude]())
 
 	// Create an entity with an Altitude component.
@@ -211,6 +211,6 @@ func ExampleExchange2_New() {
 	var exchange *ecs.Exchange2[Position, Velocity]
 
 	// Construct the exchange helper, avoiding repeated listing of generics.
-	exchange = exchange.New(&world).Removes(ecs.C[Altitude]())
+	exchange = exchange.New(world).Removes(ecs.C[Altitude]())
 	// Output:
 }

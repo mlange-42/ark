@@ -29,14 +29,14 @@ func TestMap{{.}}(t *testing.T) {
 	n := 12
 	w := NewWorld(4)
 
-	Observe(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
-	Observe(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnCreateEntity).Do(func(_ Entity){}).Register(w)
+	Observe(OnSetComponents).Do(func(_ Entity) {}).Register(w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(w)
 
 	var mapper *Map{{.}}{{$generics}}
-	mapper = mapper.New(&w)
-	mapA := NewMap[CompA](&w)
+	mapper = mapper.New(w)
+	mapA := NewMap[CompA](w)
 
 	entities := []Entity{}
 	for range n {
@@ -100,7 +100,7 @@ func TestMap{{.}}(t *testing.T) {
 func TestMap{{.}}Nil(t *testing.T) {
 	w := NewWorld(4)
 
-	mapper := NewMap{{.}}{{$generics}}(&w)
+	mapper := NewMap{{.}}{{$generics}}(w)
 	entity := w.NewEntity()
 
 	{{$values}} := mapper.Get(entity)
@@ -118,11 +118,11 @@ func TestMap{{.}}NewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 	
-	Observe(OnCreateEntity).Do(func(_ Entity){}).Register(&w)
-	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnCreateEntity).Do(func(_ Entity){}).Register(w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(w)
 
-	mapper := NewMap{{.}}{{$generics}}(&w)
+	mapper := NewMap{{.}}{{$generics}}(w)
 
 	for range n {
 		_ = mapper.NewEntity({{$mapArgs}})
@@ -130,7 +130,7 @@ func TestMap{{.}}NewBatch(t *testing.T) {
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, {{$mapArgs}})
 
-	filter := NewFilter{{$nFilter}}{{$genericsFilter}}(&w)
+	filter := NewFilter{{$nFilter}}{{$genericsFilter}}(w)
 	query := filter.Query()
 	cnt := 0
 	var lastEntity Entity
@@ -147,11 +147,11 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 	
-	Observe(OnCreateEntity).With(C[Heading]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnCreateEntity).With(C[Heading]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	mapper := NewMap{{.}}{{$generics}}(&w)
+	mapper := NewMap{{.}}{{$generics}}(w)
 
 	for range n {
 		_ = mapper.NewEntity({{$mapArgs}})
@@ -164,7 +164,7 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 	})
 	expectFalse(t, w.IsLocked())
 
-	filter := NewFilter{{$nFilter}}{{$genericsFilter}}(&w)
+	filter := NewFilter{{$nFilter}}{{$genericsFilter}}(w)
 	query := filter.Query()
 	cnt := 0
 	var lastEntity Entity
@@ -182,10 +182,10 @@ func TestMap{{.}}NewBatchFn(t *testing.T) {
 func TestMap{{.}}Relations(t *testing.T) {
 	w := NewWorld(8)
 	
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	mapper := NewMap{{.}}{{$genericsRel}}(&w)
+	mapper := NewMap{{.}}{{$genericsRel}}(w)
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
@@ -225,9 +225,9 @@ func TestMap{{.}}AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	mapper := NewMap{{.}}{{$generics}}(&w)
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	mapper := NewMap{{.}}{{$generics}}(w)
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
@@ -240,10 +240,10 @@ func TestMap{{.}}AddBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	mapper.AddBatch(filter.Batch(), {{$mapArgs}})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -267,9 +267,9 @@ func TestMap{{.}}AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	mapper := NewMap{{.}}{{$generics}}(&w)
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	mapper := NewMap{{.}}{{$generics}}(w)
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position){
@@ -283,14 +283,14 @@ func TestMap{{.}}AddBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, {{$args}}){
 		a.X = float64(cnt)
 		cnt++
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -320,24 +320,24 @@ func TestMap{{.}}SetRelationsBatch(t *testing.T) {
 	n := 24
 	w := NewWorld(16)
 	
-	obs := Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	obs := Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 	
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 
-	mapper := NewMap{{.}}{{$genericsRel}}(&w)
-	childMap := NewMap[ChildOf](&w)
+	mapper := NewMap{{.}}{{$genericsRel}}(w)
+	childMap := NewMap[ChildOf](w)
 	
 	mapper.NewBatch(n, {{$mapArgsRel}}, RelIdx(0, parent1))
 	
-	obs.Unregister(&w)
-	Observe(OnAddRelations).For(C[ChildOf]()).Do(func(_ Entity) {}).Register(&w)
+	obs.Unregister(w)
+	Observe(OnAddRelations).For(C[ChildOf]()).Do(func(_ Entity) {}).Register(w)
 
 	mapper.NewBatch(n, {{$mapArgsRel}}, RelIdx(0, parent2))
 
-	filter := NewFilter1[ChildOf](&w)
+	filter := NewFilter1[ChildOf](w)
 
 	mapper.SetRelationsBatch(filter.Batch(RelIdx(0, parent2)), func(entity Entity) {
 		expectEqual(t, parent3, childMap.GetRelation(entity))

@@ -134,8 +134,8 @@ func TestBitMask256(t *testing.T) {
 func TestMask256ToTypes(t *testing.T) {
 	w := NewWorld(1024)
 
-	id1 := ComponentID[Position](&w)
-	id2 := ComponentID[Velocity](&w)
+	id1 := ComponentID[Position](w)
+	id2 := ComponentID[Velocity](w)
 
 	mask := newMask256()
 	comps := mask.toTypes(&w.storage.registry.registry)

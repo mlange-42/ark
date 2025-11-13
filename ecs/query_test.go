@@ -10,10 +10,10 @@ func TestQuery(t *testing.T) {
 	w := NewWorld(4)
 	u := w.Unsafe()
 
-	compA := ComponentID[CompA](&w)
-	compB := ComponentID[CompB](&w)
-	compC := ComponentID[CompC](&w)
-	posID := ComponentID[Position](&w)
+	compA := ComponentID[CompA](w)
+	compB := ComponentID[CompB](w)
+	compC := ComponentID[CompC](w)
+	posID := ComponentID[Position](w)
 
 	for range n {
 		_ = u.NewEntity(compA, compB, compC)
@@ -26,7 +26,7 @@ func TestQuery(t *testing.T) {
 	}
 
 	// normal filter
-	filter := NewUnsafeFilter(&w, compA, compB, compC)
+	filter := NewUnsafeFilter(w, compA, compB, compC)
 	query := filter.Query()
 	count := query.Count()
 	expectEqual(t, 2*n, count)
@@ -44,7 +44,7 @@ func TestQuery(t *testing.T) {
 	expectEqual(t, cnt, 2*n)
 
 	// filter without
-	filter = NewUnsafeFilter(&w, compA, compB, compC).Without(posID)
+	filter = NewUnsafeFilter(w, compA, compB, compC).Without(posID)
 	query = filter.Query()
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -64,7 +64,7 @@ func TestQuery(t *testing.T) {
 	expectEqual(t, cnt, n)
 
 	// filter exclusive
-	filter = NewUnsafeFilter(&w, compA, compB, compC).Exclusive()
+	filter = NewUnsafeFilter(w, compA, compB, compC).Exclusive()
 	query = filter.Query()
 	count = query.Count()
 	expectEqual(t, n, count)
@@ -85,17 +85,17 @@ func TestQueryEmpty(t *testing.T) {
 	w := NewWorld(4)
 	u := w.Unsafe()
 
-	compA := ComponentID[CompA](&w)
-	compB := ComponentID[CompB](&w)
-	compC := ComponentID[CompC](&w)
-	posID := ComponentID[Position](&w)
+	compA := ComponentID[CompA](w)
+	compB := ComponentID[CompB](w)
+	compC := ComponentID[CompC](w)
+	posID := ComponentID[Position](w)
 
 	for range 10 {
 		e1 := w.NewEntity()
 		u.Add(e1, posID)
 	}
 
-	filter := NewUnsafeFilter(&w, compA, compB, compC)
+	filter := NewUnsafeFilter(w, compA, compB, compC)
 	query := filter.Query()
 	expectEqual(t, 0, query.Count())
 
@@ -122,10 +122,10 @@ func TestQueryRelations(t *testing.T) {
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 
-	childID := ComponentID[ChildOf](&w)
-	childID2 := ComponentID[ChildOf2](&w)
-	compB := ComponentID[CompB](&w)
-	compC := ComponentID[CompC](&w)
+	childID := ComponentID[ChildOf](w)
+	childID2 := ComponentID[ChildOf2](w)
+	compB := ComponentID[CompB](w)
+	compC := ComponentID[CompC](w)
 
 	for range n {
 		_ = u.NewEntityRel([]ID{childID, childID2, compB, compC}, RelID(childID, parent1), RelID(childID2, parent3))
@@ -135,7 +135,7 @@ func TestQueryRelations(t *testing.T) {
 	}
 
 	// normal filter
-	filter := NewUnsafeFilter(&w, childID, compB, compC)
+	filter := NewUnsafeFilter(w, childID, compB, compC)
 	query := filter.Query()
 	expectEqual(t, 2*n, query.Count())
 
@@ -148,7 +148,7 @@ func TestQueryRelations(t *testing.T) {
 	expectEqual(t, cnt, 2*n)
 
 	// relation filter
-	filter = NewUnsafeFilter(&w, childID, compB, compC)
+	filter = NewUnsafeFilter(w, childID, compB, compC)
 
 	expectPanicsWithValue(t, "relations created with RelIdx can't be used in the unsafe API, use RelID or Rel instead",
 		func() {
@@ -172,7 +172,7 @@ func TestQueryRelations(t *testing.T) {
 	expectEqual(t, cnt, n)
 
 	// multi relation filter
-	filter = NewUnsafeFilter(&w, childID2, childID, compB, compC)
+	filter = NewUnsafeFilter(w, childID2, childID, compB, compC)
 	query = filter.Query(RelID(childID2, parent3), RelID(childID, parent2))
 	count := query.Count()
 	expectEqual(t, n, count)
@@ -193,9 +193,9 @@ func TestQueryRelations(t *testing.T) {
 func TestQueryCount(t *testing.T) {
 	world := NewWorld()
 
-	parentMap := NewMap1[Position](&world)
-	childMap := NewMap2[Velocity, ChildOf](&world)
-	dummyMap := NewMap1[Velocity](&world)
+	parentMap := NewMap1[Position](world)
+	childMap := NewMap2[Velocity, ChildOf](world)
+	dummyMap := NewMap1[Velocity](world)
 
 	parent1 := parentMap.NewEntity(&Position{})
 	parent2 := parentMap.NewEntity(&Position{})
@@ -205,7 +205,7 @@ func TestQueryCount(t *testing.T) {
 
 	dummyMap.NewEntity(&Velocity{})
 
-	filter := NewFilter0(&world)
+	filter := NewFilter0(world)
 	query := filter.Query()
 
 	count := query.Count()
@@ -216,7 +216,7 @@ func TestQueryCount(t *testing.T) {
 
 	expectEqual(t, count, counter, "Number of entities should match count")
 
-	filter2 := NewUnsafeFilter(&world)
+	filter2 := NewUnsafeFilter(world)
 	query2 := filter2.Query()
 
 	count = query2.Count()
@@ -240,7 +240,7 @@ func TestQueryParallel(t *testing.T) {
 		parents = append(parents, parent)
 	}
 
-	mapper := NewMap3[Position, Velocity, ChildOf](&world)
+	mapper := NewMap3[Position, Velocity, ChildOf](world)
 	for i, p := range parents {
 		cnt := 0
 		mapper.NewBatchFn(perThread, func(e Entity, p *Position, v *Velocity, co *ChildOf) {
@@ -249,7 +249,7 @@ func TestQueryParallel(t *testing.T) {
 			cnt++
 		}, RelIdx(2, p))
 	}
-	filter := NewFilter2[Position, Velocity](&world).
+	filter := NewFilter2[Position, Velocity](world).
 		With(C[ChildOf]())
 
 	task := func(i int, par Entity, wg *sync.WaitGroup) {

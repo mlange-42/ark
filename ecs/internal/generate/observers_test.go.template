@@ -16,7 +16,7 @@ import "testing"
 func TestObserve{{.}}(t *testing.T) {
 	w := NewWorld()
 	var obs *Observer{{.}}{{$generics}}
-	obs = obs.New(OnAddComponents).Do(func(e Entity, {{$args}}) {}).Register(&w)
+	obs = obs.New(OnAddComponents).Do(func(e Entity, {{$args}}) {}).Register(w)
 
 	expectPanicsWithValue(t, "can't modify a registered observer",
 		func() {
@@ -37,7 +37,7 @@ func TestObserve{{.}}(t *testing.T) {
 
 	expectPanicsWithValue(t, "observer callback must be set via Do before registering",
 		func() {
-			Observe{{.}}{{$generics}}(OnCreateEntity).Register(&w)
+			Observe{{.}}{{$generics}}(OnCreateEntity).Register(w)
 		})
 	expectPanicsWithValue(t, "observer already has a callback",
 		func() {
@@ -54,28 +54,28 @@ func TestObserve{{.}}(t *testing.T) {
 	obs.For(C[Position]())
 	expectEqual(t, {{.}}+1, len(obs.observer.comps))
 
-	obs = Observe{{.}}{{$generics}}(OnAddComponents).With().Do(func(e Entity, {{$args}}) {}).Register(&w)
+	obs = Observe{{.}}{{$generics}}(OnAddComponents).With().Do(func(e Entity, {{$args}}) {}).Register(w)
 	expectEqual(t, 0, len(obs.observer.with))
 	expectFalse(t, obs.observer.hasWith)
 
-	obs = Observe{{.}}{{$generics}}(OnAddComponents).With(C[Position]()).Do(func(e Entity, {{$args}}) {}).Register(&w)
+	obs = Observe{{.}}{{$generics}}(OnAddComponents).With(C[Position]()).Do(func(e Entity, {{$args}}) {}).Register(w)
 	expectEqual(t, 1, len(obs.observer.with))
 	expectTrue(t, obs.observer.hasWith)
 
-	obs = Observe{{.}}{{$generics}}(OnAddComponents).Without().Do(func(e Entity, {{$args}}) {}).Register(&w)
+	obs = Observe{{.}}{{$generics}}(OnAddComponents).Without().Do(func(e Entity, {{$args}}) {}).Register(w)
 	expectEqual(t, 0, len(obs.observer.without))
 	expectFalse(t, obs.observer.hasWithout)
 
-	obs = Observe{{.}}{{$generics}}(OnAddComponents).Without(C[Position]()).Do(func(e Entity, {{$args}}) {}).Register(&w)
+	obs = Observe{{.}}{{$generics}}(OnAddComponents).Without(C[Position]()).Do(func(e Entity, {{$args}}) {}).Register(w)
 	expectEqual(t, 1, len(obs.observer.without))
 	expectTrue(t, obs.observer.hasWithout)
 
-	obs = Observe{{.}}{{$generics}}(OnAddComponents).For(C[Position]()).Do(func(e Entity, {{$args}}) {}).Register(&w)
+	obs = Observe{{.}}{{$generics}}(OnAddComponents).For(C[Position]()).Do(func(e Entity, {{$args}}) {}).Register(w)
 	expectEqual(t, {{.}} + 1, len(obs.observer.comps))
 	expectTrue(t, obs.observer.hasComps)
 	
-	obs.Unregister(&w)
-	obs.Register(&w)
+	obs.Unregister(w)
+	obs.Register(w)
 	expectEqual(t, {{.}} + 1, len(obs.observer.comps))
 	expectTrue(t, obs.observer.hasComps)
 }
@@ -87,34 +87,34 @@ func TestObserver{{.}}Register(t *testing.T) {
 		With(C[Position]()).
 		Without(C[Heading]()).
 		Do(func(e Entity, {{$args}}) {}).
-		Register(&w)
+		Register(w)
 	expectTrue(t, w.storage.observers.HasObservers(OnCreateEntity))
 
 	obs2 := Observe{{.}}{{$generics}}(OnCreateEntity).
 		With(C[Position]()).
 		Do(func(e Entity, {{$args}}) {}).
-		Register(&w)
+		Register(w)
 
 	expectPanicsWithValue(t, "observer is already registered",
 		func() {
-			obs1.Register(&w)
+			obs1.Register(w)
 		})
 
-	obs1.Unregister(&w)
+	obs1.Unregister(w)
 	expectTrue(t, w.storage.observers.HasObservers(OnCreateEntity))
-	obs2.Unregister(&w)
+	obs2.Unregister(w)
 	expectFalse(t, w.storage.observers.HasObservers(OnCreateEntity))
 }
 
 func TestObserver{{.}}Callback(t *testing.T) {
 	w := NewWorld()
-	builder := NewMap{{.}}{{$generics}}(&w)
+	builder := NewMap{{.}}{{$generics}}(w)
 
 	Observe{{.}}{{$generics}}(OnCreateEntity).
 		Do(func(e Entity, {{$args}}) {
 			expectEqual(t, CompA{}, *a)
 		}).
-		Register(&w)
+		Register(w)
 
 	builder.NewEntity(
         {{- range $i, $v := $upper}}

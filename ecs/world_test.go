@@ -36,7 +36,7 @@ func TestWorldNewEntity(t *testing.T) {
 
 func TestWorldCopyEntity(t *testing.T) {
 	w := NewWorld(8)
-	mapper := NewMap3[Position, Velocity, Heading](&w)
+	mapper := NewMap3[Position, Velocity, Heading](w)
 
 	e := mapper.NewEntity(&Position{1, 2}, &Velocity{3, 4}, &Heading{5})
 	w.RemoveEntity(w.NewEntity())
@@ -55,8 +55,8 @@ func TestWorldCopyEntity(t *testing.T) {
 func TestWorldExchange(t *testing.T) {
 	w := NewWorld(2)
 
-	posID := ComponentID[Position](&w)
-	velID := ComponentID[Velocity](&w)
+	posID := ComponentID[Position](w)
+	velID := ComponentID[Velocity](w)
 
 	e1 := w.NewEntity()
 	e2 := w.NewEntity()
@@ -86,7 +86,7 @@ func TestWorldExchange(t *testing.T) {
 func TestWorldRemoveEntity(t *testing.T) {
 	w := NewWorld(32)
 
-	mapper := NewMap2[Position, Velocity](&w)
+	mapper := NewMap2[Position, Velocity](w)
 
 	entities := make([]Entity, 0, 100)
 	for range 100 {
@@ -95,7 +95,7 @@ func TestWorldRemoveEntity(t *testing.T) {
 		entities = append(entities, e)
 	}
 
-	filter := NewFilter0(&w)
+	filter := NewFilter0(w)
 	query := filter.Query()
 	cnt := 0
 	for query.Next() {
@@ -127,7 +127,7 @@ func TestWorldNewEntities(t *testing.T) {
 	n := 100
 	w := NewWorld(16)
 
-	Observe(OnCreateEntity).With(C[Position]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnCreateEntity).With(C[Position]()).Do(func(e Entity) {}).Register(w)
 
 	cnt := 0
 	w.NewEntities(n, func(entity Entity) {
@@ -139,7 +139,7 @@ func TestWorldNewEntities(t *testing.T) {
 
 	w.NewEntities(n, nil)
 
-	filter := NewUnsafeFilter(&w)
+	filter := NewUnsafeFilter(w)
 	query := filter.Query()
 	cnt = 0
 	for query.Next() {
@@ -152,11 +152,11 @@ func TestWorldRemoveEntities(t *testing.T) {
 	n := 12
 	w := NewWorld(16)
 
-	Observe(OnRemoveRelations).For(C[ChildOf]()).Do(func(e Entity) {}).Register(&w)
+	Observe(OnRemoveRelations).For(C[ChildOf]()).Do(func(e Entity) {}).Register(w)
 
-	posMap := NewMap1[Position](&w)
-	velMap := NewMap1[Velocity](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	posMap := NewMap1[Position](w)
+	velMap := NewMap1[Velocity](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 0
 	posMap.NewBatchFn(n, func(entity Entity, _ *Position) {
@@ -170,21 +170,21 @@ func TestWorldRemoveEntities(t *testing.T) {
 	})
 	expectEqual(t, n*3, cnt)
 
-	filter := NewFilter2[Position, Velocity](&w)
+	filter := NewFilter2[Position, Velocity](w)
 	cnt = 0
 	w.RemoveEntities(filter.Batch(), func(entity Entity) {
 		cnt++
 	})
 	expectEqual(t, n, cnt)
 
-	filter2 := NewFilter1[Position](&w).Register()
+	filter2 := NewFilter1[Position](w).Register()
 	cnt = 0
 	w.RemoveEntities(filter2.Batch(), func(entity Entity) {
 		cnt++
 	})
 	expectEqual(t, n, cnt)
 
-	filter3 := NewFilter0(&w)
+	filter3 := NewFilter0(w)
 	query := filter3.Query()
 	cnt = 0
 	for query.Next() {
@@ -201,10 +201,10 @@ func TestWorldRemoveEntitiesRelations(t *testing.T) {
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 
-	childMap := NewMap2[ChildOf, ChildOf2](&w)
-	filter1 := NewFilter2[ChildOf, ChildOf2](&w).Register()
-	filter2 := NewFilter2[ChildOf, ChildOf2](&w).Relations(RelIdx(0, parent2))
-	filter3 := NewFilter2[ChildOf, ChildOf2](&w).Relations(RelIdx(0, parent2), RelIdx(1, parent3))
+	childMap := NewMap2[ChildOf, ChildOf2](w)
+	filter1 := NewFilter2[ChildOf, ChildOf2](w).Register()
+	filter2 := NewFilter2[ChildOf, ChildOf2](w).Relations(RelIdx(0, parent2))
+	filter3 := NewFilter2[ChildOf, ChildOf2](w).Relations(RelIdx(0, parent2), RelIdx(1, parent3))
 
 	childMap.NewBatchFn(n, nil, RelIdx(0, parent1), RelIdx(1, parent1))
 	childMap.NewBatchFn(n, nil, RelIdx(0, parent2), RelIdx(1, parent2))
@@ -245,17 +245,17 @@ func TestWorldRemoveEntitiesRelations(t *testing.T) {
 func TestWorldRelations(t *testing.T) {
 	w := NewWorld(16)
 
-	_ = ComponentID[CompA](&w)
-	_ = ComponentID[CompB](&w)
+	_ = ComponentID[CompA](w)
+	_ = ComponentID[CompB](w)
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 	notParent := w.NewEntity()
 
-	mapper1 := NewMap3[Position, ChildOf, ChildOf2](&w)
-	expectTrue(t, w.storage.registry.IsRelation[ComponentID[ChildOf](&w).id])
-	expectTrue(t, w.storage.registry.IsRelation[ComponentID[ChildOf2](&w).id])
+	mapper1 := NewMap3[Position, ChildOf, ChildOf2](w)
+	expectTrue(t, w.storage.registry.IsRelation[ComponentID[ChildOf](w).id])
+	expectTrue(t, w.storage.registry.IsRelation[ComponentID[ChildOf2](w).id])
 
 	for range 10 {
 		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel[ChildOf](parent1), RelIdx(2, parent1))
@@ -265,7 +265,7 @@ func TestWorldRelations(t *testing.T) {
 		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel[ChildOf](parent1), Rel[ChildOf2](parent3))
 	}
 
-	filter := NewFilter3[Position, ChildOf, ChildOf2](&w)
+	filter := NewFilter3[Position, ChildOf, ChildOf2](w)
 
 	query := filter.Query()
 	expectEqual(t, 50, query.Count())
@@ -299,8 +299,8 @@ func TestWorldRelations(t *testing.T) {
 	}
 	expectEqual(t, 0, cnt)
 
-	mapper2 := NewMap2[Position, ChildOf](&w)
-	child2Map := NewMap1[ChildOf2](&w)
+	mapper2 := NewMap2[Position, ChildOf](w)
+	child2Map := NewMap1[ChildOf2](w)
 
 	e := mapper2.NewEntity(&Position{}, &ChildOf{}, RelIdx(1, parent1))
 	child2Map.Add(e, &ChildOf2{}, RelIdx(0, parent2))
@@ -320,8 +320,8 @@ func TestWorldRelations(t *testing.T) {
 
 func TestWorldRelationsBug295(t *testing.T) {
 	world := NewWorld()
-	parentMap := NewMap1[Position](&world)
-	childMap := NewMap3[Velocity, ChildOf, ChildOf2](&world)
+	parentMap := NewMap1[Position](world)
+	childMap := NewMap3[Velocity, ChildOf, ChildOf2](world)
 
 	parent1 := parentMap.NewEntity(&Position{})
 	parent2 := parentMap.NewEntity(&Position{})
@@ -333,8 +333,8 @@ func TestWorldRelationsBug295(t *testing.T) {
 		Rel[ChildOf2](parent2),
 	)
 
-	inFarmMap1 := NewMap[ChildOf](&world)
-	inFarmMap2 := NewMap[ChildOf2](&world)
+	inFarmMap1 := NewMap[ChildOf](world)
+	inFarmMap2 := NewMap[ChildOf2](world)
 
 	inFarmMap1.Remove(child)
 	expectEqual(t, parent2, inFarmMap2.GetRelation(child))
@@ -345,14 +345,14 @@ func TestWorldRelationsBug295(t *testing.T) {
 func TestWorldSetRelations(t *testing.T) {
 	w := NewWorld(16)
 
-	_ = ComponentID[CompA](&w)
-	_ = ComponentID[CompB](&w)
+	_ = ComponentID[CompA](w)
+	_ = ComponentID[CompB](w)
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	map1 := NewMap[ChildOf](&w)
-	map2 := NewMap[ChildOf2](&w)
+	map1 := NewMap[ChildOf](w)
+	map2 := NewMap[ChildOf2](w)
 
 	e := map1.NewEntity(&ChildOf{}, parent1)
 	map2.Add(e, &ChildOf2{}, parent1)
@@ -366,15 +366,15 @@ func TestWorldSetRelations(t *testing.T) {
 func TestWorldRelationRemoveTarget(t *testing.T) {
 	w := NewWorld(16)
 
-	_ = ComponentID[CompA](&w)
-	_ = ComponentID[CompB](&w)
+	_ = ComponentID[CompA](w)
+	_ = ComponentID[CompB](w)
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 
-	childMap := NewMap[ChildOf](&w)
-	posChildMap := NewMap2[Position, ChildOf](&w)
+	childMap := NewMap[ChildOf](w)
+	posChildMap := NewMap2[Position, ChildOf](w)
 
 	entities := []Entity{}
 	for range 32 {
@@ -401,7 +401,7 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 	expectSlicesEqual(t, []tableID{3, 2, 1}, archetype.tables.tables)
 	expectSlicesEqual(t, []tableID{}, archetype.freeTables)
 
-	filter := NewFilter2[Position, ChildOf](&w)
+	filter := NewFilter2[Position, ChildOf](w)
 	query := filter.Query(RelIdx(1, parent3))
 	cnt := 0
 	for query.Next() {
@@ -414,8 +414,8 @@ func TestWorldRelationRemoveTarget(t *testing.T) {
 
 func TestWorldRelationBatchSkip(t *testing.T) {
 	w := NewWorld(16)
-	builder := NewMap[ChildOf](&w)
-	filter := NewFilter1[ChildOf](&w)
+	builder := NewMap[ChildOf](w)
+	filter := NewFilter1[ChildOf](w)
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
@@ -429,8 +429,8 @@ func TestWorldRelationBatchSkip(t *testing.T) {
 
 	callAdd := 0
 	callRem := 0
-	Observe(OnAddRelations).Do(func(e Entity) { callAdd++ }).Register(&w)
-	Observe(OnRemoveRelations).Do(func(e Entity) { callRem++ }).Register(&w)
+	Observe(OnAddRelations).Do(func(e Entity) { callAdd++ }).Register(w)
+	Observe(OnRemoveRelations).Do(func(e Entity) { callRem++ }).Register(w)
 
 	cnt := 0
 	builder.SetRelationBatch(filter.Batch(), parent2, func(entity Entity) { cnt++ })
@@ -443,14 +443,14 @@ func TestWorldReset(t *testing.T) {
 	world := NewWorld(16)
 	u := world.Unsafe()
 
-	AddResource(&world, &Heading{100})
-	o := Observe(OnCreateEntity).Do(func(e Entity) {}).Register(&world)
+	AddResource(world, &Heading{100})
+	o := Observe(OnCreateEntity).Do(func(e Entity) {}).Register(world)
 
-	posID := ComponentID[Position](&world)
-	velID := ComponentID[Velocity](&world)
-	relID := ComponentID[ChildOf](&world)
+	posID := ComponentID[Position](world)
+	velID := ComponentID[Velocity](world)
+	relID := ComponentID[ChildOf](world)
 
-	_ = NewFilter2[Position, Velocity](&world).Register()
+	_ = NewFilter2[Position, Velocity](world).Register()
 
 	target1 := world.NewEntity()
 	target2 := world.NewEntity()
@@ -472,7 +472,7 @@ func TestWorldReset(t *testing.T) {
 	expectEqual(t, 2, len(world.storage.entities))
 	expectEqual(t, 2, len(world.storage.isTarget))
 
-	query := NewUnsafeFilter(&world).Query()
+	query := NewUnsafeFilter(world).Query()
 	expectEqual(t, 0, query.Count())
 	query.Close()
 
@@ -484,7 +484,7 @@ func TestWorldReset(t *testing.T) {
 	expectEqual(t, Entity{2, 0}, e1)
 	expectEqual(t, Entity{3, 0}, e2)
 
-	query = NewUnsafeFilter(&world).Query()
+	query = NewUnsafeFilter(world).Query()
 	expectEqual(t, 4, query.Count())
 	query.Close()
 
@@ -524,7 +524,7 @@ func TestWorldLock(t *testing.T) {
 
 func TestWorldRemoveGC(t *testing.T) {
 	w := NewWorld(128)
-	mapper := NewMap[SliceComp](&w)
+	mapper := NewMap[SliceComp](w)
 
 	runtime.GC()
 	mem1 := runtime.MemStats{}
@@ -564,7 +564,7 @@ func TestWorldRemoveGC(t *testing.T) {
 func TestWorldPointerStressTest(t *testing.T) {
 	w := NewWorld(128)
 
-	mapper := NewMap[PointerComp](&w)
+	mapper := NewMap[PointerComp](w)
 
 	count := 1
 	var entities []Entity
@@ -578,7 +578,7 @@ func TestWorldPointerStressTest(t *testing.T) {
 			ptr.Ptr = &PointerType{&Position{X: float64(e.id), Y: 2}}
 		}
 
-		filter := NewFilter1[PointerComp](&w)
+		filter := NewFilter1[PointerComp](w)
 		query := filter.Query()
 		for query.Next() {
 			ptr := query.Get()
@@ -600,8 +600,8 @@ func TestWorldPointerStressTest(t *testing.T) {
 
 func TestWorldPanics(t *testing.T) {
 	w := NewWorld(128, 32)
-	_ = ComponentID[Position](&w)
-	_ = ComponentID[Velocity](&w)
+	_ = ComponentID[Position](w)
+	_ = ComponentID[Velocity](w)
 
 	expectPanicsWithValue(t, "at least one component required to add", func() {
 		e := w.NewEntity()
@@ -635,10 +635,10 @@ func TestWorldPanics(t *testing.T) {
 func TestWorldStats(t *testing.T) {
 	w := NewWorld(128, 32)
 
-	posVelMap := NewMap2[Position, Velocity](&w)
-	posVelHeadMap := NewMap3[Position, Velocity, Heading](&w)
-	posChildMap := NewMap3[Position, ChildOf, ChildOf2](&w)
-	filter := NewFilter0(&w)
+	posVelMap := NewMap2[Position, Velocity](w)
+	posVelHeadMap := NewMap3[Position, Velocity, Heading](w)
+	posChildMap := NewMap3[Position, ChildOf, ChildOf2](w)
+	filter := NewFilter0(w)
 
 	p1 := w.NewEntity()
 	p2 := w.NewEntity()
@@ -682,9 +682,9 @@ func TestWorldCreateManyTables(t *testing.T) {
 	n := 1000
 
 	w := NewWorld()
-	dataMap := NewMap1[Position](&w)
+	dataMap := NewMap1[Position](w)
 
-	id := ComponentID[Position](&w)
+	id := ComponentID[Position](w)
 	expectTrue(t, w.storage.registry.IsTrivial[id.id])
 
 	entities := make([]Entity, 0)
@@ -692,12 +692,12 @@ func TestWorldCreateManyTables(t *testing.T) {
 		entities = append(entities, dataMap.NewEntity(&Position{X: float64(i)}))
 	}
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	q := filter.Query()
 	expectEqual(t, n, q.Count())
 	q.Close()
 
-	relMap := NewMap1[ChildOf](&w)
+	relMap := NewMap1[ChildOf](w)
 	for i := range n {
 		relMap.Add(entities[i], &ChildOf{}, Rel[ChildOf](entities[(i+1)%n]))
 	}
@@ -711,9 +711,9 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 	n := 1000
 
 	w := NewWorld()
-	dataMap := NewMap1[SliceComp](&w)
+	dataMap := NewMap1[SliceComp](w)
 
-	id := ComponentID[SliceComp](&w)
+	id := ComponentID[SliceComp](w)
 	expectFalse(t, w.storage.registry.IsTrivial[id.id])
 
 	entities := make([]Entity, 0)
@@ -724,17 +724,17 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 		entities = append(entities, e)
 	}
 
-	filter := NewFilter1[SliceComp](&w)
+	filter := NewFilter1[SliceComp](w)
 	q := filter.Query()
 	expectEqual(t, n, q.Count())
 	q.Close()
 
-	velMap := NewMap1[Velocity](&w)
+	velMap := NewMap1[Velocity](w)
 	for i := range n {
 		velMap.Add(entities[i], &Velocity{})
 	}
 
-	relMap := NewMap1[ChildOf](&w)
+	relMap := NewMap1[ChildOf](w)
 	for i := range n {
 		relMap.Add(entities[i], &ChildOf{}, Rel[ChildOf](entities[(i+1)%n]))
 	}
@@ -759,7 +759,7 @@ func TestWorldShrinkSimple(t *testing.T) {
 	w.NewEntities(1024, nil)
 	expectEqual(t, 1024, w.storage.tables[0].cap)
 
-	filter := NewFilter0(&w)
+	filter := NewFilter0(w)
 	w.RemoveEntities(filter.Batch(), nil)
 
 	w.Shrink(time.Second)
@@ -768,8 +768,8 @@ func TestWorldShrinkSimple(t *testing.T) {
 
 func TestWorldShrinkRelations(t *testing.T) {
 	w := NewWorld(64, 32)
-	childMapper := NewMap1[ChildOf](&w)
-	childFilter := NewFilter1[ChildOf](&w)
+	childMapper := NewMap1[ChildOf](w)
+	childFilter := NewFilter1[ChildOf](w)
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
@@ -815,13 +815,13 @@ func TestWorldShrinkRelations(t *testing.T) {
 func TestWorldShrinkTime(t *testing.T) {
 	w := NewWorld(128)
 
-	map1 := NewMap1[CompA](&w)
-	map2 := NewMap1[CompB](&w)
-	map3 := NewMap1[CompC](&w)
-	childMap := NewMap1[ChildOf](&w)
-	filterB := NewFilter1[CompB](&w)
-	filterC := NewFilter1[CompC](&w)
-	childFilter := NewFilter1[ChildOf](&w)
+	map1 := NewMap1[CompA](w)
+	map2 := NewMap1[CompB](w)
+	map3 := NewMap1[CompC](w)
+	childMap := NewMap1[ChildOf](w)
+	filterB := NewFilter1[CompB](w)
+	filterC := NewFilter1[CompC](w)
+	childFilter := NewFilter1[ChildOf](w)
 
 	parents := []Entity{}
 	w.NewEntities(100, func(entity Entity) {
@@ -865,7 +865,7 @@ func TestSharedComponents(t *testing.T) {
 
 	shared := &Position{1, 2}
 
-	builder := NewMap1[*Position](&world)
+	builder := NewMap1[*Position](world)
 
 	e1 := builder.NewEntity(&shared)
 	e2 := builder.NewEntity(&shared)

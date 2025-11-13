@@ -11,10 +11,10 @@ func ExampleObserver() {
 		Do(func(e ecs.Entity) {
 			// do something
 		}).
-		Register(&world)
+		Register(world)
 
 	// Unregister later if required.
-	obs.Unregister(&world)
+	obs.Unregister(world)
 	// Output:
 }
 
@@ -27,7 +27,7 @@ func ExampleObserver_For() {
 		Do(func(e ecs.Entity) {
 			// do something
 		}).
-		Register(&world)
+		Register(world)
 	// Output:
 }
 
@@ -40,7 +40,7 @@ func ExampleObserver_With() {
 		Do(func(e ecs.Entity) {
 			// do something
 		}).
-		Register(&world)
+		Register(world)
 	// Output:
 }
 
@@ -52,7 +52,7 @@ func ExampleObserver_Without() {
 		Do(func(e ecs.Entity) {
 			// do something
 		}).
-		Register(&world)
+		Register(world)
 	// Output:
 }
 
@@ -66,7 +66,7 @@ func ExampleObserver_Exclusive() {
 		Do(func(e ecs.Entity) {
 			// do something
 		}).
-		Register(&world)
+		Register(world)
 	// Output:
 }
 
@@ -77,7 +77,7 @@ func ExampleObserver_New() {
 	var obs *ecs.Observer
 
 	// Construct the observer elsewhere, e.g. in the constructor.
-	obs = obs.New(ecs.OnAddComponents).Do(func(e ecs.Entity) {}).Register(&w)
+	obs = obs.New(ecs.OnAddComponents).Do(func(e ecs.Entity) {}).Register(w)
 	// Output:
 }
 
@@ -88,10 +88,10 @@ func ExampleObserver1() {
 		Do(func(e ecs.Entity, pos *Position) {
 			// do something
 		}).
-		Register(&world)
+		Register(world)
 
 	// Unregister later if required.
-	obs.Unregister(&world)
+	obs.Unregister(world)
 	// Output:
 }
 
@@ -103,7 +103,7 @@ func ExampleObserver1_For() {
 		Do(func(e ecs.Entity, pos *Position) {
 			// do something
 		}).
-		Register(&world)
+		Register(world)
 	// Output:
 }
 
@@ -116,7 +116,7 @@ func ExampleObserver1_With() {
 		Do(func(e ecs.Entity, pos *Position) {
 			// do something
 		}).
-		Register(&world)
+		Register(world)
 	// Output:
 }
 
@@ -128,7 +128,7 @@ func ExampleObserver1_Without() {
 		Do(func(e ecs.Entity, pos *Position) {
 			// do something
 		}).
-		Register(&world)
+		Register(world)
 	// Output:
 }
 
@@ -142,7 +142,7 @@ func ExampleObserver1_Exclusive() {
 		Do(func(e ecs.Entity, pos *Position) {
 			// do something
 		}).
-		Register(&world)
+		Register(world)
 	// Output:
 }
 
@@ -158,7 +158,7 @@ func ExampleEvent() {
 		For(ecs.C[Position]())
 
 	// Create an entity.
-	builder := ecs.NewMap1[Position](&world)
+	builder := ecs.NewMap1[Position](world)
 	entity := builder.NewEntity(&Position{1, 2})
 
 	// Emit the event.
@@ -173,6 +173,6 @@ func ExampleObserver1_New() {
 	var obs *ecs.Observer1[Position]
 
 	// Construct the observer elsewhere, e.g. in the constructor.
-	obs = obs.New(ecs.OnAddComponents).Do(func(e ecs.Entity, pos *Position) {}).Register(&w)
+	obs = obs.New(ecs.OnAddComponents).Do(func(e ecs.Entity, pos *Position) {}).Register(w)
 	// Output:
 }
