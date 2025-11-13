@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.6.4...v0.6.5)
+
+### Features
+
+- Provides binary serialization and de-serialization of entities for networking (#453)
+
 ## [[v0.6.4]](https://github.com/mlange-42/ark/compare/v0.6.3...v0.6.4)
 
 ### Bugfixes
