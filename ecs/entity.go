@@ -85,11 +85,19 @@ func (e *Entity) UnmarshalJSON(data []byte) error {
 }
 
 // MarshalBinary returns a binary representation of the entity, for serialization and networking purposes.
-func (e *Entity) MarshalBinary() []byte {
+func (e *Entity) MarshalBinary() (data []byte, err error) {
 	buf := make([]byte, 8)
 	binary.BigEndian.PutUint32(buf[0:4], uint32(e.id))
 	binary.BigEndian.PutUint32(buf[4:8], e.gen)
-	return buf
+	return buf, nil
+}
+
+// AppendBinary appends the binary representation of the entity to the given slice,
+// for serialization and networking purposes.
+func (e *Entity) AppendBinary(buf []byte) ([]byte, error) {
+	buf = binary.BigEndian.AppendUint32(buf, uint32(e.id))
+	buf = binary.BigEndian.AppendUint32(buf, e.gen)
+	return buf, nil
 }
 
 // UnmarshalBinary into an entity.
