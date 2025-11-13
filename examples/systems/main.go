@@ -31,7 +31,7 @@ type System interface {
 
 // Scheduler for updating systems
 type Scheduler struct {
-	world   ecs.World
+	world   *ecs.World
 	systems []System
 }
 
@@ -53,14 +53,14 @@ func (s *Scheduler) initialize() {
 	s.world = ecs.NewWorld()
 
 	for _, sys := range s.systems {
-		sys.Initialize(&s.world)
+		sys.Initialize(s.world)
 	}
 }
 
 // update all systems
 func (s *Scheduler) update() {
 	for _, sys := range s.systems {
-		sys.Update(&s.world)
+		sys.Update(s.world)
 	}
 }
 
