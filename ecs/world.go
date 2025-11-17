@@ -269,10 +269,22 @@ func (w *World) Reset() {
 
 // Stats reports statistics for inspecting the World.
 //
+// Flags are optional. If no flags are provided, all details are included.
+// Flags can be given as multiple arguments, or combined by bitwise OR (|).
+//
 // The underlying [stats.World] object is re-used and updated between calls.
 // The returned pointer should thus not be stored for later analysis.
 // Rather, the required data should be extracted immediately.
-func (w *World) Stats() *stats.World {
+func (w *World) Stats(flags ...stats.Option) *stats.World {
+	var mask stats.Option
+	if len(flags) == 0 {
+		mask = stats.All
+	} else {
+		for _, f := range flags {
+			mask |= f
+		}
+	}
+
 	w.stats.Entities = stats.Entities{
 		Used:     w.storage.entityPool.Len(),
 		Total:    w.storage.entityPool.Cap(),
@@ -294,24 +306,35 @@ func (w *World) Stats() *stats.World {
 	memory := cap(w.storage.entities)*int(entityIndexSize) + w.storage.entityPool.TotalCap()*int(entitySize)
 	memoryUsed := w.storage.entityPool.Len() * int(entityIndexSize+entitySize)
 
-	cntOld := int32(len(w.stats.Archetypes))
-	cntNew := int32(len(w.storage.archetypes))
-	var i int32
-	for i = range cntOld {
-		arch := &w.storage.archetypes[i]
-		archStats := &w.stats.Archetypes[i]
-		arch.UpdateStats(archStats, &w.storage)
-		memory += archStats.Memory
-		memoryUsed += archStats.MemoryUsed
-	}
-	for i = cntOld; i < cntNew; i++ {
-		arch := &w.storage.archetypes[i]
-		w.stats.Archetypes = append(w.stats.Archetypes, arch.Stats(&w.storage))
-		archStats := &w.stats.Archetypes[i]
-		memory += archStats.Memory
-		memoryUsed += archStats.MemoryUsed
+	includeTables := mask&stats.Tables != 0
+	if includeTables || mask&stats.Archetypes != 0 {
+		cntOld := int32(len(w.stats.Archetypes))
+		cntNew := int32(len(w.storage.archetypes))
+		var i int32
+		for i = range cntOld {
+			arch := &w.storage.archetypes[i]
+			archStats := &w.stats.Archetypes[i]
+			arch.UpdateStats(archStats, &w.storage, includeTables)
+			memory += archStats.Memory
+			memoryUsed += archStats.MemoryUsed
+		}
+		for i = cntOld; i < cntNew; i++ {
+			arch := &w.storage.archetypes[i]
+			w.stats.Archetypes = append(w.stats.Archetypes, arch.Stats(&w.storage, includeTables))
+			archStats := &w.stats.Archetypes[i]
+			memory += archStats.Memory
+			memoryUsed += archStats.MemoryUsed
+		}
+	} else {
+		w.stats.Archetypes = w.stats.Archetypes[:0]
+		for i := range len(w.storage.archetypes) {
+			mem, used := w.storage.archetypes[i].CountMemory(&w.storage)
+			memory += mem
+			memoryUsed += used
+		}
 	}
 
+	w.stats.NumArchetypes = len(w.storage.archetypes)
 	w.stats.Locked = w.IsLocked()
 	w.stats.Memory = memory
 	w.stats.MemoryUsed = memoryUsed
