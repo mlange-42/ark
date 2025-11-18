@@ -129,6 +129,18 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	q.world.unlockSafe(q.lock)
 }
 
+// IsClosed reports whether the query was closed.
+//
+// A query is considered closed after iteration finishes or Close()
+// is called manually. Internally, this is represented by the cursor's
+// table index being set to a value less than -1.
+//
+// Closed queries cannot be iterated and should not be reused.
+// Create a new query instead.
+func (q *Query{{.}}{{$genericsShort}}) IsClosed() bool {
+    return q.cursor.table < -1
+}
+
 func (q *Query{{.}}{{$genericsShort}}) nextTableOrArchetype() bool {
 	if q.cache != nil {
 		return q.nextTable(q.cache.tables.tables)
@@ -155,7 +167,7 @@ func (q *Query{{.}}{{$genericsShort}}) nextArchetype() bool {
 	for q.cursor.archetype < maxArchIndex {
 		q.cursor.archetype++
 		archetype := &q.world.storage.archetypes[archetypes[q.cursor.archetype]]
-		
+
 		if !q.filter.matches(&archetype.mask) {
 			continue
 		}

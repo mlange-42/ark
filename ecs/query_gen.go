@@ -83,6 +83,18 @@ func (q *Query0) Close() {
 	q.world.unlockSafe(q.lock)
 }
 
+// IsClosed reports whether the query was closed.
+//
+// A query is considered closed after iteration finishes or Close()
+// is called manually. Internally, this is represented by the cursor's
+// table index being set to a value less than -1.
+//
+// Closed queries cannot be iterated and should not be reused.
+// Create a new query instead.
+func (q *Query0) IsClosed() bool {
+	return q.cursor.table < -1
+}
+
 func (q *Query0) nextTableOrArchetype() bool {
 	if q.cache != nil {
 		return q.nextTable(q.cache.tables.tables)
@@ -227,6 +239,18 @@ func (q *Query1[A]) Close() {
 	q.world.unlockSafe(q.lock)
 }
 
+// IsClosed reports whether the query was closed.
+//
+// A query is considered closed after iteration finishes or Close()
+// is called manually. Internally, this is represented by the cursor's
+// table index being set to a value less than -1.
+//
+// Closed queries cannot be iterated and should not be reused.
+// Create a new query instead.
+func (q *Query1[A]) IsClosed() bool {
+	return q.cursor.table < -1
+}
+
 func (q *Query1[A]) nextTableOrArchetype() bool {
 	if q.cache != nil {
 		return q.nextTable(q.cache.tables.tables)
@@ -365,6 +389,18 @@ func (q *Query2[A, B]) Close() {
 	q.columnPtrB = unsafe.Pointer(nilDummy)
 	q.itemSizeB = 0
 	q.world.unlockSafe(q.lock)
+}
+
+// IsClosed reports whether the query was closed.
+//
+// A query is considered closed after iteration finishes or Close()
+// is called manually. Internally, this is represented by the cursor's
+// table index being set to a value less than -1.
+//
+// Closed queries cannot be iterated and should not be reused.
+// Create a new query instead.
+func (q *Query2[A, B]) IsClosed() bool {
+	return q.cursor.table < -1
 }
 
 func (q *Query2[A, B]) nextTableOrArchetype() bool {
@@ -518,6 +554,18 @@ func (q *Query3[A, B, C]) Close() {
 	q.columnPtrC = unsafe.Pointer(nilDummy)
 	q.itemSizeC = 0
 	q.world.unlockSafe(q.lock)
+}
+
+// IsClosed reports whether the query was closed.
+//
+// A query is considered closed after iteration finishes or Close()
+// is called manually. Internally, this is represented by the cursor's
+// table index being set to a value less than -1.
+//
+// Closed queries cannot be iterated and should not be reused.
+// Create a new query instead.
+func (q *Query3[A, B, C]) IsClosed() bool {
+	return q.cursor.table < -1
 }
 
 func (q *Query3[A, B, C]) nextTableOrArchetype() bool {
@@ -678,6 +726,18 @@ func (q *Query4[A, B, C, D]) Close() {
 	q.columnPtrD = unsafe.Pointer(nilDummy)
 	q.itemSizeD = 0
 	q.world.unlockSafe(q.lock)
+}
+
+// IsClosed reports whether the query was closed.
+//
+// A query is considered closed after iteration finishes or Close()
+// is called manually. Internally, this is represented by the cursor's
+// table index being set to a value less than -1.
+//
+// Closed queries cannot be iterated and should not be reused.
+// Create a new query instead.
+func (q *Query4[A, B, C, D]) IsClosed() bool {
+	return q.cursor.table < -1
 }
 
 func (q *Query4[A, B, C, D]) nextTableOrArchetype() bool {
@@ -845,6 +905,18 @@ func (q *Query5[A, B, C, D, E]) Close() {
 	q.columnPtrE = unsafe.Pointer(nilDummy)
 	q.itemSizeE = 0
 	q.world.unlockSafe(q.lock)
+}
+
+// IsClosed reports whether the query was closed.
+//
+// A query is considered closed after iteration finishes or Close()
+// is called manually. Internally, this is represented by the cursor's
+// table index being set to a value less than -1.
+//
+// Closed queries cannot be iterated and should not be reused.
+// Create a new query instead.
+func (q *Query5[A, B, C, D, E]) IsClosed() bool {
+	return q.cursor.table < -1
 }
 
 func (q *Query5[A, B, C, D, E]) nextTableOrArchetype() bool {
@@ -1019,6 +1091,18 @@ func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.columnPtrF = unsafe.Pointer(nilDummy)
 	q.itemSizeF = 0
 	q.world.unlockSafe(q.lock)
+}
+
+// IsClosed reports whether the query was closed.
+//
+// A query is considered closed after iteration finishes or Close()
+// is called manually. Internally, this is represented by the cursor's
+// table index being set to a value less than -1.
+//
+// Closed queries cannot be iterated and should not be reused.
+// Create a new query instead.
+func (q *Query6[A, B, C, D, E, F]) IsClosed() bool {
+	return q.cursor.table < -1
 }
 
 func (q *Query6[A, B, C, D, E, F]) nextTableOrArchetype() bool {
@@ -1200,6 +1284,18 @@ func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.columnPtrG = unsafe.Pointer(nilDummy)
 	q.itemSizeG = 0
 	q.world.unlockSafe(q.lock)
+}
+
+// IsClosed reports whether the query was closed.
+//
+// A query is considered closed after iteration finishes or Close()
+// is called manually. Internally, this is represented by the cursor's
+// table index being set to a value less than -1.
+//
+// Closed queries cannot be iterated and should not be reused.
+// Create a new query instead.
+func (q *Query7[A, B, C, D, E, F, G]) IsClosed() bool {
+	return q.cursor.table < -1
 }
 
 func (q *Query7[A, B, C, D, E, F, G]) nextTableOrArchetype() bool {
@@ -1388,6 +1484,18 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.columnPtrH = unsafe.Pointer(nilDummy)
 	q.itemSizeH = 0
 	q.world.unlockSafe(q.lock)
+}
+
+// IsClosed reports whether the query was closed.
+//
+// A query is considered closed after iteration finishes or Close()
+// is called manually. Internally, this is represented by the cursor's
+// table index being set to a value less than -1.
+//
+// Closed queries cannot be iterated and should not be reused.
+// Create a new query instead.
+func (q *Query8[A, B, C, D, E, F, G, H]) IsClosed() bool {
+	return q.cursor.table < -1
 }
 
 func (q *Query8[A, B, C, D, E, F, G, H]) nextTableOrArchetype() bool {
