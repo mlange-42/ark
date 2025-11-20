@@ -10,6 +10,10 @@
 
 - Provides binary serialization and de-serialization of entities for networking (#453)
 
+### Migration guide
+
+For migration from pre-v0.7.0 versions, simply remove the pointer operator `&` in function calls that take a `World` as argument. When a `World` is stored in a  explicitly typed variable or struct field, use `*ecs.World` instead of `ecs.World`.
+
 ## [[v0.6.4]](https://github.com/mlange-42/ark/compare/v0.6.3...v0.6.4)
 
 ### Bugfixes
