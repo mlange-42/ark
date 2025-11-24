@@ -22,15 +22,15 @@ func TestRelID(t *testing.T) {
 func TestToRelations(t *testing.T) {
 	w := NewWorld()
 
-	childID := ComponentID[ChildOf](&w)
-	child2ID := ComponentID[ChildOf2](&w)
-	posID := ComponentID[Position](&w)
+	childID := ComponentID[ChildOf](w)
+	child2ID := ComponentID[ChildOf2](w)
+	posID := ComponentID[Position](w)
 
 	inRelations := relationSlice{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
 	var out []relationID
 
 	ids := []ID{posID, childID, child2ID}
-	out = inRelations.ToRelations(&w, all(ids...), ids, out[:0], false)
+	out = inRelations.ToRelations(w, all(ids...), ids, out[:0], false)
 
 	expectSlicesEqual(t, []relationID{
 		{component: childID, target: Entity{2, 0}},
@@ -40,18 +40,18 @@ func TestToRelations(t *testing.T) {
 	expectPanicsWithValue(t, "component with ID 2 is not a relation component",
 		func() {
 			ids := []ID{childID, child2ID, posID}
-			_ = inRelations.ToRelations(&w, all(ids...), ids, out[:0], false)
+			_ = inRelations.ToRelations(w, all(ids...), ids, out[:0], false)
 		})
 
 	expectPanicsWithValue(t, "requested relation component with ID 0 was not specified in the filter or map",
 		func() {
 			ids := []ID{posID, childID, child2ID}
-			_ = inRelations.ToRelations(&w, all(posID, child2ID), ids, out[:0], false)
+			_ = inRelations.ToRelations(w, all(posID, child2ID), ids, out[:0], false)
 		})
 
 	inRelations = relationSlice{RelID(childID, Entity{2, 0}), RelID(child2ID, Entity{3, 0})}
 
-	out = inRelations.ToRelations(&w, all(ids...), ids, out[:0], false)
+	out = inRelations.ToRelations(w, all(ids...), ids, out[:0], false)
 
 	expectSlicesEqual(t, []relationID{
 		{component: childID, target: Entity{2, 0}},
@@ -59,7 +59,7 @@ func TestToRelations(t *testing.T) {
 	}, out)
 
 	inRelations = relationSlice{Rel[ChildOf](Entity{2, 0}), Rel[ChildOf2](Entity{3, 0})}
-	out = inRelations.ToRelations(&w, all(ids...), ids, out[:0], false)
+	out = inRelations.ToRelations(w, all(ids...), ids, out[:0], false)
 
 	expectSlicesEqual(t, []relationID{
 		{component: childID, target: Entity{2, 0}},
@@ -67,13 +67,13 @@ func TestToRelations(t *testing.T) {
 	}, out)
 
 	inRelations = relationSlice{Rel[ChildOf](Entity{2, 0})}
-	out = inRelations.ToRelations(&w, all(ids...), ids, out[:0], false)
+	out = inRelations.ToRelations(w, all(ids...), ids, out[:0], false)
 	expectSlicesEqual(t, []relationID{
 		{component: childID, target: Entity{2, 0}},
 	}, out)
 
 	inRelations = relationSlice{Rel[ChildOf2](Entity{3, 0})}
-	out = inRelations.ToRelations(&w, all(ids...), ids, out, false)
+	out = inRelations.ToRelations(w, all(ids...), ids, out, false)
 
 	expectSlicesEqual(t, []relationID{
 		{component: childID, target: Entity{2, 0}},
@@ -87,10 +87,10 @@ func TestRemoveRelationTarget(t *testing.T) {
 	e1 := world.NewEntity()
 	e2 := world.NewEntity()
 
-	childMap := NewMap[ChildOf](&world)
-	child2Map := NewMap[ChildOf2](&world)
+	childMap := NewMap[ChildOf](world)
+	child2Map := NewMap[ChildOf2](world)
 
-	gen2Map := NewMap3[Position, ChildOf, ChildOf2](&world)
+	gen2Map := NewMap3[Position, ChildOf, ChildOf2](world)
 	e3 := gen2Map.NewEntity(
 		&Position{},
 		&ChildOf{}, &ChildOf2{},
@@ -113,12 +113,12 @@ func TestRemoveRelationTarget(t *testing.T) {
 
 func TestStaleRelationTable(t *testing.T) {
 	world := NewWorld()
-	filter := NewFilter2[Position, ChildOf2](&world)
+	filter := NewFilter2[Position, ChildOf2](world)
 
 	e1 := world.NewEntity()
 	e2 := world.NewEntity()
 
-	gen := NewMap3[Position, ChildOf, ChildOf2](&world)
+	gen := NewMap3[Position, ChildOf, ChildOf2](world)
 	gen.NewEntity(
 		&Position{},
 		&ChildOf{}, &ChildOf2{},
@@ -143,8 +143,8 @@ func TestStaleRelationTable(t *testing.T) {
 
 func TestRelationChecks(t *testing.T) {
 	world := NewWorld()
-	builder1 := NewMap1[Position](&world)
-	builder2 := NewMap2[Position, ChildOf](&world)
+	builder1 := NewMap1[Position](world)
+	builder2 := NewMap2[Position, ChildOf](world)
 
 	parent := world.NewEntity()
 	builder1.NewEntity(&Position{})
@@ -155,18 +155,18 @@ func TestRelationChecks(t *testing.T) {
 		builder2.NewEntity(&Position{}, &ChildOf{}, Rel[ChildOf2](parent))
 	})
 
-	exchange1 := NewExchange1[ChildOf2](&world).Removes(C[ChildOf]())
+	exchange1 := NewExchange1[ChildOf2](world).Removes(C[ChildOf]())
 	exchange1.Exchange(e1, &ChildOf2{}, Rel[ChildOf2](parent))
 
 	expectPanicsWithValue(t, "requested relation component with ID 1 was not specified in the filter or map", func() {
 		exchange1.Exchange(e2, &ChildOf2{}, Rel[ChildOf](parent))
 	})
 
-	filter1 := NewFilter1[Position](&world)
+	filter1 := NewFilter1[Position](world)
 	expectPanicsWithValue(t, "requested relation component with ID 1 was not specified in the filter or map", func() {
 		filter1.Query(Rel[ChildOf](parent))
 	})
-	filter2 := NewFilter1[Position](&world).With(C[ChildOf]())
+	filter2 := NewFilter1[Position](world).With(C[ChildOf]())
 	query := filter2.Query(Rel[ChildOf](parent))
 	query.Close()
 }
@@ -176,9 +176,9 @@ func TestRelationExchange(t *testing.T) {
 
 	parent := w.NewEntity()
 
-	builder := NewMap2[ChildOf, Position](&w)
-	mapper := NewMap1[ChildOf](&w)
-	ex := NewExchange1[Velocity](&w).Removes(C[Position]())
+	builder := NewMap2[ChildOf, Position](w)
+	mapper := NewMap1[ChildOf](w)
+	ex := NewExchange1[Velocity](w).Removes(C[Position]())
 
 	child := builder.NewEntityFn(nil, RelIdx(0, parent))
 	expectEqual(t, parent, mapper.GetRelation(child, 0))
@@ -191,7 +191,7 @@ func BenchmarkCreateRelationQuery(b *testing.B) {
 	world := NewWorld()
 	parent := world.NewEntity()
 
-	filter := NewFilter1[ChildOf](&world)
+	filter := NewFilter1[ChildOf](world)
 
 	for b.Loop() {
 		q := filter.Query(RelIdx(0, parent))
@@ -203,9 +203,9 @@ func BenchmarkToRelations0(b *testing.B) {
 	world := NewWorld()
 
 	ids := []ID{
-		ComponentID[Position](&world),
-		ComponentID[ChildOf](&world),
-		ComponentID[ChildOf2](&world),
+		ComponentID[Position](world),
+		ComponentID[ChildOf](world),
+		ComponentID[ChildOf2](world),
 	}
 	mask := newMask(ids...)
 
@@ -213,7 +213,7 @@ func BenchmarkToRelations0(b *testing.B) {
 	relations := []relationID{}
 
 	for b.Loop() {
-		_ = rels.ToRelations(&world, &mask, ids, relations, false)
+		_ = rels.ToRelations(world, &mask, ids, relations, false)
 	}
 }
 
@@ -222,9 +222,9 @@ func BenchmarkToRelations1(b *testing.B) {
 	parent := world.NewEntity()
 
 	ids := []ID{
-		ComponentID[Position](&world),
-		ComponentID[ChildOf](&world),
-		ComponentID[ChildOf2](&world),
+		ComponentID[Position](world),
+		ComponentID[ChildOf](world),
+		ComponentID[ChildOf2](world),
 	}
 	mask := newMask(ids...)
 
@@ -236,7 +236,7 @@ func BenchmarkToRelations1(b *testing.B) {
 	}
 
 	for b.Loop() {
-		relations = rels.ToRelations(&world, &mask, ids, relations[:0], false)
+		relations = rels.ToRelations(world, &mask, ids, relations[:0], false)
 	}
 }
 
@@ -245,9 +245,9 @@ func BenchmarkToRelations2(b *testing.B) {
 	parent := world.NewEntity()
 
 	ids := []ID{
-		ComponentID[Position](&world),
-		ComponentID[ChildOf](&world),
-		ComponentID[ChildOf2](&world),
+		ComponentID[Position](world),
+		ComponentID[ChildOf](world),
+		ComponentID[ChildOf2](world),
 	}
 	mask := newMask(ids...)
 
@@ -260,7 +260,7 @@ func BenchmarkToRelations2(b *testing.B) {
 	}
 
 	for b.Loop() {
-		relations = rels.ToRelations(&world, &mask, ids, relations[:0], false)
+		relations = rels.ToRelations(world, &mask, ids, relations[:0], false)
 	}
 }
 
@@ -269,9 +269,9 @@ func BenchmarkToRelations2Copy(b *testing.B) {
 	parent := world.NewEntity()
 
 	ids := []ID{
-		ComponentID[Position](&world),
-		ComponentID[ChildOf](&world),
-		ComponentID[ChildOf2](&world),
+		ComponentID[Position](world),
+		ComponentID[ChildOf](world),
+		ComponentID[ChildOf2](world),
 	}
 	mask := newMask(ids...)
 
@@ -284,7 +284,7 @@ func BenchmarkToRelations2Copy(b *testing.B) {
 	}
 
 	for b.Loop() {
-		relations = rels.ToRelations(&world, &mask, ids, relations[:0], true)
+		relations = rels.ToRelations(world, &mask, ids, relations[:0], true)
 	}
 }
 

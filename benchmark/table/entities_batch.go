@@ -21,7 +21,7 @@ func benchesEntitiesBatch() []benchmark.Benchmark {
 
 func entitiesBatchCreate1000(b *testing.B) {
 	w := ecs.NewWorld()
-	filter := ecs.NewFilter0(&w)
+	filter := ecs.NewFilter0(w)
 
 	for b.Loop() {
 		w.NewEntities(1000, nil)
@@ -33,8 +33,8 @@ func entitiesBatchCreate1000(b *testing.B) {
 
 func entitiesBatchCreate1Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter0(&w)
+	builder := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter0(w)
 
 	for b.Loop() {
 		builder.NewBatchFn(1000, nil)
@@ -46,8 +46,8 @@ func entitiesBatchCreate1Comp1000(b *testing.B) {
 
 func entitiesBatchCreate5Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
-	filter := ecs.NewFilter0(&w)
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
+	filter := ecs.NewFilter0(w)
 
 	for b.Loop() {
 		builder.NewBatchFn(1000, nil)
@@ -59,7 +59,7 @@ func entitiesBatchCreate5Comp1000(b *testing.B) {
 
 func entitiesBatchRemove1000(b *testing.B) {
 	w := ecs.NewWorld()
-	filter := ecs.NewFilter0(&w)
+	filter := ecs.NewFilter0(w)
 
 	for b.Loop() {
 		b.StopTimer()
@@ -71,8 +71,8 @@ func entitiesBatchRemove1000(b *testing.B) {
 
 func entitiesBatchRemove1Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter0(&w)
+	builder := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter0(w)
 
 	for b.Loop() {
 		b.StopTimer()
@@ -84,8 +84,8 @@ func entitiesBatchRemove1Comp1000(b *testing.B) {
 
 func entitiesBatchRemove5Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
-	filter := ecs.NewFilter0(&w)
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
+	filter := ecs.NewFilter0(w)
 
 	for b.Loop() {
 		b.StopTimer()

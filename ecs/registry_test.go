@@ -80,11 +80,11 @@ func TestRareComponent(t *testing.T) {
 func BenchmarkRegistryGet(b *testing.B) {
 	w := NewWorld(1024)
 
-	_ = ComponentID[Position](&w)
-	_ = ComponentID[Velocity](&w)
+	_ = ComponentID[Position](w)
+	_ = ComponentID[Velocity](w)
 
 	for b.Loop() {
-		_ = ComponentID[Velocity](&w)
+		_ = ComponentID[Velocity](w)
 	}
 }
 

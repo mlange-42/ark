@@ -7,7 +7,7 @@ import (
 
 func BenchmarkCreateEntity0Comp_1000(b *testing.B) {
 	w := NewWorld()
-	filter := NewFilter0(&w)
+	filter := NewFilter0(w)
 
 	w.NewEntities(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
@@ -28,8 +28,8 @@ func BenchmarkCreateEntity0Comp_1000(b *testing.B) {
 
 func BenchmarkCreateEntity1Comp_1000(b *testing.B) {
 	w := NewWorld()
-	builder := NewMap1[Position](&w)
-	filter := NewFilter0(&w)
+	builder := NewMap1[Position](w)
+	filter := NewFilter0(w)
 
 	builder.NewBatchFn(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
@@ -50,8 +50,8 @@ func BenchmarkCreateEntity1Comp_1000(b *testing.B) {
 
 func BenchmarkCopyEntity1Comp_1000(b *testing.B) {
 	w := NewWorld()
-	builder := NewMap1[Position](&w)
-	filter := NewFilter0(&w)
+	builder := NewMap1[Position](w)
+	filter := NewFilter0(w)
 
 	builder.NewBatchFn(1001, nil)
 	w.RemoveEntities(filter.Batch(), nil)
@@ -77,8 +77,8 @@ func BenchmarkCopyEntity1Comp_1000(b *testing.B) {
 
 func BenchmarkCreateEntitiesAlloc(b *testing.B) {
 	w := NewWorld()
-	builder := NewMap1[Position](&w)
-	filter := NewFilter0(&w)
+	builder := NewMap1[Position](w)
+	filter := NewFilter0(w)
 
 	builder.NewBatchFn(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
@@ -86,7 +86,7 @@ func BenchmarkCreateEntitiesAlloc(b *testing.B) {
 	for b.Loop() {
 		b.StopTimer()
 		w := NewWorld(8)
-		builder := NewMap2[Position, Velocity](&w)
+		builder := NewMap2[Position, Velocity](w)
 		b.StartTimer()
 		for range 1000 {
 			builder.NewEntityFn(nil)
@@ -96,8 +96,8 @@ func BenchmarkCreateEntitiesAlloc(b *testing.B) {
 
 func BenchmarkAddRemove(b *testing.B) {
 	w := NewWorld()
-	builder1 := NewMap1[Position](&w)
-	builder2 := NewMap1[Velocity](&w)
+	builder1 := NewMap1[Position](w)
+	builder2 := NewMap1[Velocity](w)
 
 	e := builder1.NewEntityFn(nil)
 	builder2.AddFn(e, nil)
@@ -110,9 +110,9 @@ func BenchmarkAddRemove(b *testing.B) {
 
 func BenchmarkAddRemoveBatch(b *testing.B) {
 	w := NewWorld()
-	builder1 := NewMap1[Position](&w)
-	builder2 := NewMap1[Velocity](&w)
-	filter := NewFilter0(&w)
+	builder1 := NewMap1[Position](w)
+	builder2 := NewMap1[Velocity](w)
+	filter := NewFilter0(w)
 
 	builder1.NewBatchFn(1, nil)
 	builder2.AddBatchFn(filter.Batch(), nil)
@@ -125,8 +125,8 @@ func BenchmarkAddRemoveBatch(b *testing.B) {
 
 func BenchmarkAddRemove_1000(b *testing.B) {
 	w := NewWorld()
-	builder1 := NewMap1[Position](&w)
-	builder2 := NewMap1[Velocity](&w)
+	builder1 := NewMap1[Position](w)
+	builder2 := NewMap1[Velocity](w)
 
 	entities := make([]Entity, 0, 1000)
 	builder1.NewBatchFn(1000, func(e Entity, p *Position) {
@@ -151,9 +151,9 @@ func BenchmarkAddRemove_1000(b *testing.B) {
 
 func BenchmarkAddRemoveBatch_1000(b *testing.B) {
 	w := NewWorld()
-	builder1 := NewMap1[Position](&w)
-	builder2 := NewMap1[Velocity](&w)
-	filter := NewFilter0(&w)
+	builder1 := NewMap1[Position](w)
+	builder2 := NewMap1[Velocity](w)
+	filter := NewFilter0(w)
 
 	builder1.NewBatchFn(1000, nil)
 	builder2.AddBatchFn(filter.Batch(), nil)
@@ -184,8 +184,8 @@ func BenchmarkWorldLockUnlock(b *testing.B) {
 func BenchmarkWorldStats4Arch(b *testing.B) {
 	w := NewWorld()
 
-	idA := ComponentID[CompA](&w)
-	idB := ComponentID[CompB](&w)
+	idA := ComponentID[CompA](w)
+	idB := ComponentID[CompB](w)
 
 	u := w.Unsafe()
 	u.NewEntity()
@@ -205,10 +205,10 @@ func BenchmarkWorldStats16Arch(b *testing.B) {
 	w := NewWorld()
 
 	allIDs := []ID{
-		ComponentID[CompA](&w),
-		ComponentID[CompB](&w),
-		ComponentID[CompC](&w),
-		ComponentID[CompD](&w),
+		ComponentID[CompA](w),
+		ComponentID[CompB](w),
+		ComponentID[CompC](w),
+		ComponentID[CompD](w),
 	}
 
 	ids := []ID{}
@@ -235,12 +235,12 @@ func BenchmarkWorldStats64Arch(b *testing.B) {
 	w := NewWorld()
 
 	allIDs := []ID{
-		ComponentID[CompA](&w),
-		ComponentID[CompB](&w),
-		ComponentID[CompC](&w),
-		ComponentID[CompD](&w),
-		ComponentID[CompE](&w),
-		ComponentID[CompF](&w),
+		ComponentID[CompA](w),
+		ComponentID[CompB](w),
+		ComponentID[CompC](w),
+		ComponentID[CompD](w),
+		ComponentID[CompE](w),
+		ComponentID[CompF](w),
 	}
 
 	ids := []ID{}
@@ -267,16 +267,16 @@ func BenchmarkWorldStats1024Arch(b *testing.B) {
 	w := NewWorld()
 
 	allIDs := []ID{
-		ComponentID[CompA](&w),
-		ComponentID[CompB](&w),
-		ComponentID[CompC](&w),
-		ComponentID[CompD](&w),
-		ComponentID[CompE](&w),
-		ComponentID[CompF](&w),
-		ComponentID[CompG](&w),
-		ComponentID[CompH](&w),
-		ComponentID[CompI](&w),
-		ComponentID[CompJ](&w),
+		ComponentID[CompA](w),
+		ComponentID[CompB](w),
+		ComponentID[CompC](w),
+		ComponentID[CompD](w),
+		ComponentID[CompE](w),
+		ComponentID[CompF](w),
+		ComponentID[CompG](w),
+		ComponentID[CompH](w),
+		ComponentID[CompI](w),
+		ComponentID[CompJ](w),
 	}
 
 	ids := []ID{}
@@ -301,7 +301,7 @@ func BenchmarkWorldStats1024Arch(b *testing.B) {
 
 func BenchmarkRemoveTrivial_1000(b *testing.B) {
 	w := NewWorld()
-	builder := NewMap1[Heading](&w)
+	builder := NewMap1[Heading](w)
 
 	toRemove := []Entity{}
 	builder.NewBatchFn(1000, func(entity Entity, a *Heading) {
@@ -326,7 +326,7 @@ func BenchmarkRemoveTrivial_1000(b *testing.B) {
 
 func BenchmarkRemoveNonTrivial_1000(b *testing.B) {
 	w := NewWorld()
-	builder := NewMap1[PointerType](&w)
+	builder := NewMap1[PointerType](w)
 
 	toRemove := []Entity{}
 	builder.NewBatchFn(1000, func(entity Entity, a *PointerType) {
@@ -352,19 +352,19 @@ func BenchmarkRemoveNonTrivial_1000(b *testing.B) {
 func benchmarkQueryNumArches(b *testing.B, arches int, n int) {
 	world := NewWorld(1024)
 
-	posID := ComponentID[Position](&world)
-	velID := ComponentID[Velocity](&world)
+	posID := ComponentID[Position](world)
+	velID := ComponentID[Velocity](world)
 	allIDs := []ID{
-		ComponentID[CompA](&world),
-		ComponentID[CompB](&world),
-		ComponentID[CompC](&world),
-		ComponentID[CompD](&world),
-		ComponentID[CompE](&world),
-		ComponentID[CompF](&world),
-		ComponentID[CompG](&world),
-		ComponentID[CompH](&world),
-		ComponentID[CompI](&world),
-		ComponentID[CompJ](&world),
+		ComponentID[CompA](world),
+		ComponentID[CompB](world),
+		ComponentID[CompC](world),
+		ComponentID[CompD](world),
+		ComponentID[CompE](world),
+		ComponentID[CompF](world),
+		ComponentID[CompG](world),
+		ComponentID[CompH](world),
+		ComponentID[CompI](world),
+		ComponentID[CompJ](world),
 	}
 
 	extraIDs := allIDs[:int(math.Log2(float64(arches)))]
@@ -383,7 +383,7 @@ func benchmarkQueryNumArches(b *testing.B, arches int, n int) {
 		ids = ids[:0]
 	}
 
-	filter := NewFilter2[Position, Velocity](&world)
+	filter := NewFilter2[Position, Velocity](world)
 
 	for b.Loop() {
 		query := filter.Query()

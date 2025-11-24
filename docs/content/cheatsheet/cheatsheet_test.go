@@ -31,8 +31,8 @@ func NewGrid(sx, sy int) Grid {
 }
 
 var world = ecs.NewWorld()
-var mapper = ecs.NewMap2[Position, Velocity](&world)
-var filter = ecs.NewFilter2[Position, Velocity](&world).Exclusive()
+var mapper = ecs.NewMap2[Position, Velocity](world)
+var filter = ecs.NewFilter2[Position, Velocity](world).Exclusive()
 var entity = world.NewEntity()
 
 var registry = ecs.EventRegistry{}
@@ -40,12 +40,12 @@ var OnCollisionDetected = registry.NewEventType()
 
 func TestCreateWorld(t *testing.T) {
 	world := ecs.NewWorld()
-	_ = &world
+	_ = world
 }
 
 func TestCreateWorldConfig(t *testing.T) {
 	world := ecs.NewWorld(1024)
-	_ = &world
+	_ = world
 }
 
 func TestCreateEmpty(t *testing.T) {
@@ -54,7 +54,7 @@ func TestCreateEmpty(t *testing.T) {
 }
 
 func TestCreateMapper(t *testing.T) {
-	mapper := ecs.NewMap2[Position, Velocity](&world)
+	mapper := ecs.NewMap2[Position, Velocity](world)
 	_ = mapper
 }
 
@@ -96,7 +96,7 @@ func TestRemoveEntity(t *testing.T) {
 }
 
 func TestRemoveEntities(t *testing.T) {
-	filter := ecs.NewFilter2[Position, Velocity](&world).Exclusive()
+	filter := ecs.NewFilter2[Position, Velocity](world).Exclusive()
 
 	world.RemoveEntities(filter.Batch(), nil)
 }
@@ -120,7 +120,7 @@ func TestAddRemoveComponents(t *testing.T) {
 }
 
 func TestAddBatch(t *testing.T) {
-	filter := ecs.NewFilter1[Altitude](&world).Exclusive()
+	filter := ecs.NewFilter1[Altitude](world).Exclusive()
 
 	mapper.AddBatch(
 		filter.Batch(),
@@ -130,7 +130,7 @@ func TestAddBatch(t *testing.T) {
 }
 
 func TestAddBatchFn(t *testing.T) {
-	filter := ecs.NewFilter1[Altitude](&world).Exclusive()
+	filter := ecs.NewFilter1[Altitude](world).Exclusive()
 
 	mapper.AddBatchFn(
 		filter.Batch(),
@@ -141,7 +141,7 @@ func TestAddBatchFn(t *testing.T) {
 }
 
 func TestRemoveBatch(t *testing.T) {
-	filter := ecs.NewFilter2[Position, Velocity](&world)
+	filter := ecs.NewFilter2[Position, Velocity](world)
 
 	mapper.RemoveBatch(
 		filter.Batch(),
@@ -149,7 +149,7 @@ func TestRemoveBatch(t *testing.T) {
 }
 
 func TestFilterQuery(t *testing.T) {
-	filter := ecs.NewFilter2[Position, Velocity](&world)
+	filter := ecs.NewFilter2[Position, Velocity](world)
 
 	query := filter.Query()
 	for query.Next() {
@@ -160,25 +160,25 @@ func TestFilterQuery(t *testing.T) {
 }
 
 func TestFilterWith(t *testing.T) {
-	filter := ecs.NewFilter2[Position, Velocity](&world).
+	filter := ecs.NewFilter2[Position, Velocity](world).
 		With(ecs.C[Altitude]())
 	_ = filter
 }
 
 func TestFilterWithout(t *testing.T) {
-	filter := ecs.NewFilter2[Position, Velocity](&world).
+	filter := ecs.NewFilter2[Position, Velocity](world).
 		Without(ecs.C[Altitude]())
 	_ = filter
 }
 
 func TestFilterExclusive(t *testing.T) {
-	filter := ecs.NewFilter2[Position, Velocity](&world).
+	filter := ecs.NewFilter2[Position, Velocity](world).
 		Exclusive()
 	_ = filter
 }
 
 func TestFilterWithWithout(t *testing.T) {
-	filter := ecs.NewFilter1[Position](&world).
+	filter := ecs.NewFilter1[Position](world).
 		With(ecs.C[Velocity]()).
 		With(ecs.C[Altitude]()).
 		Without(ecs.C[Health]())
@@ -215,7 +215,7 @@ func TestComponentCheck(t *testing.T) {
 }
 
 func TestComponentAccessSingle(t *testing.T) {
-	mapper := ecs.NewMap[Position](&world)
+	mapper := ecs.NewMap[Position](world)
 	entity := mapper.NewEntity(&Position{X: 100, Y: 100})
 
 	if mapper.Has(entity) {
@@ -227,12 +227,12 @@ func TestComponentAccessSingle(t *testing.T) {
 func TestResourcesQuick(t *testing.T) {
 	grid := NewGrid(100, 100)
 
-	ecs.AddResource(&world, &grid)
-	_ = ecs.GetResource[Grid](&world)
+	ecs.AddResource(world, &grid)
+	_ = ecs.GetResource[Grid](world)
 }
 
 func TestResources(t *testing.T) {
-	gridResource := ecs.NewResource[Grid](&world)
+	gridResource := ecs.NewResource[Grid](world)
 
 	grid := gridResource.Get()
 	_ = grid
@@ -243,7 +243,7 @@ func TestObserver(t *testing.T) {
 		Do(func(e ecs.Entity) {
 			// Do something with the newly created entity.
 		}).
-		Register(&world)
+		Register(world)
 }
 
 func TestObserverFilter(t *testing.T) {
@@ -253,7 +253,7 @@ func TestObserverFilter(t *testing.T) {
 		Do(func(e ecs.Entity) {
 			// Do something with the entity.
 		}).
-		Register(&world)
+		Register(world)
 }
 
 func TestObserverFilterGeneric(t *testing.T) {
@@ -261,7 +261,7 @@ func TestObserverFilterGeneric(t *testing.T) {
 		Do(func(e ecs.Entity, pos *Position, vel *Velocity) {
 			// Do something with the entity and the components
 		}).
-		Register(&world)
+		Register(world)
 }
 
 func TestObserverWithWithout(t *testing.T) {
@@ -271,7 +271,7 @@ func TestObserverWithWithout(t *testing.T) {
 		Do(func(e ecs.Entity, pos *Position) {
 			// Do something with the entity and the component
 		}).
-		Register(&world)
+		Register(world)
 }
 
 func TestCustomEventType(t *testing.T) {
@@ -296,5 +296,5 @@ func TestCustomEventObserver(t *testing.T) {
 		Do(func(e ecs.Entity, p *Position) {
 			// Do something with the collision entity and the component
 		}).
-		Register(&world)
+		Register(world)
 }

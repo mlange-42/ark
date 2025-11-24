@@ -34,8 +34,8 @@ func run(rounds, iters, numEntities int) {
 	for range rounds {
 		w := ecs.NewWorld(1024)
 
-		builder := ecs.NewMap1[comp1](&w)
-		filter := ecs.NewFilter1[comp1](&w)
+		builder := ecs.NewMap1[comp1](w)
+		filter := ecs.NewFilter1[comp1](w)
 
 		for range iters {
 			for range numEntities {

@@ -7,11 +7,11 @@ import "testing"
 func TestExchange1(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap1[CompA](&w)
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap1[CompA](w)
 
 	var ex *Exchange1[CompA]
-	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
+	ex = ex.New(w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -30,9 +30,9 @@ func TestExchange1(t *testing.T) {
 func TestExchange1Add(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap1[CompA](&w)
-	ex := NewExchange1[CompA](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap1[CompA](w)
+	ex := NewExchange1[CompA](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -52,12 +52,12 @@ func TestExchange1Add(t *testing.T) {
 func TestExchange1Relations(t *testing.T) {
 	w := NewWorld(8)
 
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	ex := NewExchange1[ChildOf](&w).Removes(C[Position]())
-	mapper1 := NewMap1[ChildOf](&w)
-	mapper2 := NewMap1[Position](&w)
+	ex := NewExchange1[ChildOf](w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](w)
+	mapper2 := NewMap1[Position](w)
 
 	parent1 := w.NewEntity()
 
@@ -75,9 +75,9 @@ func TestExchange1Relations(t *testing.T) {
 func TestExchange1Remove(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap1[CompA](&w)
-	ex := NewExchange1[CompA](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap1[CompA](w)
+	ex := NewExchange1[CompA](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -90,14 +90,14 @@ func TestExchange1AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	exchange := NewExchange1[CompA](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange1[CompA](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -110,10 +110,10 @@ func TestExchange1AddBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.AddBatch(filter.Batch(), &CompA{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -137,9 +137,9 @@ func TestExchange1AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange1[CompA](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange1[CompA](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -153,7 +153,7 @@ func TestExchange1AddBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA) {
 		a.X = float64(cnt)
@@ -161,7 +161,7 @@ func TestExchange1AddBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -191,9 +191,9 @@ func TestExchange1ExchangeBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange1[CompA](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange1[CompA](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -206,10 +206,10 @@ func TestExchange1ExchangeBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -223,9 +223,9 @@ func TestExchange1ExchangeBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange1[CompA](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange1[CompA](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -238,7 +238,7 @@ func TestExchange1ExchangeBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA) {
 		a.X = float64(cnt)
@@ -246,7 +246,7 @@ func TestExchange1ExchangeBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -261,11 +261,11 @@ func TestExchange1ExchangeBatchFn(t *testing.T) {
 func TestExchange2(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap2[CompA, CompB](&w)
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap2[CompA, CompB](w)
 
 	var ex *Exchange2[CompA, CompB]
-	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
+	ex = ex.New(w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -284,9 +284,9 @@ func TestExchange2(t *testing.T) {
 func TestExchange2Add(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap2[CompA, CompB](&w)
-	ex := NewExchange2[CompA, CompB](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap2[CompA, CompB](w)
+	ex := NewExchange2[CompA, CompB](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -306,12 +306,12 @@ func TestExchange2Add(t *testing.T) {
 func TestExchange2Relations(t *testing.T) {
 	w := NewWorld(8)
 
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	ex := NewExchange2[ChildOf, CompB](&w).Removes(C[Position]())
-	mapper1 := NewMap1[ChildOf](&w)
-	mapper2 := NewMap1[Position](&w)
+	ex := NewExchange2[ChildOf, CompB](w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](w)
+	mapper2 := NewMap1[Position](w)
 
 	parent1 := w.NewEntity()
 
@@ -329,9 +329,9 @@ func TestExchange2Relations(t *testing.T) {
 func TestExchange2Remove(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap2[CompA, CompB](&w)
-	ex := NewExchange2[CompA, CompB](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap2[CompA, CompB](w)
+	ex := NewExchange2[CompA, CompB](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -344,14 +344,14 @@ func TestExchange2AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	exchange := NewExchange2[CompA, CompB](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange2[CompA, CompB](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -364,10 +364,10 @@ func TestExchange2AddBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -391,9 +391,9 @@ func TestExchange2AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange2[CompA, CompB](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange2[CompA, CompB](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -407,7 +407,7 @@ func TestExchange2AddBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB) {
 		a.X = float64(cnt)
@@ -415,7 +415,7 @@ func TestExchange2AddBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -445,9 +445,9 @@ func TestExchange2ExchangeBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange2[CompA, CompB](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange2[CompA, CompB](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -460,10 +460,10 @@ func TestExchange2ExchangeBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -477,9 +477,9 @@ func TestExchange2ExchangeBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange2[CompA, CompB](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange2[CompA, CompB](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -492,7 +492,7 @@ func TestExchange2ExchangeBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB) {
 		a.X = float64(cnt)
@@ -500,7 +500,7 @@ func TestExchange2ExchangeBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -515,11 +515,11 @@ func TestExchange2ExchangeBatchFn(t *testing.T) {
 func TestExchange3(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap3[CompA, CompB, CompC](&w)
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap3[CompA, CompB, CompC](w)
 
 	var ex *Exchange3[CompA, CompB, CompC]
-	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
+	ex = ex.New(w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -538,9 +538,9 @@ func TestExchange3(t *testing.T) {
 func TestExchange3Add(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap3[CompA, CompB, CompC](&w)
-	ex := NewExchange3[CompA, CompB, CompC](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap3[CompA, CompB, CompC](w)
+	ex := NewExchange3[CompA, CompB, CompC](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -560,12 +560,12 @@ func TestExchange3Add(t *testing.T) {
 func TestExchange3Relations(t *testing.T) {
 	w := NewWorld(8)
 
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	ex := NewExchange3[ChildOf, CompB, CompC](&w).Removes(C[Position]())
-	mapper1 := NewMap1[ChildOf](&w)
-	mapper2 := NewMap1[Position](&w)
+	ex := NewExchange3[ChildOf, CompB, CompC](w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](w)
+	mapper2 := NewMap1[Position](w)
 
 	parent1 := w.NewEntity()
 
@@ -583,9 +583,9 @@ func TestExchange3Relations(t *testing.T) {
 func TestExchange3Remove(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap3[CompA, CompB, CompC](&w)
-	ex := NewExchange3[CompA, CompB, CompC](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap3[CompA, CompB, CompC](w)
+	ex := NewExchange3[CompA, CompB, CompC](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -598,14 +598,14 @@ func TestExchange3AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	exchange := NewExchange3[CompA, CompB, CompC](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange3[CompA, CompB, CompC](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -618,10 +618,10 @@ func TestExchange3AddBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -645,9 +645,9 @@ func TestExchange3AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange3[CompA, CompB, CompC](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange3[CompA, CompB, CompC](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -661,7 +661,7 @@ func TestExchange3AddBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC) {
 		a.X = float64(cnt)
@@ -669,7 +669,7 @@ func TestExchange3AddBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -699,9 +699,9 @@ func TestExchange3ExchangeBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange3[CompA, CompB, CompC](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange3[CompA, CompB, CompC](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -714,10 +714,10 @@ func TestExchange3ExchangeBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -731,9 +731,9 @@ func TestExchange3ExchangeBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange3[CompA, CompB, CompC](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange3[CompA, CompB, CompC](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -746,7 +746,7 @@ func TestExchange3ExchangeBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC) {
 		a.X = float64(cnt)
@@ -754,7 +754,7 @@ func TestExchange3ExchangeBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -769,11 +769,11 @@ func TestExchange3ExchangeBatchFn(t *testing.T) {
 func TestExchange4(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap4[CompA, CompB, CompC, CompD](w)
 
 	var ex *Exchange4[CompA, CompB, CompC, CompD]
-	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
+	ex = ex.New(w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -792,9 +792,9 @@ func TestExchange4(t *testing.T) {
 func TestExchange4Add(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
-	ex := NewExchange4[CompA, CompB, CompC, CompD](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap4[CompA, CompB, CompC, CompD](w)
+	ex := NewExchange4[CompA, CompB, CompC, CompD](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -814,12 +814,12 @@ func TestExchange4Add(t *testing.T) {
 func TestExchange4Relations(t *testing.T) {
 	w := NewWorld(8)
 
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	ex := NewExchange4[ChildOf, CompB, CompC, CompD](&w).Removes(C[Position]())
-	mapper1 := NewMap1[ChildOf](&w)
-	mapper2 := NewMap1[Position](&w)
+	ex := NewExchange4[ChildOf, CompB, CompC, CompD](w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](w)
+	mapper2 := NewMap1[Position](w)
 
 	parent1 := w.NewEntity()
 
@@ -837,9 +837,9 @@ func TestExchange4Relations(t *testing.T) {
 func TestExchange4Remove(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
-	ex := NewExchange4[CompA, CompB, CompC, CompD](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap4[CompA, CompB, CompC, CompD](w)
+	ex := NewExchange4[CompA, CompB, CompC, CompD](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -852,14 +852,14 @@ func TestExchange4AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	exchange := NewExchange4[CompA, CompB, CompC, CompD](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange4[CompA, CompB, CompC, CompD](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -872,10 +872,10 @@ func TestExchange4AddBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -899,9 +899,9 @@ func TestExchange4AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange4[CompA, CompB, CompC, CompD](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange4[CompA, CompB, CompC, CompD](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -915,7 +915,7 @@ func TestExchange4AddBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD) {
 		a.X = float64(cnt)
@@ -923,7 +923,7 @@ func TestExchange4AddBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -953,9 +953,9 @@ func TestExchange4ExchangeBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange4[CompA, CompB, CompC, CompD](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange4[CompA, CompB, CompC, CompD](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -968,10 +968,10 @@ func TestExchange4ExchangeBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -985,9 +985,9 @@ func TestExchange4ExchangeBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange4[CompA, CompB, CompC, CompD](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange4[CompA, CompB, CompC, CompD](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1000,7 +1000,7 @@ func TestExchange4ExchangeBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD) {
 		a.X = float64(cnt)
@@ -1008,7 +1008,7 @@ func TestExchange4ExchangeBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1023,11 +1023,11 @@ func TestExchange4ExchangeBatchFn(t *testing.T) {
 func TestExchange5(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](w)
 
 	var ex *Exchange5[CompA, CompB, CompC, CompD, CompE]
-	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
+	ex = ex.New(w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1046,9 +1046,9 @@ func TestExchange5(t *testing.T) {
 func TestExchange5Add(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
-	ex := NewExchange5[CompA, CompB, CompC, CompD, CompE](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](w)
+	ex := NewExchange5[CompA, CompB, CompC, CompD, CompE](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1068,12 +1068,12 @@ func TestExchange5Add(t *testing.T) {
 func TestExchange5Relations(t *testing.T) {
 	w := NewWorld(8)
 
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	ex := NewExchange5[ChildOf, CompB, CompC, CompD, CompE](&w).Removes(C[Position]())
-	mapper1 := NewMap1[ChildOf](&w)
-	mapper2 := NewMap1[Position](&w)
+	ex := NewExchange5[ChildOf, CompB, CompC, CompD, CompE](w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](w)
+	mapper2 := NewMap1[Position](w)
 
 	parent1 := w.NewEntity()
 
@@ -1091,9 +1091,9 @@ func TestExchange5Relations(t *testing.T) {
 func TestExchange5Remove(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](&w)
-	ex := NewExchange5[CompA, CompB, CompC, CompD, CompE](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](w)
+	ex := NewExchange5[CompA, CompB, CompC, CompD, CompE](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1106,14 +1106,14 @@ func TestExchange5AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	exchange := NewExchange5[CompA, CompB, CompC, CompD, CompE](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange5[CompA, CompB, CompC, CompD, CompE](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1126,10 +1126,10 @@ func TestExchange5AddBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1153,9 +1153,9 @@ func TestExchange5AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange5[CompA, CompB, CompC, CompD, CompE](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange5[CompA, CompB, CompC, CompD, CompE](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1169,7 +1169,7 @@ func TestExchange5AddBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 		a.X = float64(cnt)
@@ -1177,7 +1177,7 @@ func TestExchange5AddBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1207,9 +1207,9 @@ func TestExchange5ExchangeBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange5[CompA, CompB, CompC, CompD, CompE](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange5[CompA, CompB, CompC, CompD, CompE](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1222,10 +1222,10 @@ func TestExchange5ExchangeBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1239,9 +1239,9 @@ func TestExchange5ExchangeBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange5[CompA, CompB, CompC, CompD, CompE](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange5[CompA, CompB, CompC, CompD, CompE](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1254,7 +1254,7 @@ func TestExchange5ExchangeBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE) {
 		a.X = float64(cnt)
@@ -1262,7 +1262,7 @@ func TestExchange5ExchangeBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1277,11 +1277,11 @@ func TestExchange5ExchangeBatchFn(t *testing.T) {
 func TestExchange6(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](w)
 
 	var ex *Exchange6[CompA, CompB, CompC, CompD, CompE, CompF]
-	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
+	ex = ex.New(w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1300,9 +1300,9 @@ func TestExchange6(t *testing.T) {
 func TestExchange6Add(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
-	ex := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](w)
+	ex := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1322,12 +1322,12 @@ func TestExchange6Add(t *testing.T) {
 func TestExchange6Relations(t *testing.T) {
 	w := NewWorld(8)
 
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	ex := NewExchange6[ChildOf, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[Position]())
-	mapper1 := NewMap1[ChildOf](&w)
-	mapper2 := NewMap1[Position](&w)
+	ex := NewExchange6[ChildOf, CompB, CompC, CompD, CompE, CompF](w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](w)
+	mapper2 := NewMap1[Position](w)
 
 	parent1 := w.NewEntity()
 
@@ -1345,9 +1345,9 @@ func TestExchange6Relations(t *testing.T) {
 func TestExchange6Remove(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](&w)
-	ex := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](w)
+	ex := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1360,14 +1360,14 @@ func TestExchange6AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	exchange := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1380,10 +1380,10 @@ func TestExchange6AddBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1407,9 +1407,9 @@ func TestExchange6AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1423,7 +1423,7 @@ func TestExchange6AddBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 		a.X = float64(cnt)
@@ -1431,7 +1431,7 @@ func TestExchange6AddBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1461,9 +1461,9 @@ func TestExchange6ExchangeBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1476,10 +1476,10 @@ func TestExchange6ExchangeBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1493,9 +1493,9 @@ func TestExchange6ExchangeBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange6[CompA, CompB, CompC, CompD, CompE, CompF](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1508,7 +1508,7 @@ func TestExchange6ExchangeBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF) {
 		a.X = float64(cnt)
@@ -1516,7 +1516,7 @@ func TestExchange6ExchangeBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1531,11 +1531,11 @@ func TestExchange6ExchangeBatchFn(t *testing.T) {
 func TestExchange7(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w)
 
 	var ex *Exchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG]
-	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
+	ex = ex.New(w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1554,9 +1554,9 @@ func TestExchange7(t *testing.T) {
 func TestExchange7Add(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
-	ex := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w)
+	ex := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1576,12 +1576,12 @@ func TestExchange7Add(t *testing.T) {
 func TestExchange7Relations(t *testing.T) {
 	w := NewWorld(8)
 
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	ex := NewExchange7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[Position]())
-	mapper1 := NewMap1[ChildOf](&w)
-	mapper2 := NewMap1[Position](&w)
+	ex := NewExchange7[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG](w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](w)
+	mapper2 := NewMap1[Position](w)
 
 	parent1 := w.NewEntity()
 
@@ -1599,9 +1599,9 @@ func TestExchange7Relations(t *testing.T) {
 func TestExchange7Remove(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w)
-	ex := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w)
+	ex := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1614,14 +1614,14 @@ func TestExchange7AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	exchange := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1634,10 +1634,10 @@ func TestExchange7AddBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1661,9 +1661,9 @@ func TestExchange7AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1677,7 +1677,7 @@ func TestExchange7AddBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 		a.X = float64(cnt)
@@ -1685,7 +1685,7 @@ func TestExchange7AddBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1715,9 +1715,9 @@ func TestExchange7ExchangeBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1730,10 +1730,10 @@ func TestExchange7ExchangeBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1747,9 +1747,9 @@ func TestExchange7ExchangeBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1762,7 +1762,7 @@ func TestExchange7ExchangeBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG) {
 		a.X = float64(cnt)
@@ -1770,7 +1770,7 @@ func TestExchange7ExchangeBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1785,11 +1785,11 @@ func TestExchange7ExchangeBatchFn(t *testing.T) {
 func TestExchange8(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w)
 
 	var ex *Exchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH]
-	ex = ex.New(&w).Removes(C[Velocity](), C[Position]())
+	ex = ex.New(w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1808,9 +1808,9 @@ func TestExchange8(t *testing.T) {
 func TestExchange8Add(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
-	ex := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w)
+	ex := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1830,12 +1830,12 @@ func TestExchange8Add(t *testing.T) {
 func TestExchange8Relations(t *testing.T) {
 	w := NewWorld(8)
 
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	ex := NewExchange8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[Position]())
-	mapper1 := NewMap1[ChildOf](&w)
-	mapper2 := NewMap1[Position](&w)
+	ex := NewExchange8[ChildOf, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w).Removes(C[Position]())
+	mapper1 := NewMap1[ChildOf](w)
+	mapper2 := NewMap1[Position](w)
 
 	parent1 := w.NewEntity()
 
@@ -1853,9 +1853,9 @@ func TestExchange8Relations(t *testing.T) {
 func TestExchange8Remove(t *testing.T) {
 	w := NewWorld(16)
 
-	posMap := NewMap2[Position, Velocity](&w)
-	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w)
-	ex := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[Velocity](), C[Position]())
+	posMap := NewMap2[Position, Velocity](w)
+	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w)
+	ex := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w).Removes(C[Velocity](), C[Position]())
 
 	e := posMap.NewEntity(&Position{}, &Velocity{})
 
@@ -1868,14 +1868,14 @@ func TestExchange8AddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(&w)
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnAddComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnRemoveComponents).For(C[Heading]()).Do(func(e Entity) {}).Register(w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).For(C[ChildOf2]()).Do(func(_ Entity) {}).Register(w)
 
-	exchange := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1888,10 +1888,10 @@ func TestExchange8AddBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.AddBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1915,9 +1915,9 @@ func TestExchange8AddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[CompA]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w).Removes(C[CompA]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1931,7 +1931,7 @@ func TestExchange8AddBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 		a.X = float64(cnt)
@@ -1939,7 +1939,7 @@ func TestExchange8AddBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -1969,9 +1969,9 @@ func TestExchange8ExchangeBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -1984,10 +1984,10 @@ func TestExchange8ExchangeBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	exchange.ExchangeBatch(filter.Batch(), &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -2001,9 +2001,9 @@ func TestExchange8ExchangeBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	exchange := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](&w).Removes(C[Position]())
-	posMap := NewMap1[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	exchange := NewExchange8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w).Removes(C[Position]())
+	posMap := NewMap1[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -2016,7 +2016,7 @@ func TestExchange8ExchangeBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	exchange.ExchangeBatchFn(filter.Batch(), func(entity Entity, a *CompA, b *CompB, c *CompC, d *CompD, e *CompE, f *CompF, g *CompG, h *CompH) {
 		a.X = float64(cnt)
@@ -2024,7 +2024,7 @@ func TestExchange8ExchangeBatchFn(t *testing.T) {
 		expectTrue(t, w.IsLocked())
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {

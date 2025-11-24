@@ -18,19 +18,19 @@ func TestAddResource(t *testing.T) {
 	// Create a resource.
 	var worldGrid Grid = NewGrid(100, 100)
 	// Add it to the world.
-	ecs.AddResource(&world, &worldGrid)
+	ecs.AddResource(world, &worldGrid)
 }
 
 func TestResourceWorld(t *testing.T) {
 	// Get a resource from the world.
-	grid := ecs.GetResource[Grid](&world)
+	grid := ecs.GetResource[Grid](world)
 	_ = grid
 }
 
 func TestResourceMapper(t *testing.T) {
 	// In your system, create a resource mapper.
 	// Store it permanently and reuse it for best performance.
-	gridRes := ecs.NewResource[Grid](&world)
+	gridRes := ecs.NewResource[Grid](world)
 
 	// Access the resource.
 	grid := gridRes.Get()
@@ -40,7 +40,7 @@ func TestResourceMapper(t *testing.T) {
 func TestResourceMapperAddRemove(t *testing.T) {
 	// In your system, create a resource mapper.
 	// Store it permanently and reuse it for best performance.
-	gridRes := ecs.NewResource[Grid](&world)
+	gridRes := ecs.NewResource[Grid](world)
 
 	// Check for existence of the resource.
 	if gridRes.Has() {

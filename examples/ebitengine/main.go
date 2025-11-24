@@ -22,7 +22,7 @@ func main() {
 	game := NewGame()
 
 	// Create a window.
-	s := ecs.GetResource[Settings](&game.World)
+	s := ecs.GetResource[Settings](game.World)
 	ebiten.SetWindowSize(int(s.ScreenWidth), int(s.ScreenHeight))
 	ebiten.SetWindowTitle("Stars!")
 

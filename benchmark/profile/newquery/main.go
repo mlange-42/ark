@@ -34,10 +34,10 @@ func run(rounds, iters int) {
 	for range rounds {
 		world := ecs.NewWorld(1024)
 
-		mapper := ecs.NewMap2[position, velocity](&world)
+		mapper := ecs.NewMap2[position, velocity](world)
 		mapper.NewBatchFn(100, nil)
 
-		filter := ecs.NewFilter2[position, velocity](&world)
+		filter := ecs.NewFilter2[position, velocity](world)
 		for range iters {
 			query := filter.Query()
 			query.Close()

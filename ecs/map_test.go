@@ -8,13 +8,13 @@ import (
 func TestMap(t *testing.T) {
 	w := NewWorld(1024)
 
-	Observe(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnSetComponents).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnCreateEntity).Do(func(_ Entity) {}).Register(w)
+	Observe(OnSetComponents).Do(func(_ Entity) {}).Register(w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(w)
 
-	posMap := NewMap[Position](&w)
-	velMap := NewMap[Velocity](&w)
+	posMap := NewMap[Position](w)
+	velMap := NewMap[Velocity](w)
 
 	e1 := w.NewEntity()
 
@@ -76,7 +76,7 @@ func TestMap(t *testing.T) {
 func TestMapNewEntity(t *testing.T) {
 	w := NewWorld(1024)
 
-	posMap := NewMap[Position](&w)
+	posMap := NewMap[Position](w)
 
 	e := posMap.NewEntity(&Position{X: 1, Y: 2})
 
@@ -88,11 +88,11 @@ func TestMapNewBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	Observe(OnCreateEntity).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnCreateEntity).Do(func(_ Entity) {}).Register(w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(w)
 
-	mapper := NewMap[CompA](&w)
+	mapper := NewMap[CompA](w)
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{})
@@ -100,7 +100,7 @@ func TestMapNewBatch(t *testing.T) {
 	w.RemoveEntity(w.NewEntity())
 	mapper.NewBatch(n*2, &CompA{})
 
-	filter := NewFilter1[CompA](&w)
+	filter := NewFilter1[CompA](w)
 	query := filter.Query()
 	cnt := 0
 	var lastEntity Entity
@@ -117,11 +117,11 @@ func TestMapNewBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	Observe(OnCreateEntity).With(C[Heading]()).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(&w)
-	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(&w)
+	Observe(OnCreateEntity).With(C[Heading]()).Do(func(_ Entity) {}).Register(w)
+	Observe(OnAddRelations).Do(func(_ Entity) {}).Register(w)
+	Observe(OnRemoveRelations).Do(func(_ Entity) {}).Register(w)
 
-	mapper := NewMap[CompA](&w)
+	mapper := NewMap[CompA](w)
 
 	for range n {
 		_ = mapper.NewEntity(&CompA{})
@@ -134,7 +134,7 @@ func TestMapNewBatchFn(t *testing.T) {
 	})
 	expectFalse(t, w.IsLocked())
 
-	filter := NewFilter1[CompA](&w)
+	filter := NewFilter1[CompA](w)
 	query := filter.Query()
 	cnt := 0
 	var lastEntity Entity
@@ -153,9 +153,9 @@ func TestMapAddBatch(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	mapper := NewMap[CompA](&w)
-	posMap := NewMap[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	mapper := NewMap[CompA](w)
+	posMap := NewMap[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -168,10 +168,10 @@ func TestMapAddBatch(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	mapper.AddBatch(filter.Batch(), &CompA{})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -195,9 +195,9 @@ func TestMapAddBatchFn(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	mapper := NewMap[CompA](&w)
-	posMap := NewMap[Position](&w)
-	posVelMap := NewMap2[Position, Velocity](&w)
+	mapper := NewMap[CompA](w)
+	posMap := NewMap[Position](w)
+	posVelMap := NewMap2[Position, Velocity](w)
 
 	cnt := 1
 	posMap.NewBatchFn(n, func(entity Entity, pos *Position) {
@@ -211,14 +211,14 @@ func TestMapAddBatchFn(t *testing.T) {
 	})
 	expectEqual(t, 2*n+1, cnt)
 
-	filter := NewFilter1[Position](&w)
+	filter := NewFilter1[Position](w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA) {
 		a.X = float64(cnt)
 		cnt++
 	})
 
-	filter2 := NewFilter1[CompA](&w)
+	filter2 := NewFilter1[CompA](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -249,8 +249,8 @@ func TestMapSliceComponent(t *testing.T) {
 	n := 12
 	w := NewWorld(8)
 
-	mapper := NewMap[CompA](&w)
-	sliceMap := NewMap[SliceComp](&w)
+	mapper := NewMap[CompA](w)
+	sliceMap := NewMap[SliceComp](w)
 
 	cnt := 0
 	sliceMap.NewBatchFn(n, func(entity Entity, sl *SliceComp) {
@@ -259,14 +259,14 @@ func TestMapSliceComponent(t *testing.T) {
 	})
 	expectEqual(t, n, cnt)
 
-	filter := NewFilter1[SliceComp](&w)
+	filter := NewFilter1[SliceComp](w)
 	cnt = 0
 	mapper.AddBatchFn(filter.Batch(), func(entity Entity, a *CompA) {
 		a.X = float64(cnt)
 		cnt++
 	})
 
-	filter2 := NewFilter1[SliceComp](&w)
+	filter2 := NewFilter1[SliceComp](w)
 	query := filter2.Query()
 	cnt = 0
 	for query.Next() {
@@ -280,7 +280,7 @@ func TestMapSliceComponent(t *testing.T) {
 func TestMapRelation(t *testing.T) {
 	w := NewWorld(32)
 
-	childMap := NewMap[ChildOf](&w)
+	childMap := NewMap[ChildOf](w)
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
@@ -324,13 +324,13 @@ func TestMapRelationBatch(t *testing.T) {
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 
-	mapper := NewMap3[Position, Velocity, ChildOf](&w)
-	childMap := NewMap[ChildOf](&w)
+	mapper := NewMap3[Position, Velocity, ChildOf](w)
+	childMap := NewMap[ChildOf](w)
 
 	mapper.NewBatch(n, &Position{}, &Velocity{}, &ChildOf{}, RelIdx(2, parent1))
 	mapper.NewBatch(n, &Position{}, &Velocity{}, &ChildOf{}, RelIdx(2, parent2))
 
-	filter := NewFilter1[ChildOf](&w)
+	filter := NewFilter1[ChildOf](w)
 
 	childMap.SetRelationBatch(filter.Batch(RelIdx(0, parent2)), parent3, func(entity Entity) {
 		expectEqual(t, parent3, childMap.GetRelation(entity))
@@ -357,18 +357,18 @@ func TestMapAddRelationBatch(t *testing.T) {
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
 
-	obs := Observe(OnAddRelations).For(C[ChildOf]()).Do(func(e Entity) {}).Register(&w)
+	obs := Observe(OnAddRelations).For(C[ChildOf]()).Do(func(e Entity) {}).Register(w)
 
-	childMap := NewMap[ChildOf](&w)
+	childMap := NewMap[ChildOf](w)
 
 	childMap.NewBatch(n, &ChildOf{}, parent1)
 
-	obs.Unregister(&w)
-	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(e Entity) {}).Register(&w)
+	obs.Unregister(w)
+	Observe(OnAddRelations).For(C[ChildOf2]()).Do(func(e Entity) {}).Register(w)
 
 	childMap.NewBatch(n, &ChildOf{}, parent2)
 
-	filter := NewFilter1[ChildOf](&w)
+	filter := NewFilter1[ChildOf](w)
 	query := filter.Query(RelIdx(0, parent1))
 	cnt := 0
 	for query.Next() {
@@ -386,7 +386,7 @@ func TestMapAddRelationBatch(t *testing.T) {
 
 func BenchmarkMap1Get_1000(b *testing.B) {
 	w := NewWorld()
-	mapper := NewMap1[Position](&w)
+	mapper := NewMap1[Position](w)
 
 	entities := make([]Entity, 0, 1000)
 	mapper.NewBatchFn(1000, func(e Entity, p *Position) {
@@ -409,7 +409,7 @@ func BenchmarkMap1Get_1000(b *testing.B) {
 
 func BenchmarkMap2Get_1000(b *testing.B) {
 	w := NewWorld()
-	mapper := NewMap2[CompA, CompB](&w)
+	mapper := NewMap2[CompA, CompB](w)
 
 	entities := make([]Entity, 0, 1000)
 	mapper.NewBatchFn(1000, func(e Entity, ca *CompA, cb *CompB) {
@@ -434,7 +434,7 @@ func BenchmarkMap2Get_1000(b *testing.B) {
 
 func BenchmarkMap4Get_1000(b *testing.B) {
 	w := NewWorld()
-	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+	mapper := NewMap4[CompA, CompB, CompC, CompD](w)
 
 	entities := make([]Entity, 0, 1000)
 	mapper.NewBatchFn(1000, func(e Entity, ca *CompA, cb *CompB, cc *CompC, cd *CompD) {
@@ -463,7 +463,7 @@ func BenchmarkMap4Get_1000(b *testing.B) {
 
 func BenchmarkMap1HasAll_1000(b *testing.B) {
 	w := NewWorld()
-	mapper := NewMap1[Position](&w)
+	mapper := NewMap1[Position](w)
 
 	entities := make([]Entity, 0, 1000)
 	mapper.NewBatchFn(1000, func(e Entity, p *Position) {
@@ -486,7 +486,7 @@ func BenchmarkMap1HasAll_1000(b *testing.B) {
 
 func BenchmarkMap2HasAll_1000(b *testing.B) {
 	w := NewWorld()
-	mapper := NewMap2[CompA, CompB](&w)
+	mapper := NewMap2[CompA, CompB](w)
 
 	entities := make([]Entity, 0, 1000)
 	mapper.NewBatchFn(1000, func(e Entity, ca *CompA, cb *CompB) {
@@ -509,7 +509,7 @@ func BenchmarkMap2HasAll_1000(b *testing.B) {
 
 func BenchmarkMap4HasAll_1000(b *testing.B) {
 	w := NewWorld()
-	mapper := NewMap4[CompA, CompB, CompC, CompD](&w)
+	mapper := NewMap4[CompA, CompB, CompC, CompD](w)
 
 	entities := make([]Entity, 0, 1000)
 	mapper.NewBatchFn(1000, func(e Entity, ca *CompA, cb *CompB, cc *CompC, cd *CompD) {
@@ -532,7 +532,7 @@ func BenchmarkMap4HasAll_1000(b *testing.B) {
 
 func BenchmarkMap1Set_1000(b *testing.B) {
 	w := NewWorld()
-	mapper := NewMap1[Position](&w)
+	mapper := NewMap1[Position](w)
 
 	entities := make([]Entity, 0, 1000)
 	mapper.NewBatchFn(1000, func(e Entity, p *Position) {
@@ -555,7 +555,7 @@ func BenchmarkMap1Set_1000(b *testing.B) {
 
 func BenchmarkMap1SetDeref_1000(b *testing.B) {
 	w := NewWorld()
-	mapper := NewMap1[Position](&w)
+	mapper := NewMap1[Position](w)
 
 	entities := make([]Entity, 0, 1000)
 	mapper.NewBatchFn(1000, func(e Entity, p *Position) {

@@ -16,7 +16,7 @@ func benchesOther() []benchmark.Benchmark {
 }
 
 func newWorld(b *testing.B) {
-	var w ecs.World
+	var w *ecs.World
 	for b.Loop() {
 		w = ecs.NewWorld()
 	}
@@ -39,12 +39,12 @@ func resetWorld(b *testing.B) {
 
 func componentID(b *testing.B) {
 	w := ecs.NewWorld()
-	origID := ecs.ComponentID[comp1](&w)
+	origID := ecs.ComponentID[comp1](w)
 
 	var id ecs.ID
 
 	for b.Loop() {
-		id = ecs.ComponentID[comp1](&w)
+		id = ecs.ComponentID[comp1](w)
 	}
 
 	if id != origID {

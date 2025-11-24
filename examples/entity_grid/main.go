@@ -22,13 +22,13 @@ func main() {
 	// Create a non-ECS grid data structure,
 	// and add it as a resource.
 	grid := NewGrid(15, 20)
-	ecs.AddResource(&world, &grid)
+	ecs.AddResource(world, &grid)
 
 	// Create entities on the grid.
-	createGridEntities(&world, 100)
+	createGridEntities(world, 100)
 
 	// Run a simulation
-	run(&world)
+	run(world)
 }
 
 func run(world *ecs.World) {

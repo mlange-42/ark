@@ -9,15 +9,15 @@ func TestUnsafe(t *testing.T) {
 	w := NewWorld(1024)
 	u := w.Unsafe()
 
-	expectEqual(t, &w, u.world)
+	expectEqual(t, w, u.world)
 }
 
 func TestUnsafeNewEntity(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](&w)
-	velID := ComponentID[Velocity](&w)
+	posID := ComponentID[Position](w)
+	velID := ComponentID[Velocity](w)
 
 	e := u.NewEntity(posID, velID)
 
@@ -29,8 +29,8 @@ func TestUnsafeGet(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](&w)
-	velID := ComponentID[Velocity](&w)
+	posID := ComponentID[Position](w)
+	velID := ComponentID[Velocity](w)
 
 	e := u.NewEntity(posID)
 
@@ -61,9 +61,9 @@ func TestUnsafeRelations(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](&w)
-	childID := ComponentID[ChildOf](&w)
-	child2ID := ComponentID[ChildOf2](&w)
+	posID := ComponentID[Position](w)
+	childID := ComponentID[ChildOf](w)
+	child2ID := ComponentID[ChildOf2](w)
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
@@ -82,8 +82,8 @@ func TestUnsafeAddRemove(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](&w)
-	childID := ComponentID[ChildOf](&w)
+	posID := ComponentID[Position](w)
+	childID := ComponentID[ChildOf](w)
 
 	e1 := w.NewEntity()
 	u.Add(e1, posID)
@@ -131,8 +131,8 @@ func TestUnsafeExchange(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](&w)
-	childID := ComponentID[ChildOf](&w)
+	posID := ComponentID[Position](w)
+	childID := ComponentID[ChildOf](w)
 
 	parent := u.NewEntity()
 	e := u.NewEntity(posID)
@@ -160,8 +160,8 @@ func TestUnsafeIDs(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](&w)
-	velID := ComponentID[Velocity](&w)
+	posID := ComponentID[Position](w)
+	velID := ComponentID[Velocity](w)
 
 	e := u.NewEntity(posID, velID)
 	ids := u.IDs(e)
@@ -206,7 +206,7 @@ func TestUnsafeEntityDump(t *testing.T) {
 
 	//expectEqual(t, w.Ids(e1), []ID{})
 
-	query := NewUnsafeFilter(&w2).Query()
+	query := NewUnsafeFilter(w2).Query()
 	expectEqual(t, query.Count(), 3)
 	query.Close()
 }
@@ -225,7 +225,7 @@ func TestUnsafeEntityDumpEmpty(t *testing.T) {
 	expectTrue(t, w2.Alive(e1))
 	expectTrue(t, w2.Alive(e2))
 
-	query := NewUnsafeFilter(&w2).Query()
+	query := NewUnsafeFilter(w2).Query()
 	expectEqual(t, 2, query.Count())
 	query.Close()
 }

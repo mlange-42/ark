@@ -48,7 +48,7 @@ func entitiesIsZero2(b *testing.B) {
 
 func entitiesCreate1000(b *testing.B) {
 	w := ecs.NewWorld()
-	filter := ecs.NewFilter0(&w)
+	filter := ecs.NewFilter0(w)
 
 	w.NewEntities(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
@@ -65,8 +65,8 @@ func entitiesCreate1000(b *testing.B) {
 
 func entitiesCreateFn1Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter0(&w)
+	builder := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter0(w)
 
 	builder.NewBatchFn(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
@@ -83,8 +83,8 @@ func entitiesCreateFn1Comp1000(b *testing.B) {
 
 func entitiesCreate1Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter0(&w)
+	builder := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter0(w)
 
 	builder.NewBatchFn(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
@@ -102,8 +102,8 @@ func entitiesCreate1Comp1000(b *testing.B) {
 
 func entitiesCreateFn5Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
-	filter := ecs.NewFilter0(&w)
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
+	filter := ecs.NewFilter0(w)
 
 	builder.NewBatchFn(1000, nil)
 	w.RemoveEntities(filter.Batch(), nil)
@@ -120,8 +120,8 @@ func entitiesCreateFn5Comp1000(b *testing.B) {
 
 func entitiesCreate5Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
-	filter := ecs.NewFilter0(&w)
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
+	filter := ecs.NewFilter0(w)
 
 	c1 := comp1{}
 	c2 := comp2{}
@@ -163,7 +163,7 @@ func entitiesRemove1000(b *testing.B) {
 
 func entitiesRemove1Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap1[comp1](&w)
+	builder := ecs.NewMap1[comp1](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 
@@ -183,7 +183,7 @@ func entitiesRemove1Comp1000(b *testing.B) {
 
 func entitiesRemove5Comp1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 

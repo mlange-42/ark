@@ -29,17 +29,17 @@ func main() {
 		Do(func(e ecs.Entity, pos *Position, vel *Velocity) {
 			fmt.Printf("Create entity with %#v, %#v\n", *pos, *vel)
 		}).
-		Register(&world)
+		Register(world)
 
 	// Register an observer for entity removal, observing Position and Velocity
 	ecs.Observe2[Position, Velocity](ecs.OnRemoveEntity).
 		Do(func(e ecs.Entity, pos *Position, vel *Velocity) {
 			fmt.Printf("Remove entity with %#v, %#v\n", *pos, *vel)
 		}).
-		Register(&world)
+		Register(world)
 
 	// A mapper for creating entities with Position and Velocity
-	builder := ecs.NewMap2[Position, Velocity](&world)
+	builder := ecs.NewMap2[Position, Velocity](world)
 
 	// Create an entity with Position and Velocity
 	entity := builder.NewEntity(

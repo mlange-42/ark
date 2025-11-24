@@ -7,7 +7,7 @@ import (
 func TestResource(t *testing.T) {
 	w := NewWorld(1024)
 	var get Resource[Grid]
-	get = get.New(&w)
+	get = get.New(w)
 
 	expectFalse(t, get.Has())
 	gridResource := NewGrid(100, 200)
@@ -40,9 +40,9 @@ func TestResourceInterface(t *testing.T) {
 	w := NewWorld()
 
 	res := NewRes()
-	AddResource(&w, &res)
+	AddResource(w, &res)
 
-	resOut := *GetResource[ResInterface](&w)
+	resOut := *GetResource[ResInterface](w)
 
 	expectNotNil(t, resOut)
 	expectEqual(t, "test", resOut.MyMethod())

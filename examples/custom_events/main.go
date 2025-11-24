@@ -28,10 +28,10 @@ func main() {
 		Do(func(e ecs.Entity, pos *Position) {
 			fmt.Printf("Entity teleported to: %#v\n", *pos)
 		}).
-		Register(&world)
+		Register(world)
 
 	// Create an entity with Position
-	builder := ecs.NewMap1[Position](&world)
+	builder := ecs.NewMap1[Position](world)
 	entity := builder.NewEntity(&Position{X: 0, Y: 0})
 
 	// Create a custom event for teleports

@@ -21,7 +21,7 @@ type Heading struct {
 func TestWorldStats(t *testing.T) {
 	world := ecs.NewWorld()
 
-	builder := ecs.NewMap2[Position, Heading](&world)
+	builder := ecs.NewMap2[Position, Heading](world)
 	builder.NewBatchFn(100, nil)
 
 	stats := world.Stats()

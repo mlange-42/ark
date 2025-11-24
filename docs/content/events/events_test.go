@@ -8,7 +8,7 @@ import (
 )
 
 var world = ecs.NewWorld()
-var builder = ecs.NewMap1[Position](&world)
+var builder = ecs.NewMap1[Position](world)
 
 var entity = builder.NewEntity(&Position{})
 var uiElement = world.NewEntity()
@@ -33,10 +33,10 @@ func TestEventsBasic(t *testing.T) {
 		Do(func(e ecs.Entity, pos *Position) {
 			fmt.Printf("%#v\n", pos)
 		}).
-		Register(&world)
+		Register(world)
 
 	// Create an entity that triggers the observer's callback
-	builder := ecs.NewMap1[Position](&world)
+	builder := ecs.NewMap1[Position](world)
 	builder.NewEntity(&Position{X: 10, Y: 11})
 }
 
@@ -54,12 +54,12 @@ func TestCombineObservers(t *testing.T) {
 	// Observer for adding components
 	ecs.Observe1[Position](ecs.OnAddComponents).
 		Do(func(e ecs.Entity, pos *Position) { fn(ecs.OnAddComponents, e, pos) }).
-		Register(&world)
+		Register(world)
 
 	// Observer for removing components
 	ecs.Observe1[Position](ecs.OnRemoveComponents).
 		Do(func(e ecs.Entity, pos *Position) { fn(ecs.OnRemoveComponents, e, pos) }).
-		Register(&world)
+		Register(world)
 }
 
 func TestObserveCreate(t *testing.T) {
@@ -130,7 +130,7 @@ func TestEventEmit(t *testing.T) {
 	// Add an observer for the event type
 	ecs.Observe1[Position](OnTeleport).
 		Do(func(e ecs.Entity, p *Position) { /*...*/ }).
-		Register(&world)
+		Register(world)
 
 	// Define the event
 	event := world.Event(OnTeleport).

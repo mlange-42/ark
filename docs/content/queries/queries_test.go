@@ -24,7 +24,7 @@ type Altitude struct {
 
 func TestQueriesBasic(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter2[Position, Velocity](&world)
+	filter := ecs.NewFilter2[Position, Velocity](world)
 	// Obtain a query.
 	query := filter.Query()
 	// Iterate the query.
@@ -37,7 +37,7 @@ func TestQueriesBasic(t *testing.T) {
 
 func TestQueriesLock(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter1[Altitude](&world)
+	filter := ecs.NewFilter1[Altitude](world)
 	// Create a slice to collect entities.
 	// Ideally, store this permanently for re-use.
 	toRemove := []ecs.Entity{}
@@ -62,7 +62,7 @@ func TestQueriesLock(t *testing.T) {
 
 func TestQueriesWith(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter1[Position](&world).
+	filter := ecs.NewFilter1[Position](world).
 		With(ecs.C[Velocity](), ecs.C[Altitude]())
 
 	// Obtain a query.
@@ -72,7 +72,7 @@ func TestQueriesWith(t *testing.T) {
 
 func TestQueriesWith2(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter1[Position](&world).
+	filter := ecs.NewFilter1[Position](world).
 		With(ecs.C[Velocity]()).
 		With(ecs.C[Altitude]())
 
@@ -83,7 +83,7 @@ func TestQueriesWith2(t *testing.T) {
 
 func TestQueriesWithout(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter1[Position](&world).
+	filter := ecs.NewFilter1[Position](world).
 		Without(ecs.C[Velocity](), ecs.C[Altitude]())
 
 	// Obtain a query.
@@ -93,7 +93,7 @@ func TestQueriesWithout(t *testing.T) {
 
 func TestQueriesWithout2(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter1[Position](&world).
+	filter := ecs.NewFilter1[Position](world).
 		Without(ecs.C[Velocity]()).
 		Without(ecs.C[Altitude]())
 
@@ -104,7 +104,7 @@ func TestQueriesWithout2(t *testing.T) {
 
 func TestQueriesExclusive(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter1[Position](&world).
+	filter := ecs.NewFilter1[Position](world).
 		Exclusive()
 
 	// Obtain a query.
@@ -114,9 +114,9 @@ func TestQueriesExclusive(t *testing.T) {
 
 func TestQueriesOptional(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter2[Position, Velocity](&world)
+	filter := ecs.NewFilter2[Position, Velocity](world)
 	// Create a component mapper.
-	altMap := ecs.NewMap[Altitude](&world)
+	altMap := ecs.NewMap[Altitude](world)
 
 	// Obtain a query.
 	query := filter.Query()
@@ -134,7 +134,7 @@ func TestQueriesOptional(t *testing.T) {
 
 func TestQueriesCached(t *testing.T) {
 	// Create a filter.
-	filter := ecs.NewFilter2[Position, Velocity](&world).
+	filter := ecs.NewFilter2[Position, Velocity](world).
 		Register() // Register it to the cache.
 
 	// Obtain a query.

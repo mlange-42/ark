@@ -74,7 +74,7 @@ func main() {
 
 	// Create a component mapper
 	// Save mappers permanently and re-use them for best performance
-	mapper := ecs.NewMap2[Position, Velocity](&world)
+	mapper := ecs.NewMap2[Position, Velocity](world)
 
 	// Create entities with components
 	for range 1000 {
@@ -86,7 +86,7 @@ func main() {
 
 	// Create a filter
 	// Save filters permanently and re-use them for best performance
-	filter := ecs.NewFilter2[Position, Velocity](&world)
+	filter := ecs.NewFilter2[Position, Velocity](world)
 
 	// Time loop
 	for range 5000 {

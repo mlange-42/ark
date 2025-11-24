@@ -31,8 +31,8 @@ func benchesComponents() []benchmark.Benchmark {
 
 func componentsAddFn1_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	mapper := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter1[comp1](&w)
+	mapper := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter1[comp1](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	w.NewEntities(1000, func(entity ecs.Entity) {
@@ -57,8 +57,8 @@ func componentsAddFn1_1000(b *testing.B) {
 
 func componentsAdd1_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	mapper := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter1[comp1](&w)
+	mapper := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter1[comp1](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	w.NewEntities(1000, func(entity ecs.Entity) {
@@ -85,8 +85,8 @@ func componentsAdd1_1000(b *testing.B) {
 
 func componentsAddFn5_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
-	filter := ecs.NewFilter5[comp1, comp2, comp3, comp4, comp5](&w)
+	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
+	filter := ecs.NewFilter5[comp1, comp2, comp3, comp4, comp5](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	w.NewEntities(1000, func(entity ecs.Entity) {
@@ -111,8 +111,8 @@ func componentsAddFn5_1000(b *testing.B) {
 
 func componentsAdd5_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
-	filter := ecs.NewFilter5[comp1, comp2, comp3, comp4, comp5](&w)
+	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
+	filter := ecs.NewFilter5[comp1, comp2, comp3, comp4, comp5](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	w.NewEntities(1000, func(entity ecs.Entity) {
@@ -143,9 +143,9 @@ func componentsAdd5_1000(b *testing.B) {
 
 func componentsAddFn1to5_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap5[comp2, comp3, comp4, comp5, comp6](&w)
-	mapper := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter1[comp1](&w)
+	builder := ecs.NewMap5[comp2, comp3, comp4, comp5, comp6](w)
+	mapper := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter1[comp1](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp2, b *comp3, c *comp4, d *comp5, e *comp6) {
@@ -170,9 +170,9 @@ func componentsAddFn1to5_1000(b *testing.B) {
 
 func componentsAdd1to5_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap5[comp2, comp3, comp4, comp5, comp6](&w)
-	mapper := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter1[comp1](&w)
+	builder := ecs.NewMap5[comp2, comp3, comp4, comp5, comp6](w)
+	mapper := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter1[comp1](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp2, b *comp3, c *comp4, d *comp5, e *comp6) {
@@ -199,8 +199,8 @@ func componentsAdd1to5_1000(b *testing.B) {
 
 func componentsRemove1_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	mapper := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter0(&w)
+	mapper := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter0(w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	mapper.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
@@ -225,8 +225,8 @@ func componentsRemove1_1000(b *testing.B) {
 
 func componentsRemove5_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
-	filter := ecs.NewFilter0(&w)
+	mapper := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
+	filter := ecs.NewFilter0(w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	mapper.NewBatchFn(1000, func(entity ecs.Entity, a *comp1, b *comp2, c *comp3, d *comp4, e *comp5) {
@@ -251,9 +251,9 @@ func componentsRemove5_1000(b *testing.B) {
 
 func componentsRemove1of5_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](&w)
-	mapper := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter0(&w)
+	builder := ecs.NewMap5[comp1, comp2, comp3, comp4, comp5](w)
+	mapper := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter0(w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1, b *comp2, c *comp3, d *comp4, e *comp5) {
@@ -278,10 +278,10 @@ func componentsRemove1of5_1000(b *testing.B) {
 
 func componentsExchangeFn1_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	ex1 := ecs.NewExchange1[comp1](&w).Removes(ecs.C[comp2]())
-	ex2 := ecs.NewExchange1[comp2](&w).Removes(ecs.C[comp1]())
-	builder := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter1[comp2](&w)
+	ex1 := ecs.NewExchange1[comp1](w).Removes(ecs.C[comp2]())
+	ex2 := ecs.NewExchange1[comp2](w).Removes(ecs.C[comp1]())
+	builder := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter1[comp2](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
@@ -306,10 +306,10 @@ func componentsExchangeFn1_1000(b *testing.B) {
 
 func componentsExchange1_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	ex1 := ecs.NewExchange1[comp1](&w).Removes(ecs.C[comp2]())
-	ex2 := ecs.NewExchange1[comp2](&w).Removes(ecs.C[comp1]())
-	builder := ecs.NewMap1[comp1](&w)
-	filter := ecs.NewFilter1[comp2](&w)
+	ex1 := ecs.NewExchange1[comp1](w).Removes(ecs.C[comp2]())
+	ex2 := ecs.NewExchange1[comp2](w).Removes(ecs.C[comp1]())
+	builder := ecs.NewMap1[comp1](w)
+	filter := ecs.NewFilter1[comp2](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1) {
@@ -336,10 +336,10 @@ func componentsExchange1_1000(b *testing.B) {
 
 func componentsExchangeFn1of5_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	ex1 := ecs.NewExchange1[comp1](&w).Removes(ecs.C[comp2]())
-	ex2 := ecs.NewExchange1[comp2](&w).Removes(ecs.C[comp1]())
-	builder := ecs.NewMap5[comp1, comp3, comp4, comp5, comp6](&w)
-	filter := ecs.NewFilter1[comp2](&w)
+	ex1 := ecs.NewExchange1[comp1](w).Removes(ecs.C[comp2]())
+	ex2 := ecs.NewExchange1[comp2](w).Removes(ecs.C[comp1]())
+	builder := ecs.NewMap5[comp1, comp3, comp4, comp5, comp6](w)
+	filter := ecs.NewFilter1[comp2](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1, b *comp3, c *comp4, d *comp5, e *comp6) {
@@ -364,10 +364,10 @@ func componentsExchangeFn1of5_1000(b *testing.B) {
 
 func componentsExchange1of5_1000(b *testing.B) {
 	w := ecs.NewWorld()
-	ex1 := ecs.NewExchange1[comp1](&w).Removes(ecs.C[comp2]())
-	ex2 := ecs.NewExchange1[comp2](&w).Removes(ecs.C[comp1]())
-	builder := ecs.NewMap5[comp1, comp3, comp4, comp5, comp6](&w)
-	filter := ecs.NewFilter1[comp2](&w)
+	ex1 := ecs.NewExchange1[comp1](w).Removes(ecs.C[comp2]())
+	ex2 := ecs.NewExchange1[comp2](w).Removes(ecs.C[comp1]())
+	builder := ecs.NewMap5[comp1, comp3, comp4, comp5, comp6](w)
+	filter := ecs.NewFilter1[comp2](w)
 
 	entities := make([]ecs.Entity, 0, 1000)
 	builder.NewBatchFn(1000, func(entity ecs.Entity, a *comp1, b *comp3, c *comp4, d *comp5, e *comp6) {
