@@ -398,6 +398,7 @@ func (s *storage) createEntity(table tableID) (Entity, uint32) {
 		s.isTarget = append(s.isTarget, false)
 	} else {
 		s.entities[entity.id] = entityIndex{table: table, row: idx}
+		s.isTarget[entity.id] = false
 	}
 	return entity, idx
 }
@@ -419,6 +420,7 @@ func (s *storage) createEntities(table *table, count int) {
 			len++
 		} else {
 			s.entities[entity.id] = entityIndex{table: table.id, row: index}
+			s.isTarget[entity.id] = false
 		}
 	}
 }
