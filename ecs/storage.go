@@ -523,6 +523,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				}
 			}
 			if !foundTarget {
+				newRelations = newRelations[:0]
 				continue
 			}
 

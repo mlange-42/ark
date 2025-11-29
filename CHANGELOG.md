@@ -12,7 +12,8 @@
 
 ### Bugfixes
 
-- Resets relation target tracking on entity creation (#359)
+- Fixes resetting relation target tracking on entity creation (#359)
+- Fixes resetting relations in archetype cleanup (#360)
 
 ### Migration guide
 
