@@ -10,6 +10,10 @@
 
 - Provides binary serialization and de-serialization of entities for networking (#453)
 
+### Performance
+
+- Optimizes removal of relation target entities from archetypes (#361)
+
 ### Bugfixes
 
 - Fixes resetting relation target tracking on entity creation (#359)
