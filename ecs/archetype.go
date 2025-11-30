@@ -219,6 +219,8 @@ func (a *archetype) FreeTable(table *table) {
 	a.freeTables = append(a.freeTables, table.id)
 	table.isFree = true
 
+	// If there is only one relation, the resp. relationTables
+	// entry is removed anyway.
 	if a.numRelations <= 1 {
 		return
 	}
