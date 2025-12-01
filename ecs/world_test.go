@@ -461,6 +461,9 @@ func TestWorldReset(t *testing.T) {
 	e1 := u.NewEntityRel([]ID{posID, relID}, RelID(relID, target1))
 	_ = u.NewEntityRel([]ID{posID, relID}, RelID(relID, target2))
 
+	expectEqual(t, 2, len(world.storage.archetypes[3].relationTables))
+	expectEqual(t, 2, len(world.storage.archetypes[3].targetTables))
+
 	world.RemoveEntity(e1)
 	world.RemoveEntity(target1)
 
@@ -471,6 +474,7 @@ func TestWorldReset(t *testing.T) {
 	expectEqual(t, 0, world.storage.entityPool.Len())
 	expectEqual(t, 2, len(world.storage.entities))
 	expectEqual(t, 2, len(world.storage.isTarget))
+	expectEqual(t, 0, len(world.storage.archetypes[3].targetTables))
 
 	query := NewUnsafeFilter(world).Query()
 	expectEqual(t, 0, query.Count())

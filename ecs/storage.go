@@ -511,20 +511,19 @@ func (s *storage) cleanupArchetypes(target Entity) {
 	newRelations := s.slices.relationsCleanup
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
-		ln := len(archetype.tables.tables)
-		for i := ln - 1; i >= 0; i-- {
-			table := &s.tables[archetype.tables.tables[i]]
 
-			foundTarget := false
+		tables, ok := archetype.targetTables[target.id]
+		if !ok {
+			continue
+		}
+		ln := len(tables.tables)
+		for i := ln - 1; i >= 0; i-- {
+			table := &s.tables[tables.tables[i]]
+
 			for _, rel := range table.relationIDs {
 				if rel.target.id == target.id {
 					newRelations = append(newRelations, relationID{component: rel.component, target: Entity{}})
-					foundTarget = true
 				}
-			}
-			if !foundTarget {
-				newRelations = newRelations[:0]
-				continue
 			}
 
 			if table.Len() > 0 {

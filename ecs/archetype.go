@@ -25,12 +25,13 @@ type archetype struct {
 }
 
 type archetypeData struct {
-	components []ID      // components IDs of the archetype in arbitrary order
-	itemSizes  []uint32  // item size per component index
-	isRelation []bool    // whether columns are relations components, indexed by column index
-	freeTables []tableID // all inactive/free tables
-	zeroValue  []byte    // zero value with the size of the largest item type, for fast zeroing
-	node       nodeID    // Node ID of the archetype
+	components   []ID                   // components IDs of the archetype in arbitrary order
+	itemSizes    []uint32               // item size per component index
+	isRelation   []bool                 // whether columns are relations components, indexed by column index
+	freeTables   []tableID              // all inactive/free tables
+	zeroValue    []byte                 // zero value with the size of the largest item type, for fast zeroing
+	targetTables map[entityID]*tableIDs // all tables per target for cleanup
+	node         nodeID                 // Node ID of the archetype
 }
 
 // tableIDs helper for faster search and remove operations.
@@ -118,6 +119,10 @@ func newArchetype(
 			numRelations++
 		}
 	}
+	var targetTables map[entityID]*tableIDs
+	if numRelations > 0 {
+		targetTables = map[entityID]*tableIDs{}
+	}
 	archTables := newTableIDs(tables...)
 	return archetype{
 			id:             id,
@@ -127,11 +132,12 @@ func newArchetype(
 			numRelations:   numRelations,
 			relationTables: relationTables,
 		}, archetypeData{
-			node:       node,
-			components: components,
-			itemSizes:  sizes,
-			isRelation: isRelation,
-			zeroValue:  zeroValue,
+			node:         node,
+			components:   components,
+			targetTables: targetTables,
+			itemSizes:    sizes,
+			isRelation:   isRelation,
+			zeroValue:    zeroValue,
 		}
 }
 
@@ -213,6 +219,8 @@ func (a *archetype) FreeTable(table *table) {
 	a.freeTables = append(a.freeTables, table.id)
 	table.isFree = true
 
+	// If there is only one relation, the resp. relationTables
+	// entry is removed anyway.
 	if a.numRelations <= 1 {
 		return
 	}
@@ -223,6 +231,9 @@ func (a *archetype) FreeTable(table *table) {
 		for _, v := range m {
 			_ = v.Remove(table.id)
 		}
+	}
+	for _, v := range a.targetTables {
+		_ = v.Remove(table.id)
 	}
 }
 
@@ -239,6 +250,7 @@ func (a *archetype) FreeAllTables(storage *storage) {
 	for i := range a.relationTables {
 		a.relationTables[i] = map[entityID]*tableIDs{}
 	}
+	a.targetTables = map[entityID]*tableIDs{}
 }
 
 // AddTable adds the given table to the archetype's list of tables,
@@ -263,6 +275,15 @@ func (a *archetype) AddTable(table *table) {
 			tables := newTableIDs(table.id)
 			relations[target.id] = &tables
 		}
+
+		if tables, ok := a.targetTables[target.id]; ok {
+			if _, ok := tables.indices[table.id]; !ok {
+				tables.Append(table.id)
+			}
+		} else {
+			tables := newTableIDs(table.id)
+			a.targetTables[target.id] = &tables
+		}
 	}
 }
 
@@ -274,6 +295,7 @@ func (a *archetype) RemoveTarget(entity Entity) {
 		}
 		delete(a.relationTables[i], entity.id)
 	}
+	delete(a.targetTables, entity.id)
 }
 
 // Reset the archetype. Clears and frees all tables.
