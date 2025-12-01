@@ -12,12 +12,12 @@
 
 ### Performance
 
-- Optimizes removal of relation target entities from archetypes (#361)
+- Optimizes removal of relation target entities from archetypes (#461)
 
 ### Bugfixes
 
-- Fixes resetting relation target tracking on entity creation (#359)
-- Fixes resetting relations in archetype cleanup (#360)
+- Fixes resetting relation target tracking on entity creation (#459)
+- Fixes resetting relations in archetype cleanup (#460)
 
 ### Migration guide
 
