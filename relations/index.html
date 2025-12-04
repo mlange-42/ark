@@ -1,0 +1,4018 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon shortcut" href="/ark/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/ark/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/ark/favicon-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
+<link rel="icon" href="/ark/favicon-16x16.png" type="image/png" sizes="16x16" />
+<link rel="icon" href="/ark/favicon-32x32.png" type="image/png" sizes="32x32" />
+<link rel="apple-touch-icon" href="/ark/apple-touch-icon.png" sizes="180x180" />
+<link fetchpriority="low" href="/ark/site.webmanifest" rel="manifest" />
+<title>Entity relationships – Ark</title>
+  <meta name="description" content="Entity relationships usage and details." /><link rel="canonical" href="https://mlange-42.github.io/ark/relations/" itemprop="url" />
+
+<meta property="og:title" content="Entity relationships" />
+<meta property="og:description" content="Entity relationships usage and details." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mlange-42.github.io/ark/relations/" /><meta property="og:image" content="https://mlange-42.github.io/ark/images/social.png"/><meta property="article:section" content="" />
+
+
+
+  <meta itemprop="name" content="Entity relationships">
+  <meta itemprop="description" content="Entity relationships usage and details.">
+  <meta itemprop="wordCount" content="1681">
+  <meta itemprop="image" content="https://mlange-42.github.io/ark/images/social.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mlange-42.github.io/ark/images/social.png">
+  <meta name="twitter:title" content="Entity relationships">
+  <meta name="twitter:description" content="Entity relationships usage and details.">
+
+    <link rel="preload" href="/ark/css/compiled/main.min.0d60cbb74d97ccaea83c3ea6d973c5961d69642b38588069a503bc04e284cbc7.css" as="style" integrity="sha256-DWDLt02XzK6oPD6m2XPFlh1pZCs4WIBppQO8BOKEy8c=" />
+    <link href="/ark/css/compiled/main.min.0d60cbb74d97ccaea83c3ea6d973c5961d69642b38588069a503bc04e284cbc7.css" rel="stylesheet" integrity="sha256-DWDLt02XzK6oPD6m2XPFlh1pZCs4WIBppQO8BOKEy8c=" />
+
+
+
+  <link href="/ark/css/custom.min.6fd4cc57c1768ad52105eb145f6303a62649fe5cd87ce6da5b07411a8645189c.css" rel="stylesheet" integrity="sha256-b9TMV8F2itUhBesUX2MDpiZJ/lzYfObaWwdBGoZFGJw=" />
+
+
+  <script>
+     
+    const defaultTheme = 'system';
+
+    const setDarkTheme = () => {
+      document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = "dark";
+    }
+    const setLightTheme = () => {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.style.colorScheme = "light";
+    }
+
+    if ("color-theme" in localStorage) {
+      localStorage.getItem("color-theme") === "dark" ? setDarkTheme() : setLightTheme();
+    } else {
+      defaultTheme === "dark" ? setDarkTheme() : setLightTheme();
+      if (defaultTheme === "system") {
+        window.matchMedia("(prefers-color-scheme: dark)").matches ? setDarkTheme() : setLightTheme();
+      }
+    }
+  </script>
+
+  
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,100..150,100..1000&display=swap" rel="stylesheet">
+
+</head>
+<body dir="ltr"><div class="nav-container hx-sticky hx-top-0 hx-z-20 hx-w-full hx-bg-transparent print:hx-hidden">
+  <div class="nav-container-blur hx-pointer-events-none hx-absolute hx-z-[-1] hx-h-full hx-w-full hx-bg-white dark:hx-bg-dark hx-shadow-[0_2px_4px_rgba(0,0,0,.02),0_1px_0_rgba(0,0,0,.06)] contrast-more:hx-shadow-[0_0_0_1px_#000] dark:hx-shadow-[0_-1px_0_rgba(255,255,255,.1)_inset] contrast-more:dark:hx-shadow-[0_0_0_1px_#fff]"></div>
+
+  <nav class="hx-mx-auto hx-flex hx-items-center hx-justify-end hx-gap-2 hx-h-16 hx-px-6 hx-max-w-[90rem]">
+    <a class="hx-flex hx-items-center hover:hx-opacity-75 ltr:hx-mr-auto rtl:hx-ml-auto" href="/ark">
+        <img class="hx-block dark:hx-hidden" src="/ark/images/logo-light.svg" alt="Ark" height="20" width="140" />
+        <img class="hx-hidden dark:hx-block" src="/ark/images/logo-dark.svg" alt="Ark" height="20" width="140" />
+    </a><a
+            title="API reference"
+            href="https://pkg.go.dev/github.com/mlange-42/ark"
+            target="_blank" rel="noreferrer"
+            class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-text-gray-600 hover:hx-text-gray-800 dark:hx-text-gray-400 dark:hover:hx-text-gray-200"
+          >
+            <span class="hx-text-center">API reference</span>
+          </a><div class="search-wrapper hx-relative md:hx-w-64">
+  <div class="hx-relative hx-flex hx-items-center hx-text-gray-900 contrast-more:hx-text-gray-800 dark:hx-text-gray-300 contrast-more:dark:hx-text-gray-300">
+    <input
+      placeholder="Search..."
+      class="search-input hx-block hx-w-full hx-appearance-none hx-rounded-lg hx-px-3 hx-py-2 hx-transition-colors hx-text-base hx-leading-tight md:hx-text-sm hx-bg-black/[.05] dark:hx-bg-gray-50/10 focus:hx-bg-white dark:focus:hx-bg-dark placeholder:hx-text-gray-500 dark:placeholder:hx-text-gray-400 contrast-more:hx-border contrast-more:hx-border-current"
+      type="search"
+      value=""
+      spellcheck="false"
+    />
+    <kbd
+      class="hx-absolute hx-my-1.5 hx-select-none ltr:hx-right-1.5 rtl:hx-left-1.5 hx-h-5 hx-rounded hx-bg-white hx-px-1.5 hx-font-mono hx-text-[10px] hx-font-medium hx-text-gray-500 hx-border dark:hx-border-gray-100/20 dark:hx-bg-dark/50 contrast-more:hx-border-current contrast-more:hx-text-current contrast-more:dark:hx-border-current hx-items-center hx-gap-1 hx-transition-opacity hx-pointer-events-none hx-hidden sm:hx-flex"
+    >
+      CTRL K
+    </kbd>
+  </div>
+
+  <div>
+    <ul
+      class="search-results hextra-scrollbar hx-hidden hx-border hx-border-gray-200 hx-bg-white hx-text-gray-100 dark:hx-border-neutral-800 dark:hx-bg-neutral-900 hx-absolute hx-top-full hx-z-20 hx-mt-2 hx-overflow-auto hx-overscroll-contain hx-rounded-xl hx-py-2.5 hx-shadow-xl hx-max-h-[min(calc(50vh-11rem-env(safe-area-inset-bottom)),400px)] md:hx-max-h-[min(calc(100vh-5rem-env(safe-area-inset-bottom)),400px)] hx-inset-x-0 ltr:md:hx-left-auto rtl:md:hx-right-auto contrast-more:hx-border contrast-more:hx-border-gray-900 contrast-more:dark:hx-border-gray-50 hx-w-screen hx-min-h-[100px] hx-max-w-[min(calc(100vw-2rem),calc(100%+20rem))]"
+      style="transition: max-height 0.2s ease 0s;"
+    ></ul>
+  </div>
+</div>
+
+          <a class="hx-p-2 hx-text-current" target="_blank" rel="noreferrer" href="https://github.com/mlange-42/ark" title="GitHub"><svg height=24 fill="currentColor" viewBox="3 3 18 18">
+  <path d="M12 3C7.0275 3 3 7.12937 3 12.2276C3 16.3109 5.57625 19.7597 9.15374 20.9824C9.60374 21.0631 9.77249 20.7863 9.77249 20.5441C9.77249 20.3249 9.76125 19.5982 9.76125 18.8254C7.5 19.2522 6.915 18.2602 6.735 17.7412C6.63375 17.4759 6.19499 16.6569 5.8125 16.4378C5.4975 16.2647 5.0475 15.838 5.80124 15.8264C6.51 15.8149 7.01625 16.4954 7.18499 16.7723C7.99499 18.1679 9.28875 17.7758 9.80625 17.5335C9.885 16.9337 10.1212 16.53 10.38 16.2993C8.3775 16.0687 6.285 15.2728 6.285 11.7432C6.285 10.7397 6.63375 9.9092 7.20749 9.26326C7.1175 9.03257 6.8025 8.08674 7.2975 6.81794C7.2975 6.81794 8.05125 6.57571 9.77249 7.76377C10.4925 7.55615 11.2575 7.45234 12.0225 7.45234C12.7875 7.45234 13.5525 7.55615 14.2725 7.76377C15.9937 6.56418 16.7475 6.81794 16.7475 6.81794C17.2424 8.08674 16.9275 9.03257 16.8375 9.26326C17.4113 9.9092 17.76 10.7281 17.76 11.7432C17.76 15.2843 15.6563 16.0687 13.6537 16.2993C13.98 16.5877 14.2613 17.1414 14.2613 18.0065C14.2613 19.2407 14.25 20.2326 14.25 20.5441C14.25 20.7863 14.4188 21.0746 14.8688 20.9824C16.6554 20.364 18.2079 19.1866 19.3078 17.6162C20.4077 16.0457 20.9995 14.1611 21 12.2276C21 7.12937 16.9725 3 12 3Z"></path>
+</svg>
+<span class="hx-sr-only">GitHub</span>
+          </a><button type="button" aria-label="Menu" class="hamburger-menu -hx-mr-2 hx-rounded hx-p-2 active:hx-bg-gray-400/20 md:hx-hidden"><svg height=24 fill="none" viewBox="0 0 24 24" stroke="currentColor"><g><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8H20"></path></g><g><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16H20"></path></g></svg></button>
+  </nav>
+</div>
+
+  <div class='hx-mx-auto hx-flex hx-max-w-screen-xl'>
+    <div class="mobile-menu-overlay [transition:background-color_1.5s_ease] hx-fixed hx-inset-0 hx-z-10 hx-bg-black/80 dark:hx-bg-black/60 hx-hidden"></div>
+<aside class="sidebar-container hx-flex hx-flex-col print:hx-hidden md:hx-top-16 md:hx-shrink-0 md:hx-w-64 md:hx-self-start max-md:[transform:translate3d(0,-100%,0)] md:hx-sticky">
+  
+  <div class="hx-px-4 hx-pt-4 md:hx-hidden">
+    <div class="search-wrapper hx-relative md:hx-w-64">
+  <div class="hx-relative hx-flex hx-items-center hx-text-gray-900 contrast-more:hx-text-gray-800 dark:hx-text-gray-300 contrast-more:dark:hx-text-gray-300">
+    <input
+      placeholder="Search..."
+      class="search-input hx-block hx-w-full hx-appearance-none hx-rounded-lg hx-px-3 hx-py-2 hx-transition-colors hx-text-base hx-leading-tight md:hx-text-sm hx-bg-black/[.05] dark:hx-bg-gray-50/10 focus:hx-bg-white dark:focus:hx-bg-dark placeholder:hx-text-gray-500 dark:placeholder:hx-text-gray-400 contrast-more:hx-border contrast-more:hx-border-current"
+      type="search"
+      value=""
+      spellcheck="false"
+    />
+    <kbd
+      class="hx-absolute hx-my-1.5 hx-select-none ltr:hx-right-1.5 rtl:hx-left-1.5 hx-h-5 hx-rounded hx-bg-white hx-px-1.5 hx-font-mono hx-text-[10px] hx-font-medium hx-text-gray-500 hx-border dark:hx-border-gray-100/20 dark:hx-bg-dark/50 contrast-more:hx-border-current contrast-more:hx-text-current contrast-more:dark:hx-border-current hx-items-center hx-gap-1 hx-transition-opacity hx-pointer-events-none hx-hidden sm:hx-flex"
+    >
+      CTRL K
+    </kbd>
+  </div>
+
+  <div>
+    <ul
+      class="search-results hextra-scrollbar hx-hidden hx-border hx-border-gray-200 hx-bg-white hx-text-gray-100 dark:hx-border-neutral-800 dark:hx-bg-neutral-900 hx-absolute hx-top-full hx-z-20 hx-mt-2 hx-overflow-auto hx-overscroll-contain hx-rounded-xl hx-py-2.5 hx-shadow-xl hx-max-h-[min(calc(50vh-11rem-env(safe-area-inset-bottom)),400px)] md:hx-max-h-[min(calc(100vh-5rem-env(safe-area-inset-bottom)),400px)] hx-inset-x-0 ltr:md:hx-left-auto rtl:md:hx-right-auto contrast-more:hx-border contrast-more:hx-border-gray-900 contrast-more:dark:hx-border-gray-50 hx-w-screen hx-min-h-[100px] hx-max-w-[min(calc(100vw-2rem),calc(100%+20rem))]"
+      style="transition: max-height 0.2s ease 0s;"
+    ></ul>
+  </div>
+</div>
+
+  </div>
+  <div class="hextra-scrollbar hx-overflow-y-auto hx-overflow-x-hidden hx-p-4 hx-grow md:hx-h-[calc(100vh-var(--navbar-height)-var(--menu-height))]">
+    <ul class="hx-flex hx-flex-col hx-gap-1 md:hx-hidden">
+      
+      
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/overview/"
+    
+  >Overview
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/quickstart/"
+    
+  >Quickstart
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/concepts/"
+    
+  >Concepts
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/queries/"
+    
+  >Filters &amp; queries
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/operations/"
+    
+  >Component operations
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/resources/"
+    
+  >Resources
+    </a></li>
+          <li class="open"><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      sidebar-active-item hx-bg-primary-100 hx-font-semibold hx-text-primary-800 contrast-more:hx-border contrast-more:hx-border-primary-500 dark:hx-bg-primary-400/10 dark:hx-text-primary-600 contrast-more:dark:hx-border-primary-500"
+    href="/ark/relations/"
+    
+  >Entity relationships
+    </a>
+  
+    <ul class='hx-flex hx-flex-col hx-gap-1 hx-relative before:hx-absolute before:hx-inset-y-1 before:hx-w-px before:hx-bg-gray-200 before:hx-content-[""] dark:before:hx-bg-neutral-800 ltr:hx-pl-3 ltr:before:hx-left-0 rtl:hx-pr-3 rtl:before:hx-right-0 ltr:hx-ml-3 rtl:hx-mr-3'><li>
+              <a
+                href="#relation-components"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Relation components</a>
+            </li>
+          <li>
+              <a
+                href="#creating-relations"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Creating relations</a>
+            </li>
+          <li>
+              <a
+                href="#set-and-get-relations"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Set and get relations</a>
+            </li>
+          <li>
+              <a
+                href="#batch-operations"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Batch operations</a>
+            </li>
+          <li>
+              <a
+                href="#filters-and-queries"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Filters and queries</a>
+            </li>
+          <li>
+              <a
+                href="#dead-target-entities"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Dead target entities</a>
+            </li>
+          <li>
+              <a
+                href="#limitation"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Limitation</a>
+            </li>
+          <li>
+              <a
+                href="#when-to-use-and-when-not"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >When to use, and when not</a>
+            </li>
+          <li>
+              <a
+                href="#longer-example"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Longer example</a>
+            </li>
+          </ul>
+  </li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/batch/"
+    
+  >Batch operations
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/events/"
+    
+  >Event system
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/unsafe/"
+    
+  >Unsafe API
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/stats/"
+    
+  >World statistics
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/errors/"
+    
+  >Error handling
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/performance/"
+    
+  >Performance tips
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/design/"
+    
+  >Design philosophy
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/architecture/"
+    
+  >Architecture
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/tools/"
+    
+  >Tools
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/benchmarks/"
+    
+  >Benchmarks
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/cheatsheet/"
+    
+  >Cheat sheet
+    </a></li>
+    </ul>
+
+    <ul class="hx-flex hx-flex-col hx-gap-1 max-md:hx-hidden">
+        
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/overview/"
+    
+  >Overview
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/quickstart/"
+    
+  >Quickstart
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/concepts/"
+    
+  >Concepts
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/queries/"
+    
+  >Filters &amp; queries
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/operations/"
+    
+  >Component operations
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/resources/"
+    
+  >Resources
+    </a></li>
+          <li class="open"><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      sidebar-active-item hx-bg-primary-100 hx-font-semibold hx-text-primary-800 contrast-more:hx-border contrast-more:hx-border-primary-500 dark:hx-bg-primary-400/10 dark:hx-text-primary-600 contrast-more:dark:hx-border-primary-500"
+    href="/ark/relations/"
+    
+  >Entity relationships
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/batch/"
+    
+  >Batch operations
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/events/"
+    
+  >Event system
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/unsafe/"
+    
+  >Unsafe API
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/stats/"
+    
+  >World statistics
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/errors/"
+    
+  >Error handling
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/performance/"
+    
+  >Performance tips
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/design/"
+    
+  >Design philosophy
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/architecture/"
+    
+  >Architecture
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/tools/"
+    
+  >Tools
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/benchmarks/"
+    
+  >Benchmarks
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/cheatsheet/"
+    
+  >Cheat sheet
+    </a></li>
+        
+      </ul>
+    </div>
+  
+  
+    <div class="  hx-sticky hx-bottom-0 hx-bg-white dark:hx-bg-dark hx-mx-4 hx-py-4 hx-shadow-[0_-12px_16px_#fff] hx-flex hx-items-center hx-gap-2 dark:hx-border-neutral-800 dark:hx-shadow-[0_-12px_16px_#111] contrast-more:hx-border-neutral-400 contrast-more:hx-shadow-none contrast-more:dark:hx-shadow-none hx-border-t" data-toggle-animation="show"><div class="hx-flex hx-grow hx-flex-col"><button
+  title="Change theme"
+  data-theme="light"
+  class="theme-toggle hx-group hx-h-7 hx-rounded-md hx-px-2 hx-text-left hx-text-xs hx-font-medium hx-text-gray-600 hx-transition-colors dark:hx-text-gray-400 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50"
+  type="button"
+  aria-label="Change theme"
+>
+  <div class="hx-flex hx-items-center hx-gap-2 hx-capitalize"><svg height=12 class="group-data-[theme=light]:hx-hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg><span class="group-data-[theme=light]:hx-hidden">Light</span><svg height=12 class="group-data-[theme=dark]:hx-hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg><span class="group-data-[theme=dark]:hx-hidden">Dark</span></div>
+</button>
+</div></div></aside>
+    
+<nav class="hextra-toc hx-order-last hx-hidden hx-w-64 hx-shrink-0 xl:hx-block print:hx-hidden hx-px-4" aria-label="table of contents">
+    <div class="hextra-scrollbar hx-sticky hx-top-16 hx-overflow-y-auto hx-pr-4 hx-pt-6 hx-text-sm [hyphens:auto] hx-max-h-[calc(100vh-var(--navbar-height)-env(safe-area-inset-bottom))] ltr:hx--mr-4 rtl:hx--ml-4"><p class="hx-mb-4 hx-font-semibold hx-tracking-tight">On this page</p><ul>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#relation-components">Relation components
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#creating-relations">Creating relations
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="ltr:hx-pl-4 rtl:hx-pr-4 hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#on-new-entities">On new entities
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="ltr:hx-pl-4 rtl:hx-pr-4 hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#when-adding-components">When adding components
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#set-and-get-relations">Set and get relations
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#batch-operations">Batch operations
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#filters-and-queries">Filters and queries
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#dead-target-entities">Dead target entities
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#limitation">Limitation
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#when-to-use-and-when-not">When to use, and when not
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#longer-example">Longer example
+        </a>
+      </li></ul>
+      <div class="hx-mt-8 hx-border-t hx-bg-white hx-pt-8 hx-shadow-[0_-12px_16px_white] dark:hx-bg-dark dark:hx-shadow-[0_-12px_16px_#111] hx-sticky hx-bottom-0 hx-flex hx-flex-col hx-items-start hx-gap-2 hx-pb-8 dark:hx-border-neutral-800 contrast-more:hx-border-t contrast-more:hx-border-neutral-400 contrast-more:hx-shadow-none contrast-more:dark:hx-border-neutral-400">
+        <button aria-hidden="true" id="backToTop" onClick="scrollUp();" class="hx-transition-all hx-duration-75 hx-opacity-0 hx-text-xs hx-font-medium hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-100 contrast-more:hx-text-gray-800 contrast-more:dark:hx-text-gray-50">
+          <span>Scroll to top</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hx-inline ltr:hx-ml-1 rtl:hx-mr-1 hx-h-3.5 hx-w-3.5 hx-border hx-rounded-full hx-border-gray-500 hover:hx-border-gray-900 dark:hx-border-gray-400 dark:hover:hx-border-gray-100 contrast-more:hx-border-gray-800 contrast-more:dark:hx-border-gray-50">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+
+    <article class="hx-w-full hx-break-words hx-flex hx-min-h-[calc(100vh-var(--navbar-height))] hx-min-w-0 hx-justify-center hx-pb-8 hx-pr-[calc(env(safe-area-inset-right)-1.5rem)]">
+      <main class="hx-w-full hx-min-w-0 hx-max-w-6xl hx-px-6 hx-pt-4 md:hx-px-12">
+        
+  <div class="hx-mt-1.5 hx-flex hx-items-center hx-gap-1 hx-overflow-hidden hx-text-sm hx-text-gray-500 dark:hx-text-gray-400 contrast-more:hx-text-current">
+        <div class="hx-whitespace-nowrap hx-transition-colors hx-min-w-[24px] hx-overflow-hidden hx-text-ellipsis hover:hx-text-gray-900 dark:hover:hx-text-gray-100">
+            <a href="/ark/">Ark</a>
+        </div><svg class="hx-w-3.5 hx-shrink-0 rtl:-hx-rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg><div class="hx-whitespace-nowrap hx-transition-colors hx-font-medium hx-text-gray-700 contrast-more:hx-font-bold contrast-more:hx-text-current dark:hx-text-gray-100 contrast-more:dark:hx-text-current">Entity relationships</div>
+  </div>
+
+        <div class="content">
+          <h1>Entity relationships</h1>
+          <p>In a basic ECS, relations between entities, like hierarchies, can be represented
+by storing entities in components.
+E.g., we could have a child component like this:</p>
+<div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ChildOf</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Parent</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>Or, alternatively, a parent component with many children:</p>
+<div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Parent</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Children</span> <span class="p">[]</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>In conjunction with <a href="../operations#component-mappers" >component mappers</a>, this is often sufficient.
+However, we are not able to leverage the power of queries to e.g. get all children of a particular parent in an efficient way.</p>
+<p>To make entity relations even more useful and efficient, Ark supports them as a first class feature.
+Relations are added to and removed from entities just like components,
+and hence can be queried like components, with the usual efficiency.
+This is achieved by creating separate sub-tables inside <a href="../architecture" >archetypes</a>
+for relations with different target entities.</p>
+<h2>Relation components<span class="hx-absolute -hx-mt-20" id="relation-components"></span>
+    <a href="#relation-components" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><p>To use entity relations, create components that have <em>embedded</em> a <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#RelationMarker" target="_blank"><code class="copy-to-clipboard-code" data-code="RelationMarker">RelationMarker</code></a></span> as their first member:</p>
+<div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ChildOf</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ecs</span><span class="p">.</span><span class="nx">RelationMarker</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>That&rsquo;s all to make a component be treated as an entity relationship by Ark.
+The component can contain further variables, but the marker must be the first one.</p>
+<h2>Creating relations<span class="hx-absolute -hx-mt-20" id="creating-relations"></span>
+    <a href="#creating-relations" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><p>Most methods of <code>MapX</code> (e.g. <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2">Map2</code></a></span>) provide var-args for specifying relationship targets.
+These are of type <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Relation" target="_blank"><code class="copy-to-clipboard-code" data-code="Relation">Relation</code></a></span>, which specifies a component type and a target entity.
+There are multiple constructors for <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Relation" target="_blank"><code class="copy-to-clipboard-code" data-code="Relation">Relation</code></a></span>:</p>
+<ul>
+<li><span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Rel" target="_blank"><code class="copy-to-clipboard-code" data-code="Rel">Rel</code></a></span> uses a generic type parameter to identify the component. It is safe, but has some run-time overhead for component ID lookup on first usage.</li>
+<li><span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#RelIdx" target="_blank"><code class="copy-to-clipboard-code" data-code="RelIdx">RelIdx</code></a></span> uses an index to identify the component. It is fast but more error-prone.</li>
+<li><span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#RelID" target="_blank"><code class="copy-to-clipboard-code" data-code="RelID">RelID</code></a></span> uses a component ID. It is for use with the <a href="../unsafe/" >unsafe API</a>.</li>
+</ul>
+<p>See the examples below for their usage.</p>
+<h3>On new entities<span class="hx-absolute -hx-mt-20" id="on-new-entities"></span>
+    <a href="#on-new-entities" class="subheading-anchor" aria-label="Permalink for this section"></a></h3><p>When creating entities, we can use a <code>MapX</code> (e.g. <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.NewEntity" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.NewEntity">Map2.NewEntity</code></a></span>):</p>
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+      
+  
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Create a component Mapper</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">ChildOf</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Create a parent entity.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">parent</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Create an entity with a parent entity, the slow way.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Position</span><span class="p">{},</span> <span class="o">&amp;</span><span class="nx">ChildOf</span><span class="p">{},</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">ChildOf</span><span class="p">](</span><span class="nx">parent</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Create an entity with a parent entity, the fast way.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Position</span><span class="p">{},</span> <span class="o">&amp;</span><span class="nx">ChildOf</span><span class="p">{},</span> <span class="nx">ecs</span><span class="p">.</span><span class="nf">RelIdx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">parent</span><span class="p">))</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+
+
+<p>For the faster variant <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#RelIdx" target="_blank"><code class="copy-to-clipboard-code" data-code="RelIdx">RelIdx</code></a></span>, note that the first argument
+is the zero-based index of the relation component in the <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2">Map2</code></a></span>&rsquo;s generic parameters.</p>
+<p>If there are multiple relation components, multiple <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Rel" target="_blank"><code class="copy-to-clipboard-code" data-code="Rel">Rel</code></a></span>/<span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#RelIdx" target="_blank"><code class="copy-to-clipboard-code" data-code="RelIdx">RelIdx</code></a></span> arguments can (and must) be used.</p>
+<h3>When adding components<span class="hx-absolute -hx-mt-20" id="when-adding-components"></span>
+    <a href="#when-adding-components" class="subheading-anchor" aria-label="Permalink for this section"></a></h3><p>Relation target must also be given when adding relation components to an entity:</p>
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+      
+  
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Create a component Mapper</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">ChildOf</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Create a parent entity.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">parent</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Create a child entity.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">child</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Add components and a relation target to the child, the slow way.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">child</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">Position</span><span class="p">{},</span> <span class="o">&amp;</span><span class="nx">ChildOf</span><span class="p">{},</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">ChildOf</span><span class="p">](</span><span class="nx">parent</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Add components and a relation target to an entity, the fast way.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">child2</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">child2</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">Position</span><span class="p">{},</span> <span class="o">&amp;</span><span class="nx">ChildOf</span><span class="p">{},</span> <span class="nx">ecs</span><span class="p">.</span><span class="nf">RelIdx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">parent</span><span class="p">))</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+
+
+<h2>Set and get relations<span class="hx-absolute -hx-mt-20" id="set-and-get-relations"></span>
+    <a href="#set-and-get-relations" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><p>We can also change the target entity of an already assigned relation component.
+This is done via <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.SetRelations" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.SetRelations">Map2.SetRelations</code></a></span> et al.:</p>
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+      
+  
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Create a component Mapper</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">ChildOf</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Create parent entities.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">parent1</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">parent2</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Create an entity with a parent entity.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">child</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Position</span><span class="p">{},</span> <span class="o">&amp;</span><span class="nx">ChildOf</span><span class="p">{},</span> <span class="nx">ecs</span><span class="p">.</span><span class="nf">RelIdx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">parent1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Change the child&#39;s parent.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">SetRelations</span><span class="p">(</span><span class="nx">child</span><span class="p">,</span> <span class="nx">ecs</span><span class="p">.</span><span class="nf">RelIdx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">parent2</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Change the child&#39;s parent, the slow way.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">SetRelations</span><span class="p">(</span><span class="nx">child</span><span class="p">,</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">ChildOf</span><span class="p">](</span><span class="nx">parent2</span><span class="p">))</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+
+
+<p>Note that multiple relation targets can be changed in the same call.</p>
+<p>Similarly, relation targets can be obtained with <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.GetRelation" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.GetRelation">Map2.GetRelation</code></a></span> et al.:</p>
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+      
+  
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Create a component Mapper</span>
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">ChildOf</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Create a parent entity.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">parent</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Create an entity with a parent entity.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">child</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Position</span><span class="p">{},</span> <span class="o">&amp;</span><span class="nx">ChildOf</span><span class="p">{},</span> <span class="nx">ecs</span><span class="p">.</span><span class="nf">RelIdx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">parent</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Get a relation target by component index.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">parent</span> <span class="p">=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">GetRelation</span><span class="p">(</span><span class="nx">child</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+
+
+<p>Note that, due to Go&rsquo;s limitations on generics, the slow generic way is not possible here.</p>
+<p>For a simpler syntax and when only a single relation component is accessed,
+<span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map" target="_blank"><code class="copy-to-clipboard-code" data-code="Map">Map</code></a></span> can be used alternatively:</p>
+
+
+
+
+
+
+    
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+      
+    
+    
+  
+    
+      
+  
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Create a component Mapper</span>
+</span></span><span class="line"><span class="cl"><span class="nx">childMap</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap</span><span class="p">[</span><span class="nx">ChildOf</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Create parent entities.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">parent1</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">parent2</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Create a child entity.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">child</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Add a component with a target parent entity.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">childMap</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">child</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">ChildOf</span><span class="p">{},</span> <span class="nx">parent1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Change the entity&#39;s parent.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">childMap</span><span class="p">.</span><span class="nf">SetRelation</span><span class="p">(</span><span class="nx">child</span><span class="p">,</span> <span class="nx">parent2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Get the relation target.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">parent</span> <span class="o">:=</span> <span class="nx">childMap</span><span class="p">.</span><span class="nf">GetRelation</span><span class="p">(</span><span class="nx">child</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+
+
+<h2>Batch operations<span class="hx-absolute -hx-mt-20" id="batch-operations"></span>
+    <a href="#batch-operations" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><p>All <a href="../batch" >batch operation</a> methods of <code>MapX</code> (e.g. <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.NewBatch" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.NewBatch">Map2.NewBatch</code></a></span>) can be used with relation targets just like the normal component operations shown above.</p>
+<h2>Filters and queries<span class="hx-absolute -hx-mt-20" id="filters-and-queries"></span>
+    <a href="#filters-and-queries" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><p><a href="../queries" >Filters</a> support entity relationships using the same syntax as shown in the examples above.</p>
+<p>There are two ways to specify target entities to filter for: when building the filter, and when getting the query.
+Both ways can be combined.</p>
+<p>Relation targets given via <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Filter2.Relations" target="_blank"><code class="copy-to-clipboard-code" data-code="Filter2.Relations">Filter2.Relations</code></a></span> when building a filter are best used for permanent or long-lived targets.</p>
+
+
+
+
+
+
+    
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+      
+    
+    
+  
+    
+      
+  
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Create a filter with a relation target.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">ChildOf</span><span class="p">](</span><span class="nx">world</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Relations</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">ChildOf</span><span class="p">](</span><span class="nx">parent</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Get a query for iteration.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">query</span> <span class="o">:=</span> <span class="nx">filter</span><span class="p">.</span><span class="nf">Query</span><span class="p">()</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+
+
+<p>With <a href="../queries#filter-caching" >cached filters</a>, the targets specified this way are included in the cache.
+For short-lived targets, it is better to pass them when building a query with <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Filter2.Query" target="_blank"><code class="copy-to-clipboard-code" data-code="Filter2.Query">Filter2.Query</code></a></span></p>
+
+
+
+
+
+
+    
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+      
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+        
+        
+      
+      
+    
+    
+  
+    
+    
+      
+      
+    
+    
+  
+    
+      
+  
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Create a filter.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">ChildOf</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Get a query with a relation target.</span>
+</span></span><span class="line"><span class="cl"><span class="nx">query</span> <span class="o">:=</span> <span class="nx">filter</span><span class="p">.</span><span class="nf">Query</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nf">RelIdx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">parent</span><span class="p">))</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+
+
+<p>These targets are not cached, but the same filter can be used for different targets.</p>
+<p>Filters also support both <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Rel" target="_blank"><code class="copy-to-clipboard-code" data-code="Rel">Rel</code></a></span> and <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#RelIdx" target="_blank"><code class="copy-to-clipboard-code" data-code="RelIdx">RelIdx</code></a></span>.
+In the filter examples above, we used the slow but safe <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Rel" target="_blank"><code class="copy-to-clipboard-code" data-code="Rel">Rel</code></a></span> when building the filter.
+When getting the query, we use the faster <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#RelIdx" target="_blank"><code class="copy-to-clipboard-code" data-code="RelIdx">RelIdx</code></a></span>,
+because in real-world use cases this is called more frequently than the one-time filter construction.</p>
+<p>Relation targets not specified by the filter are treated as wildcard.
+This means that the filter matches entities with any target.</p>
+<h2>Dead target entities<span class="hx-absolute -hx-mt-20" id="dead-target-entities"></span>
+    <a href="#dead-target-entities" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><p>Entities that are the target of any relationships can be removed from the world like any other entity.
+When this happens, all entities that have this target in a relation get assigned to the zero entity as target.
+The respective <a href="../architecture" >archetype</a> sub-table is de-activated and marked for potential re-use for another target entity.</p>
+<h2>Limitation<span class="hx-absolute -hx-mt-20" id="limitation"></span>
+    <a href="#limitation" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><p>Unlike <a href="https://flecs.dev" target="_blank" rel="noopener">Flecs</a>, the ECS that pioneered entity relationships,
+Ark is limited to supporting only &ldquo;exclusive&rdquo; relationships.
+This means that any relationship (i.e. relationship type/component) can only have a single target entity.
+An entity can, however, have multiple different relationship types at the same time.</p>
+<p>The limitation to a single target is mainly a performance consideration.
+Firstly, the possibility for multiple targets would require a different,
+slower approach for component mapping in archetypes.
+Secondly, usage of multiple targets would easily lead to archetype fragmentation,
+as a separate archetype sub-table would be created for each unique combination of targets.</p>
+<p>Entity relationships in Ark are still a very powerful feature,
+while discouraging use cases where they could easily lead to poor performance.
+For more details on when entity relationships are the most effective and efficient,
+see the next section.</p>
+<h2>When to use, and when not<span class="hx-absolute -hx-mt-20" id="when-to-use-and-when-not"></span>
+    <a href="#when-to-use-and-when-not" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><p>When using Ark&rsquo;s entity relations, an archetype sub-table is created for each target entity of a relation.
+Thus, entity relations are not efficient if the number of target entities is high (tens of thousands),
+while only a low number of entities has a relation to each particular target (less than a few dozens).
+Particularly in the extreme case of 1:1 relations, storing entities in components
+as explained in the introduction of this chapter is more efficient.</p>
+<p>However, with a moderate number of relation targets, particularly with many entities per target,
+entity relations are very efficient.</p>
+<p>Beyond use cases where the relation target is a &ldquo;physical&rdquo; entity that appears
+in a simulation or game, targets can also be more abstract, like categories.
+Examples:</p>
+<ul>
+<li>Different tree species in a forest model.</li>
+<li>Behavioral states in a finite state machine.</li>
+<li>The opposing factions in a strategy game.</li>
+<li>Render layers in a game or other graphical application.</li>
+</ul>
+<p>This concept is particularly useful for things that would best be expressed by components,
+but the possible components (or categories) are only known at runtime.
+Thus, it is not possible to create ordinary components for them.
+However, these categories can be represented by entities, which are used as relation targets.</p>
+<h2>Longer example<span class="hx-absolute -hx-mt-20" id="longer-example"></span>
+    <a href="#longer-example" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><p>To conclude this chapter, here is a longer example that uses Ark&rsquo;s entity relationships feature
+to represent animals of different species in multiple farms.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">relations</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;math/rand/v2&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/mlange-42/ark/ecs&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ####################### Components ###########################</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Farm component.</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Farm</span> <span class="kd">struct</span><span class="p">{</span> <span class="nx">ID</span> <span class="kt">int</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Weight component for animals.</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Weight</span> <span class="kd">struct</span><span class="p">{</span> <span class="nx">Kilograms</span> <span class="kt">float64</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// IsInFarm component for animals.</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">IsInFarm</span> <span class="kd">struct</span><span class="p">{</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">RelationMarker</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// IsOfSpecies component for animals.</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">IsOfSpecies</span> <span class="kd">struct</span><span class="p">{</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">RelationMarker</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// ####################### Preparations ###########################</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">world</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nf">NewWorld</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Create a component mapper for farms.</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">farmMap</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap1</span><span class="p">[</span><span class="nx">Farm</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Create a component mapper for farm animals.</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">animalMap</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap3</span><span class="p">[</span><span class="nx">Weight</span><span class="p">,</span> <span class="nx">IsInFarm</span><span class="p">,</span> <span class="nx">IsOfSpecies</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Create a filter for farms.</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">farmFilter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter1</span><span class="p">[</span><span class="nx">Farm</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Create a filter for farm animals.</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">animalFilter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter3</span><span class="p">[</span><span class="nx">Weight</span><span class="p">,</span> <span class="nx">IsInFarm</span><span class="p">,</span> <span class="nx">IsOfSpecies</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// ####################### Initialization ###########################</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Create species.</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cow</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pig</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Create farms.</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">farms</span> <span class="o">:=</span> <span class="p">[]</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="mi">10</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">farm</span> <span class="o">:=</span> <span class="nx">farmMap</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Farm</span><span class="p">{</span><span class="nx">i</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">farms</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">farms</span><span class="p">,</span> <span class="nx">farm</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Populate farms.</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">farm</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">farms</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// How many animals?</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">numCows</span> <span class="o">:=</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">IntN</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">numPigs</span> <span class="o">:=</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">IntN</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="c1">// Create cows.</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">animalMap</span><span class="p">.</span><span class="nf">NewBatch</span><span class="p">(</span><span class="nx">numCows</span><span class="p">,</span> <span class="c1">// How many?</span>
+</span></span><span class="line"><span class="cl">			<span class="o">&amp;</span><span class="nx">Weight</span><span class="p">{</span><span class="mi">500</span><span class="p">},</span> <span class="o">&amp;</span><span class="nx">IsInFarm</span><span class="p">{},</span> <span class="o">&amp;</span><span class="nx">IsOfSpecies</span><span class="p">{},</span> <span class="c1">// Initial values.</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">IsInFarm</span><span class="p">](</span><span class="nx">farm</span><span class="p">),</span>   <span class="c1">// This farm.</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">IsOfSpecies</span><span class="p">](</span><span class="nx">cow</span><span class="p">),</span> <span class="c1">// Species cow.</span>
+</span></span><span class="line"><span class="cl">		<span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Create pigs.</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">animalMap</span><span class="p">.</span><span class="nf">NewBatch</span><span class="p">(</span><span class="nx">numPigs</span><span class="p">,</span> <span class="c1">// How many?</span>
+</span></span><span class="line"><span class="cl">			<span class="o">&amp;</span><span class="nx">Weight</span><span class="p">{</span><span class="mi">100</span><span class="p">},</span> <span class="o">&amp;</span><span class="nx">IsInFarm</span><span class="p">{},</span> <span class="o">&amp;</span><span class="nx">IsOfSpecies</span><span class="p">{},</span> <span class="c1">// Initial values.</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">IsInFarm</span><span class="p">](</span><span class="nx">farm</span><span class="p">),</span>   <span class="c1">// This farm.</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">IsOfSpecies</span><span class="p">](</span><span class="nx">pig</span><span class="p">),</span> <span class="c1">// Species pig.</span>
+</span></span><span class="line"><span class="cl">		<span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// ####################### Logic in systems ###########################</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Do something with all pigs.</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">query</span> <span class="o">:=</span> <span class="nx">animalFilter</span><span class="p">.</span><span class="nf">Query</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">IsOfSpecies</span><span class="p">](</span><span class="nx">pig</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">query</span><span class="p">.</span><span class="nf">Next</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">weight</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">query</span><span class="p">.</span><span class="nf">Get</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">weight</span><span class="p">.</span><span class="nx">Kilograms</span> <span class="o">+=</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">Float64</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Print total weight of the pigs in each farm.</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Iterate farms.</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">farmQuery</span> <span class="o">:=</span> <span class="nx">farmFilter</span><span class="p">.</span><span class="nf">Query</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">farmQuery</span><span class="p">.</span><span class="nf">Next</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">farm</span> <span class="o">:=</span> <span class="nx">farmQuery</span><span class="p">.</span><span class="nf">Get</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">farmEntity</span> <span class="o">:=</span> <span class="nx">farmQuery</span><span class="p">.</span><span class="nf">Entity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="nx">totalWeight</span> <span class="o">:=</span> <span class="mf">0.0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="c1">// Iterate pigs in the farm.</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">animalQuery</span> <span class="o">:=</span> <span class="nx">animalFilter</span><span class="p">.</span><span class="nf">Query</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">IsInFarm</span><span class="p">](</span><span class="nx">farmEntity</span><span class="p">),</span> <span class="c1">// This farm.</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">ecs</span><span class="p">.</span><span class="nx">Rel</span><span class="p">[</span><span class="nx">IsOfSpecies</span><span class="p">](</span><span class="nx">pig</span><span class="p">),</span>     <span class="c1">// Pigs only.</span>
+</span></span><span class="line"><span class="cl">		<span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">animalQuery</span><span class="p">.</span><span class="nf">Next</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">weight</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">animalQuery</span><span class="p">.</span><span class="nf">Get</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">totalWeight</span> <span class="o">+=</span> <span class="nx">weight</span><span class="p">.</span><span class="nx">Kilograms</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Print the farm&#39;s result.</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Farm %d: %.0fkg\n&#34;</span><span class="p">,</span> <span class="nx">farm</span><span class="p">.</span><span class="nx">ID</span><span class="p">,</span> <span class="nx">totalWeight</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+
+
+<p>Note that this examples uses the safe and clear, but slower generic variant to specify relationship targets.
+As an optimization, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#RelIdx" target="_blank"><code class="copy-to-clipboard-code" data-code="RelIdx">RelIdx</code></a></span> could be used instead of <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Rel" target="_blank"><code class="copy-to-clipboard-code" data-code="Rel">Rel</code></a></span>, particularly for queries.</p>
+
+        </div>
+        <div class="hx-mt-16"></div>
+        <div class="hx-mb-8 hx-flex hx-items-center hx-border-t hx-pt-8 dark:hx-border-neutral-800 contrast-more:hx-border-neutral-400 dark:contrast-more:hx-border-neutral-400 print:hx-hidden"><a
+        href="/ark/resources/"
+        title="Resources"
+        class="hx-flex hx-max-w-[50%] hx-items-center hx-gap-1 hx-py-4 hx-text-base hx-font-medium hx-text-gray-600 hx-transition-colors [word-break:break-word] hover:hx-text-primary-600 dark:hx-text-gray-300 md:hx-text-lg ltr:hx-pr-4 rtl:hx-pl-4"
+      ><svg class="hx-inline hx-h-5 hx-shrink-0 ltr:hx-rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>Resources</a><a
+        href="/ark/batch/"
+        title="Batch operations"
+        class="hx-flex hx-max-w-[50%] hx-items-center hx-gap-1 hx-py-4 hx-text-base hx-font-medium hx-text-gray-600 hx-transition-colors [word-break:break-word] hover:hx-text-primary-600 dark:hx-text-gray-300 md:hx-text-lg ltr:hx-ml-auto ltr:hx-pl-4 ltr:hx-text-right rtl:hx-mr-auto rtl:hx-pr-4 rtl:hx-text-left"
+      >Batch operations<svg class="hx-inline hx-h-5 hx-shrink-0 rtl:-hx-rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></a></div>
+        
+      </main>
+    </article>
+  </div>
+
+      <footer class="hextra-footer hx-bg-gray-100 hx-pb-[env(safe-area-inset-bottom)] dark:hx-bg-neutral-900 print:hx-bg-transparent"><div
+      class="hextra-custom-footer hx-max-w-screen-xl hx-pl-[max(env(safe-area-inset-left),1.5rem)] hx-pr-[max(env(safe-area-inset-right),1.5rem)] hx-text-gray-600 dark:hx-text-gray-400"
+    ></div></footer>
+    
+    <script defer src="/ark/js/main.min.d0f0346255ba9418db8fcf7f9440ca4e532e06276d8df17497e19e1045ee360b.js" integrity="sha256-0PA0YlW6lBjbj89/lEDKTlMuBidtjfF0l&#43;GeEEXuNgs="></script>
+
+
+<script defer src="/ark/lib/flexsearch/flexsearch.bundle.min.0425860527cc9968f9f049421c7a56b39327d475e2e3a8f550416be3a9134327.js" integrity="sha256-BCWGBSfMmWj58ElCHHpWs5Mn1HXi46j1UEFr46kTQyc="></script>
+    <script defer src="/ark/en.search.min.bfe1260c7f437036f51a28379a5bb03e96fc65ee59f6c9404826568e371690a2.js" integrity="sha256-v&#43;EmDH9DcDb1Gig3mluwPpb8Ze5Z9slASCZWjjcWkKI="></script>
+
+
+  </body>
+</html>

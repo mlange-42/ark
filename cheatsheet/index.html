@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon shortcut" href="/ark/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/ark/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/ark/favicon-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
+<link rel="icon" href="/ark/favicon-16x16.png" type="image/png" sizes="16x16" />
+<link rel="icon" href="/ark/favicon-32x32.png" type="image/png" sizes="32x32" />
+<link rel="apple-touch-icon" href="/ark/apple-touch-icon.png" sizes="180x180" />
+<link fetchpriority="low" href="/ark/site.webmanifest" rel="manifest" />
+<title>Cheat sheet – Ark</title>
+  <meta name="description" content="Cheat sheet for Ark&#39;s most frequently used APIs." /><link rel="canonical" href="https://mlange-42.github.io/ark/cheatsheet/" itemprop="url" />
+
+<meta property="og:title" content="Cheat sheet" />
+<meta property="og:description" content="Cheat sheet for Ark&#39;s most frequently used APIs." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mlange-42.github.io/ark/cheatsheet/" /><meta property="og:image" content="https://mlange-42.github.io/ark/images/social.png"/><meta property="article:section" content="" />
+
+
+
+  <meta itemprop="name" content="Cheat sheet">
+  <meta itemprop="description" content="Cheat sheet for Ark&#39;s most frequently used APIs.">
+  <meta itemprop="wordCount" content="1152">
+  <meta itemprop="image" content="https://mlange-42.github.io/ark/images/social.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mlange-42.github.io/ark/images/social.png">
+  <meta name="twitter:title" content="Cheat sheet">
+  <meta name="twitter:description" content="Cheat sheet for Ark&#39;s most frequently used APIs.">
+
+    <link rel="preload" href="/ark/css/compiled/main.min.0d60cbb74d97ccaea83c3ea6d973c5961d69642b38588069a503bc04e284cbc7.css" as="style" integrity="sha256-DWDLt02XzK6oPD6m2XPFlh1pZCs4WIBppQO8BOKEy8c=" />
+    <link href="/ark/css/compiled/main.min.0d60cbb74d97ccaea83c3ea6d973c5961d69642b38588069a503bc04e284cbc7.css" rel="stylesheet" integrity="sha256-DWDLt02XzK6oPD6m2XPFlh1pZCs4WIBppQO8BOKEy8c=" />
+
+
+
+  <link href="/ark/css/custom.min.6fd4cc57c1768ad52105eb145f6303a62649fe5cd87ce6da5b07411a8645189c.css" rel="stylesheet" integrity="sha256-b9TMV8F2itUhBesUX2MDpiZJ/lzYfObaWwdBGoZFGJw=" />
+
+
+  <script>
+     
+    const defaultTheme = 'system';
+
+    const setDarkTheme = () => {
+      document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = "dark";
+    }
+    const setLightTheme = () => {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.style.colorScheme = "light";
+    }
+
+    if ("color-theme" in localStorage) {
+      localStorage.getItem("color-theme") === "dark" ? setDarkTheme() : setLightTheme();
+    } else {
+      defaultTheme === "dark" ? setDarkTheme() : setLightTheme();
+      if (defaultTheme === "system") {
+        window.matchMedia("(prefers-color-scheme: dark)").matches ? setDarkTheme() : setLightTheme();
+      }
+    }
+  </script>
+
+  
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,100..150,100..1000&display=swap" rel="stylesheet">
+
+</head>
+<body dir="ltr"><div class="nav-container hx-sticky hx-top-0 hx-z-20 hx-w-full hx-bg-transparent print:hx-hidden">
+  <div class="nav-container-blur hx-pointer-events-none hx-absolute hx-z-[-1] hx-h-full hx-w-full hx-bg-white dark:hx-bg-dark hx-shadow-[0_2px_4px_rgba(0,0,0,.02),0_1px_0_rgba(0,0,0,.06)] contrast-more:hx-shadow-[0_0_0_1px_#000] dark:hx-shadow-[0_-1px_0_rgba(255,255,255,.1)_inset] contrast-more:dark:hx-shadow-[0_0_0_1px_#fff]"></div>
+
+  <nav class="hx-mx-auto hx-flex hx-items-center hx-justify-end hx-gap-2 hx-h-16 hx-px-6 hx-max-w-[90rem]">
+    <a class="hx-flex hx-items-center hover:hx-opacity-75 ltr:hx-mr-auto rtl:hx-ml-auto" href="/ark">
+        <img class="hx-block dark:hx-hidden" src="/ark/images/logo-light.svg" alt="Ark" height="20" width="140" />
+        <img class="hx-hidden dark:hx-block" src="/ark/images/logo-dark.svg" alt="Ark" height="20" width="140" />
+    </a><a
+            title="API reference"
+            href="https://pkg.go.dev/github.com/mlange-42/ark"
+            target="_blank" rel="noreferrer"
+            class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-text-gray-600 hover:hx-text-gray-800 dark:hx-text-gray-400 dark:hover:hx-text-gray-200"
+          >
+            <span class="hx-text-center">API reference</span>
+          </a><div class="search-wrapper hx-relative md:hx-w-64">
+  <div class="hx-relative hx-flex hx-items-center hx-text-gray-900 contrast-more:hx-text-gray-800 dark:hx-text-gray-300 contrast-more:dark:hx-text-gray-300">
+    <input
+      placeholder="Search..."
+      class="search-input hx-block hx-w-full hx-appearance-none hx-rounded-lg hx-px-3 hx-py-2 hx-transition-colors hx-text-base hx-leading-tight md:hx-text-sm hx-bg-black/[.05] dark:hx-bg-gray-50/10 focus:hx-bg-white dark:focus:hx-bg-dark placeholder:hx-text-gray-500 dark:placeholder:hx-text-gray-400 contrast-more:hx-border contrast-more:hx-border-current"
+      type="search"
+      value=""
+      spellcheck="false"
+    />
+    <kbd
+      class="hx-absolute hx-my-1.5 hx-select-none ltr:hx-right-1.5 rtl:hx-left-1.5 hx-h-5 hx-rounded hx-bg-white hx-px-1.5 hx-font-mono hx-text-[10px] hx-font-medium hx-text-gray-500 hx-border dark:hx-border-gray-100/20 dark:hx-bg-dark/50 contrast-more:hx-border-current contrast-more:hx-text-current contrast-more:dark:hx-border-current hx-items-center hx-gap-1 hx-transition-opacity hx-pointer-events-none hx-hidden sm:hx-flex"
+    >
+      CTRL K
+    </kbd>
+  </div>
+
+  <div>
+    <ul
+      class="search-results hextra-scrollbar hx-hidden hx-border hx-border-gray-200 hx-bg-white hx-text-gray-100 dark:hx-border-neutral-800 dark:hx-bg-neutral-900 hx-absolute hx-top-full hx-z-20 hx-mt-2 hx-overflow-auto hx-overscroll-contain hx-rounded-xl hx-py-2.5 hx-shadow-xl hx-max-h-[min(calc(50vh-11rem-env(safe-area-inset-bottom)),400px)] md:hx-max-h-[min(calc(100vh-5rem-env(safe-area-inset-bottom)),400px)] hx-inset-x-0 ltr:md:hx-left-auto rtl:md:hx-right-auto contrast-more:hx-border contrast-more:hx-border-gray-900 contrast-more:dark:hx-border-gray-50 hx-w-screen hx-min-h-[100px] hx-max-w-[min(calc(100vw-2rem),calc(100%+20rem))]"
+      style="transition: max-height 0.2s ease 0s;"
+    ></ul>
+  </div>
+</div>
+
+          <a class="hx-p-2 hx-text-current" target="_blank" rel="noreferrer" href="https://github.com/mlange-42/ark" title="GitHub"><svg height=24 fill="currentColor" viewBox="3 3 18 18">
+  <path d="M12 3C7.0275 3 3 7.12937 3 12.2276C3 16.3109 5.57625 19.7597 9.15374 20.9824C9.60374 21.0631 9.77249 20.7863 9.77249 20.5441C9.77249 20.3249 9.76125 19.5982 9.76125 18.8254C7.5 19.2522 6.915 18.2602 6.735 17.7412C6.63375 17.4759 6.19499 16.6569 5.8125 16.4378C5.4975 16.2647 5.0475 15.838 5.80124 15.8264C6.51 15.8149 7.01625 16.4954 7.18499 16.7723C7.99499 18.1679 9.28875 17.7758 9.80625 17.5335C9.885 16.9337 10.1212 16.53 10.38 16.2993C8.3775 16.0687 6.285 15.2728 6.285 11.7432C6.285 10.7397 6.63375 9.9092 7.20749 9.26326C7.1175 9.03257 6.8025 8.08674 7.2975 6.81794C7.2975 6.81794 8.05125 6.57571 9.77249 7.76377C10.4925 7.55615 11.2575 7.45234 12.0225 7.45234C12.7875 7.45234 13.5525 7.55615 14.2725 7.76377C15.9937 6.56418 16.7475 6.81794 16.7475 6.81794C17.2424 8.08674 16.9275 9.03257 16.8375 9.26326C17.4113 9.9092 17.76 10.7281 17.76 11.7432C17.76 15.2843 15.6563 16.0687 13.6537 16.2993C13.98 16.5877 14.2613 17.1414 14.2613 18.0065C14.2613 19.2407 14.25 20.2326 14.25 20.5441C14.25 20.7863 14.4188 21.0746 14.8688 20.9824C16.6554 20.364 18.2079 19.1866 19.3078 17.6162C20.4077 16.0457 20.9995 14.1611 21 12.2276C21 7.12937 16.9725 3 12 3Z"></path>
+</svg>
+<span class="hx-sr-only">GitHub</span>
+          </a><button type="button" aria-label="Menu" class="hamburger-menu -hx-mr-2 hx-rounded hx-p-2 active:hx-bg-gray-400/20 md:hx-hidden"><svg height=24 fill="none" viewBox="0 0 24 24" stroke="currentColor"><g><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8H20"></path></g><g><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16H20"></path></g></svg></button>
+  </nav>
+</div>
+
+  <div class='hx-mx-auto hx-flex hx-max-w-screen-xl'>
+    <div class="mobile-menu-overlay [transition:background-color_1.5s_ease] hx-fixed hx-inset-0 hx-z-10 hx-bg-black/80 dark:hx-bg-black/60 hx-hidden"></div>
+<aside class="sidebar-container hx-flex hx-flex-col print:hx-hidden md:hx-top-16 md:hx-shrink-0 md:hx-w-64 md:hx-self-start max-md:[transform:translate3d(0,-100%,0)] md:hx-sticky">
+  
+  <div class="hx-px-4 hx-pt-4 md:hx-hidden">
+    <div class="search-wrapper hx-relative md:hx-w-64">
+  <div class="hx-relative hx-flex hx-items-center hx-text-gray-900 contrast-more:hx-text-gray-800 dark:hx-text-gray-300 contrast-more:dark:hx-text-gray-300">
+    <input
+      placeholder="Search..."
+      class="search-input hx-block hx-w-full hx-appearance-none hx-rounded-lg hx-px-3 hx-py-2 hx-transition-colors hx-text-base hx-leading-tight md:hx-text-sm hx-bg-black/[.05] dark:hx-bg-gray-50/10 focus:hx-bg-white dark:focus:hx-bg-dark placeholder:hx-text-gray-500 dark:placeholder:hx-text-gray-400 contrast-more:hx-border contrast-more:hx-border-current"
+      type="search"
+      value=""
+      spellcheck="false"
+    />
+    <kbd
+      class="hx-absolute hx-my-1.5 hx-select-none ltr:hx-right-1.5 rtl:hx-left-1.5 hx-h-5 hx-rounded hx-bg-white hx-px-1.5 hx-font-mono hx-text-[10px] hx-font-medium hx-text-gray-500 hx-border dark:hx-border-gray-100/20 dark:hx-bg-dark/50 contrast-more:hx-border-current contrast-more:hx-text-current contrast-more:dark:hx-border-current hx-items-center hx-gap-1 hx-transition-opacity hx-pointer-events-none hx-hidden sm:hx-flex"
+    >
+      CTRL K
+    </kbd>
+  </div>
+
+  <div>
+    <ul
+      class="search-results hextra-scrollbar hx-hidden hx-border hx-border-gray-200 hx-bg-white hx-text-gray-100 dark:hx-border-neutral-800 dark:hx-bg-neutral-900 hx-absolute hx-top-full hx-z-20 hx-mt-2 hx-overflow-auto hx-overscroll-contain hx-rounded-xl hx-py-2.5 hx-shadow-xl hx-max-h-[min(calc(50vh-11rem-env(safe-area-inset-bottom)),400px)] md:hx-max-h-[min(calc(100vh-5rem-env(safe-area-inset-bottom)),400px)] hx-inset-x-0 ltr:md:hx-left-auto rtl:md:hx-right-auto contrast-more:hx-border contrast-more:hx-border-gray-900 contrast-more:dark:hx-border-gray-50 hx-w-screen hx-min-h-[100px] hx-max-w-[min(calc(100vw-2rem),calc(100%+20rem))]"
+      style="transition: max-height 0.2s ease 0s;"
+    ></ul>
+  </div>
+</div>
+
+  </div>
+  <div class="hextra-scrollbar hx-overflow-y-auto hx-overflow-x-hidden hx-p-4 hx-grow md:hx-h-[calc(100vh-var(--navbar-height)-var(--menu-height))]">
+    <ul class="hx-flex hx-flex-col hx-gap-1 md:hx-hidden">
+      
+      
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/overview/"
+    
+  >Overview
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/quickstart/"
+    
+  >Quickstart
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/concepts/"
+    
+  >Concepts
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/queries/"
+    
+  >Filters &amp; queries
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/operations/"
+    
+  >Component operations
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/resources/"
+    
+  >Resources
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/relations/"
+    
+  >Entity relationships
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/batch/"
+    
+  >Batch operations
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/events/"
+    
+  >Event system
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/unsafe/"
+    
+  >Unsafe API
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/stats/"
+    
+  >World statistics
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/errors/"
+    
+  >Error handling
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/performance/"
+    
+  >Performance tips
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/design/"
+    
+  >Design philosophy
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/architecture/"
+    
+  >Architecture
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/tools/"
+    
+  >Tools
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/benchmarks/"
+    
+  >Benchmarks
+    </a></li>
+          <li class="open"><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      sidebar-active-item hx-bg-primary-100 hx-font-semibold hx-text-primary-800 contrast-more:hx-border contrast-more:hx-border-primary-500 dark:hx-bg-primary-400/10 dark:hx-text-primary-600 contrast-more:dark:hx-border-primary-500"
+    href="/ark/cheatsheet/"
+    
+  >Cheat sheet
+    </a>
+  
+    <ul class='hx-flex hx-flex-col hx-gap-1 hx-relative before:hx-absolute before:hx-inset-y-1 before:hx-w-px before:hx-bg-gray-200 before:hx-content-[""] dark:before:hx-bg-neutral-800 ltr:hx-pl-3 ltr:before:hx-left-0 rtl:hx-pr-3 rtl:before:hx-right-0 ltr:hx-ml-3 rtl:hx-mr-3'><li>
+              <a
+                href="#world-creation"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >World creation</a>
+            </li>
+          <li>
+              <a
+                href="#create-entities"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Create entities</a>
+            </li>
+          <li>
+              <a
+                href="#remove-entities"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Remove entities</a>
+            </li>
+          <li>
+              <a
+                href="#addremove-components"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Add/remove components</a>
+            </li>
+          <li>
+              <a
+                href="#filters-and-queries"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Filters and queries</a>
+            </li>
+          <li>
+              <a
+                href="#access-components"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Access components</a>
+            </li>
+          <li>
+              <a
+                href="#resources"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Resources</a>
+            </li>
+          <li>
+              <a
+                href="#events-and-observers"
+                class="hx-flex hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [word-break:break-word] hx-cursor-pointer [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] contrast-more:hx-border hx-gap-2 before:hx-opacity-25 before:hx-content-['#'] hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:hx-text-gray-900 contrast-more:dark:hx-text-gray-50 contrast-more:hx-border-transparent contrast-more:hover:hx-border-gray-900 contrast-more:dark:hover:hx-border-gray-50"
+              >Events and observers</a>
+            </li>
+          </ul>
+  </li>
+    </ul>
+
+    <ul class="hx-flex hx-flex-col hx-gap-1 max-md:hx-hidden">
+        
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/overview/"
+    
+  >Overview
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/quickstart/"
+    
+  >Quickstart
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/concepts/"
+    
+  >Concepts
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/queries/"
+    
+  >Filters &amp; queries
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/operations/"
+    
+  >Component operations
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/resources/"
+    
+  >Resources
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/relations/"
+    
+  >Entity relationships
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/batch/"
+    
+  >Batch operations
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/events/"
+    
+  >Event system
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/unsafe/"
+    
+  >Unsafe API
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/stats/"
+    
+  >World statistics
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/errors/"
+    
+  >Error handling
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/performance/"
+    
+  >Performance tips
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/design/"
+    
+  >Design philosophy
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/architecture/"
+    
+  >Architecture
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/tools/"
+    
+  >Tools
+    </a></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/ark/benchmarks/"
+    
+  >Benchmarks
+    </a></li>
+          <li class="open"><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      sidebar-active-item hx-bg-primary-100 hx-font-semibold hx-text-primary-800 contrast-more:hx-border contrast-more:hx-border-primary-500 dark:hx-bg-primary-400/10 dark:hx-text-primary-600 contrast-more:dark:hx-border-primary-500"
+    href="/ark/cheatsheet/"
+    
+  >Cheat sheet
+    </a></li>
+        
+      </ul>
+    </div>
+  
+  
+    <div class="  hx-sticky hx-bottom-0 hx-bg-white dark:hx-bg-dark hx-mx-4 hx-py-4 hx-shadow-[0_-12px_16px_#fff] hx-flex hx-items-center hx-gap-2 dark:hx-border-neutral-800 dark:hx-shadow-[0_-12px_16px_#111] contrast-more:hx-border-neutral-400 contrast-more:hx-shadow-none contrast-more:dark:hx-shadow-none hx-border-t" data-toggle-animation="show"><div class="hx-flex hx-grow hx-flex-col"><button
+  title="Change theme"
+  data-theme="light"
+  class="theme-toggle hx-group hx-h-7 hx-rounded-md hx-px-2 hx-text-left hx-text-xs hx-font-medium hx-text-gray-600 hx-transition-colors dark:hx-text-gray-400 hover:hx-bg-gray-100 hover:hx-text-gray-900 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50"
+  type="button"
+  aria-label="Change theme"
+>
+  <div class="hx-flex hx-items-center hx-gap-2 hx-capitalize"><svg height=12 class="group-data-[theme=light]:hx-hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg><span class="group-data-[theme=light]:hx-hidden">Light</span><svg height=12 class="group-data-[theme=dark]:hx-hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg><span class="group-data-[theme=dark]:hx-hidden">Dark</span></div>
+</button>
+</div></div></aside>
+    
+<nav class="hextra-toc hx-order-last hx-hidden hx-w-64 hx-shrink-0 xl:hx-block print:hx-hidden hx-px-4" aria-label="table of contents">
+    <div class="hextra-scrollbar hx-sticky hx-top-16 hx-overflow-y-auto hx-pr-4 hx-pt-6 hx-text-sm [hyphens:auto] hx-max-h-[calc(100vh-var(--navbar-height)-env(safe-area-inset-bottom))] ltr:hx--mr-4 rtl:hx--ml-4"><p class="hx-mb-4 hx-font-semibold hx-tracking-tight">On this page</p><ul>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#world-creation">World creation
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#create-entities">Create entities
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#remove-entities">Remove entities
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#addremove-components">Add/remove components
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#filters-and-queries">Filters and queries
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#access-components">Access components
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#resources">Resources
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="hx-font-semibold hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#events-and-observers">Events and observers
+        </a>
+      </li></ul>
+      <div class="hx-mt-8 hx-border-t hx-bg-white hx-pt-8 hx-shadow-[0_-12px_16px_white] dark:hx-bg-dark dark:hx-shadow-[0_-12px_16px_#111] hx-sticky hx-bottom-0 hx-flex hx-flex-col hx-items-start hx-gap-2 hx-pb-8 dark:hx-border-neutral-800 contrast-more:hx-border-t contrast-more:hx-border-neutral-400 contrast-more:hx-shadow-none contrast-more:dark:hx-border-neutral-400">
+        <button aria-hidden="true" id="backToTop" onClick="scrollUp();" class="hx-transition-all hx-duration-75 hx-opacity-0 hx-text-xs hx-font-medium hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-100 contrast-more:hx-text-gray-800 contrast-more:dark:hx-text-gray-50">
+          <span>Scroll to top</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hx-inline ltr:hx-ml-1 rtl:hx-mr-1 hx-h-3.5 hx-w-3.5 hx-border hx-rounded-full hx-border-gray-500 hover:hx-border-gray-900 dark:hx-border-gray-400 dark:hover:hx-border-gray-100 contrast-more:hx-border-gray-800 contrast-more:dark:hx-border-gray-50">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+
+    <article class="hx-w-full hx-break-words hx-flex hx-min-h-[calc(100vh-var(--navbar-height))] hx-min-w-0 hx-justify-center hx-pb-8 hx-pr-[calc(env(safe-area-inset-right)-1.5rem)]">
+      <main class="hx-w-full hx-min-w-0 hx-max-w-6xl hx-px-6 hx-pt-4 md:hx-px-12">
+        
+  <div class="hx-mt-1.5 hx-flex hx-items-center hx-gap-1 hx-overflow-hidden hx-text-sm hx-text-gray-500 dark:hx-text-gray-400 contrast-more:hx-text-current">
+        <div class="hx-whitespace-nowrap hx-transition-colors hx-min-w-[24px] hx-overflow-hidden hx-text-ellipsis hover:hx-text-gray-900 dark:hover:hx-text-gray-100">
+            <a href="/ark/">Ark</a>
+        </div><svg class="hx-w-3.5 hx-shrink-0 rtl:-hx-rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg><div class="hx-whitespace-nowrap hx-transition-colors hx-font-medium hx-text-gray-700 contrast-more:hx-font-bold contrast-more:hx-text-current dark:hx-text-gray-100 contrast-more:dark:hx-text-current">Cheat sheet</div>
+  </div>
+
+        <div class="content">
+          <h1>Cheat sheet</h1>
+          <p>Frequently used Ark APIs for quick lookup.</p>
+<script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+<button onclick="expandAllDetails()" title="Expand all sections" aria-label="Expand all">➕</button>
+<button onclick="collapseAllDetails()" title="Collapse all sections" aria-label="Collapse all">➖</button>
+
+
+<h2>World creation<span class="hx-absolute -hx-mt-20" id="world-creation"></span>
+    <a href="#world-creation" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+<button onclick="expandGroup('world')" title="Expand section">➕</button>
+<button onclick="collapseGroup('world')" title="Collapse section">➖</button>
+
+
+<p>The world is the central ECS data storage.
+Most applications will use exactly one world.</p>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="world">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🌍 Create a World with default initial capacity</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">world</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nf">NewWorld</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">world</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#World.New" target="_blank"><code class="copy-to-clipboard-code" data-code="World.New">World.New</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="world">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🌍 Create a World with a specific initial capacity</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">world</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nf">NewWorld</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">world</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#World.New" target="_blank"><code class="copy-to-clipboard-code" data-code="World.New">World.New</code></a></span></p>
+  </div>
+</details>
+<h2>Create entities<span class="hx-absolute -hx-mt-20" id="create-entities"></span>
+    <a href="#create-entities" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+<button onclick="expandGroup('create')" title="Expand section">➕</button>
+<button onclick="collapseGroup('create')" title="Collapse section">➖</button>
+
+
+<p>Entities represent the “objects” in a game or simulation.</p>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="create">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">✨ Create an <strong>entity without components</strong></span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>Create an <strong>entity without components</strong>:</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">e</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">e</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#World.NewEntity" target="_blank"><code class="copy-to-clipboard-code" data-code="World.NewEntity">World.NewEntity</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="create">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">✨ A <strong>component mapper</strong> is required for creating <strong>entities with components</strong></span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>Component mappers should be stored and re-used for best performance.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">mapper</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">Velocity</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">mapper</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map1" target="_blank"><code class="copy-to-clipboard-code" data-code="Map1">Map1</code></a></span>,  <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2">Map2</code></a></span>, &hellip;</p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="create">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">✨ Create a <strong>single entity</strong>, given some components</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">e</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="o">&amp;</span><span class="nx">Position</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">	<span class="o">&amp;</span><span class="nx">Velocity</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">e</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.NewEntity" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.NewEntity">Map2.NewEntity</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="create">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">✨ Create a <strong>single entity</strong> using a callback</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">e</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">NewEntityFn</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">pos</span> <span class="o">*</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">vel</span> <span class="o">*</span><span class="nx">Velocity</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pos</span><span class="p">.</span><span class="nx">X</span><span class="p">,</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">vel</span><span class="p">.</span><span class="nx">X</span><span class="p">,</span> <span class="nx">vel</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">e</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.NewEntityFn" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.NewEntityFn">Map2.NewEntityFn</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="create">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">✨ Create <strong>many entities</strong> more efficiently, all with the same component values</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">NewBatch</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">100</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="o">&amp;</span><span class="nx">Position</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">	<span class="o">&amp;</span><span class="nx">Velocity</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.NewBatch" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.NewBatch">Map2.NewBatch</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="create">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">✨ Create <strong>many entities</strong>, using a callback for individual initialization</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">NewBatchFn</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">100</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">func</span><span class="p">(</span><span class="nx">e</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span><span class="p">,</span> <span class="nx">pos</span> <span class="o">*</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">vel</span> <span class="o">*</span><span class="nx">Velocity</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">pos</span><span class="p">.</span><span class="nx">X</span><span class="p">,</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">Float64</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">Float64</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">vel</span><span class="p">.</span><span class="nx">X</span><span class="p">,</span> <span class="nx">vel</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">NormFloat64</span><span class="p">(),</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">NormFloat64</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.NewBatchFn" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.NewBatchFn">Map2.NewBatchFn</code></a></span></p>
+  </div>
+</details>
+<h2>Remove entities<span class="hx-absolute -hx-mt-20" id="remove-entities"></span>
+    <a href="#remove-entities" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+<button onclick="expandGroup('delete')" title="Expand section">➕</button>
+<button onclick="collapseGroup('delete')" title="Collapse section">➖</button>
+
+
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="delete">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">❌ Remove a <strong>single entity</strong></span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">world</span><span class="p">.</span><span class="nf">RemoveEntity</span><span class="p">(</span><span class="nx">entity</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#World.RemoveEntity" target="_blank"><code class="copy-to-clipboard-code" data-code="World.RemoveEntity">World.RemoveEntity</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="delete">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">❌ Remove <strong>all entities</strong> that match a filter</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">Velocity</span><span class="p">](</span><span class="nx">world</span><span class="p">).</span><span class="nf">Exclusive</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">world</span><span class="p">.</span><span class="nf">RemoveEntities</span><span class="p">(</span><span class="nx">filter</span><span class="p">.</span><span class="nf">Batch</span><span class="p">(),</span> <span class="kc">nil</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#World.RemoveEntities" target="_blank"><code class="copy-to-clipboard-code" data-code="World.RemoveEntities">World.RemoveEntities</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="delete">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">❌ With a <strong>callback</strong> to do something with entities before their removal</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">world</span><span class="p">.</span><span class="nf">RemoveEntities</span><span class="p">(</span><span class="nx">filter</span><span class="p">.</span><span class="nf">Batch</span><span class="p">(),</span> <span class="kd">func</span><span class="p">(</span><span class="nx">entity</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Do something before removal</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#World.RemoveEntities" target="_blank"><code class="copy-to-clipboard-code" data-code="World.RemoveEntities">World.RemoveEntities</code></a></span></p>
+  </div>
+</details>
+<h2>Add/remove components<span class="hx-absolute -hx-mt-20" id="addremove-components"></span>
+    <a href="#addremove-components" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+<button onclick="expandGroup('components')" title="Expand section">➕</button>
+<button onclick="collapseGroup('components')" title="Collapse section">➖</button>
+
+
+<p>Components store the data that is associated to entities.</p>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="components">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🧩 A <strong>component mapper</strong> is required for adding and removing components</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>It adds or removes the given components to/from entities.
+Component mappers should be stored and re-used for best performance.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">mapper</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">Velocity</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">mapper</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map1" target="_blank"><code class="copy-to-clipboard-code" data-code="Map1">Map1</code></a></span>,  <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2">Map2</code></a></span>, &hellip;</p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="components">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🧩 Add and remove components to/from a <strong>single entity</strong></span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">entity</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">entity</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="o">&amp;</span><span class="nx">Position</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">	<span class="o">&amp;</span><span class="nx">Velocity</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">Remove</span><span class="p">(</span><span class="nx">entity</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.Add" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.Add">Map2.Add</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.Remove" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.Remove">Map2.Remove</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="components">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🧩 Add components to <strong>all entities</strong> matching a filter</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter1</span><span class="p">[</span><span class="nx">Altitude</span><span class="p">](</span><span class="nx">world</span><span class="p">).</span><span class="nf">Exclusive</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">AddBatch</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">filter</span><span class="p">.</span><span class="nf">Batch</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">	<span class="o">&amp;</span><span class="nx">Position</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">	<span class="o">&amp;</span><span class="nx">Velocity</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.AddBatch" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.AddBatch">Map2.AddBatch</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="components">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🧩 Add components to <strong>all entities</strong> matching a filter, with individual initialization</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter1</span><span class="p">[</span><span class="nx">Altitude</span><span class="p">](</span><span class="nx">world</span><span class="p">).</span><span class="nf">Exclusive</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">AddBatchFn</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">filter</span><span class="p">.</span><span class="nf">Batch</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">func</span><span class="p">(</span><span class="nx">e</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span><span class="p">,</span> <span class="nx">pos</span> <span class="o">*</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">vel</span> <span class="o">*</span><span class="nx">Velocity</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">pos</span><span class="p">.</span><span class="nx">X</span><span class="p">,</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">Float64</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">Float64</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">vel</span><span class="p">.</span><span class="nx">X</span><span class="p">,</span> <span class="nx">vel</span><span class="p">.</span><span class="nx">Y</span> <span class="p">=</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">NormFloat64</span><span class="p">(),</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">NormFloat64</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.AddBatchFn" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.AddBatchFn">Map2.AddBatchFn</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="components">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🧩 Remove components from <strong>all entities</strong> matching a filter.</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>The callback can be used to do something with entities before component removal.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">Velocity</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">mapper</span><span class="p">.</span><span class="nf">RemoveBatch</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">filter</span><span class="p">.</span><span class="nf">Batch</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">func</span><span class="p">(</span><span class="nx">entity</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">})</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.RemoveBatch" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.RemoveBatch">Map2.RemoveBatch</code></a></span></p>
+  </div>
+</details>
+<h2>Filters and queries<span class="hx-absolute -hx-mt-20" id="filters-and-queries"></span>
+    <a href="#filters-and-queries" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+<button onclick="expandGroup('queries')" title="Expand section">➕</button>
+<button onclick="collapseGroup('queries')" title="Collapse section">➖</button>
+
+
+<p>Queries are the main work horse for implementing logic.</p>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="queries">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🔍 Use <strong>filters and queries</strong> to iterate entities</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>Filters should be stored and re-used for best performance.<br>
+Always create a new query before iterating.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">Velocity</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">query</span> <span class="o">:=</span> <span class="nx">filter</span><span class="p">.</span><span class="nf">Query</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">query</span><span class="p">.</span><span class="nf">Next</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pos</span><span class="p">,</span> <span class="nx">vel</span> <span class="o">:=</span> <span class="nx">query</span><span class="p">.</span><span class="nf">Get</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pos</span><span class="p">.</span><span class="nx">X</span> <span class="o">+=</span> <span class="nx">vel</span><span class="p">.</span><span class="nx">X</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pos</span><span class="p">.</span><span class="nx">Y</span> <span class="o">+=</span> <span class="nx">vel</span><span class="p">.</span><span class="nx">Y</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Filter1" target="_blank"><code class="copy-to-clipboard-code" data-code="Filter1">Filter1</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Filter2" target="_blank"><code class="copy-to-clipboard-code" data-code="Filter2">Filter2</code></a></span>, &hellip;, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Filter2.Query" target="_blank"><code class="copy-to-clipboard-code" data-code="Filter2.Query">Filter2.Query</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Query2.Next" target="_blank"><code class="copy-to-clipboard-code" data-code="Query2.Next">Query2.Next</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Query2.Get" target="_blank"><code class="copy-to-clipboard-code" data-code="Query2.Get">Query2.Get</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="queries">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🔍 Filters can match <strong>additional components</strong></span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>For components the entities should have, but that are not accessed in the query.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">Velocity</span><span class="p">](</span><span class="nx">world</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">With</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">C</span><span class="p">[</span><span class="nx">Altitude</span><span class="p">]())</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">filter</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Filter2.With" target="_blank"><code class="copy-to-clipboard-code" data-code="Filter2.With">Filter2.With</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="queries">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🔍 Filters can <strong>exclude components</strong></span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">Velocity</span><span class="p">](</span><span class="nx">world</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Without</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">C</span><span class="p">[</span><span class="nx">Altitude</span><span class="p">]())</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">filter</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Filter2.Without" target="_blank"><code class="copy-to-clipboard-code" data-code="Filter2.Without">Filter2.Without</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="queries">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🔍 Filters can be <strong>exclusive</strong> on the given components</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>This filter matches only entities with exactly the given components.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">Velocity</span><span class="p">](</span><span class="nx">world</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Exclusive</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">filter</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Filter2.Exclusive" target="_blank"><code class="copy-to-clipboard-code" data-code="Filter2.Exclusive">Filter2.Exclusive</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="queries">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🔍 Filters can <strong>combine</strong> multiple conditions</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">filter</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewFilter1</span><span class="p">[</span><span class="nx">Position</span><span class="p">](</span><span class="nx">world</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">With</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">C</span><span class="p">[</span><span class="nx">Velocity</span><span class="p">]()).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">With</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">C</span><span class="p">[</span><span class="nx">Altitude</span><span class="p">]()).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Without</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">C</span><span class="p">[</span><span class="nx">Health</span><span class="p">]())</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">filter</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Filter2.With" target="_blank"><code class="copy-to-clipboard-code" data-code="Filter2.With">Filter2.With</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Filter2.Without" target="_blank"><code class="copy-to-clipboard-code" data-code="Filter2.Without">Filter2.Without</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="queries">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🔍 <strong>Access entities</strong> in query loops</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">query</span> <span class="o">:=</span> <span class="nx">filter</span><span class="p">.</span><span class="nf">Query</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">query</span><span class="p">.</span><span class="nf">Next</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">entity</span> <span class="o">:=</span> <span class="nx">query</span><span class="p">.</span><span class="nf">Entity</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_</span> <span class="p">=</span> <span class="nx">entity</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Query.Entity" target="_blank"><code class="copy-to-clipboard-code" data-code="Query.Entity">Query.Entity</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="queries">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🔍 Queries can <strong>count entities</strong> without iterating</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>Note that a query that is not iterated must be closed explicitly.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">query</span> <span class="o">:=</span> <span class="nx">filter</span><span class="p">.</span><span class="nf">Query</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">query</span><span class="p">.</span><span class="nf">Count</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">query</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Query.Count" target="_blank"><code class="copy-to-clipboard-code" data-code="Query.Count">Query.Count</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Query.Close" target="_blank"><code class="copy-to-clipboard-code" data-code="Query.Close">Query.Close</code></a></span></p>
+  </div>
+</details>
+<h2>Access components<span class="hx-absolute -hx-mt-20" id="access-components"></span>
+    <a href="#access-components" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+<button onclick="expandGroup('access')" title="Expand section">➕</button>
+<button onclick="collapseGroup('access')" title="Collapse section">➖</button>
+
+
+<p>Components can also be accessed for arbitrary entities, not only inside queries.</p>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="access">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🧩 A <strong>component mapper</strong> is required for component access outside queries</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>Allows access to the given components.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">mapper</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">Velocity</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">mapper</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map1" target="_blank"><code class="copy-to-clipboard-code" data-code="Map1">Map1</code></a></span>,  <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2">Map2</code></a></span>, &hellip;</p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="access">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🧩 <strong>Access components</strong> by entity</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">entity</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Position</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span> <span class="o">&amp;</span><span class="nx">Velocity</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">pos</span><span class="p">,</span> <span class="nx">vel</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="nx">entity</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">pos</span><span class="p">,</span> <span class="nx">vel</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.Get" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.Get">Map2.Get</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="access">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🧩 <strong>Check for existence</strong> of components for an entity</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">entity</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Position</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span> <span class="o">&amp;</span><span class="nx">Velocity</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">hasPosAndVel</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">HasAll</span><span class="p">(</span><span class="nx">entity</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">hasPosAndVel</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map2.HasAll" target="_blank"><code class="copy-to-clipboard-code" data-code="Map2.HasAll">Map2.HasAll</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="access">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">🧩 For <strong>single component access</strong>, there is a slightly more convenient mapper</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">mapper</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewMap</span><span class="p">[</span><span class="nx">Position</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">entity</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Position</span><span class="p">{</span><span class="nx">X</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nx">Y</span><span class="p">:</span> <span class="mi">100</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">Has</span><span class="p">(</span><span class="nx">entity</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pos</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="nx">entity</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_</span> <span class="p">=</span> <span class="nx">pos</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Map" target="_blank"><code class="copy-to-clipboard-code" data-code="Map">Map</code></a></span></p>
+  </div>
+</details>
+<h2>Resources<span class="hx-absolute -hx-mt-20" id="resources"></span>
+    <a href="#resources" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+<button onclick="expandGroup('resources')" title="Expand section">➕</button>
+<button onclick="collapseGroup('resources')" title="Collapse section">➖</button>
+
+
+<p>Resources are &ldquo;global&rdquo;, singleton-like data structures that are not associated to a particular entity.</p>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="resources">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">📦 Adding and <strong>getting resources</strong>, the simple but slower way (≈20ns)</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">grid</span> <span class="o">:=</span> <span class="nf">NewGrid</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">ecs</span><span class="p">.</span><span class="nf">AddResource</span><span class="p">(</span><span class="nx">world</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">grid</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">GetResource</span><span class="p">[</span><span class="nx">Grid</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#AddResource" target="_blank"><code class="copy-to-clipboard-code" data-code="AddResource">AddResource</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#GetResource" target="_blank"><code class="copy-to-clipboard-code" data-code="GetResource">GetResource</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="resources">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">📦 For <strong>repeated access</strong>, better use a resource accessor (<code>Get()</code> ≈1ns)</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+      <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">gridResource</span> <span class="o">:=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">NewResource</span><span class="p">[</span><span class="nx">Grid</span><span class="p">](</span><span class="nx">world</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">grid</span> <span class="o">:=</span> <span class="nx">gridResource</span><span class="p">.</span><span class="nf">Get</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">_</span> <span class="p">=</span> <span class="nx">grid</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>(Creating the accessor does not add the actual <code>Grid</code> resource!)</p>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Resource" target="_blank"><code class="copy-to-clipboard-code" data-code="Resource">Resource</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Resource.Get" target="_blank"><code class="copy-to-clipboard-code" data-code="Resource.Get">Resource.Get</code></a></span></p>
+  </div>
+</details>
+<h2>Events and observers<span class="hx-absolute -hx-mt-20" id="events-and-observers"></span>
+    <a href="#events-and-observers" class="subheading-anchor" aria-label="Permalink for this section"></a></h2><script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+<button onclick="expandGroup('events')" title="Expand section">➕</button>
+<button onclick="collapseGroup('events')" title="Collapse section">➖</button>
+
+
+<p>Observers allow to react to ECS lifecycle events, like entity creation or component addition.</p>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="events">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">👀 <strong>Create and register</strong> observers for ECS lifecycle events</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>Gets notified on any creation of an entity.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">ecs</span><span class="p">.</span><span class="nf">Observe</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">OnCreateEntity</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">e</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Do something with the newly created entity.</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Register</span><span class="p">(</span><span class="nx">world</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Observer" target="_blank"><code class="copy-to-clipboard-code" data-code="Observer">Observer</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="events">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">👀 Observers can <strong>filter</strong> for certain components</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>Gets notified when a <code>Position</code> and a <code>Velocity</code> component are added to an entity.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">ecs</span><span class="p">.</span><span class="nf">Observe</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">OnAddComponents</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">For</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">C</span><span class="p">[</span><span class="nx">Position</span><span class="p">]()).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">For</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">C</span><span class="p">[</span><span class="nx">Velocity</span><span class="p">]()).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">e</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Do something with the entity.</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Register</span><span class="p">(</span><span class="nx">world</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Observer.For" target="_blank"><code class="copy-to-clipboard-code" data-code="Observer.For">Observer.For</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="events">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">👀 Observers can <strong>process matched components</strong></span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>Gets notified when a <code>Position</code> and a <code>Velocity</code> component are added to an entity,
+with both available in the callback.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">ecs</span><span class="p">.</span><span class="nx">Observe2</span><span class="p">[</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">Velocity</span><span class="p">](</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">OnAddComponents</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">e</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span><span class="p">,</span> <span class="nx">pos</span> <span class="o">*</span><span class="nx">Position</span><span class="p">,</span> <span class="nx">vel</span> <span class="o">*</span><span class="nx">Velocity</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Do something with the entity and the components</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Register</span><span class="p">(</span><span class="nx">world</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Observer1" target="_blank"><code class="copy-to-clipboard-code" data-code="Observer1">Observer1</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Observer2" target="_blank"><code class="copy-to-clipboard-code" data-code="Observer2">Observer2</code></a></span>, &hellip;</p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="events">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">👀 Observers can also filter for the <strong>entity composition</strong></span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <p>Gets notified when a <code>Position</code> component is added to an entity
+that also has <code>Velocity</code> but not <code>Altitude</code>.</p>
+  <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">ecs</span><span class="p">.</span><span class="nx">Observe1</span><span class="p">[</span><span class="nx">Position</span><span class="p">](</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">OnAddComponents</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">With</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">C</span><span class="p">[</span><span class="nx">Velocity</span><span class="p">]()).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Without</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">C</span><span class="p">[</span><span class="nx">Altitude</span><span class="p">]()).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">e</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span><span class="p">,</span> <span class="nx">pos</span> <span class="o">*</span><span class="nx">Position</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Do something with the entity and the component</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Register</span><span class="p">(</span><span class="nx">world</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Observer1.With" target="_blank"><code class="copy-to-clipboard-code" data-code="Observer1.With">Observer1.With</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Observer1.Without" target="_blank"><code class="copy-to-clipboard-code" data-code="Observer1.Without">Observer1.Without</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="events">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">📣 <strong>Custom event types</strong> can be created using a registry</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">registry</span> <span class="p">=</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">EventRegistry</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">OnCollisionDetected</span> <span class="p">=</span> <span class="nx">registry</span><span class="p">.</span><span class="nf">NewEventType</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">OnInputReceived</span> <span class="p">=</span> <span class="nx">registry</span><span class="p">.</span><span class="nf">NewEventType</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">OnCollisionDetected</span><span class="p">,</span> <span class="nx">OnInputReceived</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#EventRegistry" target="_blank"><code class="copy-to-clipboard-code" data-code="EventRegistry">EventRegistry</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#EventRegistry.NewEventType" target="_blank"><code class="copy-to-clipboard-code" data-code="EventRegistry.NewEventType">EventRegistry.NewEventType</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="events">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">📣 <strong>Custom events</strong> can be emitted by the user</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">event</span> <span class="o">:=</span> <span class="nx">world</span><span class="p">.</span><span class="nf">Event</span><span class="p">(</span><span class="nx">OnCollisionDetected</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">For</span><span class="p">(</span><span class="nx">ecs</span><span class="p">.</span><span class="nx">C</span><span class="p">[</span><span class="nx">Position</span><span class="p">]())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">entity</span> <span class="o">:=</span> <span class="nx">mapper</span><span class="p">.</span><span class="nf">NewEntity</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Position</span><span class="p">{},</span> <span class="o">&amp;</span><span class="nx">Velocity</span><span class="p">{})</span>
+</span></span><span class="line"><span class="cl"><span class="nx">event</span><span class="p">.</span><span class="nf">Emit</span><span class="p">(</span><span class="nx">entity</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#World.Event" target="_blank"><code class="copy-to-clipboard-code" data-code="World.Event">World.Event</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Event" target="_blank"><code class="copy-to-clipboard-code" data-code="Event">Event</code></a></span></p>
+  </div>
+</details>
+<details class="last-of-type:hx-mb-0 hx-rounded-lg hx-bg-neutral-50 dark:hx-bg-neutral-800 hx-p-2 hx-mt-4 hx-group"  data-group="events">
+  <summary class="hx-flex hx-items-center hx-cursor-pointer hx-select-none hx-list-none hx-p-1 hx-rounded hx-transition-colors hover:hx-bg-gray-100 dark:hover:hx-bg-neutral-800 before:hx-mr-1 before:hx-inline-block before:hx-transition-transform before:hx-content-[''] dark:before:hx-invert rtl:before:hx-rotate-180 group-open:before:hx-rotate-90">
+    <span class="hx-text-lg">📣 Custom <strong>events can be observed</strong> like pre-defined events</span>
+  </summary>
+  <div class="hx-p-2 hx-overflow-hidden">
+    <div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+<div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">ecs</span><span class="p">.</span><span class="nx">Observe1</span><span class="p">[</span><span class="nx">Position</span><span class="p">](</span><span class="nx">OnCollisionDetected</span><span class="p">).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">e</span> <span class="nx">ecs</span><span class="p">.</span><span class="nx">Entity</span><span class="p">,</span> <span class="nx">p</span> <span class="o">*</span><span class="nx">Position</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Do something with the collision entity and the component</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}).</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Register</span><span class="p">(</span><span class="nx">world</span><span class="p">)</span></span></span></code></pre></div></div><div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+  <button
+    class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+    title="Copy code"
+  >
+    <div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4"></div>
+    <div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4"></div>
+  </button>
+</div>
+</div>
+<p>API: <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Observer" target="_blank"><code class="copy-to-clipboard-code" data-code="Observer">Observer</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Observer1" target="_blank"><code class="copy-to-clipboard-code" data-code="Observer1">Observer1</code></a></span>, <span class="copy-to-clipboard"><a href="https://pkg.go.dev/github.com/mlange-42/ark/ecs#Observer2" target="_blank"><code class="copy-to-clipboard-code" data-code="Observer2">Observer2</code></a></span>, &hellip;</p>
+  </div>
+</details>
+<br />
+<br />
+<script>
+function expandAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = true);
+}
+function collapseAllDetails() {
+    document.querySelectorAll("details").forEach(el => el.open = false);
+}
+function expandGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = true);
+}
+function collapseGroup(group) {
+    document.querySelectorAll(`details[data-group='${group}']`).forEach(el => el.open = false);
+}
+</script>
+<button onclick="expandAllDetails()" title="Expand all sections" aria-label="Expand all">➕</button>
+<button onclick="collapseAllDetails()" title="Collapse all sections" aria-label="Collapse all">➖</button>
+
+
+
+        </div>
+        <div class="hx-mt-16"></div>
+        <div class="hx-mb-8 hx-flex hx-items-center hx-border-t hx-pt-8 dark:hx-border-neutral-800 contrast-more:hx-border-neutral-400 dark:contrast-more:hx-border-neutral-400 print:hx-hidden"><a
+        href="/ark/benchmarks/"
+        title="Benchmarks"
+        class="hx-flex hx-max-w-[50%] hx-items-center hx-gap-1 hx-py-4 hx-text-base hx-font-medium hx-text-gray-600 hx-transition-colors [word-break:break-word] hover:hx-text-primary-600 dark:hx-text-gray-300 md:hx-text-lg ltr:hx-pr-4 rtl:hx-pl-4"
+      ><svg class="hx-inline hx-h-5 hx-shrink-0 ltr:hx-rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>Benchmarks</a></div>
+        
+      </main>
+    </article>
+  </div>
+
+      <footer class="hextra-footer hx-bg-gray-100 hx-pb-[env(safe-area-inset-bottom)] dark:hx-bg-neutral-900 print:hx-bg-transparent"><div
+      class="hextra-custom-footer hx-max-w-screen-xl hx-pl-[max(env(safe-area-inset-left),1.5rem)] hx-pr-[max(env(safe-area-inset-right),1.5rem)] hx-text-gray-600 dark:hx-text-gray-400"
+    ></div></footer>
+    
+    <script defer src="/ark/js/main.min.d0f0346255ba9418db8fcf7f9440ca4e532e06276d8df17497e19e1045ee360b.js" integrity="sha256-0PA0YlW6lBjbj89/lEDKTlMuBidtjfF0l&#43;GeEEXuNgs="></script>
+
+
+<script defer src="/ark/lib/flexsearch/flexsearch.bundle.min.0425860527cc9968f9f049421c7a56b39327d475e2e3a8f550416be3a9134327.js" integrity="sha256-BCWGBSfMmWj58ElCHHpWs5Mn1HXi46j1UEFr46kTQyc="></script>
+    <script defer src="/ark/en.search.min.bfe1260c7f437036f51a28379a5bb03e96fc65ee59f6c9404826568e371690a2.js" integrity="sha256-v&#43;EmDH9DcDb1Gig3mluwPpb8Ze5Z9slASCZWjjcWkKI="></script>
+
+
+  </body>
+</html>
