@@ -372,8 +372,12 @@ func TestObserverRelations(t *testing.T) {
 	expectEqual(t, 4, callAdd)
 	expectEqual(t, 3, callRemove)
 
+	w.CopyEntity(e1)
+	expectEqual(t, 5, callAdd)
+	expectEqual(t, 3, callRemove)
+
 	ex.Exchange(e1, &ChildOf2{}, RelIdx(0, parent1))
-	expectEqual(t, 4, callAdd)
+	expectEqual(t, 5, callAdd)
 	expectEqual(t, 4, callRemove)
 }
 

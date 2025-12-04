@@ -18,6 +18,7 @@
 
 - Fixes resetting relation target tracking on entity creation (#459)
 - Fixes resetting relations in archetype cleanup (#460)
+- Fixes missing `OnAddRelations` event on `CopyEntity` (#463)
 
 ### Migration guide
 
