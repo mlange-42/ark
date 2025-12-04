@@ -105,6 +105,9 @@ func (w *World) CopyEntity(e Entity) Entity {
 	table.CopyAll(table, idx, index.row)
 
 	w.storage.observers.FireCreateEntityIfHas(entity, &archetype.mask)
+	if archetype.HasRelations() {
+		w.storage.observers.FireCreateEntityRelIfHas(entity, &archetype.mask)
+	}
 	return entity
 }
 
