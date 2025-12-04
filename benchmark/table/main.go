@@ -10,8 +10,8 @@ import (
 	"github.com/mlange-42/ark/benchmark"
 )
 
-const version = "v0.7.0-dev"
-const goVersion = "1.25.1"
+const version = "v0.7.0"
+const goVersion = "1.25.4"
 
 func main() {
 	repetitions, err := strconv.Atoi(os.Args[1])
