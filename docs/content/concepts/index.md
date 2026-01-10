@@ -33,7 +33,7 @@ Entities without any components can be created through the ({{< api ecs World >}
 
 {{< code-func concepts_test.go TestCreateEntitySimple 0 1 >}}
 
-For creating entities with components, [component mappers](../components#component-mappers) are used.
+For creating entities with components, [component mappers](../operations#component-mappers) are used.
 Entities can be removed or deleted like this:
 
 {{< code-func concepts_test.go TestRemoveEntity >}}
