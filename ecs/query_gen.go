@@ -75,6 +75,9 @@ func (q *Query0) EntityAt(index int) Entity {
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query0) Close() {
+	if q.cursor.table < -1 {
+		return
+	}
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
@@ -217,6 +220,9 @@ func (q *Query1[A]) EntityAt(index int) Entity {
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query1[A]) Close() {
+	if q.cursor.table < -1 {
+		return
+	}
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
@@ -355,6 +361,9 @@ func (q *Query2[A, B]) EntityAt(index int) Entity {
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query2[A, B]) Close() {
+	if q.cursor.table < -1 {
+		return
+	}
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
@@ -506,6 +515,9 @@ func (q *Query3[A, B, C]) EntityAt(index int) Entity {
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query3[A, B, C]) Close() {
+	if q.cursor.table < -1 {
+		return
+	}
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
@@ -664,6 +676,9 @@ func (q *Query4[A, B, C, D]) EntityAt(index int) Entity {
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query4[A, B, C, D]) Close() {
+	if q.cursor.table < -1 {
+		return
+	}
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
@@ -829,6 +844,9 @@ func (q *Query5[A, B, C, D, E]) EntityAt(index int) Entity {
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query5[A, B, C, D, E]) Close() {
+	if q.cursor.table < -1 {
+		return
+	}
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
@@ -1001,6 +1019,9 @@ func (q *Query6[A, B, C, D, E, F]) EntityAt(index int) Entity {
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query6[A, B, C, D, E, F]) Close() {
+	if q.cursor.table < -1 {
+		return
+	}
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
@@ -1180,6 +1201,9 @@ func (q *Query7[A, B, C, D, E, F, G]) EntityAt(index int) Entity {
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query7[A, B, C, D, E, F, G]) Close() {
+	if q.cursor.table < -1 {
+		return
+	}
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil
@@ -1366,6 +1390,9 @@ func (q *Query8[A, B, C, D, E, F, G, H]) EntityAt(index int) Entity {
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
+	if q.cursor.table < -1 {
+		return
+	}
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil

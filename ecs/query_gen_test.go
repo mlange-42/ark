@@ -42,6 +42,7 @@ func TestQuery1(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter1[CompA](w).Without(C[Position]())
@@ -392,6 +393,7 @@ func TestQuery2(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter2[CompA, CompB](w).Without(C[Position]())
@@ -744,6 +746,7 @@ func TestQuery3(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter3[CompA, CompB, CompC](w).Without(C[Position]())
@@ -1098,6 +1101,7 @@ func TestQuery4(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter4[CompA, CompB, CompC, CompD](w).Without(C[Position]())
@@ -1454,6 +1458,7 @@ func TestQuery5(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter5[CompA, CompB, CompC, CompD, CompE](w).Without(C[Position]())
@@ -1812,6 +1817,7 @@ func TestQuery6(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](w).Without(C[Position]())
@@ -2172,6 +2178,7 @@ func TestQuery7(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w).Without(C[Position]())
@@ -2534,6 +2541,7 @@ func TestQuery8(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w).Without(C[Position]())
@@ -2890,6 +2898,7 @@ func TestQuery0(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter0(w).Without(C[Position]())

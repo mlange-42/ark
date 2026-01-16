@@ -42,6 +42,7 @@ func TestQuery(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, cnt, 2*n)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewUnsafeFilter(w, compA, compB, compC).Without(posID)
