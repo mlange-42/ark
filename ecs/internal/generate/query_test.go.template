@@ -55,6 +55,7 @@ func TestQuery{{.}}(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter{{.}}{{$generics}}(w).Without(C[Position]())
@@ -403,6 +404,7 @@ func TestQuery0(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, 2*n, cnt)
+	query.Close() // should not panic anymore
 
 	// filter without
 	filter = NewFilter0(w).Without(C[Position]())

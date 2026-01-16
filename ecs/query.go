@@ -51,6 +51,9 @@ func (q *UnsafeQuery) IDs() IDs {
 // Automatically called when iteration completes.
 // Needs to be called only if breaking out of the query iteration or not iterating at all.
 func (q *UnsafeQuery) Close() {
+	if q.cursor.table < -1 {
+		return
+	}
 	q.cursor.archetype = -2
 	q.cursor.table = -2
 	q.tables = nil

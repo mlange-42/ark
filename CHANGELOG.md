@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.7.0...main)
+
+### Other
+
+- Closed/finished queries don't panic when closed again (#469)
+
 ## [[v0.7.0]](https://github.com/mlange-42/ark/compare/v0.6.4...v0.7.0)
 
 ### Breaking changes
