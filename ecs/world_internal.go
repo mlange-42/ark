@@ -21,7 +21,7 @@ func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 	newTable, newArch := s.findOrCreateTableAdd(&s.tables[0], ids, relations, &mask)
 
 	entity := s.entityPool.Get()
-	idx := s.tables[newTable.id].Add(&w.storage, entity)
+	idx := s.tables[newTable.id].Add(entity)
 	if int(entity.id) == len(s.entities) {
 		s.entities = append(s.entities, entityIndex{table: newTable.id, row: idx})
 		s.isTarget = append(s.isTarget, false)
@@ -63,7 +63,7 @@ func (w *World) add(entity Entity, add []ID, relations []relationID) (*bitMask, 
 
 	mask := oldArchetype.mask
 	newTable, newArch := w.storage.findOrCreateTableAdd(oldTable, add, relations, &mask)
-	newIndex := newTable.Add(&w.storage, entity)
+	newIndex := newTable.Add(entity)
 
 	// Get the old table and archetype again, as the pointer may have changed.
 	oldTable = &w.storage.tables[oldTable.id]
@@ -105,7 +105,7 @@ func (w *World) remove(entity Entity, rem []ID) {
 
 	mask := oldArchetype.mask
 	newTable, _, relRemoved := w.storage.findOrCreateTableRemove(oldTable, rem, &mask)
-	newIndex := newTable.Add(&w.storage, entity)
+	newIndex := newTable.Add(entity)
 
 	// Get the old table and archetype again, as the pointer may have changed.
 	oldTable = &w.storage.tables[oldTable.id]
@@ -157,7 +157,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 
 	mask := oldArchetype.mask
 	newTable, newArch, relRemoved := w.storage.findOrCreateTable(oldTable, add, rem, relations, &mask)
-	newIndex := newTable.Add(&w.storage, entity)
+	newIndex := newTable.Add(entity)
 
 	// Get the old table and archetype again, as the pointer may have changed.
 	oldTable = &w.storage.tables[oldTable.id]
@@ -337,7 +337,7 @@ func (w *World) exchangeTable(oldTableID, newTableID tableID, relations []relati
 		index.row = idx
 	}
 
-	newTable.AddAllEntities(&w.storage, oldTable, count)
+	newTable.AddAllEntities(oldTable, count)
 	for _, id := range oldIDs {
 		if mask.Get(id.id) {
 			oldCol := oldTable.Column(id)
@@ -392,7 +392,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 		w.unlock(lock)
 	}
 
-	newIndex := newTable.Add(&w.storage, entity)
+	newIndex := newTable.Add(entity)
 
 	newTable.CopyAll(oldTable, newIndex, index.row)
 

@@ -197,10 +197,10 @@ func (u Unsafe) LoadEntities(data *EntityDump) {
 	u.world.storage.isTarget = make([]bool, capacity)
 
 	table := &u.world.storage.tables[0]
-	table.Extend(&u.world.storage, uint32(len(data.Alive)))
+	table.Extend(uint32(len(data.Alive)))
 	for _, idx := range data.Alive {
 		entity := u.world.storage.entityPool.entities[idx]
-		tableIdx := table.Add(&u.world.storage, entity)
+		tableIdx := table.Add(entity)
 		u.world.storage.entities[entity.id] = entityIndex{table: table.id, row: tableIdx}
 	}
 }
