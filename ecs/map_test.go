@@ -398,7 +398,9 @@ func TestMapGetReturnsNilForMissingComponentIssue470(t *testing.T) {
 	}
 
 	vel := velMap.Get(entity)
-	expectNil(t, vel, "Map.Get() should return nil for entity without component, got %v (pointer: %p)\n", vel, vel)
+	if vel != nil {
+		t.Fatal("Velocity component should be nil")
+	}
 }
 
 func TestMap1GetReturnsNilForMissingComponentIssue470(t *testing.T) {
@@ -415,7 +417,9 @@ func TestMap1GetReturnsNilForMissingComponentIssue470(t *testing.T) {
 	}
 
 	vel := velMap.Get(entity)
-	expectNil(t, vel, "Map.Get() should return nil for entity without component, got %v (pointer: %p)\n", vel, vel)
+	if vel != nil {
+		t.Fatal("Velocity component should be nil")
+	}
 }
 
 func BenchmarkMap1Get_1000(b *testing.B) {
