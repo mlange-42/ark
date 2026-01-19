@@ -384,6 +384,40 @@ func TestMapAddRelationBatch(t *testing.T) {
 	expectEqual(t, n, cnt)
 }
 
+func TestMapGetReturnsNilForMissingComponentIssue470(t *testing.T) {
+	world := NewWorld()
+	posMap := NewMap[Position](world)
+	velMap := NewMap[Velocity](world)
+
+	entity := posMap.NewEntity(&Position{X: 10, Y: 20})
+	if !posMap.Has(entity) {
+		t.Fatal("Entity should have Position component")
+	}
+	if velMap.Has(entity) {
+		t.Fatal("Entity should NOT have Velocity component")
+	}
+
+	vel := velMap.Get(entity)
+	expectNil(t, vel, "Map.Get() should return nil for entity without component, got %v (pointer: %p)\n", vel, vel)
+}
+
+func TestMap1GetReturnsNilForMissingComponentIssue470(t *testing.T) {
+	world := NewWorld()
+	posMap := NewMap1[Position](world)
+	velMap := NewMap1[Velocity](world)
+
+	entity := posMap.NewEntity(&Position{X: 10, Y: 20})
+	if !posMap.HasAll(entity) {
+		t.Fatal("Entity should have Position component")
+	}
+	if velMap.HasAll(entity) {
+		t.Fatal("Entity should NOT have Velocity component")
+	}
+
+	vel := velMap.Get(entity)
+	expectNil(t, vel, "Map.Get() should return nil for entity without component, got %v (pointer: %p)\n", vel, vel)
+}
+
 func BenchmarkMap1Get_1000(b *testing.B) {
 	w := NewWorld()
 	mapper := NewMap1[Position](w)
