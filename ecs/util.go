@@ -30,7 +30,11 @@ func capPow2(required uint32) uint32 {
 //
 // Returns nil if the entity does not have the component.
 func get[T any](storage *componentStorage, index *entityIndex) *T {
-	return (*T)(storage.Get(index.table).Get(uintptr(index.row)))
+	value := storage.Get(index.table).Get(uintptr(index.row))
+	if value == nil {
+		return nil
+	}
+	return (*T)(value)
 }
 
 // set the component for an entity using a component storage.
