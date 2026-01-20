@@ -7,18 +7,14 @@ import (
 
 // column storage for components in an table.
 type column struct {
-	columnLayout
-	data       reflect.Value // data buffer
-	elemType   reflect.Type  // element type of the column
-	target     Entity        // target entity if for a relation component
-	index      uint32        // index of the column in the containing table
-	isRelation bool          // whether this column is for a relation component
-	isTrivial  bool          // Whether the column's type is trivial , i.e. without pointers.
-}
-
-type columnLayout struct {
-	pointer  unsafe.Pointer // pointer to the first element
-	itemSize uintptr        // memory size of items
+	data       reflect.Value  // data buffer
+	pointer    unsafe.Pointer // pointer to the first element
+	itemSize   uintptr        // memory size of items
+	elemType   reflect.Type   // element type of the column
+	target     Entity         // target entity if for a relation component
+	index      uint32         // index of the column in the containing table
+	isRelation bool           // whether this column is for a relation component
+	isTrivial  bool           // Whether the column's type is trivial , i.e. without pointers.
 }
 
 // newColumn creates a new column for a given type and capacity.
@@ -28,10 +24,8 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 	pointer := data.Addr().UnsafePointer()
 
 	return column{
-		columnLayout: columnLayout{
-			pointer:  pointer,
-			itemSize: itemSize,
-		},
+		pointer:    pointer,
+		itemSize:   itemSize,
 		target:     target,
 		index:      index,
 		data:       data,
@@ -42,7 +36,7 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 }
 
 // Get returns a pointer to the component at the given index.
-func (c *columnLayout) Get(index uintptr) unsafe.Pointer {
+func (c *column) Get(index uintptr) unsafe.Pointer {
 	return unsafe.Add(c.pointer, index*c.itemSize)
 }
 

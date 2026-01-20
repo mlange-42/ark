@@ -1,6 +1,10 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.7.0...main)
+## [[v0.7.1]](https://github.com/mlange-42/ark/compare/v0.7.0...v0.7.1)
+
+### Bugfixes
+
+- Fixes non-nil component retrieved from mapper (#472, fixes #470, rolls back #430)
 
 ### Other
 

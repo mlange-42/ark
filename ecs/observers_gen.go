@@ -87,9 +87,10 @@ func (o *Observer1[A]) Register(w *World) *Observer1[A] {
 	storageA := &w.storage.components[ComponentID[A](w).id]
 	o.observer.callback = func(e Entity) {
 		index := &w.storage.entities[e.id]
+		row := uintptr(index.row)
 		o.callback(
 			e,
-			get[A](storageA, index),
+			(*A)(storageA.columns[index.table].Get(row)),
 		)
 	}
 
@@ -202,10 +203,11 @@ func (o *Observer2[A, B]) Register(w *World) *Observer2[A, B] {
 	storageB := &w.storage.components[ComponentID[B](w).id]
 	o.observer.callback = func(e Entity) {
 		index := &w.storage.entities[e.id]
+		row := uintptr(index.row)
 		o.callback(
 			e,
-			get[A](storageA, index),
-			get[B](storageB, index),
+			(*A)(storageA.columns[index.table].Get(row)),
+			(*B)(storageB.columns[index.table].Get(row)),
 		)
 	}
 
@@ -320,11 +322,12 @@ func (o *Observer3[A, B, C]) Register(w *World) *Observer3[A, B, C] {
 	storageC := &w.storage.components[ComponentID[C](w).id]
 	o.observer.callback = func(e Entity) {
 		index := &w.storage.entities[e.id]
+		row := uintptr(index.row)
 		o.callback(
 			e,
-			get[A](storageA, index),
-			get[B](storageB, index),
-			get[C](storageC, index),
+			(*A)(storageA.columns[index.table].Get(row)),
+			(*B)(storageB.columns[index.table].Get(row)),
+			(*C)(storageC.columns[index.table].Get(row)),
 		)
 	}
 
@@ -441,12 +444,13 @@ func (o *Observer4[A, B, C, D]) Register(w *World) *Observer4[A, B, C, D] {
 	storageD := &w.storage.components[ComponentID[D](w).id]
 	o.observer.callback = func(e Entity) {
 		index := &w.storage.entities[e.id]
+		row := uintptr(index.row)
 		o.callback(
 			e,
-			get[A](storageA, index),
-			get[B](storageB, index),
-			get[C](storageC, index),
-			get[D](storageD, index),
+			(*A)(storageA.columns[index.table].Get(row)),
+			(*B)(storageB.columns[index.table].Get(row)),
+			(*C)(storageC.columns[index.table].Get(row)),
+			(*D)(storageD.columns[index.table].Get(row)),
 		)
 	}
 
