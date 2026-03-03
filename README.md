@@ -1,3 +1,35 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="center">
+        <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=mlange-42&project=ark&lang=as">অসমীয়া</
+      </div>
+    </div>
+  </details>
+</div>
+
 <div align="center" width="100%">
 <a href="https://github.com/mlange-42/ark">
 <picture>
