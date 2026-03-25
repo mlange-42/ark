@@ -84,7 +84,6 @@ func ToCSV(title string, benches []Benchmark) string {
 		bench := &benches[i]
 		b.WriteString(fmt.Sprintf("%s;%0.2f;%0.2f\n", bench.Name, bench.T, bench.Mem))
 	}
-	b.WriteString("\n")
 
 	return b.String()
 }

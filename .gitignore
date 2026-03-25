@@ -1,5 +1,6 @@
 *.exe
 *.pprof
 *.out
+*.csv
 .hugo_build.lock
 /docs/public/
