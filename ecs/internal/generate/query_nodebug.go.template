@@ -26,9 +26,19 @@ func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
+// NextTable advances the query's cursor to the next table.
+func (q *Query{{.}}{{$genericsShort}}) NextTable() bool {
+	return q.nextTableOrArchetype()
+}
+
 // Entity returns the current entity.
 func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
+}
+
+// Entities returns the entities of the current table.
+func (q *Query{{.}}{{$genericsShort}}) Entities() []Entity {
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
 
 {{if . -}}
