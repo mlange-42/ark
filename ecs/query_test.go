@@ -275,3 +275,31 @@ func TestQueryParallel(t *testing.T) {
 		wg.Wait()
 	}
 }
+
+func TestQueryTables(t *testing.T) {
+	world := NewWorld()
+
+	map1 := NewMap1[Position](world)
+	map2 := NewMap2[Position, Velocity](world)
+
+	map1.NewBatch(100, &Position{1, 2})
+	map2.NewBatch(50, &Position{3, 4}, &Velocity{5, 6})
+
+	filter := NewFilter1[Position](world)
+	query := filter.Query()
+
+	cnt := 0
+	for query.NextTable() {
+		entities := query.Entities()
+		if cnt == 0 {
+			expectEqual(t, 100, len(entities))
+			expectEqual(t, Entity{2, 0}, entities[0])
+		} else {
+			expectEqual(t, 50, len(entities))
+			expectEqual(t, Entity{102, 0}, entities[0])
+		}
+		cnt++
+	}
+
+	expectEqual(t, 2, cnt)
+}
