@@ -21,6 +21,7 @@ for query.NextTable() {
 
 ### Other
 
+- Uses `reflect` slices instead of arrays for component columns (#475)
 - Adds regression benchmarks, comparing PRs against the main branch (#476, #477, #478)
 
 ## [[v0.7.1]](https://github.com/mlange-42/ark/compare/v0.7.0...v0.7.1)
