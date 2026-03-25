@@ -24,13 +24,17 @@ func main() {
 	fmt.Printf("Go version: %s  \n", goVersion)
 	fmt.Printf("CPU: %s\n\n", cpuid.CPU.BrandName)
 
-	benchmark.RunBenchmarks("Query", benchesQuery(), repetitions, benchmark.ToMarkdown)
-	benchmark.RunBenchmarks("World access", benchesWorld(), repetitions, benchmark.ToMarkdown)
-	benchmark.RunBenchmarks("Entities", benchesEntities(), repetitions, benchmark.ToMarkdown)
-	benchmark.RunBenchmarks("Entities, batched", benchesEntitiesBatch(), repetitions, benchmark.ToMarkdown)
-	benchmark.RunBenchmarks("Components", benchesComponents(), repetitions, benchmark.ToMarkdown)
-	benchmark.RunBenchmarks("Components, batched", benchesComponentsBatch(), repetitions, benchmark.ToMarkdown)
-	benchmark.RunBenchmarks("Other", benchesOther(), repetitions, benchmark.ToMarkdown)
+	formats := []benchmark.Format{
+		{Format: benchmark.ToMarkdown, Writer: os.Stdout},
+	}
+
+	benchmark.RunBenchmarks("Query", benchesQuery(), repetitions, formats)
+	benchmark.RunBenchmarks("World access", benchesWorld(), repetitions, formats)
+	benchmark.RunBenchmarks("Entities", benchesEntities(), repetitions, formats)
+	benchmark.RunBenchmarks("Entities, batched", benchesEntitiesBatch(), repetitions, formats)
+	benchmark.RunBenchmarks("Components", benchesComponents(), repetitions, formats)
+	benchmark.RunBenchmarks("Components, batched", benchesComponentsBatch(), repetitions, formats)
+	benchmark.RunBenchmarks("Other", benchesOther(), repetitions, formats)
 
 	fmt.Print("\n\n")
 }
