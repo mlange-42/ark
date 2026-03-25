@@ -286,9 +286,9 @@ func TestQueryTables(t *testing.T) {
 	map2.NewBatch(50, &Position{5, 6}, &Velocity{7, 8}, &Heading{0})
 
 	filter := NewFilter2[Position, Velocity](world)
-	query := filter.Query()
 
 	cnt := 0
+	query := filter.Query()
 	for query.NextTable() {
 		entities := query.Entities()
 		positions, velocities := query.GetColumns()
@@ -321,6 +321,26 @@ func TestQueryTables(t *testing.T) {
 		}
 		cnt++
 	}
+	expectEqual(t, 2, cnt)
 
+	cnt = 0
+	query = filter.Query()
+	for query.NextTable() {
+		entities := query.Entities()
+		positions, velocities := query.GetColumns()
+
+		for i := range entities {
+			pos := &positions[i]
+			vel := &velocities[i]
+			if cnt == 0 {
+				expectEqual(t, Position{4, 6}, *pos)
+				expectEqual(t, Velocity{3, 4}, *vel)
+			} else {
+				expectEqual(t, Position{12, 14}, *pos)
+				expectEqual(t, Velocity{7, 8}, *vel)
+			}
+		}
+		cnt++
+	}
 	expectEqual(t, 2, cnt)
 }
