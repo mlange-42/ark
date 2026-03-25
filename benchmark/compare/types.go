@@ -71,3 +71,13 @@ type Comp10 struct {
 	X float64
 	Y float64
 }
+
+// SliceComp1 non-trivial component type.
+type SliceComp1 struct {
+	Slice []int
+}
+
+// SliceComp2 non-trivial component type.
+type SliceComp2 struct {
+	Slice []int
+}

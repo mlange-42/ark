@@ -44,6 +44,44 @@ func addRemove(b *testing.B, n int) {
 	}
 }
 
+func addRemoveNonTrivial10(b *testing.B) {
+	addRemoveNonTrivial(b, 10)
+}
+
+func addRemoveNonTrivial1000(b *testing.B) {
+	addRemoveNonTrivial(b, 1000)
+}
+
+func addRemoveNonTrivial(b *testing.B, n int) {
+	world := ecs.NewWorld()
+
+	map1 := ecs.NewMap1[SliceComp1](world)
+	map2 := ecs.NewMap1[SliceComp2](world)
+
+	entities := make([]ecs.Entity, 0, n)
+
+	for range n {
+		e := map1.NewEntityFn(nil)
+		entities = append(entities, e)
+	}
+
+	for _, e := range entities {
+		map2.AddFn(e, nil)
+	}
+	for _, e := range entities {
+		map2.Remove(e)
+	}
+
+	for b.Loop() {
+		for _, e := range entities {
+			map2.AddFn(e, nil)
+		}
+		for _, e := range entities {
+			map2.Remove(e)
+		}
+	}
+}
+
 func addRemoveBatch10(b *testing.B) {
 	addRemoveBatch(b, 10)
 }
