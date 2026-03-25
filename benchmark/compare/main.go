@@ -9,7 +9,7 @@ import (
 func main() {
 	repetitions := 1
 
-	f, err := os.Create("benches.csv")
+	f, err := os.Create("bench.csv")
 	if err != nil {
 		panic(err)
 	}

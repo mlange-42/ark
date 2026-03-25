@@ -2,29 +2,69 @@ name: Compare benchmarks
 
 on:
   push:
-    branches:
-    - main
+    branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  BASE_REF: e137e72
+
 jobs:
-  tables:
-    name: Compare Benchmarks
+  benchmark:
+    name: Run Benchmarks
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repetition: [1, 2, 3]
     steps:
-      - uses: actions/checkout@v3
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
           go-version: '1.25.4'
+      - name: Checkout code
+        uses: actions/checkout@v6
       - name: Install dependencies
         run: go get .
-      - name: Run benchmarks
+        
+      - name: Run benchmarks for current
         run: |
           cd ./benchmark
           go run ./compare
-          cat benches.csv
-      - name: Archive benchmark results
-        uses: actions/upload-artifact@v4
+          cat bench.csv
+      - name: Rename file
+        run: mv benchmark/bench.csv benchmark/bench_current_${{ matrix.repetition }}.csv
+      - name: Archive results
+        uses: actions/upload-artifact@v6
         with:
-          path: benchmark/benches.csv
-          name: benches.csv
+          name: bench_current_${{ matrix.repetition }}
+          path: benchmark/bench_current_${{ matrix.repetition }}.csv
+
+      - name: Checkout code
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Switch to base commit
+        if: github.event_name == 'pull_request'
+        run: git checkout ${{ env.BASE_REF }}
+      - name: Install dependencies
+        run: go get .
+
+      - name: Run benchmarks for main
+        if: github.event_name == 'pull_request'
+        run: |
+          cd ./benchmark
+          go run ./compare
+          cat bench.csv
+      - name: Rename file
+        if: github.event_name == 'pull_request'
+        run: mv benchmark/bench.csv benchmark/bench_main_${{ matrix.repetition }}.csv
+      - name: Archive results
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v6
+        with:
+          name: bench_main_${{ matrix.repetition }}
+          path: benchmark/bench_main_${{ matrix.repetition }}.csv
