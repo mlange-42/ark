@@ -109,8 +109,8 @@ jobs:
         with:
           name: bench_current_3
           path: benchmark/
-      
-      - name: Check
+
+      - name: Run comparison
         run: |
           cd ./benchmark
-          ls
+          go run ./compare/compare

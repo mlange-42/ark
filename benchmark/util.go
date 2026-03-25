@@ -1,8 +1,11 @@
 package benchmark
 
 import (
+	"encoding/csv"
 	"fmt"
 	"io"
+	"os"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -17,6 +20,13 @@ type Benchmark struct {
 	Mem    float64
 	Factor float64
 	Units  string
+}
+
+// Result type
+type Result struct {
+	Name string
+	Time float64
+	Mem  float64
 }
 
 // Format for writing benchmark results.
@@ -42,7 +52,10 @@ func RunBenchmarks(title string, benches []Benchmark, count int, format []Format
 		b.Mem = float64(mem) / float64(n*b.N)
 	}
 	for _, f := range format {
-		fmt.Fprint(f.Writer, f.Format(title, benches))
+		_, err := fmt.Fprint(f.Writer, f.Format(title, benches))
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -86,4 +99,41 @@ func ToCSV(title string, benches []Benchmark) string {
 	}
 
 	return b.String()
+}
+
+// ReadCSV reade benchmark results from a CSV file.
+func ReadCSV(file string) ([]Result, error) {
+	f, err := os.Open(file)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	r := csv.NewReader(f)
+	r.Comma = ';'
+
+	_, err = r.Read()
+	if err != nil {
+		return nil, err
+	}
+
+	var results []Result
+
+	for {
+		record, err := r.Read()
+		if err != nil {
+			break // EOF is expected
+		}
+
+		timeVal, _ := strconv.ParseFloat(record[1], 64)
+		memVal, _ := strconv.ParseFloat(record[2], 64)
+
+		results = append(results, Result{
+			Name: record[0],
+			Time: timeVal,
+			Mem:  memVal,
+		})
+	}
+
+	return results, nil
 }
