@@ -40,6 +40,7 @@ type Query{{.}}{{$generics}} struct {
 	table      *table
 	cache      *cacheEntry
 	{{- range $upper}}
+	column{{.}}     *column
 	columnPtr{{.}}  unsafe.Pointer
 	itemSize{{.}}   uintptr
 	{{- end}}
@@ -126,6 +127,7 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	q.table = nil
 	q.cache = nil
 	{{- range $i, $v := $upper}}
+	q.column{{$v}} = nil
 	q.columnPtr{{$v}} = unsafe.Pointer(nilDummy)
 	q.itemSize{{$v}} = 0
 	{{- end}}
@@ -203,9 +205,9 @@ func (q *Query{{.}}{{$genericsShort}}) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	{{- range $i, $v := $upper}}
-	column{{$v}} := q.components[{{$i}}].columns[q.table.id]
-	q.columnPtr{{$v}} = column{{$v}}.pointer
-	q.itemSize{{$v}} = column{{$v}}.itemSize
+	q.column{{$v}} = q.components[{{$i}}].columns[q.table.id]
+	q.columnPtr{{$v}} = q.column{{$v}}.pointer
+	q.itemSize{{$v}} = q.column{{$v}}.itemSize
 	{{- end}}
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)

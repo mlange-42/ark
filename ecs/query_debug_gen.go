@@ -69,6 +69,12 @@ func (q *Query1[A]) Get() *A {
 	return (*A)(unsafe.Add(q.columnPtrA, index*q.itemSizeA))
 }
 
+// GetColumns returns the queried component columns of the current table.
+func (q *Query1[A]) GetColumns() []A {
+	q.cursor.checkQueryGet()
+	return q.columnA.data.Interface().([]A)[:q.table.len]
+}
+
 // Next advances the query's cursor to the next entity.
 func (q *Query2[A, B]) Next() bool {
 	q.cursor.checkQueryNext()
@@ -104,6 +110,13 @@ func (q *Query2[A, B]) Get() (*A, *B) {
 	index := q.cursor.index
 	return (*A)(unsafe.Add(q.columnPtrA, index*q.itemSizeA)),
 		(*B)(unsafe.Add(q.columnPtrB, index*q.itemSizeB))
+}
+
+// GetColumns returns the queried component columns of the current table.
+func (q *Query2[A, B]) GetColumns() ([]A, []B) {
+	q.cursor.checkQueryGet()
+	return q.columnA.data.Interface().([]A)[:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -144,6 +157,14 @@ func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 		(*C)(unsafe.Add(q.columnPtrC, index*q.itemSizeC))
 }
 
+// GetColumns returns the queried component columns of the current table.
+func (q *Query3[A, B, C]) GetColumns() ([]A, []B, []C) {
+	q.cursor.checkQueryGet()
+	return q.columnA.data.Interface().([]A)[:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len]
+}
+
 // Next advances the query's cursor to the next entity.
 func (q *Query4[A, B, C, D]) Next() bool {
 	q.cursor.checkQueryNext()
@@ -181,6 +202,15 @@ func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 		(*B)(unsafe.Add(q.columnPtrB, index*q.itemSizeB)),
 		(*C)(unsafe.Add(q.columnPtrC, index*q.itemSizeC)),
 		(*D)(unsafe.Add(q.columnPtrD, index*q.itemSizeD))
+}
+
+// GetColumns returns the queried component columns of the current table.
+func (q *Query4[A, B, C, D]) GetColumns() ([]A, []B, []C, []D) {
+	q.cursor.checkQueryGet()
+	return q.columnA.data.Interface().([]A)[:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len],
+		q.columnD.data.Interface().([]D)[:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -223,6 +253,16 @@ func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 		(*E)(unsafe.Add(q.columnPtrE, index*q.itemSizeE))
 }
 
+// GetColumns returns the queried component columns of the current table.
+func (q *Query5[A, B, C, D, E]) GetColumns() ([]A, []B, []C, []D, []E) {
+	q.cursor.checkQueryGet()
+	return q.columnA.data.Interface().([]A)[:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len],
+		q.columnD.data.Interface().([]D)[:q.table.len],
+		q.columnE.data.Interface().([]E)[:q.table.len]
+}
+
 // Next advances the query's cursor to the next entity.
 func (q *Query6[A, B, C, D, E, F]) Next() bool {
 	q.cursor.checkQueryNext()
@@ -262,6 +302,17 @@ func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 		(*D)(unsafe.Add(q.columnPtrD, index*q.itemSizeD)),
 		(*E)(unsafe.Add(q.columnPtrE, index*q.itemSizeE)),
 		(*F)(unsafe.Add(q.columnPtrF, index*q.itemSizeF))
+}
+
+// GetColumns returns the queried component columns of the current table.
+func (q *Query6[A, B, C, D, E, F]) GetColumns() ([]A, []B, []C, []D, []E, []F) {
+	q.cursor.checkQueryGet()
+	return q.columnA.data.Interface().([]A)[:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len],
+		q.columnD.data.Interface().([]D)[:q.table.len],
+		q.columnE.data.Interface().([]E)[:q.table.len],
+		q.columnF.data.Interface().([]F)[:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -306,6 +357,18 @@ func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 		(*G)(unsafe.Add(q.columnPtrG, index*q.itemSizeG))
 }
 
+// GetColumns returns the queried component columns of the current table.
+func (q *Query7[A, B, C, D, E, F, G]) GetColumns() ([]A, []B, []C, []D, []E, []F, []G) {
+	q.cursor.checkQueryGet()
+	return q.columnA.data.Interface().([]A)[:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len],
+		q.columnD.data.Interface().([]D)[:q.table.len],
+		q.columnE.data.Interface().([]E)[:q.table.len],
+		q.columnF.data.Interface().([]F)[:q.table.len],
+		q.columnG.data.Interface().([]G)[:q.table.len]
+}
+
 // Next advances the query's cursor to the next entity.
 func (q *Query8[A, B, C, D, E, F, G, H]) Next() bool {
 	q.cursor.checkQueryNext()
@@ -347,4 +410,17 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) 
 		(*F)(unsafe.Add(q.columnPtrF, index*q.itemSizeF)),
 		(*G)(unsafe.Add(q.columnPtrG, index*q.itemSizeG)),
 		(*H)(unsafe.Add(q.columnPtrH, index*q.itemSizeH))
+}
+
+// GetColumns returns the queried component columns of the current table.
+func (q *Query8[A, B, C, D, E, F, G, H]) GetColumns() ([]A, []B, []C, []D, []E, []F, []G, []H) {
+	q.cursor.checkQueryGet()
+	return q.columnA.data.Interface().([]A)[:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len],
+		q.columnD.data.Interface().([]D)[:q.table.len],
+		q.columnE.data.Interface().([]E)[:q.table.len],
+		q.columnF.data.Interface().([]F)[:q.table.len],
+		q.columnG.data.Interface().([]G)[:q.table.len],
+		q.columnH.data.Interface().([]H)[:q.table.len]
 }

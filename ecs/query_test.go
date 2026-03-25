@@ -279,24 +279,45 @@ func TestQueryParallel(t *testing.T) {
 func TestQueryTables(t *testing.T) {
 	world := NewWorld()
 
-	map1 := NewMap1[Position](world)
-	map2 := NewMap2[Position, Velocity](world)
+	map1 := NewMap2[Position, Velocity](world)
+	map2 := NewMap3[Position, Velocity, Heading](world)
 
-	map1.NewBatch(100, &Position{1, 2})
-	map2.NewBatch(50, &Position{3, 4}, &Velocity{5, 6})
+	map1.NewBatch(100, &Position{1, 2}, &Velocity{3, 4})
+	map2.NewBatch(50, &Position{5, 6}, &Velocity{7, 8}, &Heading{0})
 
-	filter := NewFilter1[Position](world)
+	filter := NewFilter2[Position, Velocity](world)
 	query := filter.Query()
 
 	cnt := 0
 	for query.NextTable() {
 		entities := query.Entities()
+		positions, velocities := query.GetColumns()
 		if cnt == 0 {
 			expectEqual(t, 100, len(entities))
+			expectEqual(t, 100, len(positions))
+			expectEqual(t, 100, len(velocities))
 			expectEqual(t, Entity{2, 0}, entities[0])
+			expectEqual(t, Position{1, 2}, positions[0])
+			expectEqual(t, Velocity{3, 4}, velocities[0])
 		} else {
 			expectEqual(t, 50, len(entities))
+			expectEqual(t, 50, len(positions))
+			expectEqual(t, 50, len(velocities))
 			expectEqual(t, Entity{102, 0}, entities[0])
+			expectEqual(t, Position{5, 6}, positions[0])
+			expectEqual(t, Velocity{7, 8}, velocities[0])
+		}
+		for i := range entities {
+			pos := &positions[i]
+			vel := &velocities[i]
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
+
+		if cnt == 0 {
+			expectEqual(t, Position{4, 6}, positions[0])
+		} else {
+			expectEqual(t, Position{12, 14}, positions[0])
 		}
 		cnt++
 	}
