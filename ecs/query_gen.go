@@ -179,6 +179,9 @@ type Query1[A any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
+//
+// Can be used for the current entity in entity-based iteration,
+// as well as for the entire current table in table-based iteration.
 func (q *Query1[A]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -327,6 +330,9 @@ type Query2[A any, B any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
+//
+// Can be used for the current entity in entity-based iteration,
+// as well as for the entire current table in table-based iteration.
 func (q *Query2[A, B]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -482,6 +488,9 @@ type Query3[A any, B any, C any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
+//
+// Can be used for the current entity in entity-based iteration,
+// as well as for the entire current table in table-based iteration.
 func (q *Query3[A, B, C]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -650,6 +659,9 @@ type Query4[A any, B any, C any, D any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
+//
+// Can be used for the current entity in entity-based iteration,
+// as well as for the entire current table in table-based iteration.
 func (q *Query4[A, B, C, D]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -827,6 +839,9 @@ type Query5[A any, B any, C any, D any, E any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
+//
+// Can be used for the current entity in entity-based iteration,
+// as well as for the entire current table in table-based iteration.
 func (q *Query5[A, B, C, D, E]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -1013,6 +1028,9 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
+//
+// Can be used for the current entity in entity-based iteration,
+// as well as for the entire current table in table-based iteration.
 func (q *Query6[A, B, C, D, E, F]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -1208,6 +1226,9 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
+//
+// Can be used for the current entity in entity-based iteration,
+// as well as for the entire current table in table-based iteration.
 func (q *Query7[A, B, C, D, E, F, G]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -1412,6 +1433,9 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
+//
+// Can be used for the current entity in entity-based iteration,
+// as well as for the entire current table in table-based iteration.
 func (q *Query8[A, B, C, D, E, F, G, H]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
