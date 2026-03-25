@@ -165,8 +165,9 @@ func (t *table) adjustCapacity(cap uint32) {
 	// TODO: find a more clean way to update pointers in the storage.
 	t.cap = cap
 
-	t.entities.data = reflect.New(reflect.ArrayOf(int(t.cap), entityType)).Elem()
-	newPtr := t.entities.data.Addr().UnsafePointer()
+	t.entities.data = reflect.MakeSlice(reflect.SliceOf(entityType), int(t.cap), int(t.cap))
+
+	newPtr := t.entities.data.Index(0).Addr().UnsafePointer()
 	if t.len > 0 {
 		copyPtr(t.entities.pointer, newPtr, uintptr(t.len)*entitySize)
 	}
@@ -175,15 +176,15 @@ func (t *table) adjustCapacity(cap uint32) {
 	for i := range t.columns {
 		column := &t.columns[i]
 		old := column.data
-		column.data = reflect.New(reflect.ArrayOf(int(t.cap), column.elemType)).Elem()
+		column.data = reflect.MakeSlice(reflect.SliceOf(column.elemType), int(t.cap), int(t.cap))
 		if column.isTrivial {
-			newPtr := column.data.Addr().UnsafePointer()
+			newPtr := column.data.Index(0).Addr().UnsafePointer()
 			if t.len > 0 {
 				copyPtr(column.pointer, newPtr, uintptr(t.len)*column.itemSize)
 			}
 			column.pointer = newPtr
 		} else {
-			column.pointer = column.data.Addr().UnsafePointer()
+			column.pointer = column.data.Index(0).Addr().UnsafePointer()
 			if t.len > 0 {
 				reflect.Copy(column.data, old)
 			}
