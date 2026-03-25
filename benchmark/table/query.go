@@ -19,8 +19,8 @@ func benchesQuery() []benchmark.Benchmark {
 
 		{Name: "Query.Next + Query.Relation", Desc: "", F: queryRelation100k, N: 100_000},
 
-		{Name: "Pos/Vel Next/Get", Desc: "", F: queryPosVel100k, N: 100_000},
-		{Name: "Pos/Vel NextTable/GetColumns", Desc: "", F: queryPosVelTable100k, N: 100_000},
+		{Name: "Pos/Vel Next/Get", Desc: "Iter entities", F: queryPosVel100k, N: 100_000},
+		{Name: "Pos/Vel NextTable/GetColumns", Desc: "Iter tables, w/ nested loop", F: queryPosVelTable100k, N: 100_000},
 
 		{Name: "Filter1.Query + Query1.Close", Desc: "", F: queryCreate, N: 1},
 		{Name: "Filter1.Query + Query1.Close", Desc: "registered filter", F: queryCreateCached, N: 1},
