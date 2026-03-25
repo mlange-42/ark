@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 env:
-  BASE_REF: 5cbb572
+  BASE_REF: main
 
 jobs:
   benchmark:
