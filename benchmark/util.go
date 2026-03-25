@@ -196,7 +196,7 @@ Allocations are only shown for current.
 		}
 
 		if name != r.Name {
-			html += fmt.Sprintf(`<tr><th colspan="6" align="center">%s</th></tr>\n`, r.Name)
+			html += fmt.Sprintf(`<tr><th colspan="6" align="center">%s</th></tr>`, r.Name) + "\n"
 		}
 
 		html += fmt.Sprintf(`            <tr>
