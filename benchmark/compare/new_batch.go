@@ -14,10 +14,6 @@ func newBatch2Comp1000(b *testing.B) {
 	newBatch2Comp(b, 1000)
 }
 
-func newBatch2Comp100000(b *testing.B) {
-	newBatch2Comp(b, 100000)
-}
-
 func newBatch2Comp(b *testing.B, n int) {
 	world := ecs.NewWorld()
 
@@ -41,10 +37,6 @@ func newBatch5Comp10(b *testing.B) {
 
 func newBatch5Comp1000(b *testing.B) {
 	newBatch5Comp(b, 1000)
-}
-
-func newBatch5Comp100000(b *testing.B) {
-	newBatch5Comp(b, 100000)
 }
 
 func newBatch5Comp(b *testing.B, n int) {

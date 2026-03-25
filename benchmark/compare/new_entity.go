@@ -14,10 +14,6 @@ func newEntity2Comp1000(b *testing.B) {
 	newEntity2Comp(b, 1000)
 }
 
-func newEntity2Comp100000(b *testing.B) {
-	newEntity2Comp(b, 100000)
-}
-
 func newEntity2Comp(b *testing.B, n int) {
 	world := ecs.NewWorld()
 
@@ -57,10 +53,6 @@ func newEntity5Comp10(b *testing.B) {
 
 func newEntity5Comp1000(b *testing.B) {
 	newEntity5Comp(b, 1000)
-}
-
-func newEntity5Comp100000(b *testing.B) {
-	newEntity5Comp(b, 100000)
 }
 
 func newEntity5Comp(b *testing.B, n int) {

@@ -34,18 +34,14 @@ func benchesCompare() []benchmark.Benchmark {
 
 		{Name: "NewEntity 2 Comp", Desc: "", F: newEntity2Comp10, N: 10},
 		{Name: "NewEntity 2 Comp", Desc: "", F: newEntity2Comp1000, N: 1000},
-		{Name: "NewEntity 2 Comp", Desc: "", F: newEntity2Comp100000, N: 100_000},
 
 		{Name: "NewEntity 5 Comp", Desc: "", F: newEntity5Comp10, N: 10},
 		{Name: "NewEntity 5 Comp", Desc: "", F: newEntity5Comp1000, N: 1000},
-		{Name: "NewEntity 5 Comp", Desc: "", F: newEntity5Comp100000, N: 100_000},
 
 		{Name: "NewBatch 2 Comp", Desc: "", F: newBatch2Comp10, N: 10},
 		{Name: "NewBatch 2 Comp", Desc: "", F: newBatch2Comp1000, N: 1000},
-		{Name: "NewBatch 2 Comp", Desc: "", F: newBatch2Comp100000, N: 100_000},
 
 		{Name: "NewBatch 5 Comp", Desc: "", F: newBatch5Comp10, N: 10},
 		{Name: "NewBatch 5 Comp", Desc: "", F: newBatch5Comp1000, N: 1000},
-		{Name: "NewBatch 5 Comp", Desc: "", F: newBatch5Comp100000, N: 100_000},
 	}
 }
