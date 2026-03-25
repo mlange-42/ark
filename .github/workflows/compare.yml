@@ -113,4 +113,10 @@ jobs:
       - name: Run comparison
         run: |
           cd ./benchmark
-          go run ./compare/compare
+          go run ./compare/compare | tee compare.html
+
+      - name: Archive results HTML
+        uses: actions/upload-artifact@v6
+        with:
+          name: compare_html
+          path: benchmark/compare.html

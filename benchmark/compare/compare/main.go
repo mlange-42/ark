@@ -29,7 +29,8 @@ func main() {
 	}
 
 	result := compare(dataOld, dataNew)
-	fmt.Println(result)
+	html := benchmark.TableToHTML(result)
+	fmt.Println(html)
 }
 
 func compareTables(dataOld, dataNew []benchmark.Result) []benchmark.CompResult {

@@ -158,3 +158,78 @@ func ReadCSV(file string) ([]Result, error) {
 
 	return results, nil
 }
+
+// TableToHTML convert benchmark comparison results to HTML.
+func TableToHTML(data []CompResult) string {
+	html := `
+    <details>
+    <summary>Click to expand benchmark results</summary>
+    <p>
+    Time is per entity/N, allocations are totals.
+    Allocations are only shown for current.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th align="center">N</th>
+          <th align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time main&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+          <th align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time curr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+          <th align="center">&nbsp;&nbsp;&nbsp;&nbsp;Factor&nbsp;&nbsp;&nbsp;&nbsp;</th>
+          <th align="center">&nbsp;&nbsp;&nbsp;&nbsp;Allocs&nbsp;&nbsp;&nbsp;&nbsp;</th>
+          <th align="center">&nbsp;&nbsp;&nbsp;&nbsp;Bytes&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+    `
+
+	improved := 0
+	regressed := 0
+
+	name := ""
+	for _, r := range data {
+		emoji := ""
+		if r.Factor <= 0.9 {
+			improved++
+			emoji = "🚀"
+		} else if r.Factor >= 1.1 {
+			regressed++
+			emoji = "⚠️"
+		}
+
+		if name != r.Name {
+			html += fmt.Sprintf(`<tr><th colspan="6" align="center">%s</th></tr>\n`, r.Name)
+		}
+
+		html += fmt.Sprintf(`
+            <tr>
+            <td align="right">%d</td>
+            <td align="right">%.2fns</td>
+            <td align="right">%.2fns</td>
+            <td align="right">%s %.2f</td>
+            <td align="right">%d</td>
+            <td align="right">%d</td>
+            </tr>
+            `, r.N, r.TimeMain, r.TimeCurr, emoji, r.Factor, int(r.Allocs), int(r.Bytes))
+
+		name = r.Name
+	}
+
+	html += `
+      </tbody>
+    </table>
+    </details>
+    `
+
+	if regressed == 0 && improved == 0 {
+		html = "<p>✅ Benchmarks are stable!</p>\n" + html
+	} else {
+		if regressed > 0 {
+			html = "<p>⚠️ $regressed benchmark regressions detected!</p>\n" + html
+		}
+		if improved > 0 {
+			html = "<p>🚀 $improved benchmark improvements detected!</p>\n" + html
+		}
+	}
+
+	return html
+}
