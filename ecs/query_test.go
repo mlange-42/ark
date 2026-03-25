@@ -315,8 +315,7 @@ func TestQueryTables(t *testing.T) {
 			expectEqual(t, Velocity{float64(entities[0].ID() + 6), float64(entities[0].ID() + 7)}, velocities[0])
 		}
 		for i := range entities {
-			pos := &positions[i]
-			vel := &velocities[i]
+			pos, vel := &positions[i], &velocities[i]
 			pos.X += vel.X
 			pos.Y += vel.Y
 		}
@@ -331,8 +330,7 @@ func TestQueryTables(t *testing.T) {
 		positions, velocities := query.GetColumns()
 
 		for i, e := range entities {
-			pos := &positions[i]
-			vel := &velocities[i]
+			pos, vel := &positions[i], &velocities[i]
 			if cnt == 0 {
 				expectEqual(t, Position{float64(2*e.ID() + 2), float64(2*e.ID() + 4)}, *pos)
 				expectEqual(t, Velocity{float64(e.ID() + 2), float64(e.ID() + 3)}, *vel)
