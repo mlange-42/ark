@@ -82,7 +82,7 @@ func upperLetters(n int) []string {
 func concat(args ...any) string {
 	var result strings.Builder
 	for _, arg := range args {
-		result.WriteString(fmt.Sprintf("%v", arg))
+		fmt.Fprintf(&result, "%v", arg)
 	}
 	return result.String()
 }
