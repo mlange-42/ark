@@ -31,5 +31,9 @@ func benchesCompare() []benchmark.Benchmark {
 		{Name: "Pos/Vel mapper", Desc: "", F: posVelMap10, N: 10},
 		{Name: "Pos/Vel mapper", Desc: "", F: posVelMap1000, N: 1000},
 		{Name: "Pos/Vel mapper", Desc: "", F: posVelMap100000, N: 100_000},
+
+		{Name: "NewEntity 2 Comp", Desc: "", F: newEntity2Comp10, N: 10},
+		{Name: "NewEntity 2 Comp", Desc: "", F: newEntity2Comp1000, N: 1000},
+		{Name: "NewEntity 2 Comp", Desc: "", F: newEntity2Comp100000, N: 100_000},
 	}
 }
