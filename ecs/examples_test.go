@@ -65,10 +65,42 @@ func ExampleQuery2() {
 	for query.Next() {
 		// Access components of the current entity.
 		pos, vel := query.Get()
+		pos.X += vel.X
+		pos.Y += vel.Y
 		// Access the current entity itself.
 		entity := query.Entity()
 		// ...
-		_, _, _ = pos, vel, entity
+		_ = entity
+	}
+	// Output:
+}
+
+func ExampleQuery2_tableBased() {
+	// With this approach, iteration is faster than iterating with Query2.Next,
+	// but it requires a bit more code due to the nested loop.
+
+	world := ecs.NewWorld()
+
+	// A simple filter.
+	filter := ecs.NewFilter2[Position, Velocity](world)
+
+	// Create a fresh query before iterating.
+	query := filter.Query()
+	for query.NextTable() {
+		// Access component columns of the current table/archetype.
+		positions, velocities := query.GetColumns()
+		// Iterate over individual entity's components.
+		for i := range positions {
+			pos := &positions[i]
+			vel := &velocities[i]
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
+
+		// Access the entity column for the current table/archetype.
+		entities := query.Entity()
+		// ...
+		_ = entities
 	}
 	// Output:
 }
