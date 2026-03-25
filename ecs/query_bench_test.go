@@ -49,58 +49,6 @@ func BenchmarkPosVelQueryInline_100k(b *testing.B) {
 	}
 }
 
-func BenchmarkPosVelQueryTables_1000(b *testing.B) {
-	n := 1000
-	world := NewWorld(1024)
-
-	mapper := NewMap2[Position, Velocity](world)
-	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
-
-	filter := NewFilter2[Position, Velocity](world)
-	loop := func(filter *Filter2[Position, Velocity]) {
-		query := filter.Query()
-		for query.NextTable() {
-			positions, velocities := query.GetColumns()
-			for i := range positions {
-				pos := &positions[i]
-				vel := &velocities[i]
-				pos.X += vel.X
-				pos.Y += vel.Y
-			}
-		}
-	}
-
-	for b.Loop() {
-		loop(filter)
-	}
-}
-
-func BenchmarkPosVelQueryTables_100k(b *testing.B) {
-	n := 100_000
-	world := NewWorld(1024)
-
-	mapper := NewMap2[Position, Velocity](world)
-	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
-
-	filter := NewFilter2[Position, Velocity](world)
-	loop := func(filter *Filter2[Position, Velocity]) {
-		query := filter.Query()
-		for query.NextTable() {
-			positions, velocities := query.GetColumns()
-			for i := range positions {
-				pos := &positions[i]
-				vel := &velocities[i]
-				pos.X += vel.X
-				pos.Y += vel.Y
-			}
-		}
-	}
-
-	for b.Loop() {
-		loop(filter)
-	}
-}
-
 func BenchmarkPosVelQuerySerial_100k(b *testing.B) {
 	n := 100_000
 	world := NewWorld(1024)

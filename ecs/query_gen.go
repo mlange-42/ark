@@ -167,7 +167,6 @@ type Query1[A any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
 	columnPtrA unsafe.Pointer
 	itemSizeA  uintptr
 	relations  []relationID
@@ -179,9 +178,6 @@ type Query1[A any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
-//
-// Can be used for the current entity in entity-based iteration,
-// as well as for the entire current table in table-based iteration.
 func (q *Query1[A]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -232,7 +228,6 @@ func (q *Query1[A]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnA = nil
 	q.columnPtrA = unsafe.Pointer(nilDummy)
 	q.itemSizeA = 0
 	q.world.unlockSafe(q.lock)
@@ -299,9 +294,9 @@ func (q *Query1[A]) nextTable(tables []tableID) bool {
 func (q *Query1[A]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnPtrA = q.columnA.pointer
-	q.itemSizeA = q.columnA.itemSize
+	columnA := q.components[0].columns[q.table.id]
+	q.columnPtrA = columnA.pointer
+	q.itemSizeA = columnA.itemSize
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -315,10 +310,8 @@ type Query2[A any, B any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
 	columnPtrA unsafe.Pointer
 	itemSizeA  uintptr
-	columnB    *column
 	columnPtrB unsafe.Pointer
 	itemSizeB  uintptr
 	relations  []relationID
@@ -330,9 +323,6 @@ type Query2[A any, B any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
-//
-// Can be used for the current entity in entity-based iteration,
-// as well as for the entire current table in table-based iteration.
 func (q *Query2[A, B]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -379,10 +369,8 @@ func (q *Query2[A, B]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnA = nil
 	q.columnPtrA = unsafe.Pointer(nilDummy)
 	q.itemSizeA = 0
-	q.columnB = nil
 	q.columnPtrB = unsafe.Pointer(nilDummy)
 	q.itemSizeB = 0
 	q.world.unlockSafe(q.lock)
@@ -449,12 +437,12 @@ func (q *Query2[A, B]) nextTable(tables []tableID) bool {
 func (q *Query2[A, B]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnPtrA = q.columnA.pointer
-	q.itemSizeA = q.columnA.itemSize
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnPtrB = q.columnB.pointer
-	q.itemSizeB = q.columnB.itemSize
+	columnA := q.components[0].columns[q.table.id]
+	q.columnPtrA = columnA.pointer
+	q.itemSizeA = columnA.itemSize
+	columnB := q.components[1].columns[q.table.id]
+	q.columnPtrB = columnB.pointer
+	q.itemSizeB = columnB.itemSize
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -470,13 +458,10 @@ type Query3[A any, B any, C any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
 	columnPtrA unsafe.Pointer
 	itemSizeA  uintptr
-	columnB    *column
 	columnPtrB unsafe.Pointer
 	itemSizeB  uintptr
-	columnC    *column
 	columnPtrC unsafe.Pointer
 	itemSizeC  uintptr
 	relations  []relationID
@@ -488,9 +473,6 @@ type Query3[A any, B any, C any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
-//
-// Can be used for the current entity in entity-based iteration,
-// as well as for the entire current table in table-based iteration.
 func (q *Query3[A, B, C]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -541,13 +523,10 @@ func (q *Query3[A, B, C]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnA = nil
 	q.columnPtrA = unsafe.Pointer(nilDummy)
 	q.itemSizeA = 0
-	q.columnB = nil
 	q.columnPtrB = unsafe.Pointer(nilDummy)
 	q.itemSizeB = 0
-	q.columnC = nil
 	q.columnPtrC = unsafe.Pointer(nilDummy)
 	q.itemSizeC = 0
 	q.world.unlockSafe(q.lock)
@@ -614,15 +593,15 @@ func (q *Query3[A, B, C]) nextTable(tables []tableID) bool {
 func (q *Query3[A, B, C]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnPtrA = q.columnA.pointer
-	q.itemSizeA = q.columnA.itemSize
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnPtrB = q.columnB.pointer
-	q.itemSizeB = q.columnB.itemSize
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnPtrC = q.columnC.pointer
-	q.itemSizeC = q.columnC.itemSize
+	columnA := q.components[0].columns[q.table.id]
+	q.columnPtrA = columnA.pointer
+	q.itemSizeA = columnA.itemSize
+	columnB := q.components[1].columns[q.table.id]
+	q.columnPtrB = columnB.pointer
+	q.itemSizeB = columnB.itemSize
+	columnC := q.components[2].columns[q.table.id]
+	q.columnPtrC = columnC.pointer
+	q.itemSizeC = columnC.itemSize
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -638,16 +617,12 @@ type Query4[A any, B any, C any, D any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
 	columnPtrA unsafe.Pointer
 	itemSizeA  uintptr
-	columnB    *column
 	columnPtrB unsafe.Pointer
 	itemSizeB  uintptr
-	columnC    *column
 	columnPtrC unsafe.Pointer
 	itemSizeC  uintptr
-	columnD    *column
 	columnPtrD unsafe.Pointer
 	itemSizeD  uintptr
 	relations  []relationID
@@ -659,9 +634,6 @@ type Query4[A any, B any, C any, D any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
-//
-// Can be used for the current entity in entity-based iteration,
-// as well as for the entire current table in table-based iteration.
 func (q *Query4[A, B, C, D]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -712,16 +684,12 @@ func (q *Query4[A, B, C, D]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnA = nil
 	q.columnPtrA = unsafe.Pointer(nilDummy)
 	q.itemSizeA = 0
-	q.columnB = nil
 	q.columnPtrB = unsafe.Pointer(nilDummy)
 	q.itemSizeB = 0
-	q.columnC = nil
 	q.columnPtrC = unsafe.Pointer(nilDummy)
 	q.itemSizeC = 0
-	q.columnD = nil
 	q.columnPtrD = unsafe.Pointer(nilDummy)
 	q.itemSizeD = 0
 	q.world.unlockSafe(q.lock)
@@ -788,18 +756,18 @@ func (q *Query4[A, B, C, D]) nextTable(tables []tableID) bool {
 func (q *Query4[A, B, C, D]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnPtrA = q.columnA.pointer
-	q.itemSizeA = q.columnA.itemSize
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnPtrB = q.columnB.pointer
-	q.itemSizeB = q.columnB.itemSize
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnPtrC = q.columnC.pointer
-	q.itemSizeC = q.columnC.itemSize
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnPtrD = q.columnD.pointer
-	q.itemSizeD = q.columnD.itemSize
+	columnA := q.components[0].columns[q.table.id]
+	q.columnPtrA = columnA.pointer
+	q.itemSizeA = columnA.itemSize
+	columnB := q.components[1].columns[q.table.id]
+	q.columnPtrB = columnB.pointer
+	q.itemSizeB = columnB.itemSize
+	columnC := q.components[2].columns[q.table.id]
+	q.columnPtrC = columnC.pointer
+	q.itemSizeC = columnC.itemSize
+	columnD := q.components[3].columns[q.table.id]
+	q.columnPtrD = columnD.pointer
+	q.itemSizeD = columnD.itemSize
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -815,19 +783,14 @@ type Query5[A any, B any, C any, D any, E any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
 	columnPtrA unsafe.Pointer
 	itemSizeA  uintptr
-	columnB    *column
 	columnPtrB unsafe.Pointer
 	itemSizeB  uintptr
-	columnC    *column
 	columnPtrC unsafe.Pointer
 	itemSizeC  uintptr
-	columnD    *column
 	columnPtrD unsafe.Pointer
 	itemSizeD  uintptr
-	columnE    *column
 	columnPtrE unsafe.Pointer
 	itemSizeE  uintptr
 	relations  []relationID
@@ -839,9 +802,6 @@ type Query5[A any, B any, C any, D any, E any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
-//
-// Can be used for the current entity in entity-based iteration,
-// as well as for the entire current table in table-based iteration.
 func (q *Query5[A, B, C, D, E]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -892,19 +852,14 @@ func (q *Query5[A, B, C, D, E]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnA = nil
 	q.columnPtrA = unsafe.Pointer(nilDummy)
 	q.itemSizeA = 0
-	q.columnB = nil
 	q.columnPtrB = unsafe.Pointer(nilDummy)
 	q.itemSizeB = 0
-	q.columnC = nil
 	q.columnPtrC = unsafe.Pointer(nilDummy)
 	q.itemSizeC = 0
-	q.columnD = nil
 	q.columnPtrD = unsafe.Pointer(nilDummy)
 	q.itemSizeD = 0
-	q.columnE = nil
 	q.columnPtrE = unsafe.Pointer(nilDummy)
 	q.itemSizeE = 0
 	q.world.unlockSafe(q.lock)
@@ -971,21 +926,21 @@ func (q *Query5[A, B, C, D, E]) nextTable(tables []tableID) bool {
 func (q *Query5[A, B, C, D, E]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnPtrA = q.columnA.pointer
-	q.itemSizeA = q.columnA.itemSize
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnPtrB = q.columnB.pointer
-	q.itemSizeB = q.columnB.itemSize
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnPtrC = q.columnC.pointer
-	q.itemSizeC = q.columnC.itemSize
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnPtrD = q.columnD.pointer
-	q.itemSizeD = q.columnD.itemSize
-	q.columnE = q.components[4].columns[q.table.id]
-	q.columnPtrE = q.columnE.pointer
-	q.itemSizeE = q.columnE.itemSize
+	columnA := q.components[0].columns[q.table.id]
+	q.columnPtrA = columnA.pointer
+	q.itemSizeA = columnA.itemSize
+	columnB := q.components[1].columns[q.table.id]
+	q.columnPtrB = columnB.pointer
+	q.itemSizeB = columnB.itemSize
+	columnC := q.components[2].columns[q.table.id]
+	q.columnPtrC = columnC.pointer
+	q.itemSizeC = columnC.itemSize
+	columnD := q.components[3].columns[q.table.id]
+	q.columnPtrD = columnD.pointer
+	q.itemSizeD = columnD.itemSize
+	columnE := q.components[4].columns[q.table.id]
+	q.columnPtrE = columnE.pointer
+	q.itemSizeE = columnE.itemSize
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -1001,22 +956,16 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
 	columnPtrA unsafe.Pointer
 	itemSizeA  uintptr
-	columnB    *column
 	columnPtrB unsafe.Pointer
 	itemSizeB  uintptr
-	columnC    *column
 	columnPtrC unsafe.Pointer
 	itemSizeC  uintptr
-	columnD    *column
 	columnPtrD unsafe.Pointer
 	itemSizeD  uintptr
-	columnE    *column
 	columnPtrE unsafe.Pointer
 	itemSizeE  uintptr
-	columnF    *column
 	columnPtrF unsafe.Pointer
 	itemSizeF  uintptr
 	relations  []relationID
@@ -1028,9 +977,6 @@ type Query6[A any, B any, C any, D any, E any, F any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
-//
-// Can be used for the current entity in entity-based iteration,
-// as well as for the entire current table in table-based iteration.
 func (q *Query6[A, B, C, D, E, F]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -1081,22 +1027,16 @@ func (q *Query6[A, B, C, D, E, F]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnA = nil
 	q.columnPtrA = unsafe.Pointer(nilDummy)
 	q.itemSizeA = 0
-	q.columnB = nil
 	q.columnPtrB = unsafe.Pointer(nilDummy)
 	q.itemSizeB = 0
-	q.columnC = nil
 	q.columnPtrC = unsafe.Pointer(nilDummy)
 	q.itemSizeC = 0
-	q.columnD = nil
 	q.columnPtrD = unsafe.Pointer(nilDummy)
 	q.itemSizeD = 0
-	q.columnE = nil
 	q.columnPtrE = unsafe.Pointer(nilDummy)
 	q.itemSizeE = 0
-	q.columnF = nil
 	q.columnPtrF = unsafe.Pointer(nilDummy)
 	q.itemSizeF = 0
 	q.world.unlockSafe(q.lock)
@@ -1163,24 +1103,24 @@ func (q *Query6[A, B, C, D, E, F]) nextTable(tables []tableID) bool {
 func (q *Query6[A, B, C, D, E, F]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnPtrA = q.columnA.pointer
-	q.itemSizeA = q.columnA.itemSize
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnPtrB = q.columnB.pointer
-	q.itemSizeB = q.columnB.itemSize
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnPtrC = q.columnC.pointer
-	q.itemSizeC = q.columnC.itemSize
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnPtrD = q.columnD.pointer
-	q.itemSizeD = q.columnD.itemSize
-	q.columnE = q.components[4].columns[q.table.id]
-	q.columnPtrE = q.columnE.pointer
-	q.itemSizeE = q.columnE.itemSize
-	q.columnF = q.components[5].columns[q.table.id]
-	q.columnPtrF = q.columnF.pointer
-	q.itemSizeF = q.columnF.itemSize
+	columnA := q.components[0].columns[q.table.id]
+	q.columnPtrA = columnA.pointer
+	q.itemSizeA = columnA.itemSize
+	columnB := q.components[1].columns[q.table.id]
+	q.columnPtrB = columnB.pointer
+	q.itemSizeB = columnB.itemSize
+	columnC := q.components[2].columns[q.table.id]
+	q.columnPtrC = columnC.pointer
+	q.itemSizeC = columnC.itemSize
+	columnD := q.components[3].columns[q.table.id]
+	q.columnPtrD = columnD.pointer
+	q.itemSizeD = columnD.itemSize
+	columnE := q.components[4].columns[q.table.id]
+	q.columnPtrE = columnE.pointer
+	q.itemSizeE = columnE.itemSize
+	columnF := q.components[5].columns[q.table.id]
+	q.columnPtrF = columnF.pointer
+	q.itemSizeF = columnF.itemSize
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -1196,25 +1136,18 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
 	columnPtrA unsafe.Pointer
 	itemSizeA  uintptr
-	columnB    *column
 	columnPtrB unsafe.Pointer
 	itemSizeB  uintptr
-	columnC    *column
 	columnPtrC unsafe.Pointer
 	itemSizeC  uintptr
-	columnD    *column
 	columnPtrD unsafe.Pointer
 	itemSizeD  uintptr
-	columnE    *column
 	columnPtrE unsafe.Pointer
 	itemSizeE  uintptr
-	columnF    *column
 	columnPtrF unsafe.Pointer
 	itemSizeF  uintptr
-	columnG    *column
 	columnPtrG unsafe.Pointer
 	itemSizeG  uintptr
 	relations  []relationID
@@ -1226,9 +1159,6 @@ type Query7[A any, B any, C any, D any, E any, F any, G any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
-//
-// Can be used for the current entity in entity-based iteration,
-// as well as for the entire current table in table-based iteration.
 func (q *Query7[A, B, C, D, E, F, G]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -1279,25 +1209,18 @@ func (q *Query7[A, B, C, D, E, F, G]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnA = nil
 	q.columnPtrA = unsafe.Pointer(nilDummy)
 	q.itemSizeA = 0
-	q.columnB = nil
 	q.columnPtrB = unsafe.Pointer(nilDummy)
 	q.itemSizeB = 0
-	q.columnC = nil
 	q.columnPtrC = unsafe.Pointer(nilDummy)
 	q.itemSizeC = 0
-	q.columnD = nil
 	q.columnPtrD = unsafe.Pointer(nilDummy)
 	q.itemSizeD = 0
-	q.columnE = nil
 	q.columnPtrE = unsafe.Pointer(nilDummy)
 	q.itemSizeE = 0
-	q.columnF = nil
 	q.columnPtrF = unsafe.Pointer(nilDummy)
 	q.itemSizeF = 0
-	q.columnG = nil
 	q.columnPtrG = unsafe.Pointer(nilDummy)
 	q.itemSizeG = 0
 	q.world.unlockSafe(q.lock)
@@ -1364,27 +1287,27 @@ func (q *Query7[A, B, C, D, E, F, G]) nextTable(tables []tableID) bool {
 func (q *Query7[A, B, C, D, E, F, G]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnPtrA = q.columnA.pointer
-	q.itemSizeA = q.columnA.itemSize
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnPtrB = q.columnB.pointer
-	q.itemSizeB = q.columnB.itemSize
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnPtrC = q.columnC.pointer
-	q.itemSizeC = q.columnC.itemSize
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnPtrD = q.columnD.pointer
-	q.itemSizeD = q.columnD.itemSize
-	q.columnE = q.components[4].columns[q.table.id]
-	q.columnPtrE = q.columnE.pointer
-	q.itemSizeE = q.columnE.itemSize
-	q.columnF = q.components[5].columns[q.table.id]
-	q.columnPtrF = q.columnF.pointer
-	q.itemSizeF = q.columnF.itemSize
-	q.columnG = q.components[6].columns[q.table.id]
-	q.columnPtrG = q.columnG.pointer
-	q.itemSizeG = q.columnG.itemSize
+	columnA := q.components[0].columns[q.table.id]
+	q.columnPtrA = columnA.pointer
+	q.itemSizeA = columnA.itemSize
+	columnB := q.components[1].columns[q.table.id]
+	q.columnPtrB = columnB.pointer
+	q.itemSizeB = columnB.itemSize
+	columnC := q.components[2].columns[q.table.id]
+	q.columnPtrC = columnC.pointer
+	q.itemSizeC = columnC.itemSize
+	columnD := q.components[3].columns[q.table.id]
+	q.columnPtrD = columnD.pointer
+	q.itemSizeD = columnD.itemSize
+	columnE := q.components[4].columns[q.table.id]
+	q.columnPtrE = columnE.pointer
+	q.itemSizeE = columnE.itemSize
+	columnF := q.components[5].columns[q.table.id]
+	q.columnPtrF = columnF.pointer
+	q.itemSizeF = columnF.itemSize
+	columnG := q.components[6].columns[q.table.id]
+	q.columnPtrG = columnG.pointer
+	q.itemSizeG = columnG.itemSize
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }
@@ -1400,28 +1323,20 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 	filter     *filter
 	table      *table
 	cache      *cacheEntry
-	columnA    *column
 	columnPtrA unsafe.Pointer
 	itemSizeA  uintptr
-	columnB    *column
 	columnPtrB unsafe.Pointer
 	itemSizeB  uintptr
-	columnC    *column
 	columnPtrC unsafe.Pointer
 	itemSizeC  uintptr
-	columnD    *column
 	columnPtrD unsafe.Pointer
 	itemSizeD  uintptr
-	columnE    *column
 	columnPtrE unsafe.Pointer
 	itemSizeE  uintptr
-	columnF    *column
 	columnPtrF unsafe.Pointer
 	itemSizeF  uintptr
-	columnG    *column
 	columnPtrG unsafe.Pointer
 	itemSizeG  uintptr
-	columnH    *column
 	columnPtrH unsafe.Pointer
 	itemSizeH  uintptr
 	relations  []relationID
@@ -1433,9 +1348,6 @@ type Query8[A any, B any, C any, D any, E any, F any, G any, H any] struct {
 }
 
 // GetRelation returns the entity relation target of the component at the given index.
-//
-// Can be used for the current entity in entity-based iteration,
-// as well as for the entire current table in table-based iteration.
 func (q *Query8[A, B, C, D, E, F, G, H]) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -1486,28 +1398,20 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Close() {
 	q.tables = nil
 	q.table = nil
 	q.cache = nil
-	q.columnA = nil
 	q.columnPtrA = unsafe.Pointer(nilDummy)
 	q.itemSizeA = 0
-	q.columnB = nil
 	q.columnPtrB = unsafe.Pointer(nilDummy)
 	q.itemSizeB = 0
-	q.columnC = nil
 	q.columnPtrC = unsafe.Pointer(nilDummy)
 	q.itemSizeC = 0
-	q.columnD = nil
 	q.columnPtrD = unsafe.Pointer(nilDummy)
 	q.itemSizeD = 0
-	q.columnE = nil
 	q.columnPtrE = unsafe.Pointer(nilDummy)
 	q.itemSizeE = 0
-	q.columnF = nil
 	q.columnPtrF = unsafe.Pointer(nilDummy)
 	q.itemSizeF = 0
-	q.columnG = nil
 	q.columnPtrG = unsafe.Pointer(nilDummy)
 	q.itemSizeG = 0
-	q.columnH = nil
 	q.columnPtrH = unsafe.Pointer(nilDummy)
 	q.itemSizeH = 0
 	q.world.unlockSafe(q.lock)
@@ -1574,30 +1478,30 @@ func (q *Query8[A, B, C, D, E, F, G, H]) nextTable(tables []tableID) bool {
 func (q *Query8[A, B, C, D, E, F, G, H]) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
-	q.columnA = q.components[0].columns[q.table.id]
-	q.columnPtrA = q.columnA.pointer
-	q.itemSizeA = q.columnA.itemSize
-	q.columnB = q.components[1].columns[q.table.id]
-	q.columnPtrB = q.columnB.pointer
-	q.itemSizeB = q.columnB.itemSize
-	q.columnC = q.components[2].columns[q.table.id]
-	q.columnPtrC = q.columnC.pointer
-	q.itemSizeC = q.columnC.itemSize
-	q.columnD = q.components[3].columns[q.table.id]
-	q.columnPtrD = q.columnD.pointer
-	q.itemSizeD = q.columnD.itemSize
-	q.columnE = q.components[4].columns[q.table.id]
-	q.columnPtrE = q.columnE.pointer
-	q.itemSizeE = q.columnE.itemSize
-	q.columnF = q.components[5].columns[q.table.id]
-	q.columnPtrF = q.columnF.pointer
-	q.itemSizeF = q.columnF.itemSize
-	q.columnG = q.components[6].columns[q.table.id]
-	q.columnPtrG = q.columnG.pointer
-	q.itemSizeG = q.columnG.itemSize
-	q.columnH = q.components[7].columns[q.table.id]
-	q.columnPtrH = q.columnH.pointer
-	q.itemSizeH = q.columnH.itemSize
+	columnA := q.components[0].columns[q.table.id]
+	q.columnPtrA = columnA.pointer
+	q.itemSizeA = columnA.itemSize
+	columnB := q.components[1].columns[q.table.id]
+	q.columnPtrB = columnB.pointer
+	q.itemSizeB = columnB.itemSize
+	columnC := q.components[2].columns[q.table.id]
+	q.columnPtrC = columnC.pointer
+	q.itemSizeC = columnC.itemSize
+	columnD := q.components[3].columns[q.table.id]
+	q.columnPtrD = columnD.pointer
+	q.itemSizeD = columnD.itemSize
+	columnE := q.components[4].columns[q.table.id]
+	q.columnPtrE = columnE.pointer
+	q.itemSizeE = columnE.itemSize
+	columnF := q.components[5].columns[q.table.id]
+	q.columnPtrF = columnF.pointer
+	q.itemSizeF = columnF.itemSize
+	columnG := q.components[6].columns[q.table.id]
+	q.columnPtrG = columnG.pointer
+	q.itemSizeG = columnG.itemSize
+	columnH := q.components[7].columns[q.table.id]
+	q.columnPtrH = columnH.pointer
+	q.itemSizeH = columnH.itemSize
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)
 }

@@ -86,38 +86,6 @@ func TestQuery1(t *testing.T) {
 	_ = filter.Batch()
 }
 
-func TestQuery1Tables(t *testing.T) {
-	n := 10
-	w := NewWorld(4)
-
-	posMapper := NewMap[Position](w)
-	mapper := NewMap1[CompA](w)
-	compMapper := NewMap[CompA](w)
-
-	for range n {
-		_ = mapper.NewEntity(&CompA{})
-
-		e := mapper.NewEntity(&CompA{})
-		compMapper.Remove(e)
-
-		e = posMapper.NewEntity(&Position{})
-		mapper.Add(e, &CompA{})
-	}
-
-	filter := NewFilter1[CompA](w)
-	query := filter.Query()
-
-	cnt := 0
-	for query.NextTable() {
-		entities := query.Entities()
-		a := query.GetColumns()
-		expectEqual(t, n, len(entities))
-		expectEqual(t, n, len(a))
-		cnt++
-	}
-	expectEqual(t, 2, cnt)
-}
-
 func TestQuery1EntityAt(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -467,39 +435,6 @@ func TestQuery2(t *testing.T) {
 	expectEqual(t, n, cnt)
 
 	_ = filter.Batch()
-}
-
-func TestQuery2Tables(t *testing.T) {
-	n := 10
-	w := NewWorld(4)
-
-	posMapper := NewMap[Position](w)
-	mapper := NewMap2[CompA, CompB](w)
-	compMapper := NewMap[CompA](w)
-
-	for range n {
-		_ = mapper.NewEntity(&CompA{}, &CompB{})
-
-		e := mapper.NewEntity(&CompA{}, &CompB{})
-		compMapper.Remove(e)
-
-		e = posMapper.NewEntity(&Position{})
-		mapper.Add(e, &CompA{}, &CompB{})
-	}
-
-	filter := NewFilter2[CompA, CompB](w)
-	query := filter.Query()
-
-	cnt := 0
-	for query.NextTable() {
-		entities := query.Entities()
-		a, b := query.GetColumns()
-		expectEqual(t, n, len(entities))
-		expectEqual(t, n, len(a))
-		expectEqual(t, n, len(b))
-		cnt++
-	}
-	expectEqual(t, 2, cnt)
 }
 
 func TestQuery2EntityAt(t *testing.T) {
@@ -853,40 +788,6 @@ func TestQuery3(t *testing.T) {
 	expectEqual(t, n, cnt)
 
 	_ = filter.Batch()
-}
-
-func TestQuery3Tables(t *testing.T) {
-	n := 10
-	w := NewWorld(4)
-
-	posMapper := NewMap[Position](w)
-	mapper := NewMap3[CompA, CompB, CompC](w)
-	compMapper := NewMap[CompA](w)
-
-	for range n {
-		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
-
-		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{})
-		compMapper.Remove(e)
-
-		e = posMapper.NewEntity(&Position{})
-		mapper.Add(e, &CompA{}, &CompB{}, &CompC{})
-	}
-
-	filter := NewFilter3[CompA, CompB, CompC](w)
-	query := filter.Query()
-
-	cnt := 0
-	for query.NextTable() {
-		entities := query.Entities()
-		a, b, c := query.GetColumns()
-		expectEqual(t, n, len(entities))
-		expectEqual(t, n, len(a))
-		expectEqual(t, n, len(b))
-		expectEqual(t, n, len(c))
-		cnt++
-	}
-	expectEqual(t, 2, cnt)
 }
 
 func TestQuery3EntityAt(t *testing.T) {
@@ -1244,41 +1145,6 @@ func TestQuery4(t *testing.T) {
 	_ = filter.Batch()
 }
 
-func TestQuery4Tables(t *testing.T) {
-	n := 10
-	w := NewWorld(4)
-
-	posMapper := NewMap[Position](w)
-	mapper := NewMap4[CompA, CompB, CompC, CompD](w)
-	compMapper := NewMap[CompA](w)
-
-	for range n {
-		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
-
-		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{})
-		compMapper.Remove(e)
-
-		e = posMapper.NewEntity(&Position{})
-		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{})
-	}
-
-	filter := NewFilter4[CompA, CompB, CompC, CompD](w)
-	query := filter.Query()
-
-	cnt := 0
-	for query.NextTable() {
-		entities := query.Entities()
-		a, b, c, d := query.GetColumns()
-		expectEqual(t, n, len(entities))
-		expectEqual(t, n, len(a))
-		expectEqual(t, n, len(b))
-		expectEqual(t, n, len(c))
-		expectEqual(t, n, len(d))
-		cnt++
-	}
-	expectEqual(t, 2, cnt)
-}
-
 func TestQuery4EntityAt(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -1634,42 +1500,6 @@ func TestQuery5(t *testing.T) {
 	expectEqual(t, n, cnt)
 
 	_ = filter.Batch()
-}
-
-func TestQuery5Tables(t *testing.T) {
-	n := 10
-	w := NewWorld(4)
-
-	posMapper := NewMap[Position](w)
-	mapper := NewMap5[CompA, CompB, CompC, CompD, CompE](w)
-	compMapper := NewMap[CompA](w)
-
-	for range n {
-		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
-
-		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
-		compMapper.Remove(e)
-
-		e = posMapper.NewEntity(&Position{})
-		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{})
-	}
-
-	filter := NewFilter5[CompA, CompB, CompC, CompD, CompE](w)
-	query := filter.Query()
-
-	cnt := 0
-	for query.NextTable() {
-		entities := query.Entities()
-		a, b, c, d, e := query.GetColumns()
-		expectEqual(t, n, len(entities))
-		expectEqual(t, n, len(a))
-		expectEqual(t, n, len(b))
-		expectEqual(t, n, len(c))
-		expectEqual(t, n, len(d))
-		expectEqual(t, n, len(e))
-		cnt++
-	}
-	expectEqual(t, 2, cnt)
 }
 
 func TestQuery5EntityAt(t *testing.T) {
@@ -2031,43 +1861,6 @@ func TestQuery6(t *testing.T) {
 	_ = filter.Batch()
 }
 
-func TestQuery6Tables(t *testing.T) {
-	n := 10
-	w := NewWorld(4)
-
-	posMapper := NewMap[Position](w)
-	mapper := NewMap6[CompA, CompB, CompC, CompD, CompE, CompF](w)
-	compMapper := NewMap[CompA](w)
-
-	for range n {
-		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
-
-		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
-		compMapper.Remove(e)
-
-		e = posMapper.NewEntity(&Position{})
-		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{})
-	}
-
-	filter := NewFilter6[CompA, CompB, CompC, CompD, CompE, CompF](w)
-	query := filter.Query()
-
-	cnt := 0
-	for query.NextTable() {
-		entities := query.Entities()
-		a, b, c, d, e, f := query.GetColumns()
-		expectEqual(t, n, len(entities))
-		expectEqual(t, n, len(a))
-		expectEqual(t, n, len(b))
-		expectEqual(t, n, len(c))
-		expectEqual(t, n, len(d))
-		expectEqual(t, n, len(e))
-		expectEqual(t, n, len(f))
-		cnt++
-	}
-	expectEqual(t, 2, cnt)
-}
-
 func TestQuery6EntityAt(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -2427,44 +2220,6 @@ func TestQuery7(t *testing.T) {
 	expectEqual(t, n, cnt)
 
 	_ = filter.Batch()
-}
-
-func TestQuery7Tables(t *testing.T) {
-	n := 10
-	w := NewWorld(4)
-
-	posMapper := NewMap[Position](w)
-	mapper := NewMap7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w)
-	compMapper := NewMap[CompA](w)
-
-	for range n {
-		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
-
-		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
-		compMapper.Remove(e)
-
-		e = posMapper.NewEntity(&Position{})
-		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{})
-	}
-
-	filter := NewFilter7[CompA, CompB, CompC, CompD, CompE, CompF, CompG](w)
-	query := filter.Query()
-
-	cnt := 0
-	for query.NextTable() {
-		entities := query.Entities()
-		a, b, c, d, e, f, g := query.GetColumns()
-		expectEqual(t, n, len(entities))
-		expectEqual(t, n, len(a))
-		expectEqual(t, n, len(b))
-		expectEqual(t, n, len(c))
-		expectEqual(t, n, len(d))
-		expectEqual(t, n, len(e))
-		expectEqual(t, n, len(f))
-		expectEqual(t, n, len(g))
-		cnt++
-	}
-	expectEqual(t, 2, cnt)
 }
 
 func TestQuery7EntityAt(t *testing.T) {
@@ -2830,45 +2585,6 @@ func TestQuery8(t *testing.T) {
 	_ = filter.Batch()
 }
 
-func TestQuery8Tables(t *testing.T) {
-	n := 10
-	w := NewWorld(4)
-
-	posMapper := NewMap[Position](w)
-	mapper := NewMap8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w)
-	compMapper := NewMap[CompA](w)
-
-	for range n {
-		_ = mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
-
-		e := mapper.NewEntity(&CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
-		compMapper.Remove(e)
-
-		e = posMapper.NewEntity(&Position{})
-		mapper.Add(e, &CompA{}, &CompB{}, &CompC{}, &CompD{}, &CompE{}, &CompF{}, &CompG{}, &CompH{})
-	}
-
-	filter := NewFilter8[CompA, CompB, CompC, CompD, CompE, CompF, CompG, CompH](w)
-	query := filter.Query()
-
-	cnt := 0
-	for query.NextTable() {
-		entities := query.Entities()
-		a, b, c, d, e, f, g, h := query.GetColumns()
-		expectEqual(t, n, len(entities))
-		expectEqual(t, n, len(a))
-		expectEqual(t, n, len(b))
-		expectEqual(t, n, len(c))
-		expectEqual(t, n, len(d))
-		expectEqual(t, n, len(e))
-		expectEqual(t, n, len(f))
-		expectEqual(t, n, len(g))
-		expectEqual(t, n, len(h))
-		cnt++
-	}
-	expectEqual(t, 2, cnt)
-}
-
 func TestQuery8EntityAt(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -3219,30 +2935,6 @@ func TestQuery0(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, n, cnt)
-}
-
-func TestQuery0Tables(t *testing.T) {
-	n := 10
-	w := NewWorld(4)
-
-	posMapper := NewMap[Position](w)
-
-	for range n {
-		_ = w.NewEntity()
-		e := w.NewEntity()
-		posMapper.Add(e, &Position{})
-	}
-
-	filter := NewFilter0(w)
-	query := filter.Query()
-
-	cnt := 0
-	for query.NextTable() {
-		entities := query.Entities()
-		expectEqual(t, n, len(entities))
-		cnt++
-	}
-	expectEqual(t, 2, cnt)
 }
 
 func TestQuery0EntityAt(t *testing.T) {
