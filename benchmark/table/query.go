@@ -240,8 +240,7 @@ func queryPosVelTable100k(b *testing.B) {
 		for query.NextTable() {
 			positions, velocities := query.GetColumns()
 			for i := range positions {
-				pos := &positions[i]
-				vel := &velocities[i]
+				pos, vel := &positions[i], &velocities[i]
 				pos.X += vel.X
 				pos.Y += vel.Y
 			}

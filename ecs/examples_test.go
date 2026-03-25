@@ -91,8 +91,7 @@ func ExampleQuery2_tableBased() {
 		positions, velocities := query.GetColumns()
 		// Iterate over individual entity's components.
 		for i := range positions {
-			pos := &positions[i]
-			vel := &velocities[i]
+			pos, vel := &positions[i], &velocities[i]
 			pos.X += vel.X
 			pos.Y += vel.Y
 		}
