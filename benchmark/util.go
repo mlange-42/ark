@@ -219,10 +219,10 @@ Allocations are only shown for current.
 		html = "<p>✅ Benchmarks are stable!</p>\n" + html
 	} else {
 		if regressed > 0 {
-			html = "<p>⚠️ $regressed benchmark regressions detected!</p>\n" + html
+			html = fmt.Sprintf("<p>⚠️ %d benchmark regressions detected!</p>\n", regressed) + html
 		}
 		if improved > 0 {
-			html = "<p>🚀 $improved benchmark improvements detected!</p>\n" + html
+			html = fmt.Sprintf("<p>🚀 %d benchmark improvements detected!</p>\n", improved) + html
 		}
 	}
 
