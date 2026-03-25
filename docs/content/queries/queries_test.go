@@ -29,9 +29,28 @@ func TestQueriesBasic(t *testing.T) {
 	query := filter.Query()
 	// Iterate the query.
 	for query.Next() {
+		// Get the components of the current entity.
 		pos, vel := query.Get()
 		pos.X += vel.X
 		pos.Y += vel.Y
+	}
+}
+
+func TestQueriesTables(t *testing.T) {
+	// Create a filter.
+	filter := ecs.NewFilter2[Position, Velocity](world)
+	// Obtain a query.
+	query := filter.Query()
+	// Iterate the query in a table-based way.
+	for query.NextTable() {
+		// Get component columns.
+		positions, velocities := query.GetColumns()
+		// Iterate over entities in an inner loop.
+		for i := range positions {
+			pos, vel := &positions[i], &velocities[i]
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
 	}
 }
 

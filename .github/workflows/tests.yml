@@ -139,6 +139,7 @@ jobs:
           go run ./custom_events
           go run ./entity_grid
           go run ./events
+          go run ./fast_iter
           go run ./kdtree
           go run ./parallel_queries
           go run ./parallel_runs
