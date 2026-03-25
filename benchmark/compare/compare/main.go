@@ -28,7 +28,8 @@ func main() {
 		dataNew = append(dataNew, d)
 	}
 
-	compare(dataOld, dataNew)
+	result := compare(dataOld, dataNew)
+	fmt.Println(result)
 }
 
 func compareTables(dataOld, dataNew []benchmark.Result) []benchmark.CompResult {
@@ -86,12 +87,36 @@ func compareTables(dataOld, dataNew []benchmark.Result) []benchmark.CompResult {
 	return result
 }
 
-func compare(dataOld, dataNew [][]benchmark.Result) {
+func compare(dataOld, dataNew [][]benchmark.Result) []benchmark.CompResult {
 	comp := [][]benchmark.CompResult{}
 
 	for i := range dataOld {
 		result := compareTables(dataOld[i], dataNew[i])
 		comp = append(comp, result)
-		fmt.Println(result)
 	}
+
+	count := len(comp)
+	result := []benchmark.CompResult{}
+	for i := range comp[0] {
+		out := benchmark.CompResult{}
+		for _, c := range comp {
+			row := c[i]
+			out.Name = row.Name
+			out.N = row.N
+			out.TimeMain += row.TimeMain
+			out.TimeCurr += row.TimeCurr
+			out.Factor += row.Factor
+			out.Allocs += row.Allocs
+			out.Bytes += row.Bytes
+		}
+		out.TimeMain /= float64(count)
+		out.TimeCurr /= float64(count)
+		out.Factor /= float64(count)
+		out.Allocs /= float64(count)
+		out.Bytes /= float64(count)
+
+		result = append(result, out)
+	}
+
+	return result
 }
