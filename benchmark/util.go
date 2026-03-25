@@ -32,6 +32,17 @@ type Result struct {
 	Bytes  float64
 }
 
+// CompResult type
+type CompResult struct {
+	Name     string
+	N        int
+	TimeMain float64
+	TimeCurr float64
+	Factor   float64
+	Allocs   float64
+	Bytes    float64
+}
+
 // Format for writing benchmark results.
 type Format struct {
 	Format func(string, []Benchmark) string
