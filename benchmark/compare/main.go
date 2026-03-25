@@ -24,12 +24,12 @@ func main() {
 
 func benchesCompare() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
-		{Name: "Pos/Vel query entities n=10", Desc: "", F: posVelQuery10, N: 10},
-		{Name: "Pos/Vel query entities n=1000", Desc: "", F: posVelQuery1000, N: 1000},
-		{Name: "Pos/Vel query entities n=100000", Desc: "", F: posVelQuery100000, N: 100_000},
+		{Name: "Pos/Vel query entities", Desc: "", F: posVelQuery10, N: 10},
+		{Name: "Pos/Vel query entities", Desc: "", F: posVelQuery1000, N: 1000},
+		{Name: "Pos/Vel query entities", Desc: "", F: posVelQuery100000, N: 100_000},
 
-		{Name: "Pos/Vel mapper n=10", Desc: "", F: posVelMap10, N: 10},
-		{Name: "Pos/Vel mapper n=1000", Desc: "", F: posVelMap1000, N: 1000},
-		{Name: "Pos/Vel mapper n=100000", Desc: "", F: posVelMap100000, N: 100_000},
+		{Name: "Pos/Vel mapper", Desc: "", F: posVelMap10, N: 10},
+		{Name: "Pos/Vel mapper", Desc: "", F: posVelMap1000, N: 1000},
+		{Name: "Pos/Vel mapper", Desc: "", F: posVelMap100000, N: 100_000},
 	}
 }

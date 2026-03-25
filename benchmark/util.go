@@ -17,16 +17,19 @@ type Benchmark struct {
 	F      func(b *testing.B)
 	N      int
 	T      float64
-	Mem    float64
+	Allocs float64
+	Bytes  float64
 	Factor float64
 	Units  string
 }
 
 // Result type
 type Result struct {
-	Name string
-	Time float64
-	Mem  float64
+	Name   string
+	N      int
+	Time   float64
+	Allocs float64
+	Bytes  float64
 }
 
 // Format for writing benchmark results.
@@ -42,14 +45,17 @@ func RunBenchmarks(title string, benches []Benchmark, count int, format []Format
 		var t int64
 		var n int
 		var mem int
+		var allocs int
 		for range count {
 			res := testing.Benchmark(b.F)
 			t += res.T.Nanoseconds()
 			n += res.N
 			mem += int(res.MemBytes)
+			allocs += int(res.MemAllocs)
 		}
 		b.T = float64(t) / float64(n*b.N)
-		b.Mem = float64(mem) / float64(n*b.N)
+		b.Bytes = float64(mem) / float64(n*b.N)
+		b.Allocs = float64(allocs) / float64(n*b.N)
 	}
 	for _, f := range format {
 		_, err := fmt.Fprint(f.Writer, f.Format(title, benches))
@@ -91,11 +97,11 @@ func ToMarkdown(title string, benches []Benchmark) string {
 func ToCSV(title string, benches []Benchmark) string {
 	b := strings.Builder{}
 
-	b.WriteString(fmt.Sprintf("%s;%s;%s\n", "Operation", "Time", "Alloc"))
+	b.WriteString("Operation;N;Time;Allocs;Bytes\n")
 
 	for i := range benches {
 		bench := &benches[i]
-		b.WriteString(fmt.Sprintf("%s;%0.2f;%0.2f\n", bench.Name, bench.T, bench.Mem))
+		b.WriteString(fmt.Sprintf("%s;%d;%0.2f;%0.2f;%0.2f\n", bench.Name, bench.N, bench.T, bench.Allocs, bench.Bytes))
 	}
 
 	return b.String()
@@ -125,13 +131,17 @@ func ReadCSV(file string) ([]Result, error) {
 			break // EOF is expected
 		}
 
-		timeVal, _ := strconv.ParseFloat(record[1], 64)
-		memVal, _ := strconv.ParseFloat(record[2], 64)
+		nVal, _ := strconv.Atoi(record[1])
+		timeVal, _ := strconv.ParseFloat(record[2], 64)
+		allocsVal, _ := strconv.ParseFloat(record[3], 64)
+		bytesVal, _ := strconv.ParseFloat(record[4], 64)
 
 		results = append(results, Result{
-			Name: record[0],
-			Time: timeVal,
-			Mem:  memVal,
+			Name:   record[0],
+			N:      nVal,
+			Time:   timeVal,
+			Allocs: allocsVal,
+			Bytes:  bytesVal,
 		})
 	}
 
