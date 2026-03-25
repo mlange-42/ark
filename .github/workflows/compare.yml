@@ -68,3 +68,49 @@ jobs:
         with:
           name: bench_main_${{ matrix.repetition }}
           path: benchmark/bench_main_${{ matrix.repetition }}.csv
+
+  compare:
+    name: Compare benchmarks
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    needs:
+    - benchmark
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.25.4'
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Install dependencies
+        run: go get .
+      
+      - uses: actions/download-artifact@v7
+        with:
+          name: bench_main_1
+          path: benchmark/
+      - uses: actions/download-artifact@v7
+        with:
+          name: bench_main_2
+          path: benchmark/
+      - uses: actions/download-artifact@v7
+        with:
+          name: bench_main_3
+          path: benchmark/
+      - uses: actions/download-artifact@v7
+        with:
+          name: bench_current_1
+          path: benchmark/
+      - uses: actions/download-artifact@v7
+        with:
+          name: bench_current_2
+          path: benchmark/
+      - uses: actions/download-artifact@v7
+        with:
+          name: bench_current_3
+          path: benchmark/
+      
+      - name: Check
+        run: |
+          cd ./benchmark
+          ls
