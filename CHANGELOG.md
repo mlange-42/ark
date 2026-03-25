@@ -1,29 +1,5 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.7.1...main)
-
-### Features
-
-- Adds table-based query iteration, which is about 2x faster (#475)
-
-Example:
-
-```go
-for query.NextTable() {
-    positions, velocities := query.GetColumns()
-    for i := range positions {
-        pos, vel := &positions[i], &velocities[i]
-        pos.X += vel.X
-        pos.Y += vel.Y
-    }
-}
-```
-
-### Other
-
-- Uses `reflect` slices instead of arrays for component columns (#475)
-- Adds regression benchmarks, comparing PRs against the main branch (#476, #477, #478)
-
 ## [[v0.7.1]](https://github.com/mlange-42/ark/compare/v0.7.0...v0.7.1)
 
 ### Bugfixes

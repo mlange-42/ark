@@ -12,16 +12,12 @@ import "unsafe"
 {{- $upper := upperLetters . -}}
 {{- $genericsShort := "" -}}
 {{- $return := "" -}}
-{{- $returnSlices := "" -}}
 {{- if .}}
 {{- $genericsShort = join "[" ", " "]" $upper -}}
 {{- $return = join "(*" ", *" ")" $upper -}}
-{{- $returnSlices = join "([]" ", []" ")" $upper -}}
 {{- end}}
 
 // Next advances the query's cursor to the next entity.
-//
-// For alternative, faster iteration over tables, use [Query{{.}}.NextTable].
 func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 	if int64(q.cursor.index) < q.cursor.maxIndex {
 		q.cursor.index++
@@ -30,43 +26,19 @@ func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
-// NextTable advances the query's cursor to the next table.
-//
-// For alternative iteration over entities, use [Query{{.}}.Next].
-func (q *Query{{.}}{{$genericsShort}}) NextTable() bool {
-	return q.nextTableOrArchetype()
-}
-
 // Entity returns the current entity.
-// Use this with entity iteration using [Query{{.}}.Next].
 func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 	return q.table.GetEntity(q.cursor.index)
 }
 
-// Entities returns the entities of the current table.
-// Use this with table-based iteration using [Query{{.}}.NextTable].
-//
-// ⚠️ Do not set/replace any of the slice elements!
-func (q *Query{{.}}{{$genericsShort}}) Entities() []Entity {
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
-}
-
 {{if . -}}
 // Get returns the queried components of the current entity.
-// Use this with entity iteration using [Query{{.}}.Next].
 //
 // ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
 func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 	index := q.cursor.index
 	return {{range $i, $v := $upper}}{{if $i}},
 		{{end}}(*{{$v}})(unsafe.Add(q.columnPtr{{$v}}, index*q.itemSize{{$v}})){{end}}
-}
-
-// GetColumns returns the queried component columns of the current table.
-// Use this with table-based iteration using [Query{{.}}.NextTable].
-func (q *Query{{.}}{{$genericsShort}}) GetColumns() {{$returnSlices}} {
-	return {{range $i, $v := $upper}}{{if $i}},
-		{{end}}q.column{{$v}}.data.Interface().([]{{$v}})[:q.table.len:q.table.len]{{end}}
 }
 {{- end}}
 

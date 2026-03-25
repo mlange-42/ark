@@ -28,10 +28,6 @@ func benchesCompare() []benchmark.Benchmark {
 		{Name: "Pos/Vel query entities", Desc: "", F: posVelQuery1000, N: 1000},
 		{Name: "Pos/Vel query entities", Desc: "", F: posVelQuery100000, N: 100_000},
 
-		{Name: "Pos/Vel query tables", Desc: "", F: posVelQueryTables10, N: 10},
-		{Name: "Pos/Vel query tables", Desc: "", F: posVelQueryTables1000, N: 1000},
-		{Name: "Pos/Vel query tables", Desc: "", F: posVelQueryTables100000, N: 100_000},
-
 		{Name: "Pos/Vel mapper", Desc: "", F: posVelMap10, N: 10},
 		{Name: "Pos/Vel mapper", Desc: "", F: posVelMap1000, N: 1000},
 		{Name: "Pos/Vel mapper", Desc: "", F: posVelMap100000, N: 100_000},

@@ -40,7 +40,6 @@ type Query{{.}}{{$generics}} struct {
 	table      *table
 	cache      *cacheEntry
 	{{- range $upper}}
-	column{{.}}     *column
 	columnPtr{{.}}  unsafe.Pointer
 	itemSize{{.}}   uintptr
 	{{- end}}
@@ -57,9 +56,6 @@ type Query{{.}}{{$generics}} struct {
 
 {{if . -}}
 // GetRelation returns the entity relation target of the component at the given index.
-//
-// Can be used for the current entity in entity-based iteration,
-// as well as for the entire current table in table-based iteration.
 func (q *Query{{.}}{{$genericsShort}}) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
@@ -130,7 +126,6 @@ func (q *Query{{.}}{{$genericsShort}}) Close() {
 	q.table = nil
 	q.cache = nil
 	{{- range $i, $v := $upper}}
-	q.column{{$v}} = nil
 	q.columnPtr{{$v}} = unsafe.Pointer(nilDummy)
 	q.itemSize{{$v}} = 0
 	{{- end}}
@@ -208,9 +203,9 @@ func (q *Query{{.}}{{$genericsShort}}) setTable(index int32, table *table) {
 	q.cursor.table = index
 	q.table = table
 	{{- range $i, $v := $upper}}
-	q.column{{$v}} = q.components[{{$i}}].columns[q.table.id]
-	q.columnPtr{{$v}} = q.column{{$v}}.pointer
-	q.itemSize{{$v}} = q.column{{$v}}.itemSize
+	column{{$v}} := q.components[{{$i}}].columns[q.table.id]
+	q.columnPtr{{$v}} = column{{$v}}.pointer
+	q.itemSize{{$v}} = column{{$v}}.itemSize
 	{{- end}}
 	q.cursor.index = 0
 	q.cursor.maxIndex = int64(q.table.len - 1)

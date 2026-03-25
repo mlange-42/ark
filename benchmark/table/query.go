@@ -19,9 +19,6 @@ func benchesQuery() []benchmark.Benchmark {
 
 		{Name: "Query.Next + Query.Relation", Desc: "", F: queryRelation100k, N: 100_000},
 
-		{Name: "Pos/Vel Next/Get", Desc: "iter entities", F: queryPosVel100k, N: 100_000},
-		{Name: "Pos/Vel NextTable/GetColumns", Desc: "iter tables, w/ nested loop", F: queryPosVelTable100k, N: 100_000},
-
 		{Name: "Filter1.Query + Query1.Close", Desc: "", F: queryCreate, N: 1},
 		{Name: "Filter1.Query + Query1.Close", Desc: "registered filter", F: queryCreateCached, N: 1},
 	}
@@ -202,52 +199,5 @@ func queryCreateCached(b *testing.B) {
 	for b.Loop() {
 		query := filter.Query()
 		query.Close()
-	}
-}
-
-func queryPosVel100k(b *testing.B) {
-	w := ecs.NewWorld()
-
-	builder := ecs.NewMap2[Position, Velocity](w)
-	builder.NewBatch(100_000, &Position{}, &Velocity{1, 1})
-	filter := ecs.NewFilter2[Position, Velocity](w)
-
-	// Wrapper to allow inlining, for more realistic results.
-	loop := func() {
-		query := filter.Query()
-		for query.Next() {
-			pos, vel := query.Get()
-			pos.X += vel.X
-			pos.Y += vel.Y
-		}
-	}
-
-	for b.Loop() {
-		loop()
-	}
-}
-
-func queryPosVelTable100k(b *testing.B) {
-	w := ecs.NewWorld()
-
-	builder := ecs.NewMap2[Position, Velocity](w)
-	builder.NewBatch(100_000, &Position{}, &Velocity{1, 1})
-	filter := ecs.NewFilter2[Position, Velocity](w)
-
-	// Wrapper to allow inlining, for more realistic results.
-	loop := func() {
-		query := filter.Query()
-		for query.NextTable() {
-			positions, velocities := query.GetColumns()
-			for i := range positions {
-				pos, vel := &positions[i], &velocities[i]
-				pos.X += vel.X
-				pos.Y += vel.Y
-			}
-		}
-	}
-
-	for b.Loop() {
-		loop()
 	}
 }
