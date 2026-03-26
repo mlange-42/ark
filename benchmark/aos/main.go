@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image/color"
 	"math"
+	"strings"
 	"testing"
 
 	"gonum.org/v1/plot"
@@ -51,8 +52,8 @@ func main() {
 		for i := range modes[f] {
 			series := Series{
 				Name:  names[f],
-				Label: fmt.Sprintf("%s %3dB", names[f], bytes[i]),
-				Width: (math.Log2(float64(bytes[i])) - 3) / 2,
+				Label: strings.ReplaceAll(fmt.Sprintf("%s  %2d Variables  %3dB", names[f], bytes[i]/8, bytes[i]), " ", "\u00A0"),
+				Width: (math.Log2(float64(bytes[i]))-3)/2 + 0.5,
 			}
 			for _, n := range nValues {
 				fn := func(b *testing.B) {
@@ -99,6 +100,8 @@ func plotResults(data []Series, bg color.RGBA, fg color.RGBA, colors map[string]
 
 	p.Legend = plot.NewLegend()
 	p.Legend.TextStyle.Color = fg
+	p.Legend.TextStyle.Font.Size = 11
+	p.Legend.Padding = 2
 	p.Legend.Top = true
 	p.Legend.Left = true
 

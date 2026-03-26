@@ -38,6 +38,13 @@ jobs:
         run: |
           echo "Benchmarks skipped" > docs/content/generated/_benchmarks.md
 
+      - name: Run benchmarks cs. AoS
+        run: |
+          cd ./benchmark
+          go run ./aos -test.benchtime=3s
+          cp aos-light.svg ../docs/content/queries/images
+          cp aos-dark.svg ../docs/content/queries/images
+
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
