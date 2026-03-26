@@ -179,6 +179,7 @@ func (t *table) adjustCapacity(cap uint32) {
 		} else {
 			column.pointer = column.data.Index(0).Addr().UnsafePointer()
 			if t.len > 0 {
+				// TODO: use typedmemmove?
 				reflect.Copy(column.data, old)
 			}
 		}
@@ -289,6 +290,10 @@ func (t *table) Matches(relations []relationID) bool {
 	if len(relations) == 0 || !t.HasRelations() {
 		return true
 	}
+	return t.matchesRelations(relations)
+}
+
+func (t *table) matchesRelations(relations []relationID) bool {
 	for _, rel := range relations {
 		//if rel.target == wildcard {
 		//	continue
