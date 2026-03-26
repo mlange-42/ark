@@ -12,9 +12,11 @@ import "unsafe"
 {{- $upper := upperLetters . -}}
 {{- $genericsShort := "" -}}
 {{- $return := "" -}}
+{{- $returnSlices := "" -}}
 {{- if .}}
 {{- $genericsShort = join "[" ", " "]" $upper -}}
 {{- $return = join "(*" ", *" ")" $upper -}}
+{{- $returnSlices = join "([]" ", []" ")" $upper -}}
 {{- end}}
 
 // Next advances the query's cursor to the next entity.
@@ -53,6 +55,13 @@ func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 	index := q.cursor.index
 	return {{range $i, $v := $upper}}{{if $i}},
 		{{end}}(*{{$v}})(unsafe.Add(q.columnPtr{{$v}}, index*q.itemSize{{$v}})){{end}}
+}
+
+// GetColumns returns the queried component columns of the current table.
+func (q *Query{{.}}{{$genericsShort}}) GetColumns() {{$returnSlices}} {
+	q.cursor.checkQueryGet()
+	return {{range $i, $v := $upper}}{{if $i}},
+		{{end}}q.column{{$v}}.data.Interface().([]{{$v}})[:q.table.len]{{end}}
 }
 {{- end}}
 
