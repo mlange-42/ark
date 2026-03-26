@@ -41,16 +41,16 @@ func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
 	copy(dstSlice, srcSlice)
 }
 
-// copyValue copies an item between two reflect arrays.
+// copyValueReflect copies an item between two reflect arrays using reflection.
 // This is GC-safe. Use for non-trivial types.
-func copyValue(src, dst reflect.Value, from, to int) {
+func copyValueReflect(src, dst reflect.Value, from, to int) {
 	// TODO: can potentially be optimized using typedmemmove
 	dst.Index(to).Set(src.Index(from))
 }
 
-// copyValue copies an item between two reflect arrays.
+// copyValue copies an item between two reflect arrays using typedmemmove.
 // This is GC-safe. Use for non-trivial types.
-func copyValueNew(src, dst *column, from, to uintptr) {
+func copyValue(src, dst *column, from, to uintptr) {
 	srcPtr := unsafe.Add(src.pointer, from*src.itemSize)
 	dstPtr := unsafe.Add(dst.pointer, to*dst.itemSize)
 	typedmemmove(src.typePtr, dstPtr, srcPtr)

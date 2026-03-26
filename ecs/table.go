@@ -209,7 +209,8 @@ func (t *table) Remove(index uint32) bool {
 				continue
 			}
 
-			copyValueNew(column, column, uintptr(lastIndex), uintptr(index))
+			// use reflect here, as typedmemmove seems slow when both columns are the same.
+			copyValueReflect(column.data, column.data, int(lastIndex), int(index))
 			column.Zero(lastIndex)
 		}
 	} else {
