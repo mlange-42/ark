@@ -16,10 +16,21 @@ func (q *Query0) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
+// NextTable advances the query's cursor to the next table.
+func (q *Query0) NextTable() bool {
+	return q.nextTableOrArchetype()
+}
+
 // Entity returns the current entity.
 func (q *Query0) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
+}
+
+// Entities returns the entities of the current table.
+func (q *Query0) Entities() []Entity {
+	q.cursor.checkQueryGet()
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -32,10 +43,21 @@ func (q *Query1[A]) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
+// NextTable advances the query's cursor to the next table.
+func (q *Query1[A]) NextTable() bool {
+	return q.nextTableOrArchetype()
+}
+
 // Entity returns the current entity.
 func (q *Query1[A]) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
+}
+
+// Entities returns the entities of the current table.
+func (q *Query1[A]) Entities() []Entity {
+	q.cursor.checkQueryGet()
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -57,10 +79,21 @@ func (q *Query2[A, B]) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
+// NextTable advances the query's cursor to the next table.
+func (q *Query2[A, B]) NextTable() bool {
+	return q.nextTableOrArchetype()
+}
+
 // Entity returns the current entity.
 func (q *Query2[A, B]) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
+}
+
+// Entities returns the entities of the current table.
+func (q *Query2[A, B]) Entities() []Entity {
+	q.cursor.checkQueryGet()
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -83,10 +116,21 @@ func (q *Query3[A, B, C]) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
+// NextTable advances the query's cursor to the next table.
+func (q *Query3[A, B, C]) NextTable() bool {
+	return q.nextTableOrArchetype()
+}
+
 // Entity returns the current entity.
 func (q *Query3[A, B, C]) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
+}
+
+// Entities returns the entities of the current table.
+func (q *Query3[A, B, C]) Entities() []Entity {
+	q.cursor.checkQueryGet()
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -110,10 +154,21 @@ func (q *Query4[A, B, C, D]) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
+// NextTable advances the query's cursor to the next table.
+func (q *Query4[A, B, C, D]) NextTable() bool {
+	return q.nextTableOrArchetype()
+}
+
 // Entity returns the current entity.
 func (q *Query4[A, B, C, D]) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
+}
+
+// Entities returns the entities of the current table.
+func (q *Query4[A, B, C, D]) Entities() []Entity {
+	q.cursor.checkQueryGet()
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -138,10 +193,21 @@ func (q *Query5[A, B, C, D, E]) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
+// NextTable advances the query's cursor to the next table.
+func (q *Query5[A, B, C, D, E]) NextTable() bool {
+	return q.nextTableOrArchetype()
+}
+
 // Entity returns the current entity.
 func (q *Query5[A, B, C, D, E]) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
+}
+
+// Entities returns the entities of the current table.
+func (q *Query5[A, B, C, D, E]) Entities() []Entity {
+	q.cursor.checkQueryGet()
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -167,10 +233,21 @@ func (q *Query6[A, B, C, D, E, F]) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
+// NextTable advances the query's cursor to the next table.
+func (q *Query6[A, B, C, D, E, F]) NextTable() bool {
+	return q.nextTableOrArchetype()
+}
+
 // Entity returns the current entity.
 func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
+}
+
+// Entities returns the entities of the current table.
+func (q *Query6[A, B, C, D, E, F]) Entities() []Entity {
+	q.cursor.checkQueryGet()
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -197,10 +274,21 @@ func (q *Query7[A, B, C, D, E, F, G]) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
+// NextTable advances the query's cursor to the next table.
+func (q *Query7[A, B, C, D, E, F, G]) NextTable() bool {
+	return q.nextTableOrArchetype()
+}
+
 // Entity returns the current entity.
 func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
+}
+
+// Entities returns the entities of the current table.
+func (q *Query7[A, B, C, D, E, F, G]) Entities() []Entity {
+	q.cursor.checkQueryGet()
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -228,10 +316,21 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Next() bool {
 	return q.nextTableOrArchetype()
 }
 
+// NextTable advances the query's cursor to the next table.
+func (q *Query8[A, B, C, D, E, F, G, H]) NextTable() bool {
+	return q.nextTableOrArchetype()
+}
+
 // Entity returns the current entity.
 func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
+}
+
+// Entities returns the entities of the current table.
+func (q *Query8[A, B, C, D, E, F, G, H]) Entities() []Entity {
+	q.cursor.checkQueryGet()
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
