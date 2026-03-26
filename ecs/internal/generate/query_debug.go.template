@@ -48,10 +48,10 @@ func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 // Entities returns the entities of the current table.
 // Use this with table-based iteration using [Query{{.}}.NextTable].
 //
-// ⚠️ Do not append to the returned slice!
+// ⚠️ Do not set/replace any of the slice elements!
 func (q *Query{{.}}{{$genericsShort}}) Entities() []Entity {
 	q.cursor.checkQueryGet()
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
 }
 
 {{if . -}}
@@ -68,12 +68,10 @@ func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 
 // GetColumns returns the queried component columns of the current table.
 // Use this with table-based iteration using [Query{{.}}.NextTable].
-//
-// ⚠️ Do not append to the returned component column slices!
 func (q *Query{{.}}{{$genericsShort}}) GetColumns() {{$returnSlices}} {
 	q.cursor.checkQueryGet()
 	return {{range $i, $v := $upper}}{{if $i}},
-		{{end}}q.column{{$v}}.data.Interface().([]{{$v}})[:q.table.len]{{end}}
+		{{end}}q.column{{$v}}.data.Interface().([]{{$v}})[:q.table.len:q.table.len]{{end}}
 }
 {{- end}}
 

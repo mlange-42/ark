@@ -33,9 +33,9 @@ func (q *Query0) Entity() Entity {
 // Entities returns the entities of the current table.
 // Use this with table-based iteration using [Query0.NextTable].
 //
-// ⚠️ Do not append to the returned slice!
+// ⚠️ Do not set/replace any of the slice elements!
 func (q *Query0) Entities() []Entity {
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -65,9 +65,9 @@ func (q *Query1[A]) Entity() Entity {
 // Entities returns the entities of the current table.
 // Use this with table-based iteration using [Query1.NextTable].
 //
-// ⚠️ Do not append to the returned slice!
+// ⚠️ Do not set/replace any of the slice elements!
 func (q *Query1[A]) Entities() []Entity {
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -81,10 +81,8 @@ func (q *Query1[A]) Get() *A {
 
 // GetColumns returns the queried component columns of the current table.
 // Use this with table-based iteration using [Query1.NextTable].
-//
-// ⚠️ Do not append to the returned component column slices!
 func (q *Query1[A]) GetColumns() []A {
-	return q.columnA.data.Interface().([]A)[:q.table.len]
+	return q.columnA.data.Interface().([]A)[:q.table.len:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -114,9 +112,9 @@ func (q *Query2[A, B]) Entity() Entity {
 // Entities returns the entities of the current table.
 // Use this with table-based iteration using [Query2.NextTable].
 //
-// ⚠️ Do not append to the returned slice!
+// ⚠️ Do not set/replace any of the slice elements!
 func (q *Query2[A, B]) Entities() []Entity {
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -131,11 +129,9 @@ func (q *Query2[A, B]) Get() (*A, *B) {
 
 // GetColumns returns the queried component columns of the current table.
 // Use this with table-based iteration using [Query2.NextTable].
-//
-// ⚠️ Do not append to the returned component column slices!
 func (q *Query2[A, B]) GetColumns() ([]A, []B) {
-	return q.columnA.data.Interface().([]A)[:q.table.len],
-		q.columnB.data.Interface().([]B)[:q.table.len]
+	return q.columnA.data.Interface().([]A)[:q.table.len:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -165,9 +161,9 @@ func (q *Query3[A, B, C]) Entity() Entity {
 // Entities returns the entities of the current table.
 // Use this with table-based iteration using [Query3.NextTable].
 //
-// ⚠️ Do not append to the returned slice!
+// ⚠️ Do not set/replace any of the slice elements!
 func (q *Query3[A, B, C]) Entities() []Entity {
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -183,12 +179,10 @@ func (q *Query3[A, B, C]) Get() (*A, *B, *C) {
 
 // GetColumns returns the queried component columns of the current table.
 // Use this with table-based iteration using [Query3.NextTable].
-//
-// ⚠️ Do not append to the returned component column slices!
 func (q *Query3[A, B, C]) GetColumns() ([]A, []B, []C) {
-	return q.columnA.data.Interface().([]A)[:q.table.len],
-		q.columnB.data.Interface().([]B)[:q.table.len],
-		q.columnC.data.Interface().([]C)[:q.table.len]
+	return q.columnA.data.Interface().([]A)[:q.table.len:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -218,9 +212,9 @@ func (q *Query4[A, B, C, D]) Entity() Entity {
 // Entities returns the entities of the current table.
 // Use this with table-based iteration using [Query4.NextTable].
 //
-// ⚠️ Do not append to the returned slice!
+// ⚠️ Do not set/replace any of the slice elements!
 func (q *Query4[A, B, C, D]) Entities() []Entity {
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -237,13 +231,11 @@ func (q *Query4[A, B, C, D]) Get() (*A, *B, *C, *D) {
 
 // GetColumns returns the queried component columns of the current table.
 // Use this with table-based iteration using [Query4.NextTable].
-//
-// ⚠️ Do not append to the returned component column slices!
 func (q *Query4[A, B, C, D]) GetColumns() ([]A, []B, []C, []D) {
-	return q.columnA.data.Interface().([]A)[:q.table.len],
-		q.columnB.data.Interface().([]B)[:q.table.len],
-		q.columnC.data.Interface().([]C)[:q.table.len],
-		q.columnD.data.Interface().([]D)[:q.table.len]
+	return q.columnA.data.Interface().([]A)[:q.table.len:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len:q.table.len],
+		q.columnD.data.Interface().([]D)[:q.table.len:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -273,9 +265,9 @@ func (q *Query5[A, B, C, D, E]) Entity() Entity {
 // Entities returns the entities of the current table.
 // Use this with table-based iteration using [Query5.NextTable].
 //
-// ⚠️ Do not append to the returned slice!
+// ⚠️ Do not set/replace any of the slice elements!
 func (q *Query5[A, B, C, D, E]) Entities() []Entity {
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -293,14 +285,12 @@ func (q *Query5[A, B, C, D, E]) Get() (*A, *B, *C, *D, *E) {
 
 // GetColumns returns the queried component columns of the current table.
 // Use this with table-based iteration using [Query5.NextTable].
-//
-// ⚠️ Do not append to the returned component column slices!
 func (q *Query5[A, B, C, D, E]) GetColumns() ([]A, []B, []C, []D, []E) {
-	return q.columnA.data.Interface().([]A)[:q.table.len],
-		q.columnB.data.Interface().([]B)[:q.table.len],
-		q.columnC.data.Interface().([]C)[:q.table.len],
-		q.columnD.data.Interface().([]D)[:q.table.len],
-		q.columnE.data.Interface().([]E)[:q.table.len]
+	return q.columnA.data.Interface().([]A)[:q.table.len:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len:q.table.len],
+		q.columnD.data.Interface().([]D)[:q.table.len:q.table.len],
+		q.columnE.data.Interface().([]E)[:q.table.len:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -330,9 +320,9 @@ func (q *Query6[A, B, C, D, E, F]) Entity() Entity {
 // Entities returns the entities of the current table.
 // Use this with table-based iteration using [Query6.NextTable].
 //
-// ⚠️ Do not append to the returned slice!
+// ⚠️ Do not set/replace any of the slice elements!
 func (q *Query6[A, B, C, D, E, F]) Entities() []Entity {
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -351,15 +341,13 @@ func (q *Query6[A, B, C, D, E, F]) Get() (*A, *B, *C, *D, *E, *F) {
 
 // GetColumns returns the queried component columns of the current table.
 // Use this with table-based iteration using [Query6.NextTable].
-//
-// ⚠️ Do not append to the returned component column slices!
 func (q *Query6[A, B, C, D, E, F]) GetColumns() ([]A, []B, []C, []D, []E, []F) {
-	return q.columnA.data.Interface().([]A)[:q.table.len],
-		q.columnB.data.Interface().([]B)[:q.table.len],
-		q.columnC.data.Interface().([]C)[:q.table.len],
-		q.columnD.data.Interface().([]D)[:q.table.len],
-		q.columnE.data.Interface().([]E)[:q.table.len],
-		q.columnF.data.Interface().([]F)[:q.table.len]
+	return q.columnA.data.Interface().([]A)[:q.table.len:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len:q.table.len],
+		q.columnD.data.Interface().([]D)[:q.table.len:q.table.len],
+		q.columnE.data.Interface().([]E)[:q.table.len:q.table.len],
+		q.columnF.data.Interface().([]F)[:q.table.len:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -389,9 +377,9 @@ func (q *Query7[A, B, C, D, E, F, G]) Entity() Entity {
 // Entities returns the entities of the current table.
 // Use this with table-based iteration using [Query7.NextTable].
 //
-// ⚠️ Do not append to the returned slice!
+// ⚠️ Do not set/replace any of the slice elements!
 func (q *Query7[A, B, C, D, E, F, G]) Entities() []Entity {
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -411,16 +399,14 @@ func (q *Query7[A, B, C, D, E, F, G]) Get() (*A, *B, *C, *D, *E, *F, *G) {
 
 // GetColumns returns the queried component columns of the current table.
 // Use this with table-based iteration using [Query7.NextTable].
-//
-// ⚠️ Do not append to the returned component column slices!
 func (q *Query7[A, B, C, D, E, F, G]) GetColumns() ([]A, []B, []C, []D, []E, []F, []G) {
-	return q.columnA.data.Interface().([]A)[:q.table.len],
-		q.columnB.data.Interface().([]B)[:q.table.len],
-		q.columnC.data.Interface().([]C)[:q.table.len],
-		q.columnD.data.Interface().([]D)[:q.table.len],
-		q.columnE.data.Interface().([]E)[:q.table.len],
-		q.columnF.data.Interface().([]F)[:q.table.len],
-		q.columnG.data.Interface().([]G)[:q.table.len]
+	return q.columnA.data.Interface().([]A)[:q.table.len:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len:q.table.len],
+		q.columnD.data.Interface().([]D)[:q.table.len:q.table.len],
+		q.columnE.data.Interface().([]E)[:q.table.len:q.table.len],
+		q.columnF.data.Interface().([]F)[:q.table.len:q.table.len],
+		q.columnG.data.Interface().([]G)[:q.table.len:q.table.len]
 }
 
 // Next advances the query's cursor to the next entity.
@@ -450,9 +436,9 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Entity() Entity {
 // Entities returns the entities of the current table.
 // Use this with table-based iteration using [Query8.NextTable].
 //
-// ⚠️ Do not append to the returned slice!
+// ⚠️ Do not set/replace any of the slice elements!
 func (q *Query8[A, B, C, D, E, F, G, H]) Entities() []Entity {
-	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
+	return q.table.entities.data.Interface().([]Entity)[:q.table.len:q.table.len]
 }
 
 // Get returns the queried components of the current entity.
@@ -473,15 +459,13 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Get() (*A, *B, *C, *D, *E, *F, *G, *H) 
 
 // GetColumns returns the queried component columns of the current table.
 // Use this with table-based iteration using [Query8.NextTable].
-//
-// ⚠️ Do not append to the returned component column slices!
 func (q *Query8[A, B, C, D, E, F, G, H]) GetColumns() ([]A, []B, []C, []D, []E, []F, []G, []H) {
-	return q.columnA.data.Interface().([]A)[:q.table.len],
-		q.columnB.data.Interface().([]B)[:q.table.len],
-		q.columnC.data.Interface().([]C)[:q.table.len],
-		q.columnD.data.Interface().([]D)[:q.table.len],
-		q.columnE.data.Interface().([]E)[:q.table.len],
-		q.columnF.data.Interface().([]F)[:q.table.len],
-		q.columnG.data.Interface().([]G)[:q.table.len],
-		q.columnH.data.Interface().([]H)[:q.table.len]
+	return q.columnA.data.Interface().([]A)[:q.table.len:q.table.len],
+		q.columnB.data.Interface().([]B)[:q.table.len:q.table.len],
+		q.columnC.data.Interface().([]C)[:q.table.len:q.table.len],
+		q.columnD.data.Interface().([]D)[:q.table.len:q.table.len],
+		q.columnE.data.Interface().([]E)[:q.table.len:q.table.len],
+		q.columnF.data.Interface().([]F)[:q.table.len:q.table.len],
+		q.columnG.data.Interface().([]G)[:q.table.len:q.table.len],
+		q.columnH.data.Interface().([]H)[:q.table.len:q.table.len]
 }
