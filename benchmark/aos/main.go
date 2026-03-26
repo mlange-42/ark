@@ -70,8 +70,8 @@ func main() {
 		}
 	}
 
-	plotResults(allSeries, color.RGBA{R: 250, G: 250, B: 250, A: 255}, color.RGBA{A: 255}, colorsLight, "aos_light.svg")
-	plotResults(allSeries, color.RGBA{R: 30, G: 30, B: 30, A: 255}, color.RGBA{R: 243, G: 244, B: 246, A: 255}, colorsDark, "aos_dark.svg")
+	plotResults(allSeries, color.RGBA{R: 250, G: 250, B: 250, A: 255}, color.RGBA{A: 255}, colorsLight, "aos-light.svg")
+	plotResults(allSeries, color.RGBA{R: 30, G: 30, B: 30, A: 255}, color.RGBA{R: 243, G: 244, B: 246, A: 255}, colorsDark, "aos-dark.svg")
 }
 
 func plotResults(data []Series, bg color.RGBA, fg color.RGBA, colors map[string]color.RGBA, file string) {
@@ -116,7 +116,7 @@ func plotResults(data []Series, bg color.RGBA, fg color.RGBA, colors map[string]
 		p.Legend.Add(series.Label, lines)
 	}
 
-	err := p.Save(460, 300, file)
+	err := p.Save(460, 280, file)
 	if err != nil {
 		panic(err)
 	}

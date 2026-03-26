@@ -52,6 +52,13 @@ Secondly, all components of the same type (like `Position`) are stored in a dedi
 A query only accesses the required components (i.e. columns), although entities may possess many more components.
 Memory access is therefore completely linear and contiguous, and the CPUs cache is used as efficiently as possible.
 
+{{< html >}}
+<br/>
+<img alt="Benchmarks vs. Array of Structs, light" width="600" class="light" src="./images/aos-light.svg"></img>
+<img alt="Benchmarks vs. Array of Structs, dark" width="600" class="dark" src="./images/aos-dark.svg"></img>
+{{< /html >}}  
+*Benchmarks*
+
 ## World lock
 
 The world gets locked for [component operations](../operations/) when a query is created.

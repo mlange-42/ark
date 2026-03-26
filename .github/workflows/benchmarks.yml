@@ -55,13 +55,13 @@ jobs:
       - name: Archive benchmark results 1
         uses: actions/upload-artifact@v4
         with:
-          path: benchmark/aos_light.png
-          name: aos_light.png
+          path: benchmark/aos-light.svg
+          name: aos-light.svg
       - name: Archive benchmark results 2
         uses: actions/upload-artifact@v4
         with:
-          path: benchmark/aos_dark.png
-          name: aos_dark.png
+          path: benchmark/aos-dark.svg
+          name: aos-dark.svg
 
   tables:
     name: Benchmark Tables
