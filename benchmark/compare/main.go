@@ -29,6 +29,9 @@ func main() {
 
 func benchesCompare() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
+		{Name: "Query create + close", Desc: "", F: queryCreateClose, N: 1},
+		{Name: "Query(reg) create + close", Desc: "", F: queryCreateCloseRegistered, N: 1},
+
 		{Name: "Pos/Vel query entities", Desc: "", F: posVelQuery10, N: 10},
 		{Name: "Pos/Vel query entities", Desc: "", F: posVelQuery1000, N: 1000},
 		{Name: "Pos/Vel query entities", Desc: "", F: posVelQuery100000, N: 100_000},
