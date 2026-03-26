@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strconv"
@@ -16,6 +17,7 @@ const goVersion = "1.25.4"
 
 func main() {
 	testing.Init()
+	flag.Parse()
 
 	repetitions, err := strconv.Atoi(os.Args[1])
 	if err != nil {

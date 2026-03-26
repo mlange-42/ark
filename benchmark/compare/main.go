@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"testing"
 
@@ -9,6 +10,7 @@ import (
 
 func main() {
 	testing.Init()
+	flag.Parse()
 
 	repetitions := 1
 
