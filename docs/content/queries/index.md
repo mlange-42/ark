@@ -25,6 +25,14 @@ In the example below, the filter would match any entities that have
 {{< api ecs Query2.Get >}} returns all queried components of the current entity.
 The current entity can be obtained with {{< api ecs Query2.Entity >}}.
 
+## Table-based iteration
+
+Instead of iterating over individual entities and retrieving their components,
+queries can also iterate over entire tables/archetypes and provide access to component columns.
+This way of iterating is about two times as fast, but also requires more code due to an inner loop over entities:
+
+{{< code-func queries_test.go TestQueriesTables >}}
+
 ## Query performance
 
 Queries iteration is what an [archetype](../architecture)-based ECS is optimized for, and it is really fast.
