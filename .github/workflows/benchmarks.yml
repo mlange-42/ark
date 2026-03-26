@@ -51,7 +51,7 @@ jobs:
       - name: Benchmark vs. AoS
         run: |
           cd ./benchmark
-          go run ./aos
+          go run ./aos -test.benchtime=3s
       - name: Archive benchmark results
         uses: actions/upload-artifact@v4
         with:
