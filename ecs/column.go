@@ -103,7 +103,7 @@ func (c *column) ZeroRange(start, length uint32) {
 
 	// Non-trivial: per-element GC-safe zeroing
 	ptr := unsafe.Add(c.pointer, base)
-	for i := uint32(0); i < length; i++ {
+	for range length {
 		// TODO: keep an eye on this, and possibly revert to (slower) reflect method!
 		// See PR #482.
 		typedmemclr(c.typePtr, ptr)
