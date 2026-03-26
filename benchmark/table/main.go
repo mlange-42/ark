@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"testing"
 	"time"
 
 	"github.com/klauspost/cpuid/v2"
@@ -14,6 +15,8 @@ const version = "v0.7.1"
 const goVersion = "1.25.4"
 
 func main() {
+	testing.Init()
+
 	repetitions, err := strconv.Atoi(os.Args[1])
 	if err != nil {
 		panic(err)
