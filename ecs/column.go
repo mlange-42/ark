@@ -77,7 +77,7 @@ func (c *column) Zero(index uintptr, zero unsafe.Pointer) {
 		copyPtr(zero, dst, c.itemSize)
 	} else {
 		// TODO: Do we really need this?
-		// Tests indicate stuff get GC'd also with copyPtr.
+		// Tests indicate stuff gets GC'd also with copyPtr.
 		zeroValueAt(c.data, int(index))
 	}
 }
@@ -100,7 +100,7 @@ func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
 	if ownLen == 0 {
 		return
 	}
-	if ownLen <= 64 && c.isTrivial { // A coarse estimate where manually zeroing is faster
+	if c.isTrivial {
 		c.ZeroRange(0, ownLen, zero)
 	} else {
 		for i := range ownLen {
