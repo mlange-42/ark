@@ -4,7 +4,7 @@
 
 ### Features
 
-- Adds table-based query iteration, which is about 2x faster (#475)
+- Adds table-based query iteration, which is about 2x faster (#482)
 
 Example:
 
@@ -18,6 +18,10 @@ for query.NextTable() {
     }
 }
 ```
+
+### Performance
+
+- Speeds up zeroing component memory by using `memclrNoHeapPointers` and `typedmemclr` (#482)
 
 ### Other
 
