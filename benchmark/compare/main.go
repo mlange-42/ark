@@ -1,12 +1,17 @@
 package main
 
 import (
+	"flag"
 	"os"
+	"testing"
 
 	"github.com/mlange-42/ark/benchmark"
 )
 
 func main() {
+	testing.Init()
+	flag.Parse()
+
 	repetitions := 1
 
 	f, err := os.Create("bench.csv")
