@@ -12,64 +12,72 @@ type Velocity struct {
 	Y float64
 }
 
-// Payload1 component.
-type Payload1 struct {
+// Payload32B component.
+type Payload32B struct {
 	X float64
 	Y float64
+	U float64
+	V float64
 }
 
-// Payload2 component.
-type Payload2 struct {
+// Payload64B component.
+type Payload64B struct {
 	X float64
 	Y float64
+	U float64
+	V float64
+	A float64
+	B float64
+	C float64
+	D float64
 }
 
-// Payload3 component.
-type Payload3 struct {
+// Payload128B component.
+type Payload128B struct {
 	X float64
 	Y float64
-}
-
-// Payload4 component.
-type Payload4 struct {
-	X float64
-	Y float64
-}
-
-// Payload5 component.
-type Payload5 struct {
-	X float64
-	Y float64
-}
-
-// Payload6 component.
-type Payload6 struct {
-	X float64
-	Y float64
-}
-
-// Aos16Byte entity.
-type Aos16Byte struct {
-	Pos Position
-	Vel Velocity
+	U float64
+	V float64
+	A float64
+	B float64
+	C float64
+	D float64
+	E float64
+	F float64
+	G float64
+	H float64
+	I float64
+	J float64
+	K float64
+	L float64
 }
 
 // Aos32Byte entity.
 type Aos32Byte struct {
 	Pos Position
 	Vel Velocity
-	P1  Payload1
-	P2  Payload2
 }
 
 // Aos64Byte entity.
 type Aos64Byte struct {
 	Pos Position
 	Vel Velocity
-	P1  Payload1
-	P2  Payload2
-	P3  Payload3
-	P4  Payload4
-	P5  Payload5
-	P6  Payload6
+	P32 Payload32B
+}
+
+// Aos128Byte entity.
+type Aos128Byte struct {
+	Pos Position
+	Vel Velocity
+	P32 Payload32B
+	P64 Payload64B
+}
+
+// Aos256Byte entity.
+type Aos256Byte struct {
+	Pos  Position
+	Vel  Velocity
+	P32  Payload32B
+	P64  Payload64B
+	P128 Payload128B
 }
