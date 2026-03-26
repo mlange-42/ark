@@ -53,9 +53,9 @@ func copyValue(src, dst *column, from, to uintptr) {
 // Copies src[:count] to dst[start:].
 // This is GC-safe. Use for non-trivial types.
 func copyRange(src, dst *column, start, count uintptr) {
-	if count == 0 {
-		return
-	}
+	//if count == 0 {
+	//	return
+	//}
 
 	elemSize := src.itemSize
 	dstPtr := unsafe.Add(dst.pointer, start*elemSize)

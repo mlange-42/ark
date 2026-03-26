@@ -209,7 +209,7 @@ func (t *table) Remove(index uint32) bool {
 				continue
 			}
 
-			copyValue(column, column, uintptr(lastIndex), uintptr(index))
+			copyValue(column, column, lastIndex, uintptr(index))
 			column.Zero(lastIndex)
 		}
 	} else {
