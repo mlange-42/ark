@@ -164,6 +164,21 @@ func BenchmarkAddRemoveBatch_1000(b *testing.B) {
 	}
 }
 
+func BenchmarkAddRemoveBatchPointer_1000(b *testing.B) {
+	w := NewWorld()
+	builder1 := NewMap1[Position](w)
+	builder2 := NewMap1[PointerComp](w)
+	filter := NewFilter0(w)
+
+	builder1.NewBatchFn(1000, nil)
+	builder2.AddBatchFn(filter.Batch(), nil)
+
+	for b.Loop() {
+		builder2.RemoveBatch(filter.Batch(), nil)
+		builder2.AddBatchFn(filter.Batch(), nil)
+	}
+}
+
 func BenchmarkWorldReset(b *testing.B) {
 	w := NewWorld()
 
