@@ -752,6 +752,34 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 	}
 }
 
+func TestWorldBatchMoveSlice(t *testing.T) {
+	n := 1000
+
+	w := NewWorld()
+	dataMap := NewMap1[SliceComp](w)
+	posMap := NewMap1[Position](w)
+	filter := NewFilter1[SliceComp](w)
+	filter2 := NewFilter1[SliceComp](w).Without(C[Position]())
+
+	dataMap.NewBatchFn(n, func(e Entity, sc *SliceComp) {
+		sc.Slice = []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}
+	})
+	posMap.AddBatchFn(filter2.Batch(), nil)
+
+	dataMap.NewBatchFn(n, func(e Entity, sc *SliceComp) {
+		sc.Slice = []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}
+	})
+	posMap.AddBatchFn(filter2.Batch(), nil)
+
+	query := filter.Query()
+	expectEqual(t, n*2, query.Count())
+	for query.Next() {
+		sl := query.Get()
+		e := query.Entity()
+		expectSlicesEqual(t, []int{int(e.id) + 1, int(e.id) + 2, int(e.id) + 3, int(e.id) + 4}, sl.Slice)
+	}
+}
+
 func TestWorldShrinkSimple(t *testing.T) {
 	w := NewWorld(128)
 

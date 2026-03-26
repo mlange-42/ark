@@ -22,6 +22,7 @@ for query.NextTable() {
 ### Performance
 
 - Speeds up zeroing component memory by using `memclrNoHeapPointers` and `typedmemclr` (#482)
+- Speeds up moving non-trivial components by 30% using `typedmemmove` instead of reflection (#484)
 
 ### Other
 
