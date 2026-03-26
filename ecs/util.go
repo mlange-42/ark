@@ -43,19 +43,29 @@ func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
 
 // copyValue copies an item between two reflect arrays.
 // This is GC-safe. Use for non-trivial types.
-func copyValue(src, dst reflect.Value, from, to int) {
-	// TODO: can potentially be optimized using typedmemmove
-	dst.Index(to).Set(src.Index(from))
+func copyValue(src, dst *column, from, to uintptr) {
+	srcPtr := unsafe.Add(src.pointer, from*src.itemSize)
+	dstPtr := unsafe.Add(dst.pointer, to*dst.itemSize)
+	typedmemmove(src.typePtr, dstPtr, srcPtr)
 }
 
 // copyRange copies a range of items from one reflect array to another.
 // Copies src[:count] to dst[start:].
 // This is GC-safe. Use for non-trivial types.
-func copyRange(src, dst reflect.Value, start, count int) {
-	// TODO: can potentially be optimized using typedmemmove
-	srcSlice := src.Slice(0, count)
-	dstSlice := dst.Slice(start, start+count)
-	reflect.Copy(dstSlice, srcSlice)
+func copyRange(src, dst *column, start, count uintptr) {
+	if count == 0 {
+		return
+	}
+
+	elemSize := src.itemSize
+	dstPtr := unsafe.Add(dst.pointer, start*elemSize)
+	srcPtr := src.pointer
+
+	for range count {
+		typedmemmove(src.typePtr, dstPtr, srcPtr)
+		dstPtr = unsafe.Add(dstPtr, elemSize)
+		srcPtr = unsafe.Add(srcPtr, elemSize)
+	}
 }
 
 //go:linkname memclrNoHeapPointers runtime.memclrNoHeapPointers
@@ -63,6 +73,9 @@ func memclrNoHeapPointers(ptr unsafe.Pointer, n uintptr)
 
 //go:linkname typedmemclr reflect.typedmemclr
 func typedmemclr(typ unsafe.Pointer, dst unsafe.Pointer)
+
+//go:linkname typedmemmove runtime.typedmemmove
+func typedmemmove(typ unsafe.Pointer, dst, src unsafe.Pointer)
 
 type ifaceWords struct {
 	typ  uintptr
