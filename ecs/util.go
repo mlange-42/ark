@@ -48,6 +48,14 @@ func copyValue(src, dst reflect.Value, from, to int) {
 	dst.Index(to).Set(src.Index(from))
 }
 
+// copyValue copies an item between two reflect arrays.
+// This is GC-safe. Use for non-trivial types.
+func copyValueNew(src, dst *column, from, to uintptr) {
+	srcPtr := unsafe.Add(src.pointer, from*src.itemSize)
+	dstPtr := unsafe.Add(dst.pointer, to*dst.itemSize)
+	typedmemmove(src.typePtr, dstPtr, srcPtr)
+}
+
 // copyRange copies a range of items from one reflect array to another.
 // Copies src[:count] to dst[start:].
 // This is GC-safe. Use for non-trivial types.
