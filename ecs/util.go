@@ -69,12 +69,11 @@ type ifaceWords struct {
 	data uintptr
 }
 
-//nolint:staticcheck,govet
 func rtypePtr(t reflect.Type) unsafe.Pointer {
 	// reflect.Type is interface (type word, data word) in current runtime.
 	// We need the data word, i.e. pointer to runtime type info.
 	w := *(*ifaceWords)(unsafe.Pointer(&t))
-	return unsafe.Pointer(w.data)
+	return unsafe.Pointer(w.data) //nolint:all
 }
 
 // isRelation determines whether a type is a relation component.
