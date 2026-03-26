@@ -59,7 +59,7 @@ The figure below illustrates how Ark outperforms an Array of Structs (AoS) imple
 <img alt="Benchmarks vs. Array of Structs, light" width="600" class="light" src="./images/aos-light.svg"></img>
 <img alt="Benchmarks vs. Array of Structs, dark" width="600" class="dark" src="./images/aos-dark.svg"></img>
 {{< /html >}}  
-*Benchmarks for the Position/Velocity example, Ark vs. Array of Structs. Note that the benchmarks are run on Github CI machines, which have a very large cache. On a normal PC, the advantage of Ark would be even more emphasized.*
+*Benchmarks for the Position/Velocity example, Ark vs. Array of Structs (AoS). Note that the benchmarks are run on Github CI machines, which have a very large cache. On a normal PC, the advantage of Ark would be even more emphasized.*
 
 ## World lock
 

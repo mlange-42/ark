@@ -38,7 +38,7 @@ jobs:
         run: |
           echo "Benchmarks skipped" > docs/content/generated/_benchmarks.md
 
-      - name: Run benchmarks cs. AoS
+      - name: Run benchmarks vs. AoS
         run: |
           cd ./benchmark
           go run ./aos -test.benchtime=3s

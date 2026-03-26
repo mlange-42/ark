@@ -24,6 +24,10 @@ for query.NextTable() {
 - Speeds up zeroing component memory by using `memclrNoHeapPointers` and `typedmemclr` (#482)
 - Speeds up moving non-trivial components by 30% using `typedmemmove` instead of reflection (#484)
 
+### Documentation
+
+- Adds a plot with benchmarks vs. Array of Structs (AoS) to the user guide (#491)
+
 ### Other
 
 - Uses `reflect` slices instead of arrays for component columns (#475)
