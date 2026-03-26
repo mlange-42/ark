@@ -44,6 +44,7 @@ func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
 // copyValue copies an item between two reflect arrays.
 // This is GC-safe. Use for non-trivial types.
 func copyValue(src, dst reflect.Value, from, to int) {
+	// TODO: can potentially be optimized using typedmemmove
 	dst.Index(to).Set(src.Index(from))
 }
 
@@ -51,16 +52,29 @@ func copyValue(src, dst reflect.Value, from, to int) {
 // Copies src[:count] to dst[start:].
 // This is GC-safe. Use for non-trivial types.
 func copyRange(src, dst reflect.Value, start, count int) {
+	// TODO: can potentially be optimized using typedmemmove
 	srcSlice := src.Slice(0, count)
 	dstSlice := dst.Slice(start, start+count)
 	reflect.Copy(dstSlice, srcSlice)
 }
 
-// Zeroes an item in a reflect array.
-// This is GC-safe. Use for non-trivial types.
-func zeroValueAt(v reflect.Value, index int) {
-	elem := v.Index(index)
-	elem.SetZero()
+//go:linkname memclrNoHeapPointers runtime.memclrNoHeapPointers
+func memclrNoHeapPointers(ptr unsafe.Pointer, n uintptr)
+
+//go:linkname typedmemclr reflect.typedmemclr
+func typedmemclr(typ unsafe.Pointer, dst unsafe.Pointer)
+
+type ifaceWords struct {
+	typ  uintptr
+	data uintptr
+}
+
+//nolint:staticcheck,govet
+func rtypePtr(t reflect.Type) unsafe.Pointer {
+	// reflect.Type is interface (type word, data word) in current runtime.
+	// We need the data word, i.e. pointer to runtime type info.
+	w := *(*ifaceWords)(unsafe.Pointer(&t))
+	return unsafe.Pointer(w.data)
 }
 
 // isRelation determines whether a type is a relation component.

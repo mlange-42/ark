@@ -11,6 +11,7 @@ type column struct {
 	pointer    unsafe.Pointer // pointer to the first element
 	itemSize   uintptr        // memory size of items
 	elemType   reflect.Type   // element type of the column
+	typePtr    unsafe.Pointer // pointer to the element type's rtype
 	target     Entity         // target entity if for a relation component
 	index      uint32         // index of the column in the containing table
 	isRelation bool           // whether this column is for a relation component
@@ -20,8 +21,8 @@ type column struct {
 // newColumn creates a new column for a given type and capacity.
 func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool, isTrivial bool, target Entity, capacity uint32) column {
 	// TODO: should we use a slice instead of an array here?
-	data := reflect.New(reflect.ArrayOf(int(capacity), tp)).Elem()
-	pointer := data.Addr().UnsafePointer()
+	data := reflect.MakeSlice(reflect.SliceOf(tp), int(capacity), int(capacity))
+	pointer := data.Index(0).Addr().UnsafePointer()
 
 	return column{
 		pointer:    pointer,
@@ -31,6 +32,7 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 		data:       data,
 		isRelation: isRelation,
 		elemType:   tp,
+		typePtr:    rtypePtr(tp),
 		isTrivial:  isTrivial,
 	}
 }
@@ -68,43 +70,50 @@ func (c *column) Set(index uint32, src *column, srcIndex uint32) {
 }
 
 // Zero resets the memory at the given index.
-func (c *column) Zero(index uintptr, zero unsafe.Pointer) {
+func (c *column) Zero(index uintptr) {
 	if c.itemSize == 0 {
 		return
 	}
+
+	dst := unsafe.Add(c.pointer, index*c.itemSize)
 	if c.isTrivial {
-		dst := unsafe.Add(c.pointer, index*c.itemSize)
-		copyPtr(zero, dst, c.itemSize)
+		memclrNoHeapPointers(dst, c.itemSize)
 	} else {
-		// TODO: Do we really need this?
-		// Tests indicate stuff get GC'd also with copyPtr.
-		zeroValueAt(c.data, int(index))
+		// TODO: keep an eye on this, and possibly revert to (slower) reflect method!
+		// See PR #482.
+		typedmemclr(c.typePtr, dst)
 	}
 }
 
 // ZeroRange resets a block of storage in one buffer.
-func (c *column) ZeroRange(start, len uint32, zero unsafe.Pointer) {
-	size := uint32(c.itemSize)
-	if size == 0 {
+func (c *column) ZeroRange(start, length uint32) {
+	if length == 0 || c.itemSize == 0 {
 		return
 	}
-	var i uint32
-	for i = range len {
-		dst := unsafe.Add(c.pointer, (i+start)*size)
-		copyPtr(zero, dst, c.itemSize)
+
+	elemSize := c.itemSize
+	base := uintptr(start) * elemSize
+
+	if c.isTrivial {
+		// Single bulk memclr for trivial (pointer-free) types
+		total := uintptr(length) * elemSize
+		memclrNoHeapPointers(unsafe.Add(c.pointer, base), total)
+		return
+	}
+
+	// Non-trivial: per-element GC-safe zeroing
+	ptr := unsafe.Add(c.pointer, base)
+	for range length {
+		// TODO: keep an eye on this, and possibly revert to (slower) reflect method!
+		// See PR #482.
+		typedmemclr(c.typePtr, ptr)
+		ptr = unsafe.Add(ptr, elemSize)
 	}
 }
 
 // Reset the column. Zeroes the memory.
-func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
-	if ownLen == 0 {
-		return
-	}
-	if ownLen <= 64 && c.isTrivial { // A coarse estimate where manually zeroing is faster
-		c.ZeroRange(0, ownLen, zero)
-	} else {
-		c.data.SetZero()
-	}
+func (c *column) Reset(ownLen uint32) {
+	c.ZeroRange(0, ownLen)
 }
 
 // entityColumn storage for entities in an table.
@@ -116,8 +125,8 @@ type entityColumn struct {
 // newColumn creates a new column for a given type and capacity.
 func newEntityColumn(capacity uint32) entityColumn {
 	// TODO: should we use a slice instead of an array here?
-	data := reflect.New(reflect.ArrayOf(int(capacity), entityType)).Elem()
-	pointer := data.Addr().UnsafePointer()
+	data := reflect.MakeSlice(reflect.SliceOf(entityType), int(capacity), int(capacity))
+	pointer := data.Index(0).Addr().UnsafePointer()
 
 	return entityColumn{
 		data:    data,

@@ -99,6 +99,40 @@ func TestQuery{{.}}(t *testing.T) {
 	_ = filter.Batch()
 }
 
+func TestQuery{{.}}Tables(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](w)
+	mapper := NewMap{{.}}{{$generics}}(w)
+	compMapper := NewMap[CompA](w)
+
+	for range n {
+		_ = mapper.NewEntity({{$mapArgs}})
+
+		e := mapper.NewEntity({{$mapArgs}})
+		compMapper.Remove(e)
+
+		e = posMapper.NewEntity(&Position{})
+		mapper.Add(e, {{$mapArgs}})
+	}
+	
+	filter := NewFilter{{.}}{{$generics}}(w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.NextTable() {
+		entities := query.Entities()
+		{{$comps}} := query.GetColumns()
+		expectEqual(t, n, len(entities))
+		{{- range $i, $v := $lower}}
+		expectEqual(t, n, len({{$v}}))
+		{{- end}}
+		cnt++
+	}
+	expectEqual(t, 2, cnt)
+}
+
 func TestQuery{{.}}EntityAt(t *testing.T) {
 	n := 10
 	w := NewWorld(4)
@@ -441,6 +475,30 @@ func TestQuery0(t *testing.T) {
 		cnt++
 	}
 	expectEqual(t, n, cnt)
+}
+
+func TestQuery0Tables(t *testing.T) {
+	n := 10
+	w := NewWorld(4)
+
+	posMapper := NewMap[Position](w)
+
+	for range n {
+		_ = w.NewEntity()
+		e := w.NewEntity()
+		posMapper.Add(e, &Position{})
+	}
+	
+	filter := NewFilter0(w)
+	query := filter.Query()
+
+	cnt := 0
+	for query.NextTable() {
+		entities := query.Entities()
+		expectEqual(t, n, len(entities))
+		cnt++
+	}
+	expectEqual(t, 2, cnt)
 }
 
 func TestQuery0EntityAt(t *testing.T) {

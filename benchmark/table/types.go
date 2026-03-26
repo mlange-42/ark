@@ -2,6 +2,18 @@ package main
 
 import "github.com/mlange-42/ark/ecs"
 
+// Position component.
+type Position struct {
+	X float64
+	Y float64
+}
+
+// Velocity component.
+type Velocity struct {
+	X float64
+	Y float64
+}
+
 type comp1 struct {
 	V int64
 	W int64
