@@ -32,7 +32,7 @@ jobs:
       - name: Run benchmarks for current
         run: |
           cd ./benchmark
-          go run ./compare -test.benchtime=0.25s
+          go run ./compare -test.benchtime=0.33s
           cat bench.csv
       - name: Rename file
         run: mv benchmark/bench.csv benchmark/bench_current_${{ matrix.repetition }}.csv
@@ -57,7 +57,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           cd ./benchmark
-          go run ./compare -test.benchtime=0.25s
+          go run ./compare -test.benchtime=0.33s
           cat bench.csv
       - name: Rename file
         if: github.event_name == 'pull_request'
