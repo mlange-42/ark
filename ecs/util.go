@@ -73,9 +73,11 @@ func copyRange(src, dst *column, start, count uintptr) {
 func memclrNoHeapPointers(ptr unsafe.Pointer, n uintptr)
 
 //go:linkname typedmemclr reflect.typedmemclr
+//go:noescape
 func typedmemclr(typ unsafe.Pointer, dst unsafe.Pointer)
 
 //go:linkname typedmemmove runtime.typedmemmove
+//go:noescape
 func typedmemmove(typ unsafe.Pointer, dst, src unsafe.Pointer)
 
 type ifaceWords struct {
