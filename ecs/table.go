@@ -18,17 +18,16 @@ const maxTableID = math.MaxUint32
 // table stores entities and components of an archetype,
 // or of a certain combination of relations inside an archetype.
 type table struct {
-	entities    entityColumn   // column for entities
-	zeroPointer unsafe.Pointer // pointer to the zero value, for fast zeroing
-	components  []*column      // mapping from component IDs to columns
-	ids         []ID           // components IDs in the same order as in the archetype
-	columns     []column       // columns in dense order
-	relationIDs []relationID   // all relation IDs and targets of the table
-	id          tableID        // ID of the table
-	archetype   archetypeID    // ID of the table's archetype
-	len         uint32         // length of the table (number of rows)
-	cap         uint32         // capacity of the table (number of rows)
-	isFree      bool           // Whether the table is currently free
+	entities    entityColumn // column for entities
+	components  []*column    // mapping from component IDs to columns
+	ids         []ID         // components IDs in the same order as in the archetype
+	columns     []column     // columns in dense order
+	relationIDs []relationID // all relation IDs and targets of the table
+	id          tableID      // ID of the table
+	archetype   archetypeID  // ID of the table's archetype
+	len         uint32       // length of the table (number of rows)
+	cap         uint32       // capacity of the table (number of rows)
+	isFree      bool         // Whether the table is currently free
 }
 
 // newTable creates a new table.
@@ -43,11 +42,6 @@ func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentR
 		components[id.id] = &columns[i]
 	}
 
-	var zeroPointer unsafe.Pointer
-	if archetype.zeroValue != nil {
-		zeroPointer = unsafe.Pointer(&archetype.zeroValue[0])
-	}
-
 	return table{
 		id:          id,
 		archetype:   archetype.id,
@@ -55,7 +49,6 @@ func newTable(id tableID, archetype *archetype, capacity uint32, reg *componentR
 		entities:    entities,
 		ids:         archetype.components,
 		columns:     columns,
-		zeroPointer: zeroPointer,
 		relationIDs: relationIDs,
 		cap:         capacity,
 	}
@@ -212,17 +205,17 @@ func (t *table) Remove(index uint32) bool {
 				src := unsafe.Add(column.pointer, lastIndex*size)
 				dst := unsafe.Add(column.pointer, uintptr(index)*size)
 				copyPtr(src, dst, size)
-				column.Zero(lastIndex, t.zeroPointer)
+				column.Zero(lastIndex)
 				continue
 			}
 
 			copyValue(column.data, column.data, int(lastIndex), int(index))
-			column.Zero(lastIndex, t.zeroPointer)
+			column.Zero(lastIndex)
 		}
 	} else {
 		for i := range t.columns {
 			column := &t.columns[i]
-			column.Zero(lastIndex, t.zeroPointer)
+			column.Zero(lastIndex)
 		}
 	}
 
@@ -234,7 +227,7 @@ func (t *table) Remove(index uint32) bool {
 // Clears all columns and sets the number of rows to zero.
 func (t *table) Reset() {
 	for c := range t.columns {
-		t.columns[c].Reset(t.len, t.zeroPointer)
+		t.columns[c].Reset(t.len)
 	}
 	t.len = 0
 }

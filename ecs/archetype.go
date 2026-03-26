@@ -29,7 +29,6 @@ type archetypeData struct {
 	itemSizes    []uint32               // item size per component index
 	isRelation   []bool                 // whether columns are relations components, indexed by column index
 	freeTables   []tableID              // all inactive/free tables
-	zeroValue    []byte                 // zero value with the size of the largest item type, for fast zeroing
 	targetTables map[entityID]*tableIDs // all tables per target for cleanup
 	node         nodeID                 // Node ID of the archetype
 }
@@ -93,20 +92,12 @@ func newArchetype(
 	}
 
 	sizes := make([]uint32, len(components))
-	maxSize := entitySize
 	for i, id := range components {
 		componentsMap[id.id] = int16(i)
 		tp := reg.Types[id.id]
 
 		itemSize := tp.Size()
 		sizes[i] = uint32(itemSize)
-		if itemSize > maxSize {
-			maxSize = itemSize
-		}
-	}
-	var zeroValue []byte
-	if maxSize > 0 {
-		zeroValue = make([]byte, maxSize)
 	}
 
 	numRelations := uint8(0)
@@ -137,7 +128,6 @@ func newArchetype(
 			targetTables: targetTables,
 			itemSizes:    sizes,
 			isRelation:   isRelation,
-			zeroValue:    zeroValue,
 		}
 }
 

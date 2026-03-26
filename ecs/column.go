@@ -68,13 +68,13 @@ func (c *column) Set(index uint32, src *column, srcIndex uint32) {
 }
 
 // Zero resets the memory at the given index.
-func (c *column) Zero(index uintptr, zero unsafe.Pointer) {
+func (c *column) Zero(index uintptr) {
 	if c.itemSize == 0 {
 		return
 	}
 	if c.isTrivial {
 		dst := unsafe.Add(c.pointer, index*c.itemSize)
-		copyPtr(zero, dst, c.itemSize)
+		memclrNoHeapPointers(dst, c.itemSize)
 	} else {
 		// TODO: Do we really need this?
 		// Tests indicate stuff gets GC'd also with copyPtr.
@@ -83,25 +83,24 @@ func (c *column) Zero(index uintptr, zero unsafe.Pointer) {
 }
 
 // ZeroRange resets a block of storage in one buffer.
-func (c *column) ZeroRange(start, len uint32, zero unsafe.Pointer) {
-	size := uint32(c.itemSize)
-	if size == 0 {
+func (c *column) ZeroRange(start, length uint32) {
+	if length == 0 || c.itemSize == 0 {
 		return
 	}
-	var i uint32
-	for i = range len {
-		dst := unsafe.Add(c.pointer, (i+start)*size)
-		copyPtr(zero, dst, c.itemSize)
-	}
+
+	offset := uintptr(start) * c.itemSize
+	total := uintptr(length) * c.itemSize
+
+	memclrNoHeapPointers(unsafe.Add(c.pointer, offset), total)
 }
 
 // Reset the column. Zeroes the memory.
-func (c *column) Reset(ownLen uint32, zero unsafe.Pointer) {
+func (c *column) Reset(ownLen uint32) {
 	if ownLen == 0 {
 		return
 	}
 	if c.isTrivial {
-		c.ZeroRange(0, ownLen, zero)
+		c.ZeroRange(0, ownLen)
 	} else {
 		for i := range ownLen {
 			zeroValueAt(c.data, int(i))

@@ -63,6 +63,9 @@ func zeroValueAt(v reflect.Value, index int) {
 	elem.SetZero()
 }
 
+//go:linkname memclrNoHeapPointers runtime.memclrNoHeapPointers
+func memclrNoHeapPointers(ptr unsafe.Pointer, n uintptr)
+
 // isRelation determines whether a type is a relation component.
 func isRelation(tp reflect.Type) bool {
 	if tp.Kind() != reflect.Struct || tp.NumField() == 0 {
