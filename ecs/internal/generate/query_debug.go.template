@@ -20,6 +20,8 @@ import "unsafe"
 {{- end}}
 
 // Next advances the query's cursor to the next entity.
+//
+// For alternative, faster iteration over tables, use [Query{{.}}.NextTable].
 func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 	q.cursor.checkQueryNext()
 	if int64(q.cursor.index) < q.cursor.maxIndex {
@@ -30,17 +32,21 @@ func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+//
+// For alternative iteration over entities, use [Query{{.}}.Next].
 func (q *Query{{.}}{{$genericsShort}}) NextTable() bool {
 	return q.nextTableOrArchetype()
 }
 
 // Entity returns the current entity.
+// Use this with entity iteration using [Query{{.}}.Next].
 func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 	q.cursor.checkQueryGet()
 	return q.table.GetEntity(q.cursor.index)
 }
 
 // Entities returns the entities of the current table.
+// Use this with table-based iteration using [Query{{.}}.NextTable].
 //
 // ⚠️ Do not append to the returned slice!
 func (q *Query{{.}}{{$genericsShort}}) Entities() []Entity {
@@ -50,6 +56,7 @@ func (q *Query{{.}}{{$genericsShort}}) Entities() []Entity {
 
 {{if . -}}
 // Get returns the queried components of the current entity.
+// Use this with entity iteration using [Query{{.}}.Next].
 //
 // ⚠️ Do not store the obtained pointers outside of the current context (i.e. the query loop)!
 func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
@@ -60,6 +67,7 @@ func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 }
 
 // GetColumns returns the queried component columns of the current table.
+// Use this with table-based iteration using [Query{{.}}.NextTable].
 //
 // ⚠️ Do not append to the returned component column slices!
 func (q *Query{{.}}{{$genericsShort}}) GetColumns() {{$returnSlices}} {
