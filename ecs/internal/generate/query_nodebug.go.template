@@ -39,6 +39,8 @@ func (q *Query{{.}}{{$genericsShort}}) Entity() Entity {
 }
 
 // Entities returns the entities of the current table.
+//
+// ⚠️ Do not append to the returned slice!
 func (q *Query{{.}}{{$genericsShort}}) Entities() []Entity {
 	return q.table.entities.data.Interface().([]Entity)[:q.table.len]
 }
@@ -54,6 +56,8 @@ func (q *Query{{.}}{{$genericsShort}}) Get() {{$return}} {
 }
 
 // GetColumns returns the queried component columns of the current table.
+//
+// ⚠️ Do not append to the returned component column slices!
 func (q *Query{{.}}{{$genericsShort}}) GetColumns() {{$returnSlices}} {
 	return {{range $i, $v := $upper}}{{if $i}},
 		{{end}}q.column{{$v}}.data.Interface().([]{{$v}})[:q.table.len]{{end}}

@@ -57,6 +57,9 @@ type Query{{.}}{{$generics}} struct {
 
 {{if . -}}
 // GetRelation returns the entity relation target of the component at the given index.
+//
+// Can be used for the current entity in entity-based iteration,
+// as well as for the entire current table in table-based iteration.
 func (q *Query{{.}}{{$genericsShort}}) GetRelation(index int) Entity {
 	return q.components[index].columns[q.table.id].target
 }
