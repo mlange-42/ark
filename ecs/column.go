@@ -91,23 +91,29 @@ func (c *column) ZeroRange(start, length uint32) {
 		return
 	}
 
-	elemSize := c.itemSize
-	base := uintptr(start) * elemSize
-
 	if c.isTrivial {
-		// Single bulk memclr for trivial (pointer-free) types
-		total := uintptr(length) * elemSize
-		memclrNoHeapPointers(unsafe.Add(c.pointer, base), total)
-		return
+		c.zeroRangeTrivial(start, length)
+	} else {
+		c.zeroRangeNonTrivial(start, length)
 	}
+}
 
-	// Non-trivial: per-element GC-safe zeroing
+// Single bulk memclr for trivial (pointer-free) types
+func (c *column) zeroRangeTrivial(start, length uint32) {
+	base := uintptr(start) * c.itemSize
+	total := uintptr(length) * c.itemSize
+	memclrNoHeapPointers(unsafe.Add(c.pointer, base), total)
+}
+
+// Non-trivial: per-element GC-safe zeroing
+func (c *column) zeroRangeNonTrivial(start, length uint32) {
+	base := uintptr(start) * c.itemSize
 	ptr := unsafe.Add(c.pointer, base)
 	for range length {
 		// TODO: keep an eye on this, and possibly revert to (slower) reflect method!
 		// See PR #482.
 		typedmemclr(c.typePtr, ptr)
-		ptr = unsafe.Add(ptr, elemSize)
+		ptr = unsafe.Add(ptr, c.itemSize)
 	}
 }
 
