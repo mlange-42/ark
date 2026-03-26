@@ -79,8 +79,8 @@ func (c *column) Zero(index uintptr) {
 	if c.isTrivial {
 		memclrNoHeapPointers(dst, c.itemSize)
 	} else {
-		//zeroValueAt(c.data, int(index))
-		// Fast GC-safe zero
+		// TODO: keep an eye on this, and possibly revert to (slower) reflect method!
+		// See PR #482.
 		typedmemclr(c.typePtr, dst)
 	}
 }
@@ -104,6 +104,8 @@ func (c *column) ZeroRange(start, length uint32) {
 	// Non-trivial: per-element GC-safe zeroing
 	ptr := unsafe.Add(c.pointer, base)
 	for i := uint32(0); i < length; i++ {
+		// TODO: keep an eye on this, and possibly revert to (slower) reflect method!
+		// See PR #482.
 		typedmemclr(c.typePtr, ptr)
 		ptr = unsafe.Add(ptr, elemSize)
 	}
