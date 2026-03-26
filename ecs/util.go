@@ -64,13 +64,17 @@ func memclrNoHeapPointers(ptr unsafe.Pointer, n uintptr)
 //go:linkname typedmemclr reflect.typedmemclr
 func typedmemclr(typ unsafe.Pointer, dst unsafe.Pointer)
 
+type ifaceWords struct {
+	typ  uintptr
+	data uintptr
+}
+
+//nolint:staticcheck,govet
 func rtypePtr(t reflect.Type) unsafe.Pointer {
-	if t == nil {
-		return nil
-	}
 	// reflect.Type is interface (type word, data word) in current runtime.
 	// We need the data word, i.e. pointer to runtime type info.
-	return unsafe.Pointer((*[2]uintptr)(unsafe.Pointer(&t))[1])
+	w := *(*ifaceWords)(unsafe.Pointer(&t))
+	return unsafe.Pointer(w.data)
 }
 
 // isRelation determines whether a type is a relation component.
