@@ -37,6 +37,22 @@ jobs:
         run: |
           go test -tags ark_tiny -benchmem -run=^$ -bench ^.*$ ./...
 
+  aos:
+    name: Benchmark vs. AoS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.25.4'
+      - name: Install dependencies
+        run: go get .
+      - name: Benchmark tables
+        run: |
+          cd ./benchmark
+          go run ./aos
+
   tables:
     name: Benchmark Tables
     runs-on: ubuntu-latest
