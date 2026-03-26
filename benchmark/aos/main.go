@@ -14,8 +14,8 @@ import (
 
 // Series data
 type Series struct {
+	Name  string
 	Label string
-	Color color.RGBA
 	Width float64
 	Data  plotter.XYs
 }
@@ -34,7 +34,14 @@ func main() {
 
 	modes := [][]func(*testing.B, int){arkFunctions, aosFunctions}
 	names := []string{"Ark", "AoS"}
-	colors := []color.RGBA{{B: 255, A: 255}, {R: 255, A: 255}}
+	colorsLight := map[string]color.RGBA{
+		"Ark": {R: 30, G: 30, B: 30, A: 255},
+		"AoS": {R: 0, G: 107, B: 230, A: 255},
+	}
+	colorsDark := map[string]color.RGBA{
+		"Ark": {R: 250, G: 250, B: 250, A: 255},
+		"AoS": {R: 51, G: 173, B: 255, A: 255},
+	}
 
 	bytes := []int{32, 64, 128, 256}
 
@@ -43,8 +50,8 @@ func main() {
 	for f := range 2 {
 		for i := range modes[f] {
 			series := Series{
+				Name:  names[f],
 				Label: fmt.Sprintf("%s %3dB", names[f], bytes[i]),
-				Color: colors[f],
 				Width: (math.Log2(float64(bytes[i])) - 3) / 2,
 			}
 			for _, n := range nValues {
@@ -63,34 +70,53 @@ func main() {
 		}
 	}
 
+	plotResults(allSeries, color.RGBA{R: 250, G: 250, B: 250, A: 255}, color.RGBA{A: 255}, colorsLight, "aos_light.svg")
+	plotResults(allSeries, color.RGBA{R: 30, G: 30, B: 30, A: 255}, color.RGBA{R: 243, G: 244, B: 246, A: 255}, colorsDark, "aos_dark.svg")
+}
+
+func plotResults(data []Series, bg color.RGBA, fg color.RGBA, colors map[string]color.RGBA, file string) {
+	plot.DefaultFont.Variant = "Mono"
+
 	p := plot.New()
+	p.BackgroundColor = bg
+	p.X.Padding = 0
+	p.Y.Padding = 0
+
 	p.X.Label.Text = "entities"
+	p.X.Label.TextStyle.Color = fg
+	p.X.Tick.Color = fg
+	p.X.Tick.Label.Color = fg
+	p.X.Color = fg
 	p.X.Scale = plot.LogScale{}
 	p.X.Tick.Marker = plot.LogTicks{Prec: -1}
 
-	p.Y.Label.Text = "time/entity [ns]"
+	p.Y.Label.Text = "time per entity [ns]"
+	p.Y.Label.TextStyle.Color = fg
+	p.Y.Tick.Color = fg
+	p.Y.Tick.Label.Color = fg
+	p.Y.Color = fg
 	p.Y.Min = 0
 
 	p.Legend = plot.NewLegend()
-	p.Legend.TextStyle.Font.Variant = "Mono"
+	p.Legend.TextStyle.Color = fg
 	p.Legend.Top = true
 	p.Legend.Left = true
 
-	for i := range allSeries {
-		series := &allSeries[i]
+	for i := range data {
+		series := &data[i]
 
 		lines, err := plotter.NewLine(series.Data)
 		if err != nil {
 			panic(err)
 		}
-		lines.Color = series.Color
+		lines.Color = colors[series.Name]
 		lines.Width = vg.Points(series.Width)
 
 		p.Add(lines)
 		p.Legend.Add(series.Label, lines)
 	}
 
-	err := p.Save(400, 300, "aos.png")
+	err := p.Save(460, 300, file)
 	if err != nil {
 		panic(err)
 	}

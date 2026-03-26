@@ -52,11 +52,16 @@ jobs:
         run: |
           cd ./benchmark
           go run ./aos -test.benchtime=3s
-      - name: Archive benchmark results
+      - name: Archive benchmark results 1
         uses: actions/upload-artifact@v4
         with:
-          path: benchmark/aos.png
-          name: aos.png
+          path: benchmark/aos_light.png
+          name: aos_light.png
+      - name: Archive benchmark results 2
+        uses: actions/upload-artifact@v4
+        with:
+          path: benchmark/aos_dark.png
+          name: aos_dark.png
 
   tables:
     name: Benchmark Tables
