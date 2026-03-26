@@ -66,7 +66,7 @@ func (c *column) Set(index uint32, src *column, srcIndex uint32) {
 		copyPtr(comp, dst, c.itemSize)
 		return
 	}
-	copyValue(src, c, uintptr(srcIndex), uintptr(index))
+	copyValue(src.data, c.data, int(srcIndex), int(index))
 }
 
 // Zero resets the memory at the given index.
