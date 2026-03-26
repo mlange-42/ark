@@ -18,6 +18,9 @@ func TestNewTable(t *testing.T) {
 	expectEqual(t, 0, table.components[posID.id].index)
 	expectEqual(t, 1, table.components[velID.id].index)
 
+	expectTrue(t, table.components[posID.id].isTrivial)
+	expectTrue(t, table.components[velID.id].isTrivial)
+
 	for i := range 9 {
 		table.Add(Entity{entityID(i + 2), 0})
 	}
