@@ -43,6 +43,7 @@ func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
 
 // copyValue copies an item between two reflect arrays.
 // This is GC-safe. Use for non-trivial types.
+//go:noinline
 func copyValue(src, dst *column, from, to uintptr) {
 	srcPtr := unsafe.Add(src.pointer, from*src.itemSize)
 	dstPtr := unsafe.Add(dst.pointer, to*dst.itemSize)
