@@ -192,36 +192,45 @@ func (t *table) Remove(index uint32) bool {
 	swapped := index != uint32(lastIndex)
 
 	if swapped {
-		size := entitySize
-		src := unsafe.Add(t.entities.pointer, lastIndex*size)
-		dst := unsafe.Add(t.entities.pointer, uintptr(index)*size)
-		copyPtr(src, dst, size)
-
-		for i := range t.columns {
-			column := &t.columns[i]
-
-			if column.isTrivial {
-				size := column.itemSize
-				src := unsafe.Add(column.pointer, lastIndex*size)
-				dst := unsafe.Add(column.pointer, uintptr(index)*size)
-				copyPtr(src, dst, size)
-				column.Zero(lastIndex)
-				continue
-			}
-
-			// use reflect here, as typedmemmove seems slow when both columns are the same.
-			copyValueReflect(column.data, column.data, int(lastIndex), int(index))
-			column.Zero(lastIndex)
-		}
+		t.swapEntity(index, lastIndex)
+		t.removeColumnsSwapped(index, lastIndex)
 	} else {
-		for i := range t.columns {
-			column := &t.columns[i]
-			column.Zero(lastIndex)
-		}
+		t.zeroAllColumns(lastIndex)
 	}
 
 	t.len--
 	return swapped
+}
+
+func (t *table) swapEntity(index uint32, lastIndex uintptr) {
+	size := entitySize
+	src := unsafe.Add(t.entities.pointer, lastIndex*size)
+	dst := unsafe.Add(t.entities.pointer, uintptr(index)*size)
+	copyPtr(src, dst, size)
+}
+
+func (t *table) removeColumnsSwapped(index uint32, lastIndex uintptr) {
+	for i := range t.columns {
+		column := &t.columns[i]
+
+		if column.isTrivial {
+			size := column.itemSize
+			src := unsafe.Add(column.pointer, lastIndex*size)
+			dst := unsafe.Add(column.pointer, uintptr(index)*size)
+			copyPtr(src, dst, size)
+			column.Zero(lastIndex)
+			continue
+		}
+
+		copyValue(column, column, lastIndex, uintptr(index))
+		column.Zero(lastIndex)
+	}
+}
+
+func (t *table) zeroAllColumns(lastIndex uintptr) {
+	for i := range t.columns {
+		t.columns[i].Zero(lastIndex)
+	}
 }
 
 // Reset the table.
