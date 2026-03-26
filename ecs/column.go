@@ -11,6 +11,7 @@ type column struct {
 	pointer    unsafe.Pointer // pointer to the first element
 	itemSize   uintptr        // memory size of items
 	elemType   reflect.Type   // element type of the column
+	typePtr    unsafe.Pointer // pointer to the element type's rtype
 	target     Entity         // target entity if for a relation component
 	index      uint32         // index of the column in the containing table
 	isRelation bool           // whether this column is for a relation component
@@ -31,6 +32,7 @@ func newColumn(index uint32, tp reflect.Type, itemSize uintptr, isRelation bool,
 		data:       data,
 		isRelation: isRelation,
 		elemType:   tp,
+		typePtr:    rtypePtr(tp),
 		isTrivial:  isTrivial,
 	}
 }
@@ -72,13 +74,14 @@ func (c *column) Zero(index uintptr) {
 	if c.itemSize == 0 {
 		return
 	}
+
+	dst := unsafe.Add(c.pointer, index*c.itemSize)
 	if c.isTrivial {
-		dst := unsafe.Add(c.pointer, index*c.itemSize)
 		memclrNoHeapPointers(dst, c.itemSize)
 	} else {
-		// TODO: Do we really need this?
-		// Tests indicate stuff gets GC'd also with copyPtr.
-		zeroValueAt(c.data, int(index))
+		//zeroValueAt(c.data, int(index))
+		// Fast GC-safe zero
+		typedmemclr(c.typePtr, dst)
 	}
 }
 
@@ -88,24 +91,27 @@ func (c *column) ZeroRange(start, length uint32) {
 		return
 	}
 
-	offset := uintptr(start) * c.itemSize
-	total := uintptr(length) * c.itemSize
+	elemSize := c.itemSize
+	base := uintptr(start) * elemSize
 
-	memclrNoHeapPointers(unsafe.Add(c.pointer, offset), total)
+	if c.isTrivial {
+		// Single bulk memclr for trivial (pointer-free) types
+		total := uintptr(length) * elemSize
+		memclrNoHeapPointers(unsafe.Add(c.pointer, base), total)
+		return
+	}
+
+	// Non-trivial: per-element GC-safe zeroing
+	ptr := unsafe.Add(c.pointer, base)
+	for i := uint32(0); i < length; i++ {
+		typedmemclr(c.typePtr, ptr)
+		ptr = unsafe.Add(ptr, elemSize)
+	}
 }
 
 // Reset the column. Zeroes the memory.
 func (c *column) Reset(ownLen uint32) {
-	if ownLen == 0 {
-		return
-	}
-	if c.isTrivial {
-		c.ZeroRange(0, ownLen)
-	} else {
-		for i := range ownLen {
-			zeroValueAt(c.data, int(i))
-		}
-	}
+	c.ZeroRange(0, ownLen)
 }
 
 // entityColumn storage for entities in an table.

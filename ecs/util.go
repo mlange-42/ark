@@ -56,15 +56,20 @@ func copyRange(src, dst reflect.Value, start, count int) {
 	reflect.Copy(dstSlice, srcSlice)
 }
 
-// Zeroes an item in a reflect array.
-// This is GC-safe. Use for non-trivial types.
-func zeroValueAt(v reflect.Value, index int) {
-	elem := v.Index(index)
-	elem.SetZero()
-}
-
 //go:linkname memclrNoHeapPointers runtime.memclrNoHeapPointers
 func memclrNoHeapPointers(ptr unsafe.Pointer, n uintptr)
+
+//go:linkname typedmemclr reflect.typedmemclr
+func typedmemclr(typ unsafe.Pointer, dst unsafe.Pointer)
+
+func rtypePtr(t reflect.Type) unsafe.Pointer {
+	if t == nil {
+		return nil
+	}
+	// reflect.Type is interface (type word, data word) in current runtime.
+	// We need the data word, i.e. pointer to runtime type info.
+	return unsafe.Pointer((*[2]uintptr)(unsafe.Pointer(&t))[1])
+}
 
 // isRelation determines whether a type is a relation component.
 func isRelation(tp reflect.Type) bool {
