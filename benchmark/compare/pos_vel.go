@@ -42,6 +42,45 @@ func posVelQuery(b *testing.B, n int) {
 	}
 }
 
+func posVelQueryTables10(b *testing.B) {
+	posVelQueryTables(b, 10)
+}
+
+func posVelQueryTables1000(b *testing.B) {
+	posVelQueryTables(b, 1000)
+}
+
+func posVelQueryTables100000(b *testing.B) {
+	posVelQueryTables(b, 100000)
+}
+
+func posVelQueryTables(b *testing.B, n int) {
+	w := ecs.NewWorld()
+
+	builder := ecs.NewMap2[Position, Velocity](w)
+	builder.NewBatch(n, &Position{}, &Velocity{1, 1})
+
+	filter := ecs.NewFilter2[Position, Velocity](w)
+
+	// Wrapper to allow inlining, for more realistic results.
+	loop := func() {
+		query := filter.Query()
+		for query.NextTable() {
+			positions, velocities := query.GetColumns()
+			for i := range positions {
+				pos := &positions[i]
+				vel := &velocities[i]
+				pos.X += vel.X
+				pos.Y += vel.Y
+			}
+		}
+	}
+
+	for b.Loop() {
+		loop()
+	}
+}
+
 func posVelMap10(b *testing.B) {
 	posVelMap(b, 10)
 }
