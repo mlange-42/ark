@@ -4,16 +4,19 @@ import (
 	"flag"
 	"fmt"
 	"image/color"
+	"math"
 	"testing"
 
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/vg"
 )
 
 // Series data
 type Series struct {
 	Label string
 	Color color.RGBA
+	Width float64
 	Data  plotter.XYs
 }
 
@@ -28,39 +31,36 @@ func main() {
 	aosFunctions := []func(*testing.B, int){
 		aos32Byte, aos64Byte, aos128Byte, aos256Byte,
 	}
+
+	modes := [][]func(*testing.B, int){arkFunctions, aosFunctions}
+	names := []string{"Ark", "AoS"}
+	colors := []color.RGBA{{B: 255, A: 255}, {R: 255, A: 255}}
+
 	bytes := []int{32, 64, 128, 256}
 
 	allSeries := []Series{}
 
-	for i := range arkFunctions {
-		arkSeries := Series{
-			Label: fmt.Sprintf("Ark %3dB", bytes[i]),
-			Color: color.RGBA{B: 255, A: 255},
-		}
-		aosSeries := Series{
-			Label: fmt.Sprintf("AoS %3dB", bytes[i]),
-			Color: color.RGBA{R: 255, A: 255},
-		}
-		for _, n := range nValues {
-			fn := func(b *testing.B) {
-				arkFunctions[i](b, n)
+	for f := range 2 {
+		for i := range modes[f] {
+			series := Series{
+				Label: fmt.Sprintf("%s %3dB", names[f], bytes[i]),
+				Color: colors[f],
+				Width: (math.Log2(float64(bytes[i])) - 3) / 2,
 			}
-			res := testing.Benchmark(fn)
-			tArk := float64(res.T.Nanoseconds()) / float64(n*res.N)
+			for _, n := range nValues {
+				fn := func(b *testing.B) {
+					modes[f][i](b, n)
+				}
+				res := testing.Benchmark(fn)
+				t := float64(res.T.Nanoseconds()) / float64(n*res.N)
 
-			fn = func(b *testing.B) {
-				aosFunctions[i](b, n)
+				fmt.Printf("%3dB: %s %0.2fns (%d entities)\n", bytes[i], names[f], t, n)
+
+				series.Data = append(series.Data, plotter.XY{X: float64(n), Y: t})
 			}
-			res = testing.Benchmark(fn)
-			tAos := float64(res.T.Nanoseconds()) / float64(n*res.N)
 
-			fmt.Printf("%3dB: Ark %0.2fns | Aos %0.2fns (%d entities)\n", bytes[i], tArk, tAos, n)
-
-			arkSeries.Data = append(arkSeries.Data, plotter.XY{X: float64(n), Y: tArk})
-			aosSeries.Data = append(aosSeries.Data, plotter.XY{X: float64(n), Y: tAos})
+			allSeries = append(allSeries, series)
 		}
-
-		allSeries = append(allSeries, arkSeries, aosSeries)
 	}
 
 	p := plot.New()
@@ -84,6 +84,8 @@ func main() {
 			panic(err)
 		}
 		lines.Color = series.Color
+		lines.Width = vg.Points(series.Width)
+
 		p.Add(lines)
 		p.Legend.Add(series.Label, lines)
 	}
