@@ -52,14 +52,14 @@ Secondly, all components of the same type (like `Position`) are stored in a dedi
 A query only accesses the required components (i.e. columns), although entities may possess many more components.
 Memory access is therefore completely linear and contiguous, and the CPUs cache is used as efficiently as possible.
 
-The figure below illustrates how Ark outperforms an Array of Structs (AoS) implementation in the classical Position/Velocity example, depending on the number of variables per entity (different lines) and the number of entities (x axis).
+The figure below illustrates how Ark outperforms an [Array of Structs](https://en.wikipedia.org/wiki/AoS_and_SoA) (AoS) implementation in the classical Position/Velocity example, depending on the number of variables per entity (different lines) and the number of entities (x axis).
 
 {{< html >}}
 <br/>
 <img alt="Benchmarks vs. Array of Structs, light" width="600" class="light" src="./images/aos-light.svg"></img>
 <img alt="Benchmarks vs. Array of Structs, dark" width="600" class="dark" src="./images/aos-dark.svg"></img>
 {{< /html >}}  
-*Benchmarks for the Position/Velocity example, Ark vs. Array of Structs (AoS). Note that the benchmarks are run on Github CI machines, which have a very large cache. On a normal PC, the advantage of Ark would be even more emphasized.*
+*Benchmarks for the Position/Velocity example, Ark vs. [Array of Structs](https://en.wikipedia.org/wiki/AoS_and_SoA) (AoS). Note that the benchmarks are run on Github CI machines, which have a very large cache. On a normal PC, the advantage of Ark would be even more emphasized. [Source code](https://github.com/mlange-42/ark/tree/main/benchmark/aos).*
 
 ## World lock
 
