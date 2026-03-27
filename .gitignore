@@ -2,5 +2,7 @@
 *.pprof
 *.out
 *.csv
+*.png
+*.svg
 .hugo_build.lock
 /docs/public/

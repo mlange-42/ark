@@ -37,6 +37,32 @@ jobs:
         run: |
           go test -tags ark_tiny -benchmem -run=^$ -bench ^.*$ ./...
 
+  aos:
+    name: Benchmark vs. AoS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.25.4'
+      - name: Install dependencies
+        run: go get .
+      - name: Benchmark vs. AoS
+        run: |
+          cd ./benchmark
+          go run ./aos -test.benchtime=3s
+      - name: Archive benchmark results 1
+        uses: actions/upload-artifact@v4
+        with:
+          path: benchmark/aos-light.svg
+          name: aos-light.svg
+      - name: Archive benchmark results 2
+        uses: actions/upload-artifact@v4
+        with:
+          path: benchmark/aos-dark.svg
+          name: aos-dark.svg
+
   tables:
     name: Benchmark Tables
     runs-on: ubuntu-latest
