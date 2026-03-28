@@ -22,7 +22,7 @@ In the example below, the filter would match any entities that have
 
 {{< code-func queries_test.go TestQueriesBasic >}}
 
-{{< api ecs Query2.Get >}} returns all queried components of the current entity.
+{{< api ecs Query2.Next >}} advances the query's cursor, and {{< api ecs Query2.Get >}} returns all queried components of the current entity.
 The current entity can be obtained with {{< api ecs Query2.Entity >}}.
 
 ## Table-based iteration
@@ -32,7 +32,8 @@ The current entity can be obtained with {{< api ecs Query2.Entity >}}.
 > You can try it out on the `main` branch.
 
 Instead of iterating over individual entities and retrieving their components,
-queries can also iterate over entire tables/archetypes and provide access to component columns.
+queries can also iterate over entire tables/archetypes ({{< api ecs Query2.NextTable >}})
+and provide access to component columns ({{< api ecs Query2.GetColumns >}}).
 This way of iterating is about two times as fast, but also requires more code due to an inner loop over entities:
 
 {{< code-func queries_test.go TestQueriesTables >}}

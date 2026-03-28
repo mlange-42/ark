@@ -26,7 +26,7 @@
 // Access data:
 //   - Create a filter: [NewFilter2].
 //   - Create a [Query2]: [Filter2.Query].
-//   - Iterate a Query: [Query2.Next], [Query2.Get].
+//   - Iterate a Query: [Query2.Next], [Query2.NextTable], [Query2.Get], [Query2.GetColumns].
 //   - Access components of entities: [Map.Get], [Map2.Get].
 //   - Access relationship targets: [Map.GetRelation], [Map2.GetRelation].
 //
