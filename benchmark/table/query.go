@@ -40,6 +40,8 @@ func queryIter100k(b *testing.B) {
 		}
 	}
 
+	loop()
+
 	for b.Loop() {
 		loop()
 	}
@@ -62,6 +64,8 @@ func queryIterGet1Comp100k(b *testing.B) {
 			c1 = query.Get()
 		}
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()
@@ -87,6 +91,8 @@ func queryIterGet2Comp100k(b *testing.B) {
 			c1, c2 = query.Get()
 		}
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()
@@ -117,6 +123,8 @@ func queryIterGet5Comp100k(b *testing.B) {
 		}
 	}
 
+	loop()
+
 	for b.Loop() {
 		loop()
 	}
@@ -145,6 +153,8 @@ func queryIterEntity100k(b *testing.B) {
 		}
 	}
 
+	loop()
+
 	for b.Loop() {
 		loop()
 	}
@@ -169,6 +179,8 @@ func queryRelation100k(b *testing.B) {
 		}
 	}
 
+	loop()
+
 	for b.Loop() {
 		loop()
 	}
@@ -181,12 +193,16 @@ func queryCreate(b *testing.B) {
 	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(100, nil)
 	filter := ecs.NewFilter1[comp1](w)
-	query := filter.Query()
-	query.Close()
 
-	for b.Loop() {
+	loop := func() {
 		query := filter.Query()
 		query.Close()
+	}
+
+	loop()
+
+	for b.Loop() {
+		loop()
 	}
 }
 
@@ -196,12 +212,16 @@ func queryCreateCached(b *testing.B) {
 	builder := ecs.NewMap1[comp1](w)
 	builder.NewBatchFn(100, nil)
 	filter := ecs.NewFilter1[comp1](w).Register()
-	query := filter.Query()
-	query.Close()
 
-	for b.Loop() {
+	loop := func() {
 		query := filter.Query()
 		query.Close()
+	}
+
+	loop()
+
+	for b.Loop() {
+		loop()
 	}
 }
 
@@ -221,6 +241,8 @@ func queryPosVel100k(b *testing.B) {
 			pos.Y += vel.Y
 		}
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()
@@ -246,6 +268,8 @@ func queryPosVelTable100k(b *testing.B) {
 			}
 		}
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()
