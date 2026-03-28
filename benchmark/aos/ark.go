@@ -51,6 +51,8 @@ func ark64Byte(b *testing.B, n int) {
 		}
 	}
 
+	loop()
+
 	for b.Loop() {
 		loop()
 	}
@@ -76,6 +78,8 @@ func ark128Byte(b *testing.B, n int) {
 		}
 	}
 
+	loop()
+
 	for b.Loop() {
 		loop()
 	}
@@ -100,6 +104,8 @@ func ark256Byte(b *testing.B, n int) {
 			}
 		}
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()

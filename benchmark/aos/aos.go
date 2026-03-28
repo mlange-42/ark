@@ -21,6 +21,8 @@ func aos32Byte(b *testing.B, n int) {
 		}
 	}
 
+	loop()
+
 	for b.Loop() {
 		loop()
 	}
@@ -42,6 +44,8 @@ func aos64Byte(b *testing.B, n int) {
 			e.Pos.Y += e.Vel.Y
 		}
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()
@@ -65,6 +69,8 @@ func aos128Byte(b *testing.B, n int) {
 		}
 	}
 
+	loop()
+
 	for b.Loop() {
 		loop()
 	}
@@ -86,6 +92,8 @@ func aos256Byte(b *testing.B, n int) {
 			e.Pos.Y += e.Vel.Y
 		}
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()

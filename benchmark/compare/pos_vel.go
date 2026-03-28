@@ -37,6 +37,8 @@ func posVelQuery(b *testing.B, n int) {
 		}
 	}
 
+	loop()
+
 	for b.Loop() {
 		loop()
 	}
@@ -74,6 +76,8 @@ func posVelQueryTables(b *testing.B, n int) {
 			}
 		}
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()
@@ -115,6 +119,8 @@ func posVelMap(b *testing.B, n int) {
 			pos.Y += vel.Y
 		}
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()

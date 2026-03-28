@@ -13,14 +13,14 @@ func queryCreateClose(b *testing.B) {
 	builder.NewBatch(1000, &Position{}, &Velocity{1, 1})
 
 	filter := ecs.NewFilter2[Position, Velocity](w)
-	query := filter.Query()
-	query.Close()
 
 	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		query := filter.Query()
 		query.Close()
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()
@@ -34,14 +34,14 @@ func queryCreateCloseRegistered(b *testing.B) {
 	builder.NewBatch(1000, &Position{}, &Velocity{1, 1})
 
 	filter := ecs.NewFilter2[Position, Velocity](w).Register()
-	query := filter.Query()
-	query.Close()
 
 	// Wrapper to allow inlining, for more realistic results.
 	loop := func() {
 		query := filter.Query()
 		query.Close()
 	}
+
+	loop()
 
 	for b.Loop() {
 		loop()
