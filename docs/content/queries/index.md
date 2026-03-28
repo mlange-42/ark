@@ -27,10 +27,6 @@ The current entity can be obtained with {{< api ecs Query2.Entity >}}.
 
 ## Table-based iteration
 
-> [!NOTE]
-> This feature is not yet released and is planned for Ark v0.8.0.
-> You can try it out on the `main` branch.
-
 Instead of iterating over individual entities and retrieving their components,
 queries can also iterate over entire tables/archetypes ({{< api ecs Query2.NextTable >}})
 and provide access to component columns ({{< api ecs Query2.GetColumns >}}).
