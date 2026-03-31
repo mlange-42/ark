@@ -90,6 +90,10 @@ func addRemoveBatch1000(b *testing.B) {
 	addRemoveBatch(b, 1000)
 }
 
+func addRemoveBatch100000(b *testing.B) {
+	addRemoveBatch(b, 100000)
+}
+
 func addRemoveBatch(b *testing.B, n int) {
 	world := ecs.NewWorld()
 
