@@ -78,6 +78,10 @@ func benchesCompare() []benchmark.Benchmark {
 		{Name: "Add/Remove batch 1 of 2", Desc: "", F: addRemoveBatch1000, N: 1000},
 		{Name: "Add/Remove batch 1 of 2", Desc: "", F: addRemoveBatch100000, N: 100000},
 
+		{Name: "Add/Remove batch 1 of 2 non-trivial", Desc: "", F: addRemoveBatchNonTrivial10, N: 10},
+		{Name: "Add/Remove batch 1 of 2 non-trivial", Desc: "", F: addRemoveBatchNonTrivial1000, N: 1000},
+		{Name: "Add/Remove batch 1 of 2 non-trivial", Desc: "", F: addRemoveBatchNonTrivial100000, N: 100000},
+
 		{Name: "Add/Remove batch 1 of 11", Desc: "", F: addRemoveBatchLarge10, N: 10},
 		{Name: "Add/Remove batch 1 of 11", Desc: "", F: addRemoveBatchLarge1000, N: 1000},
 		{Name: "Add/Remove batch 1 of 11", Desc: "", F: addRemoveBatchLarge100000, N: 100000},

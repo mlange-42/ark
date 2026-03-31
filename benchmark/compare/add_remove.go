@@ -114,6 +114,38 @@ func addRemoveBatch(b *testing.B, n int) {
 	}
 }
 
+func addRemoveBatchNonTrivial10(b *testing.B) {
+	addRemoveBatchNonTrivial(b, 10)
+}
+
+func addRemoveBatchNonTrivial1000(b *testing.B) {
+	addRemoveBatchNonTrivial(b, 1000)
+}
+
+func addRemoveBatchNonTrivial100000(b *testing.B) {
+	addRemoveBatchNonTrivial(b, 100000)
+}
+
+func addRemoveBatchNonTrivial(b *testing.B, n int) {
+	world := ecs.NewWorld()
+
+	posMap := ecs.NewMap1[SliceComp1](world)
+	velMap := ecs.NewMap1[SliceComp2](world)
+
+	posFilter := ecs.NewFilter1[SliceComp1](world)
+	velFilter := ecs.NewFilter1[SliceComp2](world)
+
+	posMap.NewBatchFn(n, nil)
+
+	velMap.AddBatchFn(posFilter.Batch(), nil)
+	velMap.RemoveBatch(velFilter.Batch(), nil)
+
+	for b.Loop() {
+		velMap.AddBatchFn(posFilter.Batch(), nil)
+		velMap.RemoveBatch(velFilter.Batch(), nil)
+	}
+}
+
 func addRemoveBatchLarge10(b *testing.B) {
 	addRemoveBatchLarge(b, 10)
 }
