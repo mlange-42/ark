@@ -52,20 +52,10 @@ func copyValue(src, dst *column, from, to uintptr) {
 // copyRange copies a range of items from one reflect array to another.
 // Copies src[:count] to dst[start:].
 // This is GC-safe. Use for non-trivial types.
-func copyRange(src, dst *column, start, count uintptr) {
-	//if count == 0 {
-	//      return
-	//}
-
-	elemSize := src.itemSize
-	dstPtr := unsafe.Add(dst.pointer, start*elemSize)
-	srcPtr := src.pointer
-
-	for range count {
-		typedmemmove(src.typePtr, dstPtr, srcPtr)
-		dstPtr = unsafe.Add(dstPtr, elemSize)
-		srcPtr = unsafe.Add(srcPtr, elemSize)
-	}
+func copyRange(src, dst reflect.Value, start, count int) {
+	srcSlice := src.Slice(0, count)
+	dstSlice := dst.Slice(start, start+count)
+	reflect.Copy(dstSlice, srcSlice)
 }
 
 //go:linkname memclrNoHeapPointers runtime.memclrNoHeapPointers
