@@ -118,6 +118,10 @@ func addRemoveBatchNonTrivial10(b *testing.B) {
 	addRemoveBatchNonTrivial(b, 10)
 }
 
+func addRemoveBatchNonTrivial100(b *testing.B) {
+	addRemoveBatchNonTrivial(b, 100)
+}
+
 func addRemoveBatchNonTrivial1000(b *testing.B) {
 	addRemoveBatchNonTrivial(b, 1000)
 }
