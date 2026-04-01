@@ -52,11 +52,20 @@ func copyValue(src, dst *column, from, to uintptr) {
 // copyRange copies a range of items from one reflect array to another.
 // Copies src[:count] to dst[start:].
 // This is GC-safe. Use for non-trivial types.
-func copyRange(src, dst *column, start, count uintptr) {
-	//if count == 0 {
-	//      return
-	//}
+func copyRange(src, dst *column, start, count uint32) {
+	if count <= 64 {
+		copyRangeSmall(src, dst, uintptr(start), uintptr(count))
+	} else {
+		copyRangeLarge(src, dst, int(start), int(count))
+	}
+}
 
+// copyRangeSmall copies a range of items from one reflect array to another.
+// Copies src[:count] to dst[start:].
+// This is GC-safe. Use for non-trivial types.
+//
+// Should be used for small ranges (<=64).
+func copyRangeSmall(src, dst *column, start, count uintptr) {
 	elemSize := src.itemSize
 	dstPtr := unsafe.Add(dst.pointer, start*elemSize)
 	srcPtr := src.pointer
@@ -66,6 +75,17 @@ func copyRange(src, dst *column, start, count uintptr) {
 		dstPtr = unsafe.Add(dstPtr, elemSize)
 		srcPtr = unsafe.Add(srcPtr, elemSize)
 	}
+}
+
+// copyRangeLarge copies a range of items from one reflect array to another.
+// Copies src[:count] to dst[start:].
+// This is GC-safe. Use for non-trivial types.
+//
+// Should be used for large ranges (>64).
+func copyRangeLarge(src, dst *column, start, count int) {
+	srcSlice := src.data.Slice(0, count)
+	dstSlice := dst.data.Slice(start, start+count)
+	reflect.Copy(dstSlice, srcSlice)
 }
 
 //go:linkname memclrNoHeapPointers runtime.memclrNoHeapPointers

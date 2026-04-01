@@ -52,7 +52,7 @@ func (c *column) CopyToEnd(from *column, ownLen uint32, count uint32) {
 		copyPtr(src, dst, c.itemSize*uintptr(count))
 		return
 	}
-	copyRange(from, c, uintptr(start), uintptr(count))
+	copyRange(from, c, start, count)
 }
 
 // Set overwrites the component at the given index.
