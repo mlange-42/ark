@@ -46,12 +46,19 @@ func (c *column) Get(index uintptr) unsafe.Pointer {
 // Column length must be increased before.
 func (c *column) CopyToEnd(from *column, ownLen uint32, count uint32) {
 	start := ownLen - count
+	totalBytes := uintptr(count) * c.itemSize
+
 	if c.isTrivial {
-		src := from.Get(0)
-		dst := c.Get(uintptr(start))
-		copyPtr(src, dst, c.itemSize*uintptr(count))
+		if totalBytes <= 16*1024 {
+			src := from.Get(0)
+			dst := c.Get(uintptr(start))
+			copyPtr(src, dst, totalBytes)
+		} else {
+			copyRangeLarge(from, c, int(start), int(count))
+		}
 		return
 	}
+
 	copyRange(from, c, start, count)
 }
 
