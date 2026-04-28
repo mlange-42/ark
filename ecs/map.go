@@ -107,14 +107,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 
 	if hasRelObs {

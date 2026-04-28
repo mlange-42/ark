@@ -2,6 +2,10 @@
 
 ## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.8.0...main)
 
+### Performance
+
+- Events for batch operations are processed in batches (#503)
+
 ### Bugfixes
 
 - Fixes error when deleting multiple targets of the same entity (#500)

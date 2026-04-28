@@ -116,14 +116,7 @@ func (m *Map1[A]) NewBatchFn(count int, fn func(Entity, *A), rel ...Relation) {
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -431,14 +424,7 @@ func (m *Map2[A, B]) NewBatchFn(count int, fn func(Entity, *A, *B), rel ...Relat
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -766,14 +752,7 @@ func (m *Map3[A, B, C]) NewBatchFn(count int, fn func(Entity, *A, *B, *C), rel .
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -1117,14 +1096,7 @@ func (m *Map4[A, B, C, D]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, *D)
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -1484,14 +1456,7 @@ func (m *Map5[A, B, C, D, E]) NewBatchFn(count int, fn func(Entity, *A, *B, *C, 
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -1867,14 +1832,7 @@ func (m *Map6[A, B, C, D, E, F]) NewBatchFn(count int, fn func(Entity, *A, *B, *
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -2266,14 +2224,7 @@ func (m *Map7[A, B, C, D, E, F, G]) NewBatchFn(count int, fn func(Entity, *A, *B
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -2681,14 +2632,7 @@ func (m *Map8[A, B, C, D, E, F, G, H]) NewBatchFn(count int, fn func(Entity, *A,
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -3112,14 +3056,7 @@ func (m *Map9[A, B, C, D, E, F, G, H, I]) NewBatchFn(count int, fn func(Entity, 
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -3559,14 +3496,7 @@ func (m *Map10[A, B, C, D, E, F, G, H, I, J]) NewBatchFn(count int, fn func(Enti
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -4022,14 +3952,7 @@ func (m *Map11[A, B, C, D, E, F, G, H, I, J, K]) NewBatchFn(count int, fn func(E
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
@@ -4501,14 +4424,7 @@ func (m *Map12[A, B, C, D, E, F, G, H, I, J, K, L]) NewBatchFn(count int, fn fun
 
 	if hasCreateObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntity(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityBatch(table, start, &m.mask)
 	}
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]

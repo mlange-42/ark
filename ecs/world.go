@@ -64,14 +64,7 @@ func (w *World) NewEntities(count int, fn func(entity Entity)) {
 	if hasObs {
 		table := &w.storage.tables[tableID]
 		mask := &w.storage.archetypes[table.archetype].mask
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !w.storage.observers.FireCreateEntity(table.GetEntity(index), mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		w.storage.observers.FireCreateEntityBatch(table, start, mask)
 	}
 	if shouldLock {
 		w.unlock(lock)

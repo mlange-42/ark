@@ -275,15 +275,14 @@ func (m *observerManager) FireCreateEntityIfHas(e Entity, mask *bitMask) {
 	if !m.hasObservers[OnCreateEntity] {
 		return
 	}
-	m.FireCreateEntity(e, mask, true)
+	m.fireCreateEntity(e, mask)
 }
 
-func (m *observerManager) FireCreateEntity(e Entity, mask *bitMask, earlyOut bool) bool {
-	if earlyOut && !m.anyNoWith[OnCreateEntity] && !m.allWith[OnCreateEntity].ContainsAny(mask) {
-		return false
+func (m *observerManager) fireCreateEntity(e Entity, mask *bitMask) {
+	if !m.anyNoWith[OnCreateEntity] && !m.allWith[OnCreateEntity].ContainsAny(mask) {
+		return
 	}
 	observers := m.observers[OnCreateEntity]
-	found := false
 	for _, o := range observers {
 		if o.hasWith && !mask.Contains(&o.withMask) {
 			continue
@@ -292,9 +291,25 @@ func (m *observerManager) FireCreateEntity(e Entity, mask *bitMask, earlyOut boo
 			continue
 		}
 		o.callback(e)
-		found = true
 	}
-	return found
+}
+
+func (m *observerManager) FireCreateEntityBatch(table *table, start int, mask *bitMask) {
+	if !m.anyNoWith[OnCreateEntity] && !m.allWith[OnCreateEntity].ContainsAny(mask) {
+		return
+	}
+	observers := m.observers[OnCreateEntity]
+	for _, o := range observers {
+		if o.hasWith && !mask.Contains(&o.withMask) {
+			continue
+		}
+		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
+			continue
+		}
+		for i := start; i < table.Len(); i++ {
+			o.callback(table.GetEntity(uintptr(i)))
+		}
+	}
 }
 
 func (m *observerManager) FireCreateEntityRelIfHas(e Entity, mask *bitMask) {
