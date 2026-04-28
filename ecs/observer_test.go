@@ -894,7 +894,8 @@ func TestObserverCustomEvents(t *testing.T) {
 
 func TestCleanupArchetypeEvents(t *testing.T) {
 	w := NewWorld()
-	builder := NewMap1[ChildOf](w)
+	builder1 := NewMap1[ChildOf](w)
+	builder2 := NewMap1[ChildOf2](w)
 
 	callAdd := 0
 	callRemove := 0
@@ -919,16 +920,22 @@ func TestCleanupArchetypeEvents(t *testing.T) {
 		}).
 		Register(w)
 
-	parent := w.NewEntity()
-	child := builder.NewEntity(&ChildOf{}, Rel[ChildOf](parent))
-
+	parent1 := w.NewEntity()
+	builder1.NewEntity(&ChildOf{}, Rel[ChildOf](parent1))
 	expectEqual(t, 1, callAdd)
 
-	w.RemoveEntity(parent)
+	w.RemoveEntity(parent1)
 	expectEqual(t, 2, callAdd)
 	expectEqual(t, 1, callRemove)
 
-	_ = child
+	parent2 := w.NewEntity()
+	builder2.NewEntity(&ChildOf2{}, Rel[ChildOf2](parent2))
+	expectEqual(t, 2, callAdd)
+
+	w.RemoveEntity(parent2)
+	expectEqual(t, 2, callAdd)
+	expectEqual(t, 1, callRemove)
+
 }
 
 func benchmarkEventsPos(b *testing.B, n int) {
