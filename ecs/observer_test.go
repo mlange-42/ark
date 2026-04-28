@@ -892,6 +892,41 @@ func TestObserverCustomEvents(t *testing.T) {
 	expectEqual(t, 4, callCount)
 }
 
+func TestCleanupArchetypeEvents(t *testing.T) {
+	w := NewWorld()
+	builder := NewMap1[ChildOf](w)
+
+	callAdd := 0
+	callRemove := 0
+
+	Observe(OnAddRelations).
+		For(C[ChildOf]()).
+		Do(func(e Entity) {
+			expectFalse(t, w.IsLocked())
+			callAdd++
+		}).
+		Register(w)
+
+	Observe(OnRemoveRelations).
+		For(C[ChildOf]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callRemove++
+		}).
+		Register(w)
+
+	parent := w.NewEntity()
+	child := builder.NewEntity(&ChildOf{}, Rel[ChildOf](parent))
+
+	expectEqual(t, 1, callAdd)
+
+	w.RemoveEntity(parent)
+	expectEqual(t, 2, callAdd)
+	expectEqual(t, 1, callRemove)
+
+	_ = child
+}
+
 func benchmarkEventsPos(b *testing.B, n int) {
 	w := NewWorld()
 
