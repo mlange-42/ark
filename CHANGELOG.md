@@ -6,6 +6,7 @@
 
 - Fixes error when deleting multiple targets of the same entity (#500)
 - Fixes missing relation events on archetype cleanup (deleted target entities) (#501)
+- Fixes relation batch events fired for wrong table (#502)
 
 ## [[v0.8.0]](https://github.com/mlange-42/ark/compare/v0.7.1...v0.8.0)
 
