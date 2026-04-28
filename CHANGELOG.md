@@ -1,6 +1,6 @@
 # Changelog
 
-## [[v0.8.1]](https://github.com/mlange-42/ark/compare/v0.8.0...v0.8.1)
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.8.0...main)
 
 ### Bugfixes
 
