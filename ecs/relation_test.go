@@ -111,6 +111,22 @@ func TestRemoveRelationTarget(t *testing.T) {
 	expectEqual(t, Entity{}, child2Map.GetRelation(e3))
 }
 
+func TestRemoveRelationTarget2(t *testing.T) {
+	world := NewWorld()
+	parentBuilder := NewMap1[Label](world)
+	childBuilder := NewMap2[ChildOf, ChildOf2](world)
+
+	p1 := parentBuilder.NewEntity(&Label{})
+	p2 := parentBuilder.NewEntity(&Label{})
+
+	child := childBuilder.NewEntity(&ChildOf{}, &ChildOf2{}, Rel[ChildOf](p1), Rel[ChildOf2](p2))
+
+	filter := NewFilter1[Label](world)
+	world.RemoveEntities(filter.Batch(), nil)
+
+	_ = child
+}
+
 func TestStaleRelationTable(t *testing.T) {
 	world := NewWorld()
 	filter := NewFilter2[Position, ChildOf2](world)
