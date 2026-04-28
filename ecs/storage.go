@@ -509,7 +509,8 @@ func (s *storage) cleanupArchetypes(target Entity) {
 			table := &s.tables[tables.tables[i]]
 
 			for _, rel := range table.relationIDs {
-				if rel.target.id == target.id {
+				// There may be other removed target entities
+				if rel.target.id == target.id || !s.entityPool.Alive(rel.target) {
 					newRelations = append(newRelations, relationID{component: rel.component, target: Entity{}})
 				}
 			}
