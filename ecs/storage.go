@@ -497,6 +497,18 @@ func (s *storage) createTable(archetype *archetype, relations []relationID) *tab
 // Removes empty archetypes that have a target relation to the given entity.
 func (s *storage) cleanupArchetypes(target Entity) {
 	newRelations := s.slices.relationsCleanup
+
+	hasAddRelObs := s.observers.HasObservers(OnAddRelations)
+	hasRemRelObs := s.observers.HasObservers(OnRemoveRelations)
+	hasObserver := hasAddRelObs || hasRemRelObs
+	var changeMask bitMask
+	var maskPointer *bitMask
+	var lock uint8
+	if hasObserver {
+		maskPointer = &changeMask
+		lock = s.lock()
+	}
+
 	for _, arch := range s.relationArchetypes {
 		archetype := &s.archetypes[arch]
 
@@ -516,7 +528,10 @@ func (s *storage) cleanupArchetypes(target Entity) {
 			}
 
 			if table.Len() > 0 {
-				allRelations := s.getExchangeTargetsUnchecked(table, newRelations)
+				if hasObserver {
+					maskPointer.Reset()
+				}
+				allRelations := s.getExchangeTargetsUnchecked(table, newRelations, maskPointer)
 				newTable, ok := archetype.GetTable(s, allRelations)
 				if !ok {
 					// Copy the slice, as it comes from the slice pool
@@ -527,7 +542,31 @@ func (s *storage) cleanupArchetypes(target Entity) {
 					table = &s.tables[table.id]
 				}
 				s.slices.relations = allRelations[:0]
+
+				startIdx := newTable.Len()
+				oldLen := uintptr(table.len)
+				if hasRemRelObs {
+					earlyOut := true
+					for i := uintptr(0); i < oldLen; i++ {
+						if !s.observers.FireSetRelations(OnRemoveRelations, table.GetEntity(i), &changeMask, &archetype.mask, earlyOut) {
+							break
+						}
+						earlyOut = false
+					}
+				}
+
 				s.moveEntities(table, newTable, uint32(table.Len()))
+
+				if hasAddRelObs {
+					earlyOut := true
+					for i := range oldLen {
+						index := uintptr(startIdx) + i
+						if !s.observers.FireSetRelations(OnAddRelations, newTable.GetEntity(index), &changeMask, &archetype.mask, earlyOut) {
+							break
+						}
+						earlyOut = false
+					}
+				}
 			}
 			archetype.FreeTable(table)
 			s.cache.removeTable(table)
@@ -537,6 +576,10 @@ func (s *storage) cleanupArchetypes(target Entity) {
 		archetype.RemoveTarget(target)
 	}
 	s.slices.relationsCleanup = newRelations[:0]
+
+	if hasObserver {
+		s.unlock(lock)
+	}
 }
 
 // moveEntities moves all entities from src to dst.
@@ -558,19 +601,18 @@ func (s *storage) moveEntities(src, dst *table, count uint32) {
 // Does not check validity of relations.
 //
 // The returned slice comes from the pool and should be recycled.
-func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relationID) []relationID {
+func (s *storage) getExchangeTargetsUnchecked(oldTable *table, relations []relationID, mask *bitMask) []relationID {
 	targets := s.slices.entities
 	for i := range oldTable.columns {
 		targets = append(targets, oldTable.columns[i].target)
 	}
 	for _, rel := range relations {
 		column := oldTable.components[rel.component.id]
-		// TODO: check this!
-		// As rel.target is always the zero entity, and the zero entity can't be removed,
-		// this should not be possible.
-		//if rel.target == targets[column.index] {
-		//	continue
-		//}
+		if rel.target == targets[column.index] {
+			continue
+		} else if mask != nil {
+			mask.Set(rel.component.id)
+		}
 		targets[column.index] = rel.target
 	}
 

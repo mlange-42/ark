@@ -902,7 +902,11 @@ func TestCleanupArchetypeEvents(t *testing.T) {
 	Observe(OnAddRelations).
 		For(C[ChildOf]()).
 		Do(func(e Entity) {
-			expectFalse(t, w.IsLocked())
+			if callAdd == 0 {
+				expectFalse(t, w.IsLocked())
+			} else {
+				expectTrue(t, w.IsLocked())
+			}
 			callAdd++
 		}).
 		Register(w)
