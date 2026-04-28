@@ -1,10 +1,10 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.8.0...main)
+## [[v0.8.1]](https://github.com/mlange-42/ark/compare/v0.8.0...v0.8.1)
 
 ### Bugfixes
 
-- Fixes error when removing multiple target entities of the same entity (#500)
+- Fixes error when deleting multiple targets of the same entity (#500)
 
 ## [[v0.8.0]](https://github.com/mlange-42/ark/compare/v0.7.1...v0.8.0)
 
