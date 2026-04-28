@@ -495,7 +495,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 		earlyOut := true
 		for i := range oldLen {
 			index := uintptr(startIdx + i)
-			if !w.storage.observers.FireSetRelations(OnAddRelations, oldTable.GetEntity(index), &changeMask, newMask, earlyOut) {
+			if !w.storage.observers.FireSetRelations(OnAddRelations, newTable.GetEntity(index), &changeMask, newMask, earlyOut) {
 				break
 			}
 			earlyOut = false
