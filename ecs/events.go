@@ -504,18 +504,15 @@ func (m *observerManager) FireAddBatch(evt EventType, table *table, start, end u
 	}
 }
 
-func (m *observerManager) FireRemove(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask, earlyOut bool) bool {
-	if earlyOut {
-		if !m.anyNoComps[evt] &&
-			(!m.allComps[evt].ContainsAny(oldMask) || newMask.Contains(&m.allComps[evt])) {
-			return false
-		}
-		if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(oldMask) {
-			return false
-		}
+func (m *observerManager) FireRemove(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask) {
+	if !m.anyNoComps[evt] &&
+		(!m.allComps[evt].ContainsAny(oldMask) || newMask.Contains(&m.allComps[evt])) {
+		return
+	}
+	if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(oldMask) {
+		return
 	}
 	observers := m.observers[evt]
-	found := false
 	for _, o := range observers {
 		if o.hasComps && (newMask.Contains(&o.compsMask) || !oldMask.ContainsAny(&o.compsMask)) {
 			continue
@@ -527,9 +524,32 @@ func (m *observerManager) FireRemove(evt EventType, e Entity, oldMask *bitMask, 
 			continue
 		}
 		o.callback(e)
-		found = true
 	}
-	return found
+}
+
+func (m *observerManager) FireRemoveBatch(evt EventType, table *table, len int, oldMask *bitMask, newMask *bitMask) {
+	if !m.anyNoComps[evt] &&
+		(!m.allComps[evt].ContainsAny(oldMask) || newMask.Contains(&m.allComps[evt])) {
+		return
+	}
+	if !m.anyNoWith[evt] && !m.allWith[evt].ContainsAny(oldMask) {
+		return
+	}
+	observers := m.observers[evt]
+	for _, o := range observers {
+		if o.hasComps && (newMask.Contains(&o.compsMask) || !oldMask.ContainsAny(&o.compsMask)) {
+			continue
+		}
+		if o.hasWith && !oldMask.Contains(&o.withMask) {
+			continue
+		}
+		if o.hasWithout && oldMask.ContainsAny(&o.withoutMask) {
+			continue
+		}
+		for i := 0; i < len; i++ {
+			o.callback(table.GetEntity(uintptr(i)))
+		}
+	}
 }
 
 func (m *observerManager) FireSet(e Entity, mask *bitMask, newMask *bitMask) {
