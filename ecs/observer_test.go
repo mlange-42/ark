@@ -180,6 +180,40 @@ func TestObserverOnCreateEntities(t *testing.T) {
 	expectEqual(t, 10, callCount)
 }
 
+func TestObserverOnCreateEntitiesWith(t *testing.T) {
+	w := NewWorld()
+
+	builderPos := NewMap1[Position](w)
+	builderHead := NewMap1[Heading](w)
+	builderPosVel := NewMap2[Position, Velocity](w)
+
+	callCount := 0
+
+	Observe(OnCreateEntity).
+		With(C[Position]()).
+		Without(C[Velocity]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callCount++
+		}).
+		Register(w)
+
+	Observe(OnCreateEntity).
+		With(C[Heading]()).
+		Do(func(e Entity) {}).
+		Register(w)
+
+	w.NewEntities(10, nil)
+	expectEqual(t, 0, callCount)
+
+	builderPos.NewBatchFn(10, nil)
+	expectEqual(t, 10, callCount)
+	builderPosVel.NewBatchFn(10, nil)
+	expectEqual(t, 10, callCount)
+	builderHead.NewBatchFn(10, nil)
+	expectEqual(t, 10, callCount)
+}
+
 func TestObserverOnRemoveEntity(t *testing.T) {
 	w := NewWorld()
 
