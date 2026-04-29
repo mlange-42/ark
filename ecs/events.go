@@ -546,7 +546,7 @@ func (m *observerManager) FireRemoveBatch(evt EventType, table *table, len int, 
 		if o.hasWithout && oldMask.ContainsAny(&o.withoutMask) {
 			continue
 		}
-		for i := 0; i < len; i++ {
+		for i := range len {
 			o.callback(table.GetEntity(uintptr(i)))
 		}
 	}
