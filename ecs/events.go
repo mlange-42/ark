@@ -367,12 +367,11 @@ func (m *observerManager) FireCreateEntityRelBatch(table *table, start int, mask
 	}
 }
 
-func (m *observerManager) FireRemoveEntity(e Entity, mask *bitMask, earlyOut bool) bool {
-	if earlyOut && !m.anyNoWith[OnRemoveEntity] && !m.allWith[OnRemoveEntity].ContainsAny(mask) {
-		return false
+func (m *observerManager) FireRemoveEntity(e Entity, mask *bitMask) {
+	if !m.anyNoWith[OnRemoveEntity] && !m.allWith[OnRemoveEntity].ContainsAny(mask) {
+		return
 	}
 	observers := m.observers[OnRemoveEntity]
-	found := false
 	for _, o := range observers {
 		if o.hasWith && !mask.Contains(&o.withMask) {
 			continue
@@ -381,22 +380,36 @@ func (m *observerManager) FireRemoveEntity(e Entity, mask *bitMask, earlyOut boo
 			continue
 		}
 		o.callback(e)
-		found = true
 	}
-	return found
 }
 
-func (m *observerManager) FireRemoveEntityRel(e Entity, mask *bitMask, earlyOut bool) bool {
-	if earlyOut {
-		if !m.anyNoComps[OnRemoveRelations] && !m.allComps[OnRemoveRelations].ContainsAny(mask) {
-			return false
+func (m *observerManager) FireRemoveEntityBatch(table *table, mask *bitMask) {
+	if !m.anyNoWith[OnRemoveEntity] && !m.allWith[OnRemoveEntity].ContainsAny(mask) {
+		return
+	}
+	observers := m.observers[OnRemoveEntity]
+	for _, o := range observers {
+		if o.hasWith && !mask.Contains(&o.withMask) {
+			continue
 		}
-		if !m.anyNoWith[OnRemoveRelations] && !m.allWith[OnRemoveRelations].ContainsAny(mask) {
-			return false
+		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
+			continue
+		}
+		ln := table.Len()
+		for i := range ln {
+			o.callback(table.GetEntity(uintptr(i)))
 		}
 	}
+}
+
+func (m *observerManager) FireRemoveEntityRel(e Entity, mask *bitMask) {
+	if !m.anyNoComps[OnRemoveRelations] && !m.allComps[OnRemoveRelations].ContainsAny(mask) {
+		return
+	}
+	if !m.anyNoWith[OnRemoveRelations] && !m.allWith[OnRemoveRelations].ContainsAny(mask) {
+		return
+	}
 	observers := m.observers[OnRemoveRelations]
-	found := false
 	for _, o := range observers {
 		if o.hasComps && !mask.Contains(&o.compsMask) {
 			continue
@@ -408,9 +421,32 @@ func (m *observerManager) FireRemoveEntityRel(e Entity, mask *bitMask, earlyOut 
 			continue
 		}
 		o.callback(e)
-		found = true
 	}
-	return found
+}
+
+func (m *observerManager) FireRemoveEntityRelBatch(table *table, mask *bitMask) {
+	if !m.anyNoComps[OnRemoveRelations] && !m.allComps[OnRemoveRelations].ContainsAny(mask) {
+		return
+	}
+	if !m.anyNoWith[OnRemoveRelations] && !m.allWith[OnRemoveRelations].ContainsAny(mask) {
+		return
+	}
+	observers := m.observers[OnRemoveRelations]
+	for _, o := range observers {
+		if o.hasComps && !mask.Contains(&o.compsMask) {
+			continue
+		}
+		if o.hasWith && !mask.Contains(&o.withMask) {
+			continue
+		}
+		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
+			continue
+		}
+		ln := table.Len()
+		for i := range ln {
+			o.callback(table.GetEntity(uintptr(i)))
+		}
+	}
 }
 
 func (m *observerManager) FireAddIfHas(evt EventType, e Entity, oldMask *bitMask, newMask *bitMask) {

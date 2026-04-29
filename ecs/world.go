@@ -150,15 +150,7 @@ func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 			for _, tableID := range tables {
 				table := &w.storage.tables[tableID]
 				mask := &w.storage.archetypes[table.archetype].mask
-				len := uintptr(table.Len())
-				var i uintptr
-				earlyOut := true
-				for i = range len {
-					if !w.storage.observers.FireRemoveEntity(table.GetEntity(i), mask, earlyOut) {
-						break
-					}
-					earlyOut = false
-				}
+				w.storage.observers.FireRemoveEntityBatch(table, mask)
 			}
 		}
 		if hasRelationObs {
@@ -168,15 +160,7 @@ func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 					continue
 				}
 				mask := &w.storage.archetypes[table.archetype].mask
-				len := uintptr(table.Len())
-				var i uintptr
-				earlyOut := true
-				for i = range len {
-					if !w.storage.observers.FireRemoveEntityRel(table.GetEntity(i), mask, earlyOut) {
-						break
-					}
-					earlyOut = false
-				}
+				w.storage.observers.FireRemoveEntityRelBatch(table, mask)
 			}
 		}
 	}
