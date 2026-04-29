@@ -112,14 +112,7 @@ func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 
 	if hasRelObs {
 		table := &m.world.storage.tables[tableID]
-		earlyOut := true
-		for i := range count {
-			index := uintptr(start + i)
-			if !m.world.storage.observers.FireCreateEntityRel(table.GetEntity(index), &m.mask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		m.world.storage.observers.FireCreateEntityRelBatch(table, start, &m.mask)
 	}
 
 	if shouldLock {

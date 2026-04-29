@@ -306,7 +306,8 @@ func (m *observerManager) FireCreateEntityBatch(table *table, start int, mask *b
 		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
 			continue
 		}
-		for i := start; i < table.Len(); i++ {
+		ln := table.Len()
+		for i := start; i < ln; i++ {
 			o.callback(table.GetEntity(uintptr(i)))
 		}
 	}
@@ -316,20 +317,17 @@ func (m *observerManager) FireCreateEntityRelIfHas(e Entity, mask *bitMask) {
 	if !m.hasObservers[OnAddRelations] {
 		return
 	}
-	m.FireCreateEntityRel(e, mask, true)
+	m.fireCreateEntityRel(e, mask)
 }
 
-func (m *observerManager) FireCreateEntityRel(e Entity, mask *bitMask, earlyOut bool) bool {
-	if earlyOut {
-		if !m.anyNoComps[OnAddRelations] && !m.allComps[OnAddRelations].ContainsAny(mask) {
-			return false
-		}
-		if !m.anyNoWith[OnAddRelations] && !m.allWith[OnAddRelations].ContainsAny(mask) {
-			return false
-		}
+func (m *observerManager) fireCreateEntityRel(e Entity, mask *bitMask) {
+	if !m.anyNoComps[OnAddRelations] && !m.allComps[OnAddRelations].ContainsAny(mask) {
+		return
+	}
+	if !m.anyNoWith[OnAddRelations] && !m.allWith[OnAddRelations].ContainsAny(mask) {
+		return
 	}
 	observers := m.observers[OnAddRelations]
-	found := false
 	for _, o := range observers {
 		if o.hasComps && !mask.Contains(&o.compsMask) {
 			continue
@@ -341,9 +339,32 @@ func (m *observerManager) FireCreateEntityRel(e Entity, mask *bitMask, earlyOut 
 			continue
 		}
 		o.callback(e)
-		found = true
 	}
-	return found
+}
+
+func (m *observerManager) FireCreateEntityRelBatch(table *table, start int, mask *bitMask) {
+	if !m.anyNoComps[OnAddRelations] && !m.allComps[OnAddRelations].ContainsAny(mask) {
+		return
+	}
+	if !m.anyNoWith[OnAddRelations] && !m.allWith[OnAddRelations].ContainsAny(mask) {
+		return
+	}
+	observers := m.observers[OnAddRelations]
+	for _, o := range observers {
+		if o.hasComps && !mask.Contains(&o.compsMask) {
+			continue
+		}
+		if o.hasWith && !mask.Contains(&o.withMask) {
+			continue
+		}
+		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
+			continue
+		}
+		ln := table.Len()
+		for i := start; i < ln; i++ {
+			o.callback(table.GetEntity(uintptr(i)))
+		}
+	}
 }
 
 func (m *observerManager) FireRemoveEntity(e Entity, mask *bitMask, earlyOut bool) bool {
