@@ -362,7 +362,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	if w.storage.observers.HasObservers(OnRemoveRelations) {
 		lock := w.lock()
 		newMask := &w.storage.archetypes[newTable.archetype].mask
-		w.storage.observers.FireSetRelations(OnRemoveRelations, entity, &changeMask, newMask, true)
+		w.storage.observers.FireSetRelations(OnRemoveRelations, entity, &changeMask, newMask)
 		w.unlock(lock)
 	}
 
@@ -382,7 +382,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 
 	if w.storage.observers.HasObservers(OnAddRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
-		w.storage.observers.FireSetRelations(OnAddRelations, entity, &changeMask, newMask, true)
+		w.storage.observers.FireSetRelations(OnAddRelations, entity, &changeMask, newMask)
 	}
 }
 
@@ -446,14 +446,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 	// TODO: move this before the entire batch?
 	if w.storage.observers.HasObservers(OnRemoveRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
-		len := uintptr(oldTable.len)
-		earlyOut := true
-		for i := uintptr(0); i < len; i++ {
-			if !w.storage.observers.FireSetRelations(OnRemoveRelations, oldTable.GetEntity(i), &changeMask, newMask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		w.storage.observers.FireSetRelationsBatch(OnRemoveRelations, oldTable, 0, int(oldTable.len), &changeMask, newMask)
 	}
 
 	startIdx := newTable.Len()
@@ -466,14 +459,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 	// TODO: move this after the entire batch?
 	if w.storage.observers.HasObservers(OnAddRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
-		earlyOut := true
-		for i := range oldLen {
-			index := uintptr(startIdx + i)
-			if !w.storage.observers.FireSetRelations(OnAddRelations, newTable.GetEntity(index), &changeMask, newMask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		w.storage.observers.FireSetRelationsBatch(OnAddRelations, newTable, startIdx, startIdx+oldLen, &changeMask, newMask)
 	}
 }
 
