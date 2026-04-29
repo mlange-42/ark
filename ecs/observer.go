@@ -131,3 +131,26 @@ func (o *Observer) Unregister(w *World) *Observer {
 	w.unregisterObserver(o)
 	return o
 }
+
+func (o *observerData) matchesWithWithout(mask *bitMask) bool {
+	if o.hasWith && !mask.Contains(&o.withMask) {
+		return false
+	}
+	if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
+		return false
+	}
+	return true
+}
+
+func (o *observerData) matches(compMask, mask *bitMask) bool {
+	if o.hasComps && !compMask.Contains(&o.compsMask) {
+		return false
+	}
+	if o.hasWith && !mask.Contains(&o.withMask) {
+		return false
+	}
+	if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
+		return false
+	}
+	return true
+}

@@ -284,13 +284,9 @@ func (m *observerManager) fireCreateEntity(e Entity, mask *bitMask) {
 	}
 	observers := m.observers[OnCreateEntity]
 	for _, o := range observers {
-		if o.hasWith && !mask.Contains(&o.withMask) {
-			continue
+		if o.matchesWithWithout(mask) {
+			o.callback(e)
 		}
-		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		o.callback(e)
 	}
 }
 
@@ -300,15 +296,11 @@ func (m *observerManager) FireCreateEntityBatch(table *table, start int, mask *b
 	}
 	observers := m.observers[OnCreateEntity]
 	for _, o := range observers {
-		if o.hasWith && !mask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		ln := table.Len()
-		for i := start; i < ln; i++ {
-			o.callback(table.GetEntity(uintptr(i)))
+		if o.matchesWithWithout(mask) {
+			ln := table.Len()
+			for i := start; i < ln; i++ {
+				o.callback(table.GetEntity(uintptr(i)))
+			}
 		}
 	}
 }
@@ -329,16 +321,9 @@ func (m *observerManager) fireCreateEntityRel(e Entity, mask *bitMask) {
 	}
 	observers := m.observers[OnAddRelations]
 	for _, o := range observers {
-		if o.hasComps && !mask.Contains(&o.compsMask) {
-			continue
+		if o.matches(mask, mask) {
+			o.callback(e)
 		}
-		if o.hasWith && !mask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		o.callback(e)
 	}
 }
 
@@ -351,18 +336,11 @@ func (m *observerManager) FireCreateEntityRelBatch(table *table, start int, mask
 	}
 	observers := m.observers[OnAddRelations]
 	for _, o := range observers {
-		if o.hasComps && !mask.Contains(&o.compsMask) {
-			continue
-		}
-		if o.hasWith && !mask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		ln := table.Len()
-		for i := start; i < ln; i++ {
-			o.callback(table.GetEntity(uintptr(i)))
+		if o.matches(mask, mask) {
+			ln := table.Len()
+			for i := start; i < ln; i++ {
+				o.callback(table.GetEntity(uintptr(i)))
+			}
 		}
 	}
 }
@@ -373,13 +351,9 @@ func (m *observerManager) FireRemoveEntity(e Entity, mask *bitMask) {
 	}
 	observers := m.observers[OnRemoveEntity]
 	for _, o := range observers {
-		if o.hasWith && !mask.Contains(&o.withMask) {
-			continue
+		if o.matchesWithWithout(mask) {
+			o.callback(e)
 		}
-		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		o.callback(e)
 	}
 }
 
@@ -389,15 +363,11 @@ func (m *observerManager) FireRemoveEntityBatch(table *table, mask *bitMask) {
 	}
 	observers := m.observers[OnRemoveEntity]
 	for _, o := range observers {
-		if o.hasWith && !mask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		ln := table.Len()
-		for i := range ln {
-			o.callback(table.GetEntity(uintptr(i)))
+		if o.matchesWithWithout(mask) {
+			ln := table.Len()
+			for i := range ln {
+				o.callback(table.GetEntity(uintptr(i)))
+			}
 		}
 	}
 }
@@ -411,16 +381,9 @@ func (m *observerManager) FireRemoveEntityRel(e Entity, mask *bitMask) {
 	}
 	observers := m.observers[OnRemoveRelations]
 	for _, o := range observers {
-		if o.hasComps && !mask.Contains(&o.compsMask) {
-			continue
+		if o.matches(mask, mask) {
+			o.callback(e)
 		}
-		if o.hasWith && !mask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		o.callback(e)
 	}
 }
 
@@ -433,18 +396,11 @@ func (m *observerManager) FireRemoveEntityRelBatch(table *table, mask *bitMask) 
 	}
 	observers := m.observers[OnRemoveRelations]
 	for _, o := range observers {
-		if o.hasComps && !mask.Contains(&o.compsMask) {
-			continue
-		}
-		if o.hasWith && !mask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && mask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		ln := table.Len()
-		for i := range ln {
-			o.callback(table.GetEntity(uintptr(i)))
+		if o.matches(mask, mask) {
+			ln := table.Len()
+			for i := range ln {
+				o.callback(table.GetEntity(uintptr(i)))
+			}
 		}
 	}
 }
@@ -469,13 +425,9 @@ func (m *observerManager) fireAdd(evt EventType, e Entity, oldMask *bitMask, new
 		if o.hasComps && (!newMask.Contains(&o.compsMask) || oldMask.ContainsAny(&o.compsMask)) {
 			continue
 		}
-		if o.hasWith && !oldMask.Contains(&o.withMask) {
-			continue
+		if o.matchesWithWithout(oldMask) {
+			o.callback(e)
 		}
-		if o.hasWithout && oldMask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		o.callback(e)
 	}
 }
 
@@ -492,14 +444,10 @@ func (m *observerManager) FireAddBatch(evt EventType, table *table, start, end u
 		if o.hasComps && (!newMask.Contains(&o.compsMask) || oldMask.ContainsAny(&o.compsMask)) {
 			continue
 		}
-		if o.hasWith && !oldMask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && oldMask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		for i := start; i < end; i++ {
-			o.callback(table.GetEntity(uintptr(i)))
+		if o.matchesWithWithout(oldMask) {
+			for i := start; i < end; i++ {
+				o.callback(table.GetEntity(uintptr(i)))
+			}
 		}
 	}
 }
@@ -517,13 +465,9 @@ func (m *observerManager) FireRemove(evt EventType, e Entity, oldMask *bitMask, 
 		if o.hasComps && (newMask.Contains(&o.compsMask) || !oldMask.ContainsAny(&o.compsMask)) {
 			continue
 		}
-		if o.hasWith && !oldMask.Contains(&o.withMask) {
-			continue
+		if o.matchesWithWithout(oldMask) {
+			o.callback(e)
 		}
-		if o.hasWithout && oldMask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		o.callback(e)
 	}
 }
 
@@ -540,14 +484,10 @@ func (m *observerManager) FireRemoveBatch(evt EventType, table *table, len int, 
 		if o.hasComps && (newMask.Contains(&o.compsMask) || !oldMask.ContainsAny(&o.compsMask)) {
 			continue
 		}
-		if o.hasWith && !oldMask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && oldMask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		for i := range len {
-			o.callback(table.GetEntity(uintptr(i)))
+		if o.matchesWithWithout(oldMask) {
+			for i := range len {
+				o.callback(table.GetEntity(uintptr(i)))
+			}
 		}
 	}
 }
@@ -561,16 +501,9 @@ func (m *observerManager) FireSet(e Entity, mask *bitMask, newMask *bitMask) {
 	}
 	observers := m.observers[OnSetComponents]
 	for _, o := range observers {
-		if o.hasComps && !mask.Contains(&o.compsMask) {
-			continue
+		if o.matches(mask, newMask) {
+			o.callback(e)
 		}
-		if o.hasWith && !newMask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && newMask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		o.callback(e)
 	}
 }
 
@@ -583,16 +516,9 @@ func (m *observerManager) FireSetRelations(evt EventType, e Entity, mask *bitMas
 	}
 	observers := m.observers[evt]
 	for _, o := range observers {
-		if o.hasComps && !mask.Contains(&o.compsMask) {
-			continue
+		if o.matches(mask, newMask) {
+			o.callback(e)
 		}
-		if o.hasWith && !newMask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && newMask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		o.callback(e)
 	}
 }
 
@@ -605,17 +531,10 @@ func (m *observerManager) FireSetRelationsBatch(evt EventType, table *table, sta
 	}
 	observers := m.observers[evt]
 	for _, o := range observers {
-		if o.hasComps && !mask.Contains(&o.compsMask) {
-			continue
-		}
-		if o.hasWith && !newMask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && newMask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		for i := start; i < end; i++ {
-			o.callback(table.GetEntity(uintptr(i)))
+		if o.matches(mask, newMask) {
+			for i := start; i < end; i++ {
+				o.callback(table.GetEntity(uintptr(i)))
+			}
 		}
 	}
 }
@@ -629,16 +548,9 @@ func (m *observerManager) FireCustom(evt EventType, e Entity, mask, entityMask *
 	}
 	observers := m.observers[evt]
 	for _, o := range observers {
-		if o.hasComps && !mask.Contains(&o.compsMask) {
-			continue
+		if o.matches(mask, entityMask) {
+			o.callback(e)
 		}
-		if o.hasWith && !entityMask.Contains(&o.withMask) {
-			continue
-		}
-		if o.hasWithout && entityMask.ContainsAny(&o.withoutMask) {
-			continue
-		}
-		o.callback(e)
 	}
 }
 
