@@ -255,11 +255,11 @@ func (s *storage) RemoveEntity(entity Entity) {
 		l := s.lock()
 		if hasEntityObs {
 			mask := &s.archetypes[table.archetype].mask
-			s.observers.FireRemoveEntity(entity, mask, true)
+			s.observers.FireRemoveEntity(entity, mask)
 		}
 		if hasRelationObs {
 			mask := &s.archetypes[table.archetype].mask
-			s.observers.FireRemoveEntityRel(entity, mask, true)
+			s.observers.FireRemoveEntityRel(entity, mask)
 		}
 		s.unlock(l)
 	}
@@ -544,28 +544,16 @@ func (s *storage) cleanupArchetypes(target Entity) {
 				s.slices.relations = allRelations[:0]
 
 				startIdx := newTable.Len()
-				oldLen := uintptr(table.len)
+				oldLen := int(table.len)
+
 				if hasRemRelObs {
-					earlyOut := true
-					for i := uintptr(0); i < oldLen; i++ {
-						if !s.observers.FireSetRelations(OnRemoveRelations, table.GetEntity(i), &changeMask, &archetype.mask, earlyOut) {
-							break
-						}
-						earlyOut = false
-					}
+					s.observers.FireSetRelationsBatch(OnRemoveRelations, table, 0, oldLen, &changeMask, &archetype.mask)
 				}
 
 				s.moveEntities(table, newTable, uint32(table.Len()))
 
 				if hasAddRelObs {
-					earlyOut := true
-					for i := range oldLen {
-						index := uintptr(startIdx) + i
-						if !s.observers.FireSetRelations(OnAddRelations, newTable.GetEntity(index), &changeMask, &archetype.mask, earlyOut) {
-							break
-						}
-						earlyOut = false
-					}
+					s.observers.FireSetRelationsBatch(OnAddRelations, newTable, startIdx, startIdx+oldLen, &changeMask, &archetype.mask)
 				}
 			}
 			archetype.FreeTable(table)

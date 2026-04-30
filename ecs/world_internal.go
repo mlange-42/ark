@@ -116,10 +116,10 @@ func (w *World) remove(entity Entity, rem []ID) {
 	if hasCompObs || hasRelObs {
 		l := w.lock()
 		if hasCompObs {
-			w.storage.observers.FireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
+			w.storage.observers.FireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask)
 		}
 		if hasRelObs {
-			w.storage.observers.FireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
+			w.storage.observers.FireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask)
 		}
 		w.unlock(l)
 	}
@@ -169,10 +169,10 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 		if hasCompObs || hasRelObs {
 			l := w.lock()
 			if hasCompObs {
-				w.storage.observers.FireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask, true)
+				w.storage.observers.FireRemove(OnRemoveComponents, entity, &oldArchetype.mask, &mask)
 			}
 			if hasRelObs {
-				w.storage.observers.FireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask, true)
+				w.storage.observers.FireRemove(OnRemoveRelations, entity, &oldArchetype.mask, &mask)
 			}
 			w.unlock(l)
 		}
@@ -238,14 +238,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 				table := &w.storage.tables[batch.oldTable]
 				oldMask := &w.storage.archetypes[table.archetype].mask
 				newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].archetype].mask
-				len := uintptr(batch.len)
-				earlyOut := true
-				for i := uintptr(0); i < len; i++ {
-					if !w.storage.observers.FireRemove(OnRemoveComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
-						break
-					}
-					earlyOut = false
-				}
+				w.storage.observers.FireRemoveBatch(OnRemoveComponents, table, int(batch.len), oldMask, newMask)
 			}
 		}
 		if relRemoved && w.storage.observers.HasObservers(OnRemoveRelations) {
@@ -253,14 +246,7 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 				table := &w.storage.tables[batch.oldTable]
 				oldMask := &w.storage.archetypes[table.archetype].mask
 				newMask := &w.storage.archetypes[w.storage.tables[batch.newTable].archetype].mask
-				len := uintptr(batch.len)
-				earlyOut := true
-				for i := uintptr(0); i < len; i++ {
-					if !w.storage.observers.FireRemove(OnRemoveRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
-						break
-					}
-					earlyOut = false
-				}
+				w.storage.observers.FireRemoveBatch(OnRemoveRelations, table, int(batch.len), oldMask, newMask)
 			}
 		}
 	}
@@ -282,14 +268,8 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 				table := &w.storage.tables[batch.newTable]
 				oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].archetype].mask
 				newMask := &w.storage.archetypes[table.archetype].mask
-				len := uintptr(batch.start + batch.len)
-				earlyOut := true
-				for i := uintptr(batch.start); i < len; i++ {
-					if !w.storage.observers.FireAdd(OnAddComponents, table.GetEntity(i), oldMask, newMask, earlyOut) {
-						break
-					}
-					earlyOut = false
-				}
+				len := batch.start + batch.len
+				w.storage.observers.FireAddBatch(OnAddComponents, table, batch.start, len, oldMask, newMask)
 			}
 		}
 		if len(relations) > 0 && w.storage.observers.HasObservers(OnAddRelations) {
@@ -297,14 +277,8 @@ func (w *World) exchangeBatch(batch *Batch, add []ID, rem []ID,
 				table := &w.storage.tables[batch.newTable]
 				oldMask := &w.storage.archetypes[w.storage.tables[batch.oldTable].archetype].mask
 				newMask := &w.storage.archetypes[table.archetype].mask
-				len := uintptr(batch.start + batch.len)
-				earlyOut := true
-				for i := uintptr(batch.start); i < len; i++ {
-					if !w.storage.observers.FireAdd(OnAddRelations, table.GetEntity(i), oldMask, newMask, earlyOut) {
-						break
-					}
-					earlyOut = false
-				}
+				len := batch.start + batch.len
+				w.storage.observers.FireAddBatch(OnAddRelations, table, batch.start, len, oldMask, newMask)
 			}
 		}
 	}
@@ -388,7 +362,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 	if w.storage.observers.HasObservers(OnRemoveRelations) {
 		lock := w.lock()
 		newMask := &w.storage.archetypes[newTable.archetype].mask
-		w.storage.observers.FireSetRelations(OnRemoveRelations, entity, &changeMask, newMask, true)
+		w.storage.observers.FireSetRelations(OnRemoveRelations, entity, &changeMask, newMask)
 		w.unlock(lock)
 	}
 
@@ -408,7 +382,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 
 	if w.storage.observers.HasObservers(OnAddRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
-		w.storage.observers.FireSetRelations(OnAddRelations, entity, &changeMask, newMask, true)
+		w.storage.observers.FireSetRelations(OnAddRelations, entity, &changeMask, newMask)
 	}
 }
 
@@ -472,14 +446,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 	// TODO: move this before the entire batch?
 	if w.storage.observers.HasObservers(OnRemoveRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
-		len := uintptr(oldTable.len)
-		earlyOut := true
-		for i := uintptr(0); i < len; i++ {
-			if !w.storage.observers.FireSetRelations(OnRemoveRelations, oldTable.GetEntity(i), &changeMask, newMask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		w.storage.observers.FireSetRelationsBatch(OnRemoveRelations, oldTable, 0, int(oldTable.len), &changeMask, newMask)
 	}
 
 	startIdx := newTable.Len()
@@ -492,14 +459,7 @@ func (w *World) setRelationsTable(oldTable *table, oldLen int, relations []relat
 	// TODO: move this after the entire batch?
 	if w.storage.observers.HasObservers(OnAddRelations) {
 		newMask := &w.storage.archetypes[newTable.archetype].mask
-		earlyOut := true
-		for i := range oldLen {
-			index := uintptr(startIdx + i)
-			if !w.storage.observers.FireSetRelations(OnAddRelations, newTable.GetEntity(index), &changeMask, newMask, earlyOut) {
-				break
-			}
-			earlyOut = false
-		}
+		w.storage.observers.FireSetRelationsBatch(OnAddRelations, newTable, startIdx, startIdx+oldLen, &changeMask, newMask)
 	}
 }
 
