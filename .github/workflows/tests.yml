@@ -15,7 +15,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '1.25.x'
+        go-version: '1.26.x'
     - name: Check out code
       uses: actions/checkout@v2
     - name: Install dependencies
@@ -43,7 +43,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '1.25.x'
+        go-version: '1.26.x'
     - name: Check out code
       uses: actions/checkout@v2
     - name: Install dependencies
@@ -61,7 +61,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '1.25.x'
+        go-version: '1.26.x'
     - name: Check out code
       uses: actions/checkout@v2
     - name: Install dependencies
@@ -80,7 +80,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.25.x'
+          go-version: '1.26.x'
       - name: Check format
         run: |
           if gofmt -e -l . >&1 | grep '^'; then
@@ -111,7 +111,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.25.x'
+          go-version: '1.26.x'
       - name: Install dependencies
         run: |
           go get .
@@ -130,7 +130,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.25.x'
+          go-version: '1.26.x'
       - name: Install dependencies
         run: go get .
       - name: Run examples
@@ -156,7 +156,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.25.x'
+          go-version: '1.26.x'
       - name: Install Ebiten dependencies
         run: sudo apt install -y gcc libc6-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev libasound2-dev pkg-config
       - name: Install dependencies
