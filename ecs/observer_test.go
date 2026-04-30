@@ -293,8 +293,10 @@ func TestObserverOnAddRemove(t *testing.T) {
 	builder3 := NewMap1[Heading](w)
 	ex := NewExchange1[Velocity](w).Removes(C[Position]())
 
-	filter1 := NewFilter1[Position](w)
-	filter2 := NewFilter1[Velocity](w)
+	filter0 := NewFilter0(w)
+	filterHead := NewFilter1[Heading](w)
+	filterPos := NewFilter1[Position](w)
+	filterVel := NewFilter1[Velocity](w)
 
 	callAdd := 0
 	callRemove := 0
@@ -331,22 +333,92 @@ func TestObserverOnAddRemove(t *testing.T) {
 	builder1.Remove(e)
 	expectEqual(t, 1, callRemove)
 
-	isBatch = true
-
-	builder2.NewBatch(10, &Velocity{})
-	builder1.AddBatch(filter2.Batch(), &Position{})
-	expectEqual(t, 11, callAdd)
-
-	builder1.RemoveBatch(filter1.Batch(), nil)
-	expectEqual(t, 11, callRemove)
-
 	e = builder1.NewEntity(&Position{})
-	expectEqual(t, 11, callAdd)
-	expectEqual(t, 11, callRemove)
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 1, callRemove)
 
 	ex.Exchange(e, &Velocity{})
-	expectEqual(t, 11, callAdd)
-	expectEqual(t, 12, callRemove)
+	expectEqual(t, 1, callAdd)
+	expectEqual(t, 2, callRemove)
+
+	w.RemoveEntities(filter0.Batch(), nil)
+
+	isBatch = true
+	callAdd, callRemove = 0, 0
+
+	w.NewEntities(10, nil)
+	builder3.AddBatch(filter0.Batch(), &Heading{})
+	expectEqual(t, 0, callAdd)
+	builder1.AddBatch(filterHead.Batch(), &Position{})
+	expectEqual(t, 10, callAdd)
+	builder2.AddBatch(filterPos.Batch(), &Velocity{})
+	expectEqual(t, 10, callAdd)
+
+	builder3.RemoveBatch(filterHead.Batch(), nil)
+	expectEqual(t, 0, callRemove)
+	builder2.RemoveBatch(filterVel.Batch(), nil)
+	expectEqual(t, 0, callRemove)
+	builder1.RemoveBatch(filterPos.Batch(), nil)
+	expectEqual(t, 10, callRemove)
+
+}
+
+func TestObserverOnAddRemoveBatchWith(t *testing.T) {
+	w := NewWorld()
+
+	builderPos := NewMap1[Position](w)
+	//builder2 := NewMap1[Velocity](w)
+	//builder3 := NewMap1[Heading](w)
+
+	filter0 := NewFilter0(w)
+
+	callAdd := 0
+	callRemove := 0
+
+	Observe(OnAddComponents).
+		For(C[Position]()).
+		With(C[Velocity]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callAdd++
+		}).
+		Register(w)
+
+	Observe(OnRemoveComponents).
+		For(C[Position]()).
+		With(C[Velocity]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callRemove++
+		}).
+		Register(w)
+
+	w.NewEntities(10, nil)
+	builderPos.AddBatch(filter0.Batch(), &Position{})
+	expectEqual(t, 0, callAdd)
+	builderPos.RemoveBatch(filter0.Batch(), nil)
+	expectEqual(t, 0, callRemove)
+
+	Observe(OnAddComponents).
+		For(C[Heading]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callAdd++
+		}).
+		Register(w)
+
+	Observe(OnRemoveComponents).
+		For(C[Heading]()).
+		Do(func(e Entity) {
+			expectTrue(t, w.IsLocked())
+			callRemove++
+		}).
+		Register(w)
+
+	builderPos.AddBatch(filter0.Batch(), &Position{})
+	expectEqual(t, 0, callAdd)
+	builderPos.RemoveBatch(filter0.Batch(), nil)
+	expectEqual(t, 0, callRemove)
 }
 
 func TestObserverOnSet(t *testing.T) {
