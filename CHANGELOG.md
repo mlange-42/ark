@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.8.1...main)
+
+### Documentation
+
+- Adds table-based query iteration to the user guide cheat sheet (#505)
+
 ## [[v0.8.1]](https://github.com/mlange-42/ark/compare/v0.8.0...v0.8.1)
 
 ### Performance

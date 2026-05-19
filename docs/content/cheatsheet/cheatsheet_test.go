@@ -159,6 +159,20 @@ func TestFilterQuery(t *testing.T) {
 	}
 }
 
+func TestFilterQueryTable(t *testing.T) {
+	filter := ecs.NewFilter2[Position, Velocity](world)
+
+	query := filter.Query()
+	for query.NextTable() {
+		positions, velocities := query.GetColumns()
+		for i := range positions {
+			pos, vel := &positions[i], &velocities[i]
+			pos.X += vel.X
+			pos.Y += vel.Y
+		}
+	}
+}
+
 func TestFilterWith(t *testing.T) {
 	filter := ecs.NewFilter2[Position, Velocity](world).
 		With(ecs.C[Altitude]())
