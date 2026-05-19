@@ -130,6 +130,12 @@ Always create a new query before iterating.
 API: {{< api ecs Filter1 >}}, {{< api ecs Filter2 >}}, ..., {{< api ecs Filter2.Query >}}, {{< api ecs Query2.Next >}}, {{< api ecs Query2.Get >}}
 {{% /details %}}
 
+{{% details closed="true" group="queries" title="🔍 Even faster **table-based iteration**" %}}
+Using this kind of nested loop, iteration is two times faster.
+{{< code-func cheatsheet_test.go TestFilterQueryTable >}}
+API: {{< api ecs Filter1 >}}, {{< api ecs Filter2 >}}, ..., {{< api ecs Filter2.Query >}}, {{< api ecs Query2.NextTable >}}, {{< api ecs Query2.GetColumns >}}
+{{% /details %}}
+
 {{% details closed="true" group="queries" title="🔍 Filters can match **additional components**" %}}
 For components the entities should have, but that are not accessed in the query.
 {{< code-func cheatsheet_test.go TestFilterWith >}}
