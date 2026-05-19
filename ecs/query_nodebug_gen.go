@@ -18,6 +18,7 @@ func (q *Query0) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+// Use [Query0.GetColumns] to get the current table's component columns.
 //
 // For alternative iteration over entities, use [Query0.Next].
 func (q *Query0) NextTable() bool {
@@ -50,6 +51,7 @@ func (q *Query1[A]) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+// Use [Query1.GetColumns] to get the current table's component columns.
 //
 // For alternative iteration over entities, use [Query1.Next].
 func (q *Query1[A]) NextTable() bool {
@@ -97,6 +99,7 @@ func (q *Query2[A, B]) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+// Use [Query2.GetColumns] to get the current table's component columns.
 //
 // For alternative iteration over entities, use [Query2.Next].
 func (q *Query2[A, B]) NextTable() bool {
@@ -146,6 +149,7 @@ func (q *Query3[A, B, C]) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+// Use [Query3.GetColumns] to get the current table's component columns.
 //
 // For alternative iteration over entities, use [Query3.Next].
 func (q *Query3[A, B, C]) NextTable() bool {
@@ -197,6 +201,7 @@ func (q *Query4[A, B, C, D]) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+// Use [Query4.GetColumns] to get the current table's component columns.
 //
 // For alternative iteration over entities, use [Query4.Next].
 func (q *Query4[A, B, C, D]) NextTable() bool {
@@ -250,6 +255,7 @@ func (q *Query5[A, B, C, D, E]) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+// Use [Query5.GetColumns] to get the current table's component columns.
 //
 // For alternative iteration over entities, use [Query5.Next].
 func (q *Query5[A, B, C, D, E]) NextTable() bool {
@@ -305,6 +311,7 @@ func (q *Query6[A, B, C, D, E, F]) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+// Use [Query6.GetColumns] to get the current table's component columns.
 //
 // For alternative iteration over entities, use [Query6.Next].
 func (q *Query6[A, B, C, D, E, F]) NextTable() bool {
@@ -362,6 +369,7 @@ func (q *Query7[A, B, C, D, E, F, G]) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+// Use [Query7.GetColumns] to get the current table's component columns.
 //
 // For alternative iteration over entities, use [Query7.Next].
 func (q *Query7[A, B, C, D, E, F, G]) NextTable() bool {
@@ -421,6 +429,7 @@ func (q *Query8[A, B, C, D, E, F, G, H]) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+// Use [Query8.GetColumns] to get the current table's component columns.
 //
 // For alternative iteration over entities, use [Query8.Next].
 func (q *Query8[A, B, C, D, E, F, G, H]) NextTable() bool {
