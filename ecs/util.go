@@ -131,6 +131,7 @@ func isTrivial(tp reflect.Type) bool {
 
 	// Check if the type itself is a pointer, slice, map, or channel
 	switch tp.Kind() {
+	//nolint:govet
 	case reflect.Ptr, reflect.Slice, reflect.Map, reflect.Chan, reflect.Interface, reflect.String:
 		return false
 	}
