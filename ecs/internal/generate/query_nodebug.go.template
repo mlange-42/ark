@@ -31,6 +31,7 @@ func (q *Query{{.}}{{$genericsShort}}) Next() bool {
 }
 
 // NextTable advances the query's cursor to the next table.
+// Use [Query{{.}}.GetColumns] to get the current table's component columns.
 //
 // For alternative iteration over entities, use [Query{{.}}.Next].
 func (q *Query{{.}}{{$genericsShort}}) NextTable() bool {
