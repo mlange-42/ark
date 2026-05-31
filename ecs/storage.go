@@ -160,15 +160,19 @@ func (s *storage) findOrCreateTable(oldTable *table, add []ID, remove []ID, rela
 }
 
 // findOrCreateTable finds or creates the table resulting from a given table and component additions.
-func (s *storage) findOrCreateTableAdd(oldTable *table, add []ID, relations []relationID, outMask *bitMask) (*table, *archetype) {
+func (s *storage) findOrCreateTableAdd(oldTable *table, add []ID, relations []relationID, outMask *bitMask, archetypeID archetypeID) (*table, *archetype) {
 	startNode := s.archetypes[oldTable.archetype].node
 
-	node := s.graph.FindAdd(startNode, add, outMask)
 	var arch *archetype
-	if archID, ok := node.GetArchetype(); ok {
-		arch = &s.archetypes[archID]
+	if archetypeID > 0 {
+		arch = &s.archetypes[archetypeID]
 	} else {
-		arch = s.createArchetype(node)
+		node := s.graph.FindAdd(startNode, add, outMask)
+		if archID, ok := node.GetArchetype(); ok {
+			arch = &s.archetypes[archID]
+		} else {
+			arch = s.createArchetype(node)
+		}
 	}
 
 	allRelations := s.slices.relations

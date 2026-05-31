@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.8.2...main)
+
+### Performance
+
+- Caches archetype index, speeding up entity creation by 20-50% (#509) 
+
 ## [[v0.8.2]](https://github.com/mlange-42/ark/compare/v0.8.1...v0.8.2)
 
 ### Documentation
