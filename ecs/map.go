@@ -11,6 +11,7 @@ type Map[T any] struct {
 	relations []relationID
 	id        ID
 	ids       [1]ID
+	archetype archetypeID
 }
 
 // NewMap creates a new [Map].
@@ -52,7 +53,8 @@ func (m *Map[T]) NewEntity(comp *T, target ...Entity) Entity {
 // ⚠️ Do not store the obtained pointer outside of the current context!
 func (m *Map[T]) NewEntityFn(fn func(*T), target ...Entity) Entity {
 	m.relations = relationEntities(target).ToRelation(m.world, m.id, m.relations)
-	entity, mask := m.world.newEntity(m.ids[:], m.relations)
+	entity, mask, arch := m.world.newEntity(m.ids[:], m.relations, m.archetype)
+	m.archetype = arch
 	if fn != nil {
 		fn(m.GetUnchecked(entity))
 	}
@@ -83,7 +85,8 @@ func (m *Map[T]) NewBatch(count int, comp *T, target ...Entity) {
 func (m *Map[T]) NewBatchFn(count int, fn func(Entity, *T), target ...Entity) {
 	m.world.checkLocked()
 	m.relations = relationEntities(target).ToRelation(m.world, m.id, m.relations)
-	tableID, start := m.world.newEntities(count, m.ids[:], m.relations)
+	tableID, start, arch := m.world.newEntities(count, m.ids[:], m.relations, m.archetype)
+	m.archetype = arch
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(target) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)

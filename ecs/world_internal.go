@@ -14,11 +14,11 @@ type batchTable struct {
 
 // newEntity creates a new entity.
 // Returns the entity and its bit.mask.
-func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
+func (w *World) newEntity(ids []ID, relations []relationID, archetypeID archetypeID) (Entity, *bitMask, archetypeID) {
 	w.checkLocked()
 	s := &w.storage
 	mask := bitMask{}
-	newTable, newArch := s.findOrCreateTableAdd(&s.tables[0], ids, relations, &mask)
+	newTable, newArch := s.findOrCreateTableAdd(&s.tables[0], ids, relations, &mask, archetypeID)
 
 	entity := s.entityPool.Get()
 	idx := s.tables[newTable.id].Add(entity)
@@ -31,18 +31,18 @@ func (w *World) newEntity(ids []ID, relations []relationID) (Entity, *bitMask) {
 
 	w.storage.registerTargets(relations)
 
-	return entity, &newArch.mask
+	return entity, &newArch.mask, newArch.id
 }
 
 // newEntities creates multiple new entities.
 // Returns the table containing the entities, and their start index in the table.
-func (w *World) newEntities(count int, ids []ID, relations []relationID) (tableID, int) {
+func (w *World) newEntities(count int, ids []ID, relations []relationID, archetypeID archetypeID) (tableID, int, archetypeID) {
 	mask := bitMask{}
-	newTable, _ := w.storage.findOrCreateTableAdd(&w.storage.tables[0], ids, relations, &mask)
+	newTable, newArch := w.storage.findOrCreateTableAdd(&w.storage.tables[0], ids, relations, &mask, archetypeID)
 	startIdx := newTable.Len()
 	w.storage.createEntities(newTable, count)
 	w.storage.registerTargets(relations)
-	return newTable.id, startIdx
+	return newTable.id, startIdx, newArch.id
 }
 
 // add components to an entity.
@@ -62,7 +62,7 @@ func (w *World) add(entity Entity, add []ID, relations []relationID) (*bitMask, 
 	oldArchetype := &w.storage.archetypes[oldTable.archetype]
 
 	mask := oldArchetype.mask
-	newTable, newArch := w.storage.findOrCreateTableAdd(oldTable, add, relations, &mask)
+	newTable, newArch := w.storage.findOrCreateTableAdd(oldTable, add, relations, &mask, 0)
 	newIndex := newTable.Add(entity)
 
 	// Get the old table and archetype again, as the pointer may have changed.

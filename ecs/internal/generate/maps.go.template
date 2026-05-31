@@ -31,6 +31,7 @@ type Map{{.}}{{$generics}} struct {
 	{{- range $upper}}
 	storage{{.}}  *componentStorage
 	{{- end}}
+	archetype  archetypeID
 }
 
 // New creates a new [Map{{.}}]. It is safe to call on `nil` instance.
@@ -83,7 +84,9 @@ func (m *Map{{.}}{{$genericsShort}}) NewEntity({{$args}}, rel ...Relation) Entit
 // ⚠️ Do not store the obtained pointers outside of the current context!
 func (m *Map{{.}}{{$genericsShort}}) NewEntityFn(fn func({{$fn_args}}), rel ...Relation) Entity {
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	entity, mask := m.world.newEntity(m.ids, m.relations)
+	entity, mask, arch := m.world.newEntity(m.ids, m.relations, m.archetype)
+	m.archetype = arch
+
 	if fn != nil {
 		index := &m.world.storage.entities[entity.id]
 		row := uintptr(index.row)
@@ -122,7 +125,8 @@ func (m *Map{{.}}{{$genericsShort}}) NewBatch(count int, {{$args}}, rel ...Relat
 func (m *Map{{.}}{{$genericsShort}}) NewBatchFn(count int, fn func(Entity, {{$fn_args}}), rel ...Relation) {
 	m.world.checkLocked()
 	m.relations = relationSlice(rel).ToRelations(m.world, &m.mask, m.ids, m.relations[:0], false)
-	tableID, start := m.world.newEntities(count, m.ids, m.relations)
+	tableID, start, arch := m.world.newEntities(count, m.ids, m.relations, m.archetype)
+	m.archetype = arch
 
 	hasCreateObs := m.world.storage.observers.HasObservers(OnCreateEntity)
 	hasRelObs := len(rel) > 0 && m.world.storage.observers.HasObservers(OnAddRelations)

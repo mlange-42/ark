@@ -42,7 +42,7 @@ func (w *World) NewEntity() Entity {
 // The callback function can be nil.
 func (w *World) NewEntities(count int, fn func(entity Entity)) {
 	w.checkLocked()
-	tableID, start := w.newEntities(count, nil, nil)
+	tableID, start, _ := w.newEntities(count, nil, nil, 0)
 
 	hasObs := w.storage.observers.HasObservers(OnCreateEntity)
 	shouldLock := hasObs || fn != nil
