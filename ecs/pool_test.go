@@ -157,3 +157,14 @@ func TestIntPool(t *testing.T) {
 		p.Reset()
 	}
 }
+
+func BenchmarkBitPool(b *testing.B) {
+	p := newBitPool()
+
+	var l uint8
+	for b.Loop() {
+		l = p.Get()
+		p.Recycle(l)
+	}
+	_ = l
+}

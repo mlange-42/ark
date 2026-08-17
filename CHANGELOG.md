@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.8.3...main)
+
+### Performance
+
+- Optimizes and simplifies the world lock bit pool (#511) 
+
 ## [[v0.8.3]](https://github.com/mlange-42/ark/compare/v0.8.2...v0.8.3)
 
 ### Performance
