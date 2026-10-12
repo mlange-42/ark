@@ -47,7 +47,7 @@ params:
     logo:
       path: images/logo-light.svg
       dark: images/logo-dark.svg
-      link: /ark
+      link: /
       width: 140
 
 markup:
