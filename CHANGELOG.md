@@ -1,10 +1,14 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/ark/compare/v0.8.3...main)
+## [[v0.8.4]](https://github.com/mlange-42/ark/compare/v0.8.3...v0.8.4)
 
 ### Performance
 
-- Optimizes and simplifies the world lock bit pool (#511) 
+- Optimizes and simplifies the world lock bit pool (#511)
+
+### Documentation
+
+- User guide moved to [ark.mlange.dev](https://ark.mlange.dev) (#515)
 
 ## [[v0.8.3]](https://github.com/mlange-42/ark/compare/v0.8.2...v0.8.3)
 
