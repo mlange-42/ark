@@ -6,3 +6,4 @@
 *.svg
 .hugo_build.lock
 /docs/public/
+!docs/static/*.png
