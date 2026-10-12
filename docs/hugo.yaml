@@ -1,4 +1,4 @@
-baseURL: https://mlange-42.github.io/ark/
+baseURL: https://ark.mlange.dev/
 languageCode: en-us
 title: Ark
 description: Ark is an archetype-based Entity Component System (ECS) for Go.
@@ -33,7 +33,7 @@ params:
   apiURL: https://pkg.go.dev/github.com/mlange-42/ark/
   repoURL: https://github.com/mlange-42/ark/
   images:
-    - https://mlange-42.github.io/ark/images/social.png
+    - https://ark.mlange.dev/images/social.png
 
   search:
     enable: true

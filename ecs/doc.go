@@ -61,6 +61,6 @@
 //	go build -tags ark_tiny,ark_debug .
 //
 // [ark-serde]: https://github.com/mlange-42/ark-serde/
-// [User Guide]: https://mlange-42.github.io/ark/
+// [User Guide]: https://ark.mlange.dev/
 // [examples]: https://github.com/mlange-42/ark/tree/main/examples
 package ecs

@@ -10,7 +10,7 @@
 [![Test status](https://img.shields.io/github/actions/workflow/status/mlange-42/ark/tests.yml?branch=main&label=Tests&logo=github)](https://github.com/mlange-42/ark/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/github/mlange-42/ark/graph/badge.svg?token=YMYMFN2ESZ)](https://codecov.io/github/mlange-42/ark)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mlange-42/ark)](https://goreportcard.com/report/github.com/mlange-42/ark)
-[![User Guide](https://img.shields.io/badge/user_guide-%23007D9C?logo=go&logoColor=white&labelColor=gray)](https://mlange-42.github.io/ark/)
+[![User Guide](https://img.shields.io/badge/user_guide-%23007D9C?logo=go&logoColor=white&labelColor=gray)](https://ark.mlange.dev/)
 [![Go Reference](https://img.shields.io/badge/reference-%23007D9C?logo=go&logoColor=white&labelColor=gray)](https://pkg.go.dev/github.com/mlange-42/ark)
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/ark)
 [![DOI:10.5281/zenodo.14994239](https://img.shields.io/badge/10.5281%2Fzenodo.14994239-blue?label=doi)](https://doi.org/10.5281/zenodo.14994239)
@@ -27,11 +27,11 @@ Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wik
 
 ## Features
 
-- Designed for performance and highly optimized. See the [Benchmarks](https://mlange-42.github.io/ark/benchmarks/).
-- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/ark), and a comprehensive [User guide](https://mlange-42.github.io/ark/).
-- [Entity relationships](https://mlange-42.github.io/ark/relations/) as a first-class feature.
-- Extensible [event system](https://mlange-42.github.io/ark/events/) with filtering and custom event types.
-- Fast [batch operations](https://mlange-42.github.io/ark/batch/) for mass manipulation.
+- Designed for performance and highly optimized. See the [Benchmarks](https://ark.mlange.dev/benchmarks/).
+- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/ark), and a comprehensive [User guide](https://ark.mlange.dev/).
+- [Entity relationships](https://ark.mlange.dev/relations/) as a first-class feature.
+- Extensible [event system](https://ark.mlange.dev/events/) with filtering and custom event types.
+- Fast [batch operations](https://ark.mlange.dev/batch/) for mass manipulation.
 - No systems. Just queries. Use your own structure (or the [Tools](https://github.com/mlange-42/ark#tools)).
 - World serialization and deserialization with [ark-serde](https://github.com/mlange-42/ark-serde).
 - Zero [dependencies](https://github.com/mlange-42/ark/blob/main/go.mod), 100% [test coverage](https://app.codecov.io/github/mlange-42/ark).
@@ -48,7 +48,7 @@ go get github.com/mlange-42/ark
 
 Below is the classical Position/Velocity example that every ECS shows in the docs.
 
-See the [User Guide](https://mlange-42.github.io/ark/), [API docs](https://pkg.go.dev/github.com/mlange-42/ark) and [examples](https://github.com/mlange-42/ark/tree/main/examples) for details.
+See the [User Guide](https://ark.mlange.dev/), [API docs](https://pkg.go.dev/github.com/mlange-42/ark) and [examples](https://github.com/mlange-42/ark/tree/main/examples) for details.
 
 ```go
 package main

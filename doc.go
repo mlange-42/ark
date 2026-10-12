@@ -4,6 +4,6 @@
 //
 // 🕮 Also read Ark's [User Guide] and take a look at the [examples]!
 //
-// [User Guide]: https://mlange-42.github.io/ark/
+// [User Guide]: https://ark.mlange.dev/
 // [examples]: https://github.com/mlange-42/ark/tree/main/examples
 package ark
