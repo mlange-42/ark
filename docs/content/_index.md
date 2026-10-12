@@ -20,7 +20,7 @@ next = "/overview"
 <a href="https://goreportcard.com/report/github.com/mlange-42/ark" style="display:inline-block">
 <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/mlange-42/ark" style="margin:0;"></img></a>
 
-<a href="https://mlange-42.github.io/ark/" style="display:inline-block">
+<a href="https://ark.mlange.dev/" style="display:inline-block">
 <img alt="User Guide" src="https://img.shields.io/badge/user_guide-%23007D9C?logo=go&logoColor=white&labelColor=gray" style="margin:0;"></img></a>
 
 <a href="https://pkg.go.dev/github.com/mlange-42/ark" style="display:inline-block">
@@ -47,11 +47,11 @@ Ark is an archetype-based [Entity Component System](https://en.wikipedia.org/wik
 
 ## Ark's Features
 
-- Designed for performance and highly optimized. See the [Benchmarks](https://mlange-42.github.io/ark/benchmarks/).
-- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/ark), and a comprehensive [User guide](https://mlange-42.github.io/ark/).
-- [Entity relationships](https://mlange-42.github.io/ark/relations/) as a first-class feature.
-- Extensible [event system](https://mlange-42.github.io/ark/events/) with filtering and custom event types.
-- Fast [batch operations](https://mlange-42.github.io/ark/batch/) for mass manipulation.
+- Designed for performance and highly optimized. See the [Benchmarks](https://ark.mlange.dev/benchmarks/).
+- Well-documented, type-safe [API](https://pkg.go.dev/github.com/mlange-42/ark), and a comprehensive [User guide](https://ark.mlange.dev/).
+- [Entity relationships](https://ark.mlange.dev/relations/) as a first-class feature.
+- Extensible [event system](https://ark.mlange.dev/events/) with filtering and custom event types.
+- Fast [batch operations](https://ark.mlange.dev/batch/) for mass manipulation.
 - No systems. Just queries. Use your own structure (or the [Tools](https://github.com/mlange-42/ark#tools)).
 - World serialization and deserialization with [ark-serde](https://github.com/mlange-42/ark-serde).
 - Zero [dependencies](https://github.com/mlange-42/ark/blob/main/go.mod), 100% [test coverage](https://app.codecov.io/github/mlange-42/ark).

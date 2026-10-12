@@ -8,7 +8,7 @@ Ark is an archetype-based Entity Component System (ECS) for Go.
 - `/ecs/generate`: Code generation templates for component mappers and filters, for internal use only.
 - `/ecs/stats`: Structs representing world statistics.
 - `/examples`: Stand-alone example programs demonstrating various features of Ark.
-- `/docs`: Source files for the user guide at https://mlange-42.github.io/ark/, using Hugo.
+- `/docs`: Source files for the user guide at https://ark.mlange.dev/, using Hugo.
 - `/benchmark`: Benchmark tests for performance evaluation.
 
 ## Code guidelines
