@@ -17,9 +17,6 @@ next = "/overview"
  <img alt="Coverage Status" src="https://codecov.io/github/mlange-42/ark/graph/badge.svg?token=YMYMFN2ESZ" style="margin:0;"/> 
 </a>
 
-<a href="https://goreportcard.com/report/github.com/mlange-42/ark" style="display:inline-block">
-<img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/mlange-42/ark" style="margin:0;"></img></a>
-
 <a href="https://ark.mlange.dev/" style="display:inline-block">
 <img alt="User Guide" src="https://img.shields.io/badge/user_guide-%23007D9C?logo=go&logoColor=white&labelColor=gray" style="margin:0;"></img></a>
 
