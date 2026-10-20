@@ -1,6 +1,7 @@
 package ecs
 
 import (
+	"math"
 	"reflect"
 	"testing"
 	"unsafe"
@@ -52,6 +53,24 @@ func TestCopyPtr(t *testing.T) {
 			expectEqual(t, itemType(0), *getItem(i))
 		}
 	}
+}
+
+func TestCopyPtrLarge(t *testing.T) {
+	if testing.Short() {
+		t.Skip("allocates more than 2 GiB")
+	}
+
+	// Copy more than math.MaxInt32 bytes, as when a table column grows beyond 2 GiB.
+	// Source and destination overlap by all but one byte, so one buffer is enough.
+	size := uintptr(math.MaxInt32) + 1
+	buffer := make([]byte, size+1)
+	buffer[0] = 3
+	buffer[size-1] = 7
+
+	copyPtr(unsafe.Pointer(&buffer[0]), unsafe.Pointer(&buffer[1]), size)
+
+	expectEqual(t, byte(3), buffer[1])
+	expectEqual(t, byte(7), buffer[size])
 }
 
 func TestIsTrivial(t *testing.T) {

@@ -1,7 +1,6 @@
 package ecs
 
 import (
-	"math"
 	"reflect"
 	"unsafe"
 )
@@ -36,8 +35,8 @@ func get[T any](storage *componentStorage, index *entityIndex) *T {
 // copyPtr copies from one pointer to another.
 // This is not GC-safe. Use only for trivial/value types.
 func copyPtr(src, dst unsafe.Pointer, itemSize uintptr) {
-	dstSlice := (*[math.MaxInt32]byte)(dst)[:itemSize:itemSize]
-	srcSlice := (*[math.MaxInt32]byte)(src)[:itemSize:itemSize]
+	dstSlice := unsafe.Slice((*byte)(dst), itemSize)
+	srcSlice := unsafe.Slice((*byte)(src), itemSize)
 	copy(dstSlice, srcSlice)
 }
 
