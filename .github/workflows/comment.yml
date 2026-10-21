@@ -1,0 +1,64 @@
+name: Comment benchmarks
+
+# Runs in the context of the base repository after "Compare benchmarks" completed,
+# so that it has write access to pull requests also for PRs from forks.
+# Do not check out or run any PR code here!
+
+on:
+  workflow_run:
+    workflows: [Compare benchmarks]
+    types: [completed]
+
+permissions:
+  actions: read
+  pull-requests: write
+
+jobs:
+  comment:
+    name: Comment on PR
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: compare_html
+          path: results
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare comment
+        id: prepare
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          pr=$(cat results/pr_number)
+          if ! [[ "$pr" =~ ^[0-9]+$ ]]; then
+            echo "::error::Invalid PR number"
+            exit 1
+          fi
+          # The artifact comes from untrusted code, so verify that the PR matches the run.
+          sha=$(gh api "repos/$REPO/pulls/$pr" --jq .head.sha)
+          if [ "$sha" != "$HEAD_SHA" ]; then
+            echo "::notice::PR #$pr head ($sha) does not match run ($HEAD_SHA), skipping"
+            exit 0
+          fi
+          { echo '<!-- benchmark-results -->'; cat results/compare.html; } > comment.md
+          echo "pr=$pr" >> "$GITHUB_OUTPUT"
+      - name: Find comment
+        if: steps.prepare.outputs.pr
+        uses: peter-evans/find-comment@v4
+        id: find-comment
+        with:
+          issue-number: ${{ steps.prepare.outputs.pr }}
+          body-includes: '<!-- benchmark-results -->'
+      - name: Comment on PR
+        if: steps.prepare.outputs.pr
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.prepare.outputs.pr }}
+          body-path: comment.md
+          edit-mode: replace
