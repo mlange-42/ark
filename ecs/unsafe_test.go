@@ -211,6 +211,18 @@ func TestUnsafeEntityDump(t *testing.T) {
 	query.Close()
 }
 
+func TestUnsafeEntityDumpNoEntities(t *testing.T) {
+	w := NewWorld(1024)
+	w.Unsafe().LoadEntities(&EntityDump{})
+
+	e := w.NewEntity()
+	expectTrue(t, w.Alive(e))
+
+	query := NewUnsafeFilter(w).Query()
+	expectEqual(t, 1, query.Count())
+	query.Close()
+}
+
 func TestUnsafeEntityDumpEmpty(t *testing.T) {
 	w := NewWorld(1024)
 
