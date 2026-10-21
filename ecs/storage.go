@@ -246,9 +246,10 @@ func (s *storage) AddComponent(id uint8) {
 	s.componentIndex = append(s.componentIndex, []archetypeID{})
 }
 
-// isAlive returns whether the given entity is alive.
+// isAlive returns whether the given entity is alive, based on the generation in the entity index.
+// Reads the index entry without bounds check.
 func (s *storage) isAlive(entity Entity) bool {
-	return s.entityPool.Alive(s.entities, entity)
+	return entity.gen == (*entityIndex)(unsafe.Add(unsafe.Pointer(unsafe.SliceData(s.entities)), entityIndexSize*uintptr(entity.id))).gen
 }
 
 // getEntity returns a fresh or recycled entity, with entries in the entity index and the target flags.

@@ -2,7 +2,6 @@ package ecs
 
 import (
 	"fmt"
-	"unsafe"
 )
 
 type number interface {
@@ -63,12 +62,6 @@ func (p *entityPool) Recycle(entities []entityIndex, e Entity) {
 func (p *entityPool) Reset() {
 	p.next = 0
 	p.available = 0
-}
-
-// Alive returns whether an entity is still alive, based on the entity's generations.
-// Reads the index entry without bounds check.
-func (p *entityPool) Alive(entities []entityIndex, e Entity) bool {
-	return e.gen == (*entityIndex)(unsafe.Add(unsafe.Pointer(unsafe.SliceData(entities)), entityIndexSize*uintptr(e.id))).gen
 }
 
 // Len returns the current number of used entities.
