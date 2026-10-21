@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"fmt"
+	"unsafe"
 )
 
 type number interface {
@@ -65,10 +66,9 @@ func (p *entityPool) Reset() {
 }
 
 // Alive returns whether an entity is still alive, based on the entity's generations.
-// Entities with an ID beyond the used entities are not alive,
-// for example entities from before [World.Reset].
+// Reads the index entry without bounds check.
 func (p *entityPool) Alive(entities []entityIndex, e Entity) bool {
-	return int(e.id) < len(entities) && e.gen == entities[e.id].gen
+	return e.gen == (*entityIndex)(unsafe.Add(unsafe.Pointer(unsafe.SliceData(entities)), entityIndexSize*uintptr(e.id))).gen
 }
 
 // Len returns the current number of used entities.
