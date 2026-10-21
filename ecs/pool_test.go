@@ -15,6 +15,11 @@ func newTestEntityIndex(capacity int) []entityIndex {
 	return entities
 }
 
+// testAlive returns whether the entity is alive, as storage.isAlive does.
+func testAlive(entities []entityIndex, e Entity) bool {
+	return entities[e.id].gen == e.gen
+}
+
 func TestEntityPoolConstructor(t *testing.T) {
 	_ = newEntityPool(reservedEntities)
 }
@@ -35,13 +40,13 @@ func TestEntityPool(t *testing.T) {
 
 	e0 := created[0]
 	p.Recycle(entities, e0)
-	expectFalse(t, p.Alive(entities, e0), "Dead entity should not be alive")
+	expectFalse(t, testAlive(entities, e0), "Dead entity should not be alive")
 
 	e0Old := e0
 	e0 = p.Get(&entities)
 	expectEqual(t, Entity{e0Old.id, 1}, e0, "Recycled entity should have the same ID and the next generation")
-	expectTrue(t, p.Alive(entities, e0), "Recycled entity of new generation should be alive")
-	expectFalse(t, p.Alive(entities, e0Old), "Recycled entity of old generation should not be alive")
+	expectTrue(t, testAlive(entities, e0), "Recycled entity of new generation should be alive")
+	expectFalse(t, testAlive(entities, e0Old), "Recycled entity of old generation should not be alive")
 	expectEqual(t, 7, len(entities), "Recycling should not grow the entity index")
 
 	p.Recycle(entities, e0)
@@ -54,7 +59,7 @@ func TestEntityPool(t *testing.T) {
 	expectEqual(t, 5, p.Available())
 	expectEqual(t, 130, cap(entities))
 
-	expectFalse(t, p.Alive(entities, e0Old), "Recycled entity of old generation should not be alive")
+	expectFalse(t, testAlive(entities, e0Old), "Recycled entity of old generation should not be alive")
 
 	for range 5 {
 		_ = p.Get(&entities)
@@ -62,9 +67,9 @@ func TestEntityPool(t *testing.T) {
 
 	expectEqual(t, 5, p.Len(entities))
 	expectEqual(t, 0, p.Available())
-	expectFalse(t, p.Alive(entities, e0Old), "Recycled entity of old generation should not be alive")
-	expectFalse(t, p.Alive(entities, Entity{}), "Zero entity should not be alive")
-	expectFalse(t, p.Alive(entities, Entity{1, 0}), "Wildcard entity should not be alive")
+	expectFalse(t, testAlive(entities, e0Old), "Recycled entity of old generation should not be alive")
+	expectFalse(t, testAlive(entities, Entity{}), "Zero entity should not be alive")
+	expectFalse(t, testAlive(entities, Entity{1, 0}), "Wildcard entity should not be alive")
 }
 
 func TestEntityPoolStochastic(t *testing.T) {
@@ -85,7 +90,7 @@ func TestEntityPoolStochastic(t *testing.T) {
 		}
 
 		for e, isAlive := range alive {
-			expectEqual(t, isAlive, p.Alive(entities, e), "Wrong alive state of entity %v after initialization", e)
+			expectEqual(t, isAlive, testAlive(entities, e), "Wrong alive state of entity %v after initialization", e)
 			if rand.Float32() > 0.75 {
 				continue
 			}
@@ -93,14 +98,14 @@ func TestEntityPoolStochastic(t *testing.T) {
 			alive[e] = false
 		}
 		for e, isAlive := range alive {
-			expectEqual(t, isAlive, p.Alive(entities, e), "Wrong alive state of entity %v after 1st removal. Entity is %v", e, entities[e.id])
+			expectEqual(t, isAlive, testAlive(entities, e), "Wrong alive state of entity %v after 1st removal. Entity is %v", e, entities[e.id])
 		}
 		for range n {
 			e := p.Get(&entities)
 			alive[e] = true
 		}
 		for e, isAlive := range alive {
-			expectEqual(t, isAlive, p.Alive(entities, e), "Wrong alive state of entity %v after 1st recycling. Entity is %v", e, entities[e.id])
+			expectEqual(t, isAlive, testAlive(entities, e), "Wrong alive state of entity %v after 1st recycling. Entity is %v", e, entities[e.id])
 		}
 		expectEqual(t, uint32(0), p.available, "No more entities should be available")
 
@@ -112,7 +117,7 @@ func TestEntityPoolStochastic(t *testing.T) {
 			alive[e] = false
 		}
 		for e, a := range alive {
-			expectEqual(t, a, p.Alive(entities, e), "Wrong alive state of entity %v after 2nd removal. Entity is %v", e, entities[e.id])
+			expectEqual(t, a, testAlive(entities, e), "Wrong alive state of entity %v after 2nd removal. Entity is %v", e, entities[e.id])
 		}
 	}
 }
