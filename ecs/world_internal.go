@@ -20,14 +20,9 @@ func (w *World) newEntity(ids []ID, relations []relationID, archetypeID archetyp
 	mask := bitMask{}
 	newTable, newArch := s.findOrCreateTableAdd(&s.tables[0], ids, relations, &mask, archetypeID)
 
-	entity := s.entityPool.Get()
+	entity := s.getEntity()
 	idx := s.tables[newTable.id].Add(entity)
-	if int(entity.id) == len(s.entities) {
-		s.entities = append(s.entities, entityIndex{table: newTable.id, row: idx})
-		s.isTarget = append(s.isTarget, false)
-	} else {
-		s.entities[entity.id] = entityIndex{table: newTable.id, row: idx}
-	}
+	s.entities[entity.id] = entityIndex{table: newTable.id, row: idx, gen: entity.gen}
 
 	w.storage.registerTargets(relations)
 
@@ -81,7 +76,7 @@ func (w *World) add(entity Entity, add []ID, relations []relationID) (*bitMask, 
 		swapEntity := oldTable.GetEntity(uintptr(index.row))
 		w.storage.entities[swapEntity.id].row = index.row
 	}
-	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex, gen: entity.gen}
 
 	w.storage.registerTargets(relations)
 
@@ -136,7 +131,7 @@ func (w *World) remove(entity Entity, rem []ID) {
 		swapEntity := oldTable.GetEntity(uintptr(index.row))
 		w.storage.entities[swapEntity.id].row = index.row
 	}
-	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex, gen: entity.gen}
 }
 
 // remove components on an entity.
@@ -190,7 +185,7 @@ func (w *World) exchange(entity Entity, add []ID, rem []ID, relations []relation
 		swapEntity := oldTable.GetEntity(uintptr(index.row))
 		w.storage.entities[swapEntity.id].row = index.row
 	}
-	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex, gen: entity.gen}
 
 	w.storage.registerTargets(relations)
 
@@ -330,7 +325,7 @@ func (w *World) exchangeTable(oldTableID, newTableID tableID, relations []relati
 func (w *World) setRelations(entity Entity, relations []relationID) {
 	w.checkLocked()
 
-	if !w.storage.entityPool.Alive(entity) {
+	if !w.storage.isAlive(entity) {
 		panic("can't set relation for a dead entity")
 	}
 	if len(relations) == 0 {
@@ -376,7 +371,7 @@ func (w *World) setRelations(entity Entity, relations []relationID) {
 		swapEntity := oldTable.GetEntity(uintptr(index.row))
 		w.storage.entities[swapEntity.id].row = index.row
 	}
-	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex}
+	w.storage.entities[entity.id] = entityIndex{table: newTable.id, row: newIndex, gen: entity.gen}
 
 	w.storage.registerTargets(relations)
 

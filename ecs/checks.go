@@ -9,7 +9,7 @@ func (s *storage) checkRelationComponent(id ID) {
 }
 
 func (s *storage) checkRelationTarget(target Entity) {
-	if !target.IsZero() && !s.entityPool.Alive(target) {
+	if !target.IsZero() && !s.isAlive(target) {
 		panic("can't use a dead entity as relation target, except for the zero entity")
 	}
 }

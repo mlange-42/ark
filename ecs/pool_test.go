@@ -6,89 +6,106 @@ import (
 	"testing"
 )
 
+// newTestEntityIndex returns an entity index with the reserved entities, as created by newStorage.
+func newTestEntityIndex(capacity int) []entityIndex {
+	entities := make([]entityIndex, reservedEntities, capacity+reservedEntities)
+	for i := range reservedEntities {
+		entities[i] = entityIndex{table: maxTableID, gen: math.MaxUint32}
+	}
+	return entities
+}
+
+// testAlive returns whether the entity is alive, as storage.isAlive does.
+func testAlive(entities []entityIndex, e Entity) bool {
+	return entities[e.id].gen == e.gen
+}
+
 func TestEntityPoolConstructor(t *testing.T) {
-	_ = newEntityPool(128, reservedEntities)
+	_ = newEntityPool(reservedEntities)
 }
 
 func TestEntityPool(t *testing.T) {
-	p := newEntityPool(128, reservedEntities)
+	p := newEntityPool(reservedEntities)
+	entities := newTestEntityIndex(128)
 
-	expectedAll := []Entity{newEntity(0), newEntity(1), newEntity(2), newEntity(3), newEntity(4), newEntity(5), newEntity(6)}
-	expectedAll[0].gen = math.MaxUint32
-	expectedAll[1].gen = math.MaxUint32
-
+	created := []Entity{}
 	for range 5 {
-		_ = p.Get()
+		created = append(created, p.Get(&entities))
 	}
-	expectSlicesEqual(t, expectedAll, p.entities, "Wrong initial entities")
+	expectSlicesEqual(t, []Entity{newEntity(2), newEntity(3), newEntity(4), newEntity(5), newEntity(6)}, created, "Wrong initial entities")
+	expectEqual(t, 7, len(entities))
 
-	expectPanicsWithValue(t, "can't recycle reserved zero or wildcard entity", func() { p.Recycle(p.entities[0]) })
-	expectPanicsWithValue(t, "can't recycle reserved zero or wildcard entity", func() { p.Recycle(p.entities[1]) })
+	expectPanicsWithValue(t, "can't recycle reserved zero or wildcard entity", func() { p.Recycle(entities, Entity{0, math.MaxUint32}) })
+	expectPanicsWithValue(t, "can't recycle reserved zero or wildcard entity", func() { p.Recycle(entities, Entity{1, math.MaxUint32}) })
 
-	e0 := p.entities[reservedEntities]
-	p.Recycle(e0)
-	expectFalse(t, p.Alive(e0), "Dead entity should not be alive")
+	e0 := created[0]
+	p.Recycle(entities, e0)
+	expectFalse(t, testAlive(entities, e0), "Dead entity should not be alive")
 
 	e0Old := e0
-	e0 = p.Get()
-	expectedAll[reservedEntities].gen++
-	expectTrue(t, p.Alive(e0), "Recycled entity of new generation should be alive")
-	expectFalse(t, p.Alive(e0Old), "Recycled entity of old generation should not be alive")
+	e0 = p.Get(&entities)
+	expectEqual(t, Entity{e0Old.id, 1}, e0, "Recycled entity should have the same ID and the next generation")
+	expectTrue(t, testAlive(entities, e0), "Recycled entity of new generation should be alive")
+	expectFalse(t, testAlive(entities, e0Old), "Recycled entity of old generation should not be alive")
+	expectEqual(t, 7, len(entities), "Recycling should not grow the entity index")
 
-	expectSlicesEqual(t, expectedAll, p.entities, "Wrong entities after get/recycle")
-
-	e0Old = p.entities[reservedEntities]
-	for i := range 5 {
-		p.Recycle(p.entities[i+reservedEntities])
-		expectedAll[i+1].gen++
+	p.Recycle(entities, e0)
+	for _, e := range created[1:] {
+		p.Recycle(entities, e)
 	}
 
-	expectEqual(t, 5, p.Cap())
-	expectEqual(t, 130, p.TotalCap())
+	expectEqual(t, 5, p.Cap(entities))
+	expectEqual(t, 0, p.Len(entities))
+	expectEqual(t, 5, p.Available())
+	expectEqual(t, 130, cap(entities))
 
-	expectFalse(t, p.Alive(e0Old), "Recycled entity of old generation should not be alive")
+	expectFalse(t, testAlive(entities, e0Old), "Recycled entity of old generation should not be alive")
 
 	for range 5 {
-		_ = p.Get()
+		_ = p.Get(&entities)
 	}
 
-	expectFalse(t, p.Alive(e0Old), "Recycled entity of old generation should not be alive")
-	expectFalse(t, p.Alive(Entity{}), "Zero entity should not be alive")
-	expectFalse(t, p.Alive(Entity{1, 0}), "Wildcard entity should not be alive")
+	expectEqual(t, 5, p.Len(entities))
+	expectEqual(t, 0, p.Available())
+	expectFalse(t, testAlive(entities, e0Old), "Recycled entity of old generation should not be alive")
+	expectFalse(t, testAlive(entities, Entity{}), "Zero entity should not be alive")
+	expectFalse(t, testAlive(entities, Entity{1, 0}), "Wildcard entity should not be alive")
 }
 
 func TestEntityPoolStochastic(t *testing.T) {
 	n := 32
-	p := newEntityPool(16, reservedEntities)
+	p := newEntityPool(reservedEntities)
+	entities := newTestEntityIndex(16)
 
 	for range n {
+		entities = entities[:reservedEntities]
 		p.Reset()
-		expectEqual(t, 0, p.Len())
+		expectEqual(t, 0, p.Len(entities))
 		expectEqual(t, 0, p.Available())
 
 		alive := map[Entity]bool{}
 		for range n {
-			e := p.Get()
+			e := p.Get(&entities)
 			alive[e] = true
 		}
 
 		for e, isAlive := range alive {
-			expectEqual(t, isAlive, p.Alive(e), "Wrong alive state of entity %v after initialization", e)
+			expectEqual(t, isAlive, testAlive(entities, e), "Wrong alive state of entity %v after initialization", e)
 			if rand.Float32() > 0.75 {
 				continue
 			}
-			p.Recycle(e)
+			p.Recycle(entities, e)
 			alive[e] = false
 		}
 		for e, isAlive := range alive {
-			expectEqual(t, isAlive, p.Alive(e), "Wrong alive state of entity %v after 1st removal. Entity is %v", e, p.entities[e.id])
+			expectEqual(t, isAlive, testAlive(entities, e), "Wrong alive state of entity %v after 1st removal. Entity is %v", e, entities[e.id])
 		}
 		for range n {
-			e := p.Get()
+			e := p.Get(&entities)
 			alive[e] = true
 		}
 		for e, isAlive := range alive {
-			expectEqual(t, isAlive, p.Alive(e), "Wrong alive state of entity %v after 1st recycling. Entity is %v", e, p.entities[e.id])
+			expectEqual(t, isAlive, testAlive(entities, e), "Wrong alive state of entity %v after 1st recycling. Entity is %v", e, entities[e.id])
 		}
 		expectEqual(t, uint32(0), p.available, "No more entities should be available")
 
@@ -96,11 +113,11 @@ func TestEntityPoolStochastic(t *testing.T) {
 			if !isAlive || rand.Float32() > 0.75 {
 				continue
 			}
-			p.Recycle(e)
+			p.Recycle(entities, e)
 			alive[e] = false
 		}
 		for e, a := range alive {
-			expectEqual(t, a, p.Alive(e), "Wrong alive state of entity %v after 2nd removal. Entity is %v", e, p.entities[e.id])
+			expectEqual(t, a, testAlive(entities, e), "Wrong alive state of entity %v after 2nd removal. Entity is %v", e, entities[e.id])
 		}
 	}
 }
