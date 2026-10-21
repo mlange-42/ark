@@ -9,6 +9,7 @@
 ### Bugfixes
 
 - Fixes panic when a table column grows beyond 2 GiB (#519 by [peterpothmann](https://github.com/peterpothmann))
+- Fixes entities from before `World.Reset` being reported as alive, which made component access panic with an index error instead of the dead entity error (#TODO by [peterpothmann](https://github.com/peterpothmann))
 
 ## [[v0.8.3]](https://github.com/mlange-42/ark/compare/v0.8.2...v0.8.3)
 
