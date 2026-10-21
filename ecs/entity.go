@@ -113,7 +113,12 @@ func (e *Entity) UnmarshalBinary(data []byte) error {
 }
 
 // entityIndex denotes an entity's location by table and row index.
+//
+// It also holds the entity's generation, so that checking whether an entity is alive
+// and finding its location need a single memory access.
+// For removed entities, row is the ID of the next free entity, see [entityPool].
 type entityIndex struct {
 	table tableID
 	row   uint32
+	gen   uint32
 }

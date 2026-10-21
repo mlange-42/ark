@@ -150,8 +150,20 @@ func (u Unsafe) DumpEntities() EntityDump {
 		alive = append(alive, uint32(query.Entity().id))
 	}
 
+	// Rebuild the entity list of the former entity pool from the entity index.
+	// For removed entities, the ID is that of the next free entity, see [entityPool].
+	index := u.world.storage.entities
+	entities := make([]Entity, len(index))
+	for i, idx := range index {
+		id := entityID(i)
+		if i >= reservedEntities && idx.table == maxTableID {
+			id = entityID(idx.row)
+		}
+		entities[i] = Entity{id: id, gen: idx.gen}
+	}
+
 	data := EntityDump{
-		Entities:  append([]Entity{}, u.world.storage.entityPool.entities...),
+		Entities:  entities,
 		Alive:     alive,
 		Next:      uint32(u.world.storage.entityPool.next),
 		Available: u.world.storage.entityPool.available,
@@ -174,33 +186,36 @@ func (u Unsafe) DumpEntities() EntityDump {
 func (u Unsafe) LoadEntities(data *EntityDump) {
 	u.world.checkLocked()
 
-	if len(u.world.storage.entityPool.entities) > 2 || u.world.storage.entityPool.available > 0 {
+	s := &u.world.storage
+	if len(s.entities) > reservedEntities || s.entityPool.available > 0 {
 		panic("can set entity data only on a fresh or reset world")
 	}
 
 	capacity := len(data.Entities)
-
-	entities := make([]Entity, capacity)
-	copy(entities, data.Entities)
-
-	if capacity > 0 {
-		u.world.storage.entityPool = entityPool{
-			entities:  entities,
-			next:      entityID(data.Next),
-			available: data.Available,
-			reserved:  entityID(reservedEntities),
-		}
-		u.world.storage.entityPool.pointer = unsafe.Pointer(&u.world.storage.entityPool.entities[0])
+	if capacity == 0 {
+		return
 	}
 
-	u.world.storage.entities = make([]entityIndex, capacity)
-	u.world.storage.isTarget = make([]bool, capacity)
+	// For removed entities, the ID in the dump is that of the next free entity, see [entityPool].
+	// Entities listed as alive get their table and row below.
+	entities := make([]entityIndex, capacity)
+	for i, e := range data.Entities {
+		entities[i] = entityIndex{table: maxTableID, row: uint32(e.id), gen: e.gen}
+	}
+	s.entities = entities
+	s.isTarget = make([]bool, capacity)
+	s.entityPool = entityPool{
+		next:      entityID(data.Next),
+		available: data.Available,
+		reserved:  entityID(reservedEntities),
+	}
 
-	table := &u.world.storage.tables[0]
+	table := &s.tables[0]
 	table.Extend(uint32(len(data.Alive)))
 	for _, idx := range data.Alive {
-		entity := u.world.storage.entityPool.entities[idx]
-		tableIdx := table.Add(entity)
-		u.world.storage.entities[entity.id] = entityIndex{table: table.id, row: tableIdx}
+		index := &s.entities[idx]
+		entity := Entity{id: entityID(idx), gen: index.gen}
+		index.table = table.id
+		index.row = table.Add(entity)
 	}
 }
