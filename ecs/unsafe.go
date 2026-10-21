@@ -150,7 +150,7 @@ func (u Unsafe) DumpEntities() EntityDump {
 		alive = append(alive, uint32(query.Entity().id))
 	}
 
-	// Rebuild the entity list of the former entity pool from the entity index.
+	// Build the entity list of the dump from the entity index.
 	// For removed entities, the ID is that of the next free entity, see [entityPool].
 	index := u.world.storage.entities
 	entities := make([]Entity, len(index))
