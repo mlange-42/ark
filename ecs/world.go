@@ -80,18 +80,13 @@ func (w *World) CopyEntity(e Entity) Entity {
 	w.checkLocked()
 
 	s := &w.storage
-	entity := s.entityPool.Get()
+	entity := s.getEntity()
 
 	index := s.entities[e.id]
 	table := &s.tables[index.table]
 
 	idx := table.Add(entity)
-	if int(entity.id) == len(s.entities) {
-		s.entities = append(s.entities, entityIndex{table: index.table, row: idx})
-		s.isTarget = append(s.isTarget, false)
-	} else {
-		s.entities[entity.id] = entityIndex{table: index.table, row: idx}
-	}
+	s.entities[entity.id] = entityIndex{table: index.table, row: idx, gen: entity.gen}
 
 	archetype := &s.archetypes[table.archetype]
 
@@ -110,7 +105,7 @@ func (w *World) CopyEntity(e Entity) Entity {
 // These entities can be recycled, with the same ID ([Entity.ID]), but an incremented generation ([Entity.Gen]).
 // This allows to determine whether an entity held by the user is still alive, despite it was potentially recycled.
 func (w *World) Alive(entity Entity) bool {
-	return w.storage.entityPool.Alive(entity)
+	return w.storage.isAlive(entity)
 }
 
 // RemoveEntity removes the given entity from the world.
@@ -175,8 +170,7 @@ func (w *World) RemoveEntities(batch Batch, fn func(entity Entity)) {
 			if w.storage.isTarget[entity.id] {
 				cleanup = append(cleanup, entity)
 			}
-			w.storage.entities[entity.id].table = maxTableID
-			w.storage.entityPool.Recycle(entity)
+			w.storage.entityPool.Recycle(w.storage.entities, entity)
 		}
 		table.Reset()
 	}
@@ -254,10 +248,10 @@ func (w *World) Reset() {
 // Rather, the required data should be extracted immediately.
 func (w *World) Stats() *stats.World {
 	w.stats.Entities = stats.Entities{
-		Used:     w.storage.entityPool.Len(),
-		Total:    w.storage.entityPool.Cap(),
+		Used:     w.storage.entityPool.Len(w.storage.entities),
+		Total:    w.storage.entityPool.Cap(w.storage.entities),
 		Recycled: w.storage.entityPool.Available(),
-		Capacity: w.storage.entityPool.TotalCap(),
+		Capacity: cap(w.storage.entities),
 	}
 	prevCount := len(w.stats.ComponentTypes)
 	compCount := len(w.storage.registry.Components)
@@ -271,8 +265,8 @@ func (w *World) Stats() *stats.World {
 		w.stats.ComponentTypeNames = typeNames
 	}
 
-	memory := cap(w.storage.entities)*int(entityIndexSize) + w.storage.entityPool.TotalCap()*int(entitySize)
-	memoryUsed := w.storage.entityPool.Len() * int(entityIndexSize+entitySize)
+	memory := cap(w.storage.entities) * int(entityIndexSize)
+	memoryUsed := w.storage.entityPool.Len(w.storage.entities) * int(entityIndexSize)
 
 	cntOld := int32(len(w.stats.Archetypes))
 	cntNew := int32(len(w.storage.archetypes))

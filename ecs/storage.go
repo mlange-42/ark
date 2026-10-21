@@ -2,6 +2,7 @@ package ecs
 
 import (
 	"fmt"
+	"math"
 	"time"
 	"unsafe"
 )
@@ -72,7 +73,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 	isTarget := make([]bool, reservedEntities, config.initialCapacity+reservedEntities)
 	// Reserved zero and wildcard entities
 	for i := range reservedEntities {
-		entities[i] = entityIndex{table: maxTableID, row: 0}
+		entities[i] = entityIndex{table: maxTableID, row: 0, gen: math.MaxUint32}
 	}
 	componentsMap := make([]int16, maskTotalBits)
 	for i := range maskTotalBits {
@@ -96,7 +97,7 @@ func newStorage(numArchetypes int, capacity ...int) storage {
 		cache:          newCache(),
 		entities:       entities,
 		isTarget:       isTarget,
-		entityPool:     newEntityPool(uint32(config.initialCapacity), reservedEntities),
+		entityPool:     newEntityPool(reservedEntities),
 		graph:          newGraph(),
 		slices:         newSlices(),
 		archetypes:     archetypes,
@@ -245,9 +246,26 @@ func (s *storage) AddComponent(id uint8) {
 	s.componentIndex = append(s.componentIndex, []archetypeID{})
 }
 
+// isAlive returns whether the given entity is alive.
+func (s *storage) isAlive(entity Entity) bool {
+	return s.entityPool.Alive(s.entities, entity)
+}
+
+// getEntity returns a fresh or recycled entity, with entries in the entity index and the target flags.
+// The caller must set table and row of the entity's index entry.
+func (s *storage) getEntity() Entity {
+	entity := s.entityPool.Get(&s.entities)
+	if int(entity.id) == len(s.isTarget) {
+		s.isTarget = append(s.isTarget, false)
+	} else {
+		s.isTarget[entity.id] = false
+	}
+	return entity
+}
+
 // RemoveEntity removes the given entity from the world.
 func (s *storage) RemoveEntity(entity Entity) {
-	if !s.entityPool.Alive(entity) {
+	if !s.isAlive(entity) {
 		panic("can't remove a dead entity")
 	}
 	index := &s.entities[entity.id]
@@ -270,13 +288,11 @@ func (s *storage) RemoveEntity(entity Entity) {
 
 	swapped := table.Remove(index.row)
 
-	s.entityPool.Recycle(entity)
-
 	if swapped {
 		swapEntity := table.GetEntity(uintptr(index.row))
 		s.entities[swapEntity.id].row = index.row
 	}
-	index.table = maxTableID
+	s.entityPool.Recycle(s.entities, entity)
 
 	if s.isTarget[entity.id] {
 		s.cleanupArchetypes(entity)
@@ -302,7 +318,7 @@ func (s *storage) Reset() {
 //
 // Checks whether the entity is alive.
 func (s *storage) get(entity Entity, component ID) unsafe.Pointer {
-	if !s.entityPool.Alive(entity) {
+	if !s.isAlive(entity) {
 		panic("can't get component of a dead entity")
 	}
 	return s.getUnchecked(entity, component)
@@ -321,7 +337,7 @@ func (s *storage) getUnchecked(entity Entity, component ID) unsafe.Pointer {
 //
 // Checks whether the entity is alive.
 func (s *storage) has(entity Entity, component ID) bool {
-	if !s.entityPool.Alive(entity) {
+	if !s.isAlive(entity) {
 		panic("can't check component of a dead entity")
 	}
 	return s.hasUnchecked(entity, component)
@@ -341,7 +357,7 @@ func (s *storage) hasUnchecked(entity Entity, component ID) bool {
 // Also checks whether the entity has the component.
 // Returns the zero entity if the component is not a relation.
 func (s *storage) getRelation(entity Entity, comp ID) Entity {
-	if !s.entityPool.Alive(entity) {
+	if !s.isAlive(entity) {
 		panic("can't get relation for a dead entity")
 	}
 	s.checkHasComponent(entity, comp)
@@ -386,15 +402,9 @@ func (s *storage) getRegisteredFilter(id cacheID) *cacheEntry {
 // createEntity creates an entity in the given table.
 // Returns the entity and its table row.
 func (s *storage) createEntity(table tableID) (Entity, uint32) {
-	entity := s.entityPool.Get()
+	entity := s.getEntity()
 	idx := s.tables[table].Add(entity)
-	if int(entity.id) == len(s.entities) {
-		s.entities = append(s.entities, entityIndex{table: table, row: idx})
-		s.isTarget = append(s.isTarget, false)
-	} else {
-		s.entities[entity.id] = entityIndex{table: table, row: idx}
-		s.isTarget[entity.id] = false
-	}
+	s.entities[entity.id] = entityIndex{table: table, row: idx, gen: entity.gen}
 	return entity, idx
 }
 
@@ -403,20 +413,11 @@ func (s *storage) createEntities(table *table, count int) {
 	startIdx := table.Len()
 	table.Alloc(uint32(count))
 
-	len := len(s.entities)
 	for i := range count {
 		index := uint32(startIdx + i)
-		entity := s.entityPool.Get()
+		entity := s.getEntity()
 		table.SetEntity(index, entity)
-
-		if int(entity.id) == len {
-			s.entities = append(s.entities, entityIndex{table: table.id, row: index})
-			s.isTarget = append(s.isTarget, false)
-			len++
-		} else {
-			s.entities[entity.id] = entityIndex{table: table.id, row: index}
-			s.isTarget[entity.id] = false
-		}
+		s.entities[entity.id] = entityIndex{table: table.id, row: index, gen: entity.gen}
 	}
 }
 
@@ -526,7 +527,7 @@ func (s *storage) cleanupArchetypes(target Entity) {
 
 			for _, rel := range table.relationIDs {
 				// There may be other removed target entities
-				if rel.target.id == target.id || !s.entityPool.Alive(rel.target) {
+				if rel.target.id == target.id || !s.isAlive(rel.target) {
 					newRelations = append(newRelations, relationID{component: rel.component, target: Entity{}})
 				}
 			}
@@ -583,7 +584,7 @@ func (s *storage) moveEntities(src, dst *table, count uint32) {
 	newTable := dst.id
 	for i := oldLen; i < newLen; i++ {
 		entity := dst.GetEntity(uintptr(i))
-		s.entities[entity.id] = entityIndex{table: newTable, row: uint32(i)}
+		s.entities[entity.id] = entityIndex{table: newTable, row: uint32(i), gen: entity.gen}
 	}
 	src.Reset()
 }
