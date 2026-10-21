@@ -3,7 +3,6 @@ package ecs
 import (
 	"fmt"
 	"math"
-	"unsafe"
 )
 
 type number interface {
@@ -13,7 +12,6 @@ type number interface {
 // entityPool is an implementation using implicit linked lists.
 // Implements https://skypjack.github.io/2019-05-06-ecs-baf-part-3/
 type entityPool struct {
-	pointer   unsafe.Pointer
 	entities  []Entity
 	next      entityID
 	available uint32
@@ -31,7 +29,6 @@ func newEntityPool(initialCapacity uint32, reserved uint32) entityPool {
 		entities:  entities,
 		next:      0,
 		available: 0,
-		pointer:   unsafe.Pointer(&entities[0]),
 		reserved:  entityID(reserved),
 	}
 }
@@ -51,7 +48,6 @@ func (p *entityPool) Get() Entity {
 func (p *entityPool) getNew() Entity {
 	e := Entity{id: entityID(len(p.entities)), gen: 0}
 	p.entities = append(p.entities, e)
-	p.pointer = unsafe.Pointer(&p.entities[0])
 	return e
 }
 
@@ -73,8 +69,10 @@ func (p *entityPool) Reset() {
 }
 
 // Alive returns whether an entity is still alive, based on the entity's generations.
+// Entities with an ID beyond the used entities are not alive,
+// for example entities from before [World.Reset].
 func (p *entityPool) Alive(e Entity) bool {
-	return e.gen == (*Entity)(unsafe.Add(p.pointer, entitySize*uintptr(e.id))).gen
+	return int(e.id) < len(p.entities) && e.gen == p.entities[e.id].gen
 }
 
 // Len returns the current number of used entities.

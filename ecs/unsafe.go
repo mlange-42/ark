@@ -190,7 +190,6 @@ func (u Unsafe) LoadEntities(data *EntityDump) {
 			available: data.Available,
 			reserved:  entityID(reservedEntities),
 		}
-		u.world.storage.entityPool.pointer = unsafe.Pointer(&u.world.storage.entityPool.entities[0])
 	}
 
 	u.world.storage.entities = make([]entityIndex, capacity)

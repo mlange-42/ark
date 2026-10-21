@@ -26,15 +26,18 @@ func TestToRelations(t *testing.T) {
 	child2ID := ComponentID[ChildOf2](w)
 	posID := ComponentID[Position](w)
 
-	inRelations := relationSlice{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
+	target1 := w.NewEntity()
+	target2 := w.NewEntity()
+
+	inRelations := relationSlice{RelIdx(1, target1), RelIdx(2, target2)}
 	var out []relationID
 
 	ids := []ID{posID, childID, child2ID}
 	out = inRelations.ToRelations(w, all(ids...), ids, out[:0], false)
 
 	expectSlicesEqual(t, []relationID{
-		{component: childID, target: Entity{2, 0}},
-		{component: child2ID, target: Entity{3, 0}},
+		{component: childID, target: target1},
+		{component: child2ID, target: target2},
 	}, out)
 
 	expectPanicsWithValue(t, "component with ID 2 is not a relation component",
@@ -49,35 +52,35 @@ func TestToRelations(t *testing.T) {
 			_ = inRelations.ToRelations(w, all(posID, child2ID), ids, out[:0], false)
 		})
 
-	inRelations = relationSlice{RelID(childID, Entity{2, 0}), RelID(child2ID, Entity{3, 0})}
+	inRelations = relationSlice{RelID(childID, target1), RelID(child2ID, target2)}
 
 	out = inRelations.ToRelations(w, all(ids...), ids, out[:0], false)
 
 	expectSlicesEqual(t, []relationID{
-		{component: childID, target: Entity{2, 0}},
-		{component: child2ID, target: Entity{3, 0}},
+		{component: childID, target: target1},
+		{component: child2ID, target: target2},
 	}, out)
 
-	inRelations = relationSlice{Rel[ChildOf](Entity{2, 0}), Rel[ChildOf2](Entity{3, 0})}
+	inRelations = relationSlice{Rel[ChildOf](target1), Rel[ChildOf2](target2)}
 	out = inRelations.ToRelations(w, all(ids...), ids, out[:0], false)
 
 	expectSlicesEqual(t, []relationID{
-		{component: childID, target: Entity{2, 0}},
-		{component: child2ID, target: Entity{3, 0}},
+		{component: childID, target: target1},
+		{component: child2ID, target: target2},
 	}, out)
 
-	inRelations = relationSlice{Rel[ChildOf](Entity{2, 0})}
+	inRelations = relationSlice{Rel[ChildOf](target1)}
 	out = inRelations.ToRelations(w, all(ids...), ids, out[:0], false)
 	expectSlicesEqual(t, []relationID{
-		{component: childID, target: Entity{2, 0}},
+		{component: childID, target: target1},
 	}, out)
 
-	inRelations = relationSlice{Rel[ChildOf2](Entity{3, 0})}
+	inRelations = relationSlice{Rel[ChildOf2](target2)}
 	out = inRelations.ToRelations(w, all(ids...), ids, out, false)
 
 	expectSlicesEqual(t, []relationID{
-		{component: childID, target: Entity{2, 0}},
-		{component: child2ID, target: Entity{3, 0}},
+		{component: childID, target: target1},
+		{component: child2ID, target: target2},
 	}, out)
 }
 
