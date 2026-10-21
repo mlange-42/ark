@@ -4,7 +4,6 @@ import (
 	"math/rand/v2"
 	"runtime"
 	"testing"
-	"unsafe"
 )
 
 // Benchmarks with millions of entities. Tables of this size do not fit into
@@ -15,51 +14,6 @@ const (
 	large1M = 1 << 20
 	large8M = 1 << 23
 )
-
-// copyPtr is called for every component on entity creation, swap-remove and
-// component exchange, and once per column when a table grows.
-
-func benchmarkCopyPtr(b *testing.B, size uintptr) {
-	src := make([]byte, size)
-	dst := make([]byte, size)
-	srcPtr, dstPtr := unsafe.Pointer(&src[0]), unsafe.Pointer(&dst[0])
-	for b.Loop() {
-		copyPtr(srcPtr, dstPtr, size)
-	}
-	runtime.KeepAlive(dst)
-}
-
-func BenchmarkCopyPtr_8B(b *testing.B)  { benchmarkCopyPtr(b, 8) }
-func BenchmarkCopyPtr_32B(b *testing.B) { benchmarkCopyPtr(b, 32) }
-func BenchmarkCopyPtr_1MB(b *testing.B) { benchmarkCopyPtr(b, 1<<20) }
-
-// Table growth: entities are created in batches of 1024, as in a simulation
-// that adds new entities every step. Comparing the default world with a world
-// preallocated to the final size gives the cost of growing the tables.
-
-func benchmarkGrow(b *testing.B, n int, preallocate bool) {
-	for b.Loop() {
-		b.StopTimer()
-		var w *World
-		if preallocate {
-			w = NewWorld(n)
-		} else {
-			w = NewWorld()
-		}
-		mapper := NewMap2[Position, Velocity](w)
-		runtime.GC()
-		b.StartTimer()
-
-		for range n / 1024 {
-			mapper.NewBatch(1024, &Position{}, &Velocity{})
-		}
-	}
-}
-
-func BenchmarkGrow_1M(b *testing.B)         { benchmarkGrow(b, large1M, false) }
-func BenchmarkGrowPrealloc_1M(b *testing.B) { benchmarkGrow(b, large1M, true) }
-func BenchmarkGrow_8M(b *testing.B)         { benchmarkGrow(b, large8M, false) }
-func BenchmarkGrowPrealloc_8M(b *testing.B) { benchmarkGrow(b, large8M, true) }
 
 // newShuffledWorld creates n entities with Position and Velocity. With shuffle,
 // all entities are removed in random order and created again. The recycled
@@ -107,8 +61,8 @@ func benchmarkQuery2(b *testing.B, n int, shuffle bool) {
 }
 
 // Query iteration over one component, with the second component read through
-// a Map for the current entity. Map.Get looks up the entity in the entity pool
-// and in the entity index, both indexed by entity ID.
+// a Map for the current entity. Map.Get checks the entity's generation and
+// looks up its table and row, both in the entity index.
 func benchmarkQueryMap(b *testing.B, n int, shuffle bool) {
 	w, _ := newShuffledWorld(n, shuffle)
 	filter := NewFilter1[Position](w)
