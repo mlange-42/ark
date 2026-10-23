@@ -1,7 +1,6 @@
 package ecs
 
 import (
-	"fmt"
 	"math"
 	"unsafe"
 )
@@ -95,49 +94,6 @@ func (p *entityPool) TotalCap() int {
 // Available returns the current number of available/recycled entities.
 func (p *entityPool) Available() int {
 	return int(p.available)
-}
-
-// bitPool is a pool of bits that makes it possible to obtain an un-set bit,
-// and to recycle that bit for later use.
-// This implementation uses an implicit list.
-type bitPool struct {
-	free []uint8
-}
-
-// newBitPool creates a new empty bitPool.
-func newBitPool() bitPool {
-	free := make([]uint8, mask64TotalBits)
-	for i := range mask64TotalBits {
-		free[i] = uint8(63 - i)
-	}
-	return bitPool{
-		free: free,
-	}
-}
-
-// Get returns a fresh or recycled bit.
-func (p *bitPool) Get() uint8 {
-	if len(p.free) == 0 {
-		panic(fmt.Sprintf("run out of the maximum of %d bits. "+
-			"This is likely caused by unclosed queries that lock the world. "+
-			"Make sure that all queries finish their iteration or are closed manually", mask64TotalBits))
-	}
-	b := p.free[len(p.free)-1]
-	p.free = p.free[:len(p.free)-1]
-	return b
-}
-
-// Recycle hands a bit back for recycling.
-func (p *bitPool) Recycle(b uint8) {
-	p.free = append(p.free, b)
-}
-
-// Reset recycles all bits.
-func (p *bitPool) Reset() {
-	p.free = p.free[:mask64TotalBits]
-	for i := range mask64TotalBits {
-		p.free[i] = uint8(63 - i)
-	}
 }
 
 // entityPool is an implementation using implicit linked lists.

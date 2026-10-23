@@ -5,8 +5,11 @@
 ### Performance
 
 - Optimizes and simplifies the world lock bit pool (#511)
+- Uses atomic operations instead of a mutex for the world lock, speeding up query creation by ~20-30% (by [peterpothmann](https://github.com/peterpothmann))
 
 ### Bugfixes
+
+- Fixes data race when creating queries from the same filter concurrently (by [peterpothmann](https://github.com/peterpothmann))
 
 - Fixes panic when a table column grows beyond 2 GiB (#519 by [peterpothmann](https://github.com/peterpothmann))
 
