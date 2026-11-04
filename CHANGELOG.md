@@ -5,6 +5,7 @@
 ### Performance
 
 - Optimizes and simplifies the world lock bit pool (#511)
+- Stores entity generations in the entity index instead of a separate entity list, so that alive checks and entity lookups access the same memory (#TODO by [peterpothmann](https://github.com/peterpothmann))
 
 ### Bugfixes
 
