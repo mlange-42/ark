@@ -105,40 +105,6 @@ func TestEntityPoolStochastic(t *testing.T) {
 	}
 }
 
-func TestBitPool(t *testing.T) {
-	p := newBitPool()
-
-	for i := range mask64TotalBits {
-		expectEqual(t, i, int(p.Get()))
-	}
-
-	expectPanics(t, func() { p.Get() })
-
-	for i := range 10 {
-		p.Recycle(uint8(i))
-	}
-	for i := 9; i >= 0; i-- {
-		expectEqual(t, i, int(p.Get()))
-	}
-
-	expectPanics(t, func() { p.Get() })
-
-	p.Reset()
-
-	for i := range mask64TotalBits {
-		expectEqual(t, i, int(p.Get()))
-	}
-
-	expectPanics(t, func() { p.Get() })
-
-	for i := range 10 {
-		p.Recycle(uint8(i))
-	}
-	for i := 9; i >= 0; i-- {
-		expectEqual(t, i, int(p.Get()))
-	}
-}
-
 func TestIntPool(t *testing.T) {
 	p := newIntPool[int](16)
 
@@ -156,15 +122,4 @@ func TestIntPool(t *testing.T) {
 
 		p.Reset()
 	}
-}
-
-func BenchmarkBitPool(b *testing.B) {
-	p := newBitPool()
-
-	var l uint8
-	for b.Loop() {
-		l = p.Get()
-		p.Recycle(l)
-	}
-	_ = l
 }

@@ -112,7 +112,6 @@ func TestTypeSizes(t *testing.T) {
 	printTypeSize[Entity]()
 	printTypeSize[entityIndex]()
 	printTypeSize[entityPool]()
-	printTypeSize[bitPool]()
 	printTypeSize[lock]()
 	printTypeSize[bitMask64]()
 	printTypeSize[bitMask256]()

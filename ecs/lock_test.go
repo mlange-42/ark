@@ -49,3 +49,39 @@ func TestLockSafe(t *testing.T) {
 	locks.UnlockSafe(l2)
 	expectFalse(t, locks.IsLocked())
 }
+
+func TestLockMaxLocks(t *testing.T) {
+	locks := newLock()
+
+	for i := range mask64TotalBits {
+		if i%2 == 0 {
+			expectEqual(t, i, int(locks.Lock()))
+		} else {
+			expectEqual(t, i, int(locks.LockSafe()))
+		}
+	}
+	expectPanics(t, func() { locks.Lock() })
+	expectPanics(t, func() { locks.LockSafe() })
+
+	// Freed bits are re-used, lowest first.
+	locks.Unlock(10)
+	locks.UnlockSafe(3)
+	expectEqual(t, 3, int(locks.LockSafe()))
+	expectEqual(t, 10, int(locks.Lock()))
+	expectPanics(t, func() { locks.Lock() })
+
+	locks.Reset()
+	expectFalse(t, locks.IsLocked())
+	for i := range mask64TotalBits {
+		expectEqual(t, i, int(locks.LockSafe()))
+	}
+}
+
+func BenchmarkLockSafe(b *testing.B) {
+	locks := newLock()
+
+	for b.Loop() {
+		l := locks.LockSafe()
+		locks.UnlockSafe(l)
+	}
+}
