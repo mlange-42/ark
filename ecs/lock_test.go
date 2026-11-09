@@ -77,6 +77,15 @@ func TestLockMaxLocks(t *testing.T) {
 	}
 }
 
+func BenchmarkLock(b *testing.B) {
+	locks := newLock()
+
+	for b.Loop() {
+		l := locks.Lock()
+		locks.Unlock(l)
+	}
+}
+
 func BenchmarkLockSafe(b *testing.B) {
 	locks := newLock()
 
