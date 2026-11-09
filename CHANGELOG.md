@@ -10,7 +10,6 @@
 ### Bugfixes
 
 - Fixes data race when creating queries from the same filter concurrently (by [peterpothmann](https://github.com/peterpothmann))
-
 - Fixes panic when a table column grows beyond 2 GiB (#519 by [peterpothmann](https://github.com/peterpothmann))
 
 ## [[v0.8.3]](https://github.com/mlange-42/ark/compare/v0.8.2...v0.8.3)
