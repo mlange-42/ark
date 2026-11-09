@@ -13,7 +13,7 @@ import (
 //
 // The concurrency-safe methods access the locks atomically.
 // The other methods use plain memory access, which is faster.
-// They must not run concurrently with any other method, like before with the mutex.
+// They must not run concurrently with any other method.
 type lock struct {
 	locks uint64 // The actual locks, one bit per lock.
 }
