@@ -439,6 +439,18 @@ func TestWorldRelationBatchSkip(t *testing.T) {
 	expectEqual(t, 1, callRem)
 }
 
+func TestWorldAliveAfterReset(t *testing.T) {
+	w := NewWorld()
+	posMap := NewMap1[Position](w)
+
+	e := posMap.NewEntity(&Position{X: 1})
+	w.Reset()
+
+	// The entity's ID is beyond the length of the reset entity pool
+	expectFalse(t, w.Alive(e))
+	expectPanicsWithValue(t, "can't get components of a dead entity", func() { posMap.Get(e) })
+}
+
 func TestWorldReset(t *testing.T) {
 	world := NewWorld(16)
 	u := world.Unsafe()
