@@ -6,6 +6,7 @@
 
 - Optimizes and simplifies the world lock bit pool (#511)
 - Uses atomic operations instead of a mutex for the world lock, speeding up query creation by ~20-30% (by [peterpothmann](https://github.com/peterpothmann))
+- Stores entity generations in the entity index instead of a separate entity list, so that alive checks and entity lookups access the same memory (#TODO by [peterpothmann](https://github.com/peterpothmann))
 
 ### Bugfixes
 
