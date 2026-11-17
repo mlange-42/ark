@@ -13,7 +13,7 @@ import (
 )
 
 const version = "v0.8.4"
-const goVersion = "1.26.2"
+const goVersion = "1.27.4"
 
 func main() {
 	testing.Init()
