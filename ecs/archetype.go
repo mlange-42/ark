@@ -116,19 +116,19 @@ func newArchetype(
 	}
 	archTables := newTableIDs(tables...)
 	return archetype{
-			id:             id,
-			mask:           *mask,
-			componentsMap:  componentsMap,
-			tables:         archTables,
-			numRelations:   numRelations,
-			relationTables: relationTables,
-		}, archetypeData{
-			node:         node,
-			components:   components,
-			targetTables: targetTables,
-			itemSizes:    sizes,
-			isRelation:   isRelation,
-		}
+		id:             id,
+		mask:           *mask,
+		componentsMap:  componentsMap,
+		tables:         archTables,
+		numRelations:   numRelations,
+		relationTables: relationTables,
+	}, archetypeData{
+		node:         node,
+		components:   components,
+		targetTables: targetTables,
+		itemSizes:    sizes,
+		isRelation:   isRelation,
+	}
 }
 
 // HasRelations returns whether the archetype has any relation components.

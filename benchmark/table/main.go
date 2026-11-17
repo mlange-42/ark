@@ -12,8 +12,8 @@ import (
 	"github.com/mlange-42/ark/benchmark"
 )
 
-const version = "v0.8.3"
-const goVersion = "1.26.2"
+const version = "v0.8.4"
+const goVersion = "1.27.4"
 
 func main() {
 	testing.Init()
