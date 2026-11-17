@@ -131,8 +131,8 @@ func TestObserverManager(t *testing.T) {
 func TestObserverOnCreateEntity(t *testing.T) {
 	w := NewWorld()
 
-	posID := ComponentID[Position](w)
-	velID := ComponentID[Velocity](w)
+	posID := w.ComponentID[Position]()
+	velID := w.ComponentID[Velocity]()
 	builder1 := NewMap1[Position](w)
 	builder2 := NewMap1[Velocity](w)
 
@@ -1100,7 +1100,7 @@ func benchmarkEventsPos(b *testing.B, n int) {
 	}
 
 	oldMask := newMask()
-	newMask := newMask(ComponentID[CompA](w))
+	newMask := newMask(w.ComponentID[CompA]())
 
 	for b.Loop() {
 		w.storage.observers.FireAddIfHas(OnAddComponents, Entity{}, &oldMask, &newMask)
@@ -1118,7 +1118,7 @@ func benchmarkEventsNeg(b *testing.B, n int) {
 	}
 
 	oldMask := newMask()
-	newMask := newMask(ComponentID[CompB](w))
+	newMask := newMask(w.ComponentID[CompB]())
 
 	for b.Loop() {
 		w.storage.observers.FireAddIfHas(OnAddComponents, Entity{}, &oldMask, &newMask)

@@ -11,7 +11,7 @@ func benchesOther() []benchmark.Benchmark {
 	return []benchmark.Benchmark{
 		{Name: "ecs.NewWorld", Desc: "", F: newWorld, N: 1, Factor: 0.001, Units: "μs"},
 		{Name: "World.Reset", Desc: "empty world", F: resetWorld, N: 1},
-		{Name: "ecs.ComponentID", Desc: "component already registered", F: componentID, N: 1},
+		{Name: "World.ComponentID", Desc: "component already registered", F: componentID, N: 1},
 	}
 }
 
@@ -39,12 +39,12 @@ func resetWorld(b *testing.B) {
 
 func componentID(b *testing.B) {
 	w := ecs.NewWorld()
-	origID := ecs.ComponentID[comp1](w)
+	origID := w.ComponentID[comp1]()
 
 	var id ecs.ID
 
 	for b.Loop() {
-		id = ecs.ComponentID[comp1](w)
+		id = w.ComponentID[comp1]()
 	}
 
 	if id != origID {

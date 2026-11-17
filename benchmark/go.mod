@@ -1,6 +1,6 @@
 module github.com/mlange-42/ark/benchmark
 
-go 1.24
+go 1.27
 
 require (
 	github.com/klauspost/cpuid/v2 v2.3.0

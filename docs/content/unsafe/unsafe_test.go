@@ -7,8 +7,8 @@ import (
 )
 
 var world = ecs.NewWorld()
-var posID = ecs.ComponentID[Position](world)
-var velID = ecs.ComponentID[Velocity](world)
+var posID = world.ComponentID[Position]()
+var velID = world.ComponentID[Velocity]()
 
 type Position struct {
 	X float64
@@ -23,8 +23,8 @@ type Velocity struct {
 func TestUnsafeIDs(t *testing.T) {
 	world := ecs.NewWorld()
 
-	posID := ecs.ComponentID[Position](world)
-	velID := ecs.ComponentID[Velocity](world)
+	posID := world.ComponentID[Position]()
+	velID := world.ComponentID[Velocity]()
 
 	_, _ = posID, velID
 }

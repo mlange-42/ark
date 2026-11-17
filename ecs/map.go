@@ -18,7 +18,7 @@ type Map[T any] struct {
 //
 // See also [Map.New] for a shortcut when constructing an already defined instance.
 func NewMap[T any](w *World) *Map[T] {
-	id := ComponentID[T](w)
+	id := w.ComponentID[T]()
 	return &Map[T]{
 		mask:    newMask(id),
 		world:   w,

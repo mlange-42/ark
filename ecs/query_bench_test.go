@@ -180,8 +180,8 @@ func BenchmarkPosVelQueryUnsafe_1000(b *testing.B) {
 	n := 1000
 	world := NewWorld(1024)
 
-	posID := ComponentID[Position](world)
-	velID := ComponentID[Velocity](world)
+	posID := world.ComponentID[Position]()
+	velID := world.ComponentID[Velocity]()
 
 	mapper := NewMap2[Position, Velocity](world)
 	mapper.NewBatch(n, &Position{}, &Velocity{X: 1, Y: 0})
@@ -246,8 +246,8 @@ func BenchmarkPosVelMapUnsafe_1000(b *testing.B) {
 	world := NewWorld(1024)
 	u := world.Unsafe()
 
-	posID := ComponentID[Position](world)
-	velID := ComponentID[Velocity](world)
+	posID := world.ComponentID[Position]()
+	velID := world.ComponentID[Velocity]()
 
 	mapper := NewMap2[Position, Velocity](world)
 

@@ -56,7 +56,7 @@ func Rel[C any](target Entity) Relation {
 //
 // It can be used as faster but less safe alternative to [Rel].
 //
-// Note that the index should not be confused with a component [ID] as obtained by [ComponentID]!
+// Note that the index should not be confused with a component [ID] as obtained by [World.ComponentID]!
 // For component IDs, use [RelID].
 func RelIdx(index int, target Entity) Relation {
 	return Relation{

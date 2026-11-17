@@ -1,3 +1,3 @@
 module github.com/mlange-42/ark
 
-go 1.24
+go 1.27

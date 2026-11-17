@@ -22,9 +22,9 @@ func TestRelID(t *testing.T) {
 func TestToRelations(t *testing.T) {
 	w := NewWorld()
 
-	childID := ComponentID[ChildOf](w)
-	child2ID := ComponentID[ChildOf2](w)
-	posID := ComponentID[Position](w)
+	childID := w.ComponentID[ChildOf]()
+	child2ID := w.ComponentID[ChildOf2]()
+	posID := w.ComponentID[Position]()
 
 	inRelations := relationSlice{RelIdx(1, Entity{2, 0}), RelIdx(2, Entity{3, 0})}
 	var out []relationID
@@ -219,9 +219,9 @@ func BenchmarkToRelations0(b *testing.B) {
 	world := NewWorld()
 
 	ids := []ID{
-		ComponentID[Position](world),
-		ComponentID[ChildOf](world),
-		ComponentID[ChildOf2](world),
+		world.ComponentID[Position](),
+		world.ComponentID[ChildOf](),
+		world.ComponentID[ChildOf2](),
 	}
 	mask := newMask(ids...)
 
@@ -238,9 +238,9 @@ func BenchmarkToRelations1(b *testing.B) {
 	parent := world.NewEntity()
 
 	ids := []ID{
-		ComponentID[Position](world),
-		ComponentID[ChildOf](world),
-		ComponentID[ChildOf2](world),
+		world.ComponentID[Position](),
+		world.ComponentID[ChildOf](),
+		world.ComponentID[ChildOf2](),
 	}
 	mask := newMask(ids...)
 
@@ -261,9 +261,9 @@ func BenchmarkToRelations2(b *testing.B) {
 	parent := world.NewEntity()
 
 	ids := []ID{
-		ComponentID[Position](world),
-		ComponentID[ChildOf](world),
-		ComponentID[ChildOf2](world),
+		world.ComponentID[Position](),
+		world.ComponentID[ChildOf](),
+		world.ComponentID[ChildOf2](),
 	}
 	mask := newMask(ids...)
 
@@ -285,9 +285,9 @@ func BenchmarkToRelations2Copy(b *testing.B) {
 	parent := world.NewEntity()
 
 	ids := []ID{
-		ComponentID[Position](world),
-		ComponentID[ChildOf](world),
-		ComponentID[ChildOf2](world),
+		world.ComponentID[Position](),
+		world.ComponentID[ChildOf](),
+		world.ComponentID[ChildOf2](),
 	}
 	mask := newMask(ids...)
 

@@ -199,8 +199,8 @@ func BenchmarkWorldLockUnlock(b *testing.B) {
 func BenchmarkWorldStats4Arch(b *testing.B) {
 	w := NewWorld()
 
-	idA := ComponentID[CompA](w)
-	idB := ComponentID[CompB](w)
+	idA := w.ComponentID[CompA]()
+	idB := w.ComponentID[CompB]()
 
 	u := w.Unsafe()
 	u.NewEntity()
@@ -220,10 +220,10 @@ func BenchmarkWorldStats16Arch(b *testing.B) {
 	w := NewWorld()
 
 	allIDs := []ID{
-		ComponentID[CompA](w),
-		ComponentID[CompB](w),
-		ComponentID[CompC](w),
-		ComponentID[CompD](w),
+		w.ComponentID[CompA](),
+		w.ComponentID[CompB](),
+		w.ComponentID[CompC](),
+		w.ComponentID[CompD](),
 	}
 
 	ids := []ID{}
@@ -250,12 +250,12 @@ func BenchmarkWorldStats64Arch(b *testing.B) {
 	w := NewWorld()
 
 	allIDs := []ID{
-		ComponentID[CompA](w),
-		ComponentID[CompB](w),
-		ComponentID[CompC](w),
-		ComponentID[CompD](w),
-		ComponentID[CompE](w),
-		ComponentID[CompF](w),
+		w.ComponentID[CompA](),
+		w.ComponentID[CompB](),
+		w.ComponentID[CompC](),
+		w.ComponentID[CompD](),
+		w.ComponentID[CompE](),
+		w.ComponentID[CompF](),
 	}
 
 	ids := []ID{}
@@ -282,16 +282,16 @@ func BenchmarkWorldStats1024Arch(b *testing.B) {
 	w := NewWorld()
 
 	allIDs := []ID{
-		ComponentID[CompA](w),
-		ComponentID[CompB](w),
-		ComponentID[CompC](w),
-		ComponentID[CompD](w),
-		ComponentID[CompE](w),
-		ComponentID[CompF](w),
-		ComponentID[CompG](w),
-		ComponentID[CompH](w),
-		ComponentID[CompI](w),
-		ComponentID[CompJ](w),
+		w.ComponentID[CompA](),
+		w.ComponentID[CompB](),
+		w.ComponentID[CompC](),
+		w.ComponentID[CompD](),
+		w.ComponentID[CompE](),
+		w.ComponentID[CompF](),
+		w.ComponentID[CompG](),
+		w.ComponentID[CompH](),
+		w.ComponentID[CompI](),
+		w.ComponentID[CompJ](),
 	}
 
 	ids := []ID{}
@@ -367,19 +367,19 @@ func BenchmarkRemoveNonTrivial_1000(b *testing.B) {
 func benchmarkQueryNumArches(b *testing.B, arches int, n int) {
 	world := NewWorld(1024)
 
-	posID := ComponentID[Position](world)
-	velID := ComponentID[Velocity](world)
+	posID := world.ComponentID[Position]()
+	velID := world.ComponentID[Velocity]()
 	allIDs := []ID{
-		ComponentID[CompA](world),
-		ComponentID[CompB](world),
-		ComponentID[CompC](world),
-		ComponentID[CompD](world),
-		ComponentID[CompE](world),
-		ComponentID[CompF](world),
-		ComponentID[CompG](world),
-		ComponentID[CompH](world),
-		ComponentID[CompI](world),
-		ComponentID[CompJ](world),
+		world.ComponentID[CompA](),
+		world.ComponentID[CompB](),
+		world.ComponentID[CompC](),
+		world.ComponentID[CompD](),
+		world.ComponentID[CompE](),
+		world.ComponentID[CompF](),
+		world.ComponentID[CompG](),
+		world.ComponentID[CompH](),
+		world.ComponentID[CompI](),
+		world.ComponentID[CompJ](),
 	}
 
 	extraIDs := allIDs[:int(math.Log2(float64(arches)))]

@@ -29,7 +29,7 @@ func (*Map1[A]) New(world *World) *Map1[A] {
 // See also [Map1.New] for a shortcut when constructing an already defined instance.
 func NewMap1[A any](world *World) *Map1[A] {
 	ids := []ID{
-		ComponentID[A](world),
+		world.ComponentID[A](),
 	}
 	return &Map1[A]{
 		world:    world,
@@ -327,8 +327,8 @@ func (*Map2[A, B]) New(world *World) *Map2[A, B] {
 // See also [Map2.New] for a shortcut when constructing an already defined instance.
 func NewMap2[A any, B any](world *World) *Map2[A, B] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
 	}
 	return &Map2[A, B]{
 		world:    world,
@@ -645,9 +645,9 @@ func (*Map3[A, B, C]) New(world *World) *Map3[A, B, C] {
 // See also [Map3.New] for a shortcut when constructing an already defined instance.
 func NewMap3[A any, B any, C any](world *World) *Map3[A, B, C] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
 	}
 	return &Map3[A, B, C]{
 		world:    world,
@@ -979,10 +979,10 @@ func (*Map4[A, B, C, D]) New(world *World) *Map4[A, B, C, D] {
 // See also [Map4.New] for a shortcut when constructing an already defined instance.
 func NewMap4[A any, B any, C any, D any](world *World) *Map4[A, B, C, D] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
 	}
 	return &Map4[A, B, C, D]{
 		world:    world,
@@ -1329,11 +1329,11 @@ func (*Map5[A, B, C, D, E]) New(world *World) *Map5[A, B, C, D, E] {
 // See also [Map5.New] for a shortcut when constructing an already defined instance.
 func NewMap5[A any, B any, C any, D any, E any](world *World) *Map5[A, B, C, D, E] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
 	}
 	return &Map5[A, B, C, D, E]{
 		world:    world,
@@ -1695,12 +1695,12 @@ func (*Map6[A, B, C, D, E, F]) New(world *World) *Map6[A, B, C, D, E, F] {
 // See also [Map6.New] for a shortcut when constructing an already defined instance.
 func NewMap6[A any, B any, C any, D any, E any, F any](world *World) *Map6[A, B, C, D, E, F] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
-		ComponentID[F](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
+		world.ComponentID[F](),
 	}
 	return &Map6[A, B, C, D, E, F]{
 		world:    world,
@@ -2077,13 +2077,13 @@ func (*Map7[A, B, C, D, E, F, G]) New(world *World) *Map7[A, B, C, D, E, F, G] {
 // See also [Map7.New] for a shortcut when constructing an already defined instance.
 func NewMap7[A any, B any, C any, D any, E any, F any, G any](world *World) *Map7[A, B, C, D, E, F, G] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
-		ComponentID[F](world),
-		ComponentID[G](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
+		world.ComponentID[F](),
+		world.ComponentID[G](),
 	}
 	return &Map7[A, B, C, D, E, F, G]{
 		world:    world,
@@ -2475,14 +2475,14 @@ func (*Map8[A, B, C, D, E, F, G, H]) New(world *World) *Map8[A, B, C, D, E, F, G
 // See also [Map8.New] for a shortcut when constructing an already defined instance.
 func NewMap8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) *Map8[A, B, C, D, E, F, G, H] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
-		ComponentID[F](world),
-		ComponentID[G](world),
-		ComponentID[H](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
+		world.ComponentID[F](),
+		world.ComponentID[G](),
+		world.ComponentID[H](),
 	}
 	return &Map8[A, B, C, D, E, F, G, H]{
 		world:    world,
@@ -2889,15 +2889,15 @@ func (*Map9[A, B, C, D, E, F, G, H, I]) New(world *World) *Map9[A, B, C, D, E, F
 // See also [Map9.New] for a shortcut when constructing an already defined instance.
 func NewMap9[A any, B any, C any, D any, E any, F any, G any, H any, I any](world *World) *Map9[A, B, C, D, E, F, G, H, I] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
-		ComponentID[F](world),
-		ComponentID[G](world),
-		ComponentID[H](world),
-		ComponentID[I](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
+		world.ComponentID[F](),
+		world.ComponentID[G](),
+		world.ComponentID[H](),
+		world.ComponentID[I](),
 	}
 	return &Map9[A, B, C, D, E, F, G, H, I]{
 		world:    world,
@@ -3319,16 +3319,16 @@ func (*Map10[A, B, C, D, E, F, G, H, I, J]) New(world *World) *Map10[A, B, C, D,
 // See also [Map10.New] for a shortcut when constructing an already defined instance.
 func NewMap10[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any](world *World) *Map10[A, B, C, D, E, F, G, H, I, J] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
-		ComponentID[F](world),
-		ComponentID[G](world),
-		ComponentID[H](world),
-		ComponentID[I](world),
-		ComponentID[J](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
+		world.ComponentID[F](),
+		world.ComponentID[G](),
+		world.ComponentID[H](),
+		world.ComponentID[I](),
+		world.ComponentID[J](),
 	}
 	return &Map10[A, B, C, D, E, F, G, H, I, J]{
 		world:    world,
@@ -3765,17 +3765,17 @@ func (*Map11[A, B, C, D, E, F, G, H, I, J, K]) New(world *World) *Map11[A, B, C,
 // See also [Map11.New] for a shortcut when constructing an already defined instance.
 func NewMap11[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any](world *World) *Map11[A, B, C, D, E, F, G, H, I, J, K] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
-		ComponentID[F](world),
-		ComponentID[G](world),
-		ComponentID[H](world),
-		ComponentID[I](world),
-		ComponentID[J](world),
-		ComponentID[K](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
+		world.ComponentID[F](),
+		world.ComponentID[G](),
+		world.ComponentID[H](),
+		world.ComponentID[I](),
+		world.ComponentID[J](),
+		world.ComponentID[K](),
 	}
 	return &Map11[A, B, C, D, E, F, G, H, I, J, K]{
 		world:    world,
@@ -4227,18 +4227,18 @@ func (*Map12[A, B, C, D, E, F, G, H, I, J, K, L]) New(world *World) *Map12[A, B,
 // See also [Map12.New] for a shortcut when constructing an already defined instance.
 func NewMap12[A any, B any, C any, D any, E any, F any, G any, H any, I any, J any, K any, L any](world *World) *Map12[A, B, C, D, E, F, G, H, I, J, K, L] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
-		ComponentID[F](world),
-		ComponentID[G](world),
-		ComponentID[H](world),
-		ComponentID[I](world),
-		ComponentID[J](world),
-		ComponentID[K](world),
-		ComponentID[L](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
+		world.ComponentID[F](),
+		world.ComponentID[G](),
+		world.ComponentID[H](),
+		world.ComponentID[I](),
+		world.ComponentID[J](),
+		world.ComponentID[K](),
+		world.ComponentID[L](),
 	}
 	return &Map12[A, B, C, D, E, F, G, H, I, J, K, L]{
 		world:    world,
