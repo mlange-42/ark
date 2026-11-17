@@ -117,7 +117,7 @@ func (o *Observer{{.}}{{$genericsShort}}) Register(w *World) *Observer{{.}}{{$ge
 		panic("observer callback must be set via Do before registering")
 	}
 	{{range $i, $v := $upper}}
-	storage{{$v}} := &w.storage.components[ComponentID[{{$v}}](w).id]
+	storage{{$v}} := &w.storage.components[w.ComponentID[{{$v}}]().id]
 	{{- end}}
 	o.observer.callback = func(e Entity) {
 		index := &w.storage.entities[e.id]

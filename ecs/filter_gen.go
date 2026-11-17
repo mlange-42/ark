@@ -224,7 +224,7 @@ func (*Filter1[A]) New(world *World) *Filter1[A] {
 // See also [Filter1.New] for a shortcut when constructing an already defined instance.
 func NewFilter1[A any](world *World) *Filter1[A] {
 	ids := []ID{
-		ComponentID[A](world),
+		world.ComponentID[A](),
 	}
 	components := make([]*componentStorage, 1)
 	components[0] = &world.storage.components[ids[0].id]
@@ -409,8 +409,8 @@ func (*Filter2[A, B]) New(world *World) *Filter2[A, B] {
 // See also [Filter2.New] for a shortcut when constructing an already defined instance.
 func NewFilter2[A any, B any](world *World) *Filter2[A, B] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
 	}
 	components := make([]*componentStorage, 2)
 	components[0] = &world.storage.components[ids[0].id]
@@ -601,9 +601,9 @@ func (*Filter3[A, B, C]) New(world *World) *Filter3[A, B, C] {
 // See also [Filter3.New] for a shortcut when constructing an already defined instance.
 func NewFilter3[A any, B any, C any](world *World) *Filter3[A, B, C] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
 	}
 	components := make([]*componentStorage, 3)
 	components[0] = &world.storage.components[ids[0].id]
@@ -796,10 +796,10 @@ func (*Filter4[A, B, C, D]) New(world *World) *Filter4[A, B, C, D] {
 // See also [Filter4.New] for a shortcut when constructing an already defined instance.
 func NewFilter4[A any, B any, C any, D any](world *World) *Filter4[A, B, C, D] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
 	}
 	components := make([]*componentStorage, 4)
 	components[0] = &world.storage.components[ids[0].id]
@@ -994,11 +994,11 @@ func (*Filter5[A, B, C, D, E]) New(world *World) *Filter5[A, B, C, D, E] {
 // See also [Filter5.New] for a shortcut when constructing an already defined instance.
 func NewFilter5[A any, B any, C any, D any, E any](world *World) *Filter5[A, B, C, D, E] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
 	}
 	components := make([]*componentStorage, 5)
 	components[0] = &world.storage.components[ids[0].id]
@@ -1195,12 +1195,12 @@ func (*Filter6[A, B, C, D, E, F]) New(world *World) *Filter6[A, B, C, D, E, F] {
 // See also [Filter6.New] for a shortcut when constructing an already defined instance.
 func NewFilter6[A any, B any, C any, D any, E any, F any](world *World) *Filter6[A, B, C, D, E, F] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
-		ComponentID[F](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
+		world.ComponentID[F](),
 	}
 	components := make([]*componentStorage, 6)
 	components[0] = &world.storage.components[ids[0].id]
@@ -1399,13 +1399,13 @@ func (*Filter7[A, B, C, D, E, F, G]) New(world *World) *Filter7[A, B, C, D, E, F
 // See also [Filter7.New] for a shortcut when constructing an already defined instance.
 func NewFilter7[A any, B any, C any, D any, E any, F any, G any](world *World) *Filter7[A, B, C, D, E, F, G] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
-		ComponentID[F](world),
-		ComponentID[G](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
+		world.ComponentID[F](),
+		world.ComponentID[G](),
 	}
 	components := make([]*componentStorage, 7)
 	components[0] = &world.storage.components[ids[0].id]
@@ -1606,14 +1606,14 @@ func (*Filter8[A, B, C, D, E, F, G, H]) New(world *World) *Filter8[A, B, C, D, E
 // See also [Filter8.New] for a shortcut when constructing an already defined instance.
 func NewFilter8[A any, B any, C any, D any, E any, F any, G any, H any](world *World) *Filter8[A, B, C, D, E, F, G, H] {
 	ids := []ID{
-		ComponentID[A](world),
-		ComponentID[B](world),
-		ComponentID[C](world),
-		ComponentID[D](world),
-		ComponentID[E](world),
-		ComponentID[F](world),
-		ComponentID[G](world),
-		ComponentID[H](world),
+		world.ComponentID[A](),
+		world.ComponentID[B](),
+		world.ComponentID[C](),
+		world.ComponentID[D](),
+		world.ComponentID[E](),
+		world.ComponentID[F](),
+		world.ComponentID[G](),
+		world.ComponentID[H](),
 	}
 	components := make([]*componentStorage, 8)
 	components[0] = &world.storage.components[ids[0].id]

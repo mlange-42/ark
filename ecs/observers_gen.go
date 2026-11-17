@@ -84,7 +84,7 @@ func (o *Observer1[A]) Register(w *World) *Observer1[A] {
 		panic("observer callback must be set via Do before registering")
 	}
 
-	storageA := &w.storage.components[ComponentID[A](w).id]
+	storageA := &w.storage.components[w.ComponentID[A]().id]
 	o.observer.callback = func(e Entity) {
 		index := &w.storage.entities[e.id]
 		row := uintptr(index.row)
@@ -199,8 +199,8 @@ func (o *Observer2[A, B]) Register(w *World) *Observer2[A, B] {
 		panic("observer callback must be set via Do before registering")
 	}
 
-	storageA := &w.storage.components[ComponentID[A](w).id]
-	storageB := &w.storage.components[ComponentID[B](w).id]
+	storageA := &w.storage.components[w.ComponentID[A]().id]
+	storageB := &w.storage.components[w.ComponentID[B]().id]
 	o.observer.callback = func(e Entity) {
 		index := &w.storage.entities[e.id]
 		row := uintptr(index.row)
@@ -317,9 +317,9 @@ func (o *Observer3[A, B, C]) Register(w *World) *Observer3[A, B, C] {
 		panic("observer callback must be set via Do before registering")
 	}
 
-	storageA := &w.storage.components[ComponentID[A](w).id]
-	storageB := &w.storage.components[ComponentID[B](w).id]
-	storageC := &w.storage.components[ComponentID[C](w).id]
+	storageA := &w.storage.components[w.ComponentID[A]().id]
+	storageB := &w.storage.components[w.ComponentID[B]().id]
+	storageC := &w.storage.components[w.ComponentID[C]().id]
 	o.observer.callback = func(e Entity) {
 		index := &w.storage.entities[e.id]
 		row := uintptr(index.row)
@@ -438,10 +438,10 @@ func (o *Observer4[A, B, C, D]) Register(w *World) *Observer4[A, B, C, D] {
 		panic("observer callback must be set via Do before registering")
 	}
 
-	storageA := &w.storage.components[ComponentID[A](w).id]
-	storageB := &w.storage.components[ComponentID[B](w).id]
-	storageC := &w.storage.components[ComponentID[C](w).id]
-	storageD := &w.storage.components[ComponentID[D](w).id]
+	storageA := &w.storage.components[w.ComponentID[A]().id]
+	storageB := &w.storage.components[w.ComponentID[B]().id]
+	storageC := &w.storage.components[w.ComponentID[C]().id]
+	storageD := &w.storage.components[w.ComponentID[D]().id]
 	o.observer.callback = func(e Entity) {
 		index := &w.storage.entities[e.id]
 		row := uintptr(index.row)

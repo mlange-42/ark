@@ -55,8 +55,8 @@ func TestWorldCopyEntity(t *testing.T) {
 func TestWorldExchange(t *testing.T) {
 	w := NewWorld(2)
 
-	posID := ComponentID[Position](w)
-	velID := ComponentID[Velocity](w)
+	posID := w.ComponentID[Position]()
+	velID := w.ComponentID[Velocity]()
 
 	e1 := w.NewEntity()
 	e2 := w.NewEntity()
@@ -245,8 +245,8 @@ func TestWorldRemoveEntitiesRelations(t *testing.T) {
 func TestWorldRelations(t *testing.T) {
 	w := NewWorld(16)
 
-	_ = ComponentID[CompA](w)
-	_ = ComponentID[CompB](w)
+	_ = w.ComponentID[CompA]()
+	_ = w.ComponentID[CompB]()
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
@@ -254,8 +254,8 @@ func TestWorldRelations(t *testing.T) {
 	notParent := w.NewEntity()
 
 	mapper1 := NewMap3[Position, ChildOf, ChildOf2](w)
-	expectTrue(t, w.storage.registry.IsRelation[ComponentID[ChildOf](w).id])
-	expectTrue(t, w.storage.registry.IsRelation[ComponentID[ChildOf2](w).id])
+	expectTrue(t, w.storage.registry.IsRelation[w.ComponentID[ChildOf]().id])
+	expectTrue(t, w.storage.registry.IsRelation[w.ComponentID[ChildOf2]().id])
 
 	for range 10 {
 		mapper1.NewEntity(&Position{}, &ChildOf{}, &ChildOf2{}, Rel[ChildOf](parent1), RelIdx(2, parent1))
@@ -345,8 +345,8 @@ func TestWorldRelationsBug295(t *testing.T) {
 func TestWorldSetRelations(t *testing.T) {
 	w := NewWorld(16)
 
-	_ = ComponentID[CompA](w)
-	_ = ComponentID[CompB](w)
+	_ = w.ComponentID[CompA]()
+	_ = w.ComponentID[CompB]()
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
@@ -366,8 +366,8 @@ func TestWorldSetRelations(t *testing.T) {
 func TestWorldRelationRemoveTarget(t *testing.T) {
 	w := NewWorld(16)
 
-	_ = ComponentID[CompA](w)
-	_ = ComponentID[CompB](w)
+	_ = w.ComponentID[CompA]()
+	_ = w.ComponentID[CompB]()
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
@@ -446,9 +446,9 @@ func TestWorldReset(t *testing.T) {
 	AddResource(world, &Heading{100})
 	o := Observe(OnCreateEntity).Do(func(e Entity) {}).Register(world)
 
-	posID := ComponentID[Position](world)
-	velID := ComponentID[Velocity](world)
-	relID := ComponentID[ChildOf](world)
+	posID := world.ComponentID[Position]()
+	velID := world.ComponentID[Velocity]()
+	relID := world.ComponentID[ChildOf]()
 
 	_ = NewFilter2[Position, Velocity](world).Register()
 
@@ -604,8 +604,8 @@ func TestWorldPointerStressTest(t *testing.T) {
 
 func TestWorldPanics(t *testing.T) {
 	w := NewWorld(128, 32)
-	_ = ComponentID[Position](w)
-	_ = ComponentID[Velocity](w)
+	_ = w.ComponentID[Position]()
+	_ = w.ComponentID[Velocity]()
 
 	expectPanicsWithValue(t, "at least one component required to add", func() {
 		e := w.NewEntity()
@@ -688,7 +688,7 @@ func TestWorldCreateManyTables(t *testing.T) {
 	w := NewWorld()
 	dataMap := NewMap1[Position](w)
 
-	id := ComponentID[Position](w)
+	id := w.ComponentID[Position]()
 	expectTrue(t, w.storage.registry.IsTrivial[id.id])
 
 	entities := make([]Entity, 0)
@@ -717,7 +717,7 @@ func TestWorldCreateManyTablesSlice(t *testing.T) {
 	w := NewWorld()
 	dataMap := NewMap1[SliceComp](w)
 
-	id := ComponentID[SliceComp](w)
+	id := w.ComponentID[SliceComp]()
 	expectFalse(t, w.storage.registry.IsTrivial[id.id])
 
 	entities := make([]Entity, 0)

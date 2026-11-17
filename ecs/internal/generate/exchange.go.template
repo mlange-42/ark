@@ -48,7 +48,7 @@ func (*Exchange{{.}}{{$genericsShort}}) New(world *World) *Exchange{{.}}{{$gener
 func NewExchange{{.}}{{$generics}}(world *World) *Exchange{{.}}{{$genericsShort}} {
 	ids := []ID{
 		{{- range $upper}}
-		ComponentID[{{.}}](world),
+		world.ComponentID[{{.}}](),
 		{{- end}}
 	}
 	return &Exchange{{.}}{{$genericsShort}}{

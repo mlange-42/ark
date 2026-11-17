@@ -10,10 +10,10 @@ func TestQuery(t *testing.T) {
 	w := NewWorld(4)
 	u := w.Unsafe()
 
-	compA := ComponentID[CompA](w)
-	compB := ComponentID[CompB](w)
-	compC := ComponentID[CompC](w)
-	posID := ComponentID[Position](w)
+	compA := w.ComponentID[CompA]()
+	compB := w.ComponentID[CompB]()
+	compC := w.ComponentID[CompC]()
+	posID := w.ComponentID[Position]()
 
 	for range n {
 		_ = u.NewEntity(compA, compB, compC)
@@ -86,10 +86,10 @@ func TestQueryEmpty(t *testing.T) {
 	w := NewWorld(4)
 	u := w.Unsafe()
 
-	compA := ComponentID[CompA](w)
-	compB := ComponentID[CompB](w)
-	compC := ComponentID[CompC](w)
-	posID := ComponentID[Position](w)
+	compA := w.ComponentID[CompA]()
+	compB := w.ComponentID[CompB]()
+	compC := w.ComponentID[CompC]()
+	posID := w.ComponentID[Position]()
 
 	for range 10 {
 		e1 := w.NewEntity()
@@ -123,10 +123,10 @@ func TestQueryRelations(t *testing.T) {
 	parent2 := w.NewEntity()
 	parent3 := w.NewEntity()
 
-	childID := ComponentID[ChildOf](w)
-	childID2 := ComponentID[ChildOf2](w)
-	compB := ComponentID[CompB](w)
-	compC := ComponentID[CompC](w)
+	childID := w.ComponentID[ChildOf]()
+	childID2 := w.ComponentID[ChildOf2]()
+	compB := w.ComponentID[CompB]()
+	compC := w.ComponentID[CompC]()
 
 	for range n {
 		_ = u.NewEntityRel([]ID{childID, childID2, compB, compC}, RelID(childID, parent1), RelID(childID2, parent3))

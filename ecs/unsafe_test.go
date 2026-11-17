@@ -16,8 +16,8 @@ func TestUnsafeNewEntity(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](w)
-	velID := ComponentID[Velocity](w)
+	posID := w.ComponentID[Position]()
+	velID := w.ComponentID[Velocity]()
 
 	e := u.NewEntity(posID, velID)
 
@@ -29,8 +29,8 @@ func TestUnsafeGet(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](w)
-	velID := ComponentID[Velocity](w)
+	posID := w.ComponentID[Position]()
+	velID := w.ComponentID[Velocity]()
 
 	e := u.NewEntity(posID)
 
@@ -61,9 +61,9 @@ func TestUnsafeRelations(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](w)
-	childID := ComponentID[ChildOf](w)
-	child2ID := ComponentID[ChildOf2](w)
+	posID := w.ComponentID[Position]()
+	childID := w.ComponentID[ChildOf]()
+	child2ID := w.ComponentID[ChildOf2]()
 
 	parent1 := w.NewEntity()
 	parent2 := w.NewEntity()
@@ -82,8 +82,8 @@ func TestUnsafeAddRemove(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](w)
-	childID := ComponentID[ChildOf](w)
+	posID := w.ComponentID[Position]()
+	childID := w.ComponentID[ChildOf]()
 
 	e1 := w.NewEntity()
 	u.Add(e1, posID)
@@ -131,8 +131,8 @@ func TestUnsafeExchange(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](w)
-	childID := ComponentID[ChildOf](w)
+	posID := w.ComponentID[Position]()
+	childID := w.ComponentID[ChildOf]()
 
 	parent := u.NewEntity()
 	e := u.NewEntity(posID)
@@ -160,8 +160,8 @@ func TestUnsafeIDs(t *testing.T) {
 	w := NewWorld(16)
 	u := w.Unsafe()
 
-	posID := ComponentID[Position](w)
-	velID := ComponentID[Velocity](w)
+	posID := w.ComponentID[Position]()
+	velID := w.ComponentID[Velocity]()
 
 	e := u.NewEntity(posID, velID)
 	ids := u.IDs(e)

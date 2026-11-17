@@ -53,7 +53,7 @@ func (*Filter{{.}}{{$genericsShort}}) New(world *World) *Filter{{.}}{{$genericsS
 func NewFilter{{.}}{{$generics}}(world *World) *Filter{{.}}{{$genericsShort}} {
 	ids := []ID{
 		{{- range $i, $v := $upper}}
-		ComponentID[{{$v}}](world),
+		world.ComponentID[{{$v}}](),
 		{{- end}}
 	}
 	components := make([]*componentStorage, {{.}})

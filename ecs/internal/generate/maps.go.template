@@ -50,7 +50,7 @@ func (*Map{{.}}{{$genericsShort}}) New(world *World) *Map{{.}}{{$genericsShort}}
 func NewMap{{.}}{{$generics}}(world *World) *Map{{.}}{{$genericsShort}} {
 	ids := []ID{
 		{{- range $upper}}
-		ComponentID[{{.}}](world),
+		world.ComponentID[{{.}}](),
 		{{- end}}
 	}
 	return &Map{{.}}{{$genericsShort}}{

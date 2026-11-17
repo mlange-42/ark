@@ -6,9 +6,9 @@ import (
 
 func TestNewTable(t *testing.T) {
 	w := NewWorld(1024)
-	_ = ComponentID[Label](w)
-	posID := ComponentID[Position](w)
-	velID := ComponentID[Velocity](w)
+	_ = w.ComponentID[Label]()
+	posID := w.ComponentID[Position]()
+	velID := w.ComponentID[Velocity]()
 
 	arch, data := newArchetype(0, 0, &bitMask{}, []ID{posID, velID}, []tableID{0}, &w.storage.registry)
 	arch.archetypeData = &data
@@ -35,11 +35,11 @@ func TestNewTable(t *testing.T) {
 
 func TestTableMatches(t *testing.T) {
 	w := NewWorld(1024)
-	_ = ComponentID[Label](w)
-	posID := ComponentID[Position](w)
-	velID := ComponentID[Velocity](w)
-	childID := ComponentID[ChildOf](w)
-	child2ID := ComponentID[ChildOf2](w)
+	_ = w.ComponentID[Label]()
+	posID := w.ComponentID[Position]()
+	velID := w.ComponentID[Velocity]()
+	childID := w.ComponentID[ChildOf]()
+	child2ID := w.ComponentID[ChildOf2]()
 
 	compMap := make([]int16, maskTotalBits)
 	compMap[1] = 0
@@ -67,9 +67,9 @@ func TestTableMatches(t *testing.T) {
 
 func TestTableReset(t *testing.T) {
 	w := NewWorld(1024)
-	posID := ComponentID[Position](w)
-	velID := ComponentID[Velocity](w)
-	labelID := ComponentID[Label](w)
+	posID := w.ComponentID[Position]()
+	velID := w.ComponentID[Velocity]()
+	labelID := w.ComponentID[Label]()
 
 	arch, data := newArchetype(0, 0, &bitMask{}, []ID{posID, velID, labelID}, []tableID{0}, &w.storage.registry)
 	arch.archetypeData = &data

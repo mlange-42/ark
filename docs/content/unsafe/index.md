@@ -14,7 +14,7 @@ It is accessible via {{< api ecs World.Unsafe >}}.
 
 Internally, each component type is mapped to an {{< api ecs ID >}}.
 We don't see it in the generic API, but we can use it for more flexibility in the ID-based API.
-IDs can be obtained by the function {{< api ecs ComponentID >}}.
+IDs can be obtained by the function {{< api ecs World.ComponentID >}}.
 If a component is not yet registered, it gets registered upon first use.
 
 {{< code-func unsafe_test.go TestUnsafeIDs 0 4 >}}
