@@ -8,8 +8,8 @@ import (
 func TestCompResIDs(t *testing.T) {
 	w := NewWorld(1024)
 
-	posID := ComponentID[Position](w)
-	rotID := ComponentID[Velocity](w)
+	posID := w.ComponentID[Position]()
+	rotID := w.ComponentID[Velocity]()
 
 	tPosID := TypeID(w, reflect.TypeOf(Position{}))
 	tRotID := TypeID(w, reflect.TypeOf(Velocity{}))
@@ -26,36 +26,36 @@ func TestCompResIDs(t *testing.T) {
 	expectEqual(t, uint8(0), res1ID.id)
 	expectEqual(t, uint8(1), res2ID.id)
 
-	expectSlicesEqual(t, []ID{id(0), id(1)}, ComponentIDs(w))
+	expectSlicesEqual(t, []ID{id(0), id(1)}, w.ComponentIDs())
 	expectSlicesEqual(t, []ResID{{id: 0}, {id: 1}}, ResourceIDs(w))
 }
 
 func TestRegisterComponents(t *testing.T) {
 	world := NewWorld(1024)
 
-	ComponentID[Position](world)
+	world.ComponentID[Position]()
 
-	expectEqual(t, id(0), ComponentID[Position](world))
-	expectEqual(t, id(1), ComponentID[Velocity](world))
+	expectEqual(t, id(0), world.ComponentID[Position]())
+	expectEqual(t, id(1), world.ComponentID[Velocity]())
 
 	world.lock()
 	expectPanicsWithValue(t,
 		"attempt to register a new component in a locked world",
 		func() {
-			ComponentID[Heading](world)
+			world.ComponentID[Heading]()
 		})
 }
 
 func TestComponentInfo(t *testing.T) {
 	w := NewWorld(1024)
-	_ = ComponentID[Velocity](w)
-	posID := ComponentID[Position](w)
+	_ = w.ComponentID[Velocity]()
+	posID := w.ComponentID[Position]()
 
-	info, ok := ComponentInfo(w, posID)
+	info, ok := w.ComponentInfo(posID)
 	expectTrue(t, ok)
 	expectEqual(t, info.Type, reflect.TypeOf(Position{}))
 
-	info, ok = ComponentInfo(w, ID{id: 3})
+	info, ok = w.ComponentInfo(ID{id: 3})
 	expectFalse(t, ok)
 	expectEqual(t, info, CompInfo{})
 
@@ -101,10 +101,10 @@ func TestResourceShortcuts(t *testing.T) {
 func BenchmarkComponentID(b *testing.B) {
 
 	world := NewWorld(1024)
-	id := ComponentID[Position](world)
+	id := world.ComponentID[Position]()
 
 	for b.Loop() {
-		id = ComponentID[Position](world)
+		id = world.ComponentID[Position]()
 	}
 	_ = id
 }
@@ -112,8 +112,8 @@ func BenchmarkComponentID(b *testing.B) {
 func BenchmarkTypeID(b *testing.B) {
 
 	world := NewWorld(1024)
-	id := ComponentID[Position](world)
-	info, _ := ComponentInfo(world, id)
+	id := world.ComponentID[Position]()
+	info, _ := world.ComponentInfo(id)
 	tp := info.Type
 
 	for b.Loop() {

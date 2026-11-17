@@ -5,6 +5,8 @@ import "reflect"
 // ComponentID returns the [ID] for a component type via generics.
 // Registers the type if it is not already registered.
 //
+// Deprecated: Use [World.ComponentID] instead.
+//
 // The number of unique component types per [World] is limited to 256 (64 with build tag ark_tiny).
 //
 // Panics if called on a locked world and the type is not registered yet.
@@ -15,11 +17,34 @@ import "reflect"
 // ⚠️ Warning: Using IDs that are outside of the range of registered IDs anywhere in [World]
 // or other places will result in undefined behavior!
 func ComponentID[T any](w *World) ID {
+	return w.ComponentID[T]()
+}
+
+// ComponentID returns the [ID] for a component type via generics.
+// Registers the type if it is not already registered.
+//
+// The number of unique component types per [World] is limited to 256 (64 with build tag ark_tiny).
+//
+// Panics if called on a locked world and the type is not registered yet.
+//
+// Note that type aliases are not considered separate component types.
+// Type re-definitions, however, are separate types.
+//
+// ⚠️ Warning: Using IDs that are outside of the range of registered IDs anywhere in [World]
+// or other places will result in undefined behavior!
+func (w *World) ComponentID[T any]() ID {
 	return w.componentID(reflect.TypeFor[T]())
 }
 
 // ComponentIDs returns a list of all registered component IDs.
+//
+// Deprecated: Use [World.ComponentIDs] instead.
 func ComponentIDs(w *World) []ID {
+	return w.ComponentIDs()
+}
+
+// ComponentIDs returns a list of all registered component IDs.
+func (w *World) ComponentIDs() []ID {
 	intIds := w.storage.registry.IDs
 	ids := make([]ID, len(intIds))
 	for i, iid := range intIds {
@@ -29,7 +54,14 @@ func ComponentIDs(w *World) []ID {
 }
 
 // ComponentInfo returns the [CompInfo] for a component [ID], and whether the ID is assigned.
+//
+// Deprecated: Use [World.ComponentInfo] instead.
 func ComponentInfo(w *World, id ID) (CompInfo, bool) {
+	return w.ComponentInfo(id)
+}
+
+// ComponentInfo returns the [CompInfo] for a component [ID], and whether the ID is assigned.
+func (w *World) ComponentInfo(id ID) (CompInfo, bool) {
 	tp, ok := w.storage.registry.ComponentType(id.id)
 	if !ok {
 		return CompInfo{}, false
